@@ -28,10 +28,11 @@ function updateCartTotals(data) {
     $('.minicart-quantity').empty().append(data.numItems);
 
     if (data.totals.orderLevelDiscountTotal.value > 0) {
-        $('.order-discount').show();
-        $('.order-discount-total').text('- ' + data.totals.orderLevelDiscountTotal.formatted);
+        $('.order-discount').removeClass('hide-order-discount');
+        $('.order-discount-total').empty()
+            .append('- ' + data.totals.orderLevelDiscountTotal.formatted);
     } else {
-        $('.order-discount').hide();
+        $('.order-discount').addClass('hide-order-discount');
     }
 
     if (data.totals.shippingLevelDiscountTotal.value > 0) {
@@ -48,8 +49,8 @@ function updateCartTotals(data) {
  * @param {Object} message - Error message to display
  */
 function createErrorNotification(message) {
-    $('<div class="alert alert-danger alert-dismissible fade in col-xs-12 ' +
-        'text-xs-center notify" role="alert"> ' +
+    $('<div class="alert alert-danger alert-dismissible fade show col-12 ' +
+        'text-center notify" role="alert"> ' +
         '<button type="button" class="close" data-dismiss="alert" ' +
         'aria-label="Close"> ' +
         '<span aria-hidden="true">&times;</span> ' +
@@ -105,15 +106,20 @@ module.exports = function () {
             success: function (data) {
                 if (data.items.length === 0) {
                     $('.cart').empty().append('<div class="row"> ' +
-                        '<div class="col-xs-12 text-xs-center"> ' +
+                        '<div class="col-12 text-center"> ' +
                         '<h1>' + data.resources.emptyCartMsg + '</h1> ' +
                         '</div> ' +
                         '</div>'
                     );
                     $('.number-of-items').empty().append(data.resources.numberOfItems);
                     $('.minicart-quantity').empty().append(data.numItems);
+                    $('.mini-cart .popover').empty();
+                    $('.mini-cart .popover').removeClass('show');
+                    $('body').removeClass('modal-open');
+                    $('html').removeClass('veiled');
                 } else {
                     $('.uuid-' + uuid).remove();
+                    $('.coupons-and-promos').empty().append(data.totals.discountsHtml);
                     updateCartTotals(data);
                 }
                 $.spinner().stop();
@@ -125,7 +131,7 @@ module.exports = function () {
         });
     });
 
-    $('body').on('change', '.quantity', function () {
+    $('body').on('change', '.quantity-form > .quantity', function () {
         var quantity = $(this).val();
         var productID = $(this).data('pid');
         var url = $(this).data('action');
@@ -153,6 +159,7 @@ module.exports = function () {
                         break;
                     }
                 }
+                $('.coupons-and-promos').empty().append(data.totals.discountsHtml);
                 updateCartTotals(data);
                 $.spinner().stop();
             },
@@ -185,6 +192,91 @@ module.exports = function () {
             },
             error: function (err) {
                 createErrorNotification(err.responseJSON.errorMessage);
+                $.spinner().stop();
+            }
+        });
+    });
+
+    $('.promo-code-form').submit(function (e) {
+        e.preventDefault();
+        $.spinner().start();
+        $('.coupon-missing-error').hide();
+        $('.coupon-error-message').empty();
+        if (!$('.coupon-code-field').val()) {
+            $('.promo-code-form').addClass('has-danger');
+            $('.coupon-missing-error').show();
+            $.spinner().stop();
+            return false;
+        }
+        var $form = $('.promo-code-form');
+        $form.removeClass('has-danger');
+        $('.coupon-error-message').empty();
+
+        $.ajax({
+            url: $form.attr('action'),
+            type: 'GET',
+            dataType: 'json',
+            data: $form.serialize(),
+            success: function (data) {
+                if (data.error) {
+                    $('.promo-code-form').addClass('has-danger');
+                    $('.coupon-error-message').empty().append(data.errorMessage);
+                } else {
+                    $('.coupons-and-promos').empty().append(data.totals.discountsHtml);
+                    updateCartTotals(data);
+                }
+                $('.coupon-code-field').val('');
+                $.spinner().stop();
+            },
+            error: function (err) {
+                createErrorNotification(err.errorMessage);
+                $.spinner().stop();
+            }
+        });
+        return false;
+    });
+
+    $('body').on('click', '.remove-coupon', function (e) {
+        e.preventDefault();
+
+        var couponCode = $(this).data('code');
+        var uuid = $(this).data('uuid');
+        var $deleteConfirmBtn = $('.delete-coupon-confirmation-btn');
+        var $productToRemoveSpan = $('.coupon-to-remove');
+
+        $deleteConfirmBtn.data('uuid', uuid);
+        $deleteConfirmBtn.data('code', couponCode);
+
+        $productToRemoveSpan.empty().append(couponCode);
+    });
+
+    $('body').on('click', '.delete-coupon-confirmation-btn', function (e) {
+        e.preventDefault();
+
+        var url = $(this).data('action');
+        var uuid = $(this).data('uuid');
+        var couponCode = $(this).data('code');
+        var urlParams = {
+            code: couponCode,
+            uuid: uuid
+        };
+
+        url = appendToUrl(url, urlParams);
+
+        $('body > .modal-backdrop').remove();
+
+        $.spinner().start();
+        $.ajax({
+            url: url,
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $('.coupon-uuid-' + uuid).remove();
+                updateCartTotals(data);
+                $.spinner().stop();
+            },
+            error: function (err) {
+                createErrorNotification(err.errorMessage);
                 $.spinner().stop();
             }
         });

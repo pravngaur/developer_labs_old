@@ -3,7 +3,7 @@
 export const BTN_DELETE = '.card button.remove-btn';
 export const BTN_CHECKOUT = '.checkout-btn';
 export const DELETE_CONFIRMATION = '.delete-confirmation-btn';
-export const CART_EMPTY = '.text-xs-center h1';
+export const CART_EMPTY = '.text-center h1';
 export const CART_ITEMS = '.card';
 export const ITEM_QUANTITY = '.quantity';
 export const NUMBER_OF_ITEMS = '.number-of-items';
@@ -42,7 +42,7 @@ export function verifyCartEmpty() {
 
 export function getItemList() {
     return browser
-        .waitForExist(CART_ITEMS, 5000)
+        .waitForExist(CART_ITEMS, 6000)
         .elements(CART_ITEMS);
 }
 
@@ -97,25 +97,6 @@ export function getShippingMethodAtIndex(index) {
 }
 
 /**
- * click on the deleteButton one more time if the first
- * click didn't work.
- * @param {string} deleteButton
- * @param {string} deleteConfirmation
- * @returns {Promise.<TResult>|*}
- */
-function clickDeleteButton(deleteButton, deleteConfirmation) {
-    return browser.click(deleteButton)
-        .waitForVisible(deleteConfirmation, 3000)
-        .isVisible(deleteConfirmation)
-        .then(isVisible => {
-            if (!isVisible) {
-                return browser.click(deleteButton);
-            }
-            return Promise.resolve();
-        });
-}
-
-/**
  * Find the selector that applicable to the current screen
  * @param {string} selector
  * @returns {Promise.<TResult>|*}
@@ -134,22 +115,9 @@ function getDeleteItemSelector(selector) {
             return selector + '-lg';
         });
 }
-
 /**
- *
- * @param {string} deleteButton
- * @returns {Promise.<*>}
- */
-function removeItemFromCart(deleteButton) {
-    return clickDeleteButton(deleteButton, DELETE_CONFIRMATION)
-        .then(() => browser.click(DELETE_CONFIRMATION))
-        .then(() => browser.waitForVisible('.modal', 3000, true))
-        .then(() => browser.pause(2000));
-}
-
-/**
- * Redirects the browser to the Cart page and empties the Cart.
- *
+ * Remove all items in Cart
+ * @returns {Promise.<TResult>}
  */
 export function emptyCart() {
     var mySelector;
@@ -160,10 +128,19 @@ export function emptyCart() {
             return browser.elements(mySelector);
         })
         .then(removeLinks => {
-            return removeLinks.value.reduce(function (prev) {
-                return prev.then(function () {
-                    return removeItemFromCart(mySelector);
-                });
+            return removeLinks.value.reduce(removeItem => {
+                return removeItem.then(() => browser.click(mySelector))
+                    .then(() => browser.waitForVisible(DELETE_CONFIRMATION, 2000))
+                    .then(() => browser.click(DELETE_CONFIRMATION))
+                    .then(() => browser.pause(2000))
+                    .then(() => browser.isVisible(DELETE_CONFIRMATION))
+                    .then(isVisible => {
+                        if (isVisible) {
+                            return browser.click('.modal-content .close');
+                        }
+                        return Promise.resolve();
+                    })
+                    .then(() => browser.pause(2000));
             }, Promise.resolve());
         });
 }

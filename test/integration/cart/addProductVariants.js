@@ -43,7 +43,8 @@ describe('Add Product variants to cart', function () {
         myRequest.url = config.baseUrl + '/Cart-AddProduct?pid=' + variantPid1 + '&quantity=' + qty1;
 
         var expectedResBody = {
-            'quantityTotal': totalQty
+            'quantityTotal': totalQty,
+            'message': 'Product added to basket'
         };
 
         return request(myRequest)
@@ -72,7 +73,8 @@ describe('Add Product variants to cart', function () {
                 assert.equal(response2.statusCode, 200, 'Expected statusCode to be 200.');
 
                 var expectedResBody2 = {
-                    'quantityTotal': totalQty
+                    'quantityTotal': totalQty,
+                    'message': 'Product added to basket'
                 };
 
                 var bodyAsJson2 = JSON.parse(response2.body);
@@ -91,7 +93,8 @@ describe('Add Product variants to cart', function () {
                 assert.equal(response3.statusCode, 200, 'Expected statusCode to be 200.');
 
                 var expectedResBody3 = {
-                    'quantityTotal': totalQty
+                    'quantityTotal': totalQty,
+                    'message': 'Product added to basket'
                 };
 
                 var bodyAsJson3 = JSON.parse(response3.body);
@@ -110,7 +113,8 @@ describe('Add Product variants to cart', function () {
                 assert.equal(response4.statusCode, 200, 'Expected statusCode to be 200.');
 
                 var expectedResBody4 = {
-                    'quantityTotal': totalQty
+                    'quantityTotal': totalQty,
+                    'message': 'Product added to basket'
                 };
 
                 var bodyAsJson4 = JSON.parse(response4.body);
@@ -138,8 +142,10 @@ describe('Add Product variants to cart', function () {
                     // the path has radomly generated code.
                     var expectedResponse = {
                         'actionUrls': {
+                            'removeCouponLineItem': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-RemoveCouponLineItem',
                             'removeProductLineItemUrl': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-RemoveProductLineItem',
                             'updateQuantityUrl': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-UpdateQuantity',
+                            'submitCouponCodeUrl': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-AddCoupon',
                             'selectShippingUrl': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-SelectShippingMethod'
                         },
                         'numOfShipments': 1,
@@ -155,7 +161,9 @@ describe('Add Product variants to cart', function () {
                             'shippingLevelDiscountTotal': {
                                 'formatted': '$0.00',
                                 'value': 0
-                            }
+                            },
+                            'discounts': [],
+                            'discountsHtml': '\n'
                         },
                         'shippingMethods': [
                             {

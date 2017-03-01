@@ -11,6 +11,20 @@
 
     &.required .form-control-label::before {
         content: "*";
-        color: $red;
+        color: $brand-danger;
+    }
+}
+
+.form-group {
+    > .form-control-feedback {
+        display: none;
+        font-size: 0.8125rem;
+    }
+
+    &.has-danger,
+    &.has-warning {
+        > .form-control-feedback {
+            display: block;
+        }
     }
 }

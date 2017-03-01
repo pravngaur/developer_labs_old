@@ -60,7 +60,7 @@ describe('Category Navigation and multiple refinements -  general product', () =
                     .then(() => browser.waitForExist(search.refinementBarPrice))
                     .click(search.refinementBarPrice)
                     .waitForExist(search.refinementBarPriceActive)
-                    .click(search.price3RefinementSelector)
+                    .click(search.price3RefinementAppium)
                     .then(() => common.waitUntilAjaxCallEnded())
                     .then(() => browser.waitForExist(search.refinementBarSize))
                     .click(search.refinementBarSize)
@@ -87,9 +87,9 @@ describe('Category Navigation and multiple refinements -  general product', () =
                 .then(title => assert.equal(title, 'Tops'))
                 .then(() => browser.click(search.redColorRefinementSelector))
                 .then(() => common.waitUntilAjaxCallEnded())
-                .click(search.price3RefinementSelector)
+                .click(search.price3RefinementBrowser)
                 .then(() => common.waitUntilAjaxCallEnded())
-                .click(search.size8RefinementSelector)
+                .click(search.size8RefinementBrowser)
                 .then(() => common.waitUntilAjaxCallEnded())
                 .then(() => browser.click(search.customSelect))
                 .then(() => browser.click(search.sortOrderProductAtoZ))
@@ -107,9 +107,7 @@ describe('Category Navigation and multiple refinements -  general product', () =
                     return verifySearchResults(search.searchResultCount, searchResultMsg2);
                 }
                 // access desktop or laptop browser
-                return common.getVisibleSelector(search.colorRefinementLarge,
-                    search.colorRefinementSmall)
-                    .then(mySearchSelector => verifySearchResults(mySearchSelector, searchResultMsg2));
+                return verifySearchResults(search.searchResult, searchResultMsg2);
             });
     });
 
@@ -156,16 +154,12 @@ describe('Category Navigation and multiple refinements -  general product', () =
                         .click(search.resetButton)
                         .then(() => common.waitUntilAjaxCallEnded())
                         .then(() => browser.pause(1000))
-                        .then(() => common.getVisibleSelector(search.colorRefinementLarge,
-                            search.colorRefinementSmall))
-                        .then(mySearchSelector => verifySearchResults(mySearchSelector, searchResultMsg));
+                        .then(() => verifySearchResults(search.searchResult, searchResultMsg));
                 }
                 // access desktop/laptop browsers
                 return browser.click(search.resetButton)
                     .then(() => common.waitUntilAjaxCallEnded())
-                    .then(() => common.getVisibleSelector(search.colorRefinementLarge,
-                        search.colorRefinementSmall))
-                    .then(mySearchSelector => verifySearchResults(mySearchSelector, searchResultMsg));
+                    .then(() => verifySearchResults(search.searchResult, searchResultMsg));
             });
     });
 });
