@@ -2,8 +2,9 @@
 
 var assert = require('chai').assert;
 var ArrayList = require('../../../mocks/dw.util.Collection');
-var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 var toProductMock = require('../../../util');
+
+var ProductLineItemsModel = require('../../../mocks/models/productLineItems');
 
 var productVariantMock = {
     ID: '1234567',
@@ -36,7 +37,7 @@ var productMock = {
 };
 
 var apiBasket = {
-    allProductLineItems: new ArrayList([{
+    productLineItems: new ArrayList([{
         bonusProductLineItem: false,
         gift: false,
         UUID: 'some UUID',
@@ -51,24 +52,16 @@ var apiBasket = {
     }])
 };
 
-describe('cart', function () {
-    var helper = proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/dwHelpers', {
-        'dw/util/ArrayList': ArrayList
-    });
-    var ProductLineItems = proxyquire('../../../../cartridges/app_storefront_base/cartridge/models/productLineItems', {
-        '~/cartridge/scripts/dwHelpers': helper,
-        './productLineItem': function () {}
-    });
-
+describe('ProductLineItems model', function () {
     it('should accept/process a null Basket object', function () {
-        var nullBasket = null;
-        var result = new ProductLineItems(nullBasket);
+        var lineItems = null;
+        var result = new ProductLineItemsModel(lineItems);
         assert.equal(result.items.length, 0);
         assert.equal(result.totalQuantity, 0);
     });
 
     it('should create product line items and get total quantity', function () {
-        var result = new ProductLineItems(apiBasket);
+        var result = new ProductLineItemsModel(apiBasket.productLineItems);
         assert.equal(result.items.length, 1);
         assert.equal(result.totalQuantity, 1);
     });

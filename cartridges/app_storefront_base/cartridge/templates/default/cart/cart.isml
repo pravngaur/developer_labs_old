@@ -4,6 +4,17 @@
         assets.addCss('/css/cart.css');
     </isscript>
 
+    <div class="cart-error-messaging cart-error">
+        <isif condition="${pdict.valid.error}">
+            <div class="alert alert-danger alert-dismissible valid-cart-error fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                ${pdict.valid.message}
+            </div>
+        </isif>
+    </div>
+
     <div class="container">
         <h1 class="page-title">${Resource.msg('title.cart','cart',null)}</h1>
         <div class="row cart-header">
@@ -34,11 +45,19 @@
             </div>
         </div>
     <iselse/>
-        <div class="container cart">
+        <div class="container cart cart-page">
             <div class="row">
                 <!---product cards--->
                 <div class="col-sm-7 col-md-8">
-                    <isinclude template="cart/cartProductCard" />
+                    <isloop items="${pdict.items}" var="lineItem">
+                        <isif condition="${lineItem.productType === 'bundle'}">
+                            <isinclude template="cart/productCard/cartBundleCard" />
+                        <iselse/>
+                            <isinclude template="cart/productCard/cartProductCard" />
+                        </isif>
+                    </isloop>
+
+                    <isinclude template="cart/cartApproachingDiscount" />
                 </div>
                 <!---totals, and checkout actions--->
                 <div class="col-sm-5 col-md-4 totals">
@@ -62,4 +81,7 @@
         <isinclude template="cart/cartRemoveProductModal"/>
         <isinclude template="cart/cartRemoveCouponModal"/>
     </isif>
+    <div class="container">
+        <isslot id="cart-recommendations" description="Recommended products" context="global" />
+    </div>
 </isdecorate>

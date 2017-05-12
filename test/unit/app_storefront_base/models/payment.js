@@ -1,7 +1,6 @@
 'use strict';
 
 var assert = require('chai').assert;
-var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
 var ArrayList = require('../../../mocks/dw.util.Collection');
 
@@ -64,17 +63,33 @@ var paymentInstruments = new ArrayList([
     }
 ]);
 
+function createApiBasket(options) {
+    var basket = {
+        totalGrossPrice: {
+            value: 'some value'
+        }
+    };
+
+    if (options && options.paymentMethods) {
+        basket.paymentMethods = options.paymentMethods;
+    }
+
+    if (options && options.paymentCards) {
+        basket.paymentCards = options.paymentCards;
+    }
+
+    if (options && options.paymentInstruments) {
+        basket.paymentInstruments = options.paymentInstruments;
+    }
+
+    return basket;
+}
+
 describe('Payment', function () {
-    var PaymentModel = null;
-    var helper = proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/dwHelpers', {
-        'dw/util/ArrayList': ArrayList
-    });
-    PaymentModel = proxyquire('../../../../cartridges/app_storefront_base/cartridge/models/payment', {
-        '~/cartridge/scripts/dwHelpers': helper
-    });
+    var PaymentModel = require('../../../mocks/models/payment');
 
     it('should take payment Methods and convert to a plain object ', function () {
-        var result = new PaymentModel(paymentMethods, null, null);
+        var result = new PaymentModel(createApiBasket({ paymentMethods: paymentMethods }), null);
         assert.equal(
             result.applicablePaymentMethods.length, 1
         );
@@ -83,7 +98,7 @@ describe('Payment', function () {
     });
 
     it('should take payment cards and convert to a plain object ', function () {
-        var result = new PaymentModel(null, paymentCards, null);
+        var result = new PaymentModel(createApiBasket({ paymentCards: paymentCards }), null);
         assert.equal(
             result.applicablePaymentCards.length, 4
         );
@@ -94,7 +109,7 @@ describe('Payment', function () {
     });
 
     it('should take payment instruments and convert to a plain object ', function () {
-        var result = new PaymentModel(null, null, paymentInstruments);
+        var result = new PaymentModel(createApiBasket({ paymentInstruments: paymentInstruments }), null);
         assert.equal(
             result.selectedPaymentInstruments.length, 2
         );

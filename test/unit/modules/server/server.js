@@ -20,6 +20,9 @@ function request() {
         host: 'localhost',
         path: 'test',
         querystring: '',
+        locale: {
+            id: ''
+        },
         https: false,
         currentCustomer: {
             raw: {},
@@ -102,7 +105,8 @@ describe('server', function () {
         });
         var exports = server.exports();
         exports.test();
-        assert(render.template.calledWith('test', { name: 'value' }));
+        var result = render.template.calledWith('test', { name: 'value', queryString: '', action: 'test', locale: '' });
+        assert.isTrue(result);
     });
     it('should verify that all events are emitted', function (done) {
         server.get('test', middleware.http, function (req, res, next) {

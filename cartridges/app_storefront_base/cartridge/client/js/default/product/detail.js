@@ -1,62 +1,98 @@
 'use strict';
 var base = require('./base');
 
-module.exports = function () {
-    $('select[class*="select-"]').on('change', function (e) {
-        e.preventDefault();
-        var selectedValueUrl = base.getSelectedValueUrl(e.currentTarget.value, $(this));
+module.exports = {
+    selectAttributes: base.selectAttribute,
 
-        if (selectedValueUrl) {
-            $.spinner().start();
-            $.ajax({
-                url: selectedValueUrl,
-                method: 'GET',
-                success: function (data) {
-                    base.parseJsonResponse(data, 'details');
-                    $.spinner().stop();
-                },
-                error: function () {
-                    $.spinner().stop();
-                }
-            });
-        }
-    });
+    colorAttribute: base.colorAttribute,
 
-    $('[data-attr="color"] a').on('click', function (e) {
-        e.preventDefault();
-        var selectedValueUrl = base.getSelectedValueUrl(e.currentTarget.href, $(this));
+    availability: base.availability,
 
-        $.spinner().start();
-        $.ajax({
-            url: selectedValueUrl,
-            method: 'GET',
-            success: function (data) {
-                base.parseJsonResponse(data, 'details');
-                $.spinner().stop();
-            },
-            error: function () {
-                $.spinner().stop();
+    addToCart: base.addToCart,
+
+    updateAttributesAndDetails: function () {
+        $('body').on('product:statusUpdate', function (e, data) {
+            var $productContainer = $('.product-detail[data-pid="' + data.id + '"]');
+
+            $productContainer.find('.description-and-detail .product-attributes')
+                .empty()
+                .html(data.attributesHtml);
+
+            if (data.shortDescription) {
+                $productContainer.find('.description-and-detail .description')
+                    .removeClass('hidden-xl-down');
+                $productContainer.find('.description-and-detail .description .content')
+                    .empty()
+                    .html(data.shortDescription);
+            } else {
+                $productContainer.find('.description-and-detail .description')
+                    .addClass('hidden-xl-down');
+            }
+
+            if (data.longDescription) {
+                $productContainer.find('.description-and-detail .details')
+                    .removeClass('hidden-xl-down');
+                $productContainer.find('.description-and-detail .details .content')
+                    .empty()
+                    .html(data.longDescription);
+            } else {
+                $productContainer.find('.description-and-detail .details')
+                    .addClass('hidden-xl-down');
             }
         });
-    });
+    },
 
-    $('button.add-to-cart').on('click', function () {
-        var pid = $('.product-id').text();
-        var addToCartUrl = base.getAddToCartUrl(pid);
-
-        if (addToCartUrl) {
+    showSpinner: function () {
+        $('body').on('product:beforeAddToCart product:beforeAttributeSelect', function () {
             $.spinner().start();
-            $.ajax({
-                url: addToCartUrl,
-                method: 'POST',
-                success: function (data) {
-                    base.handlePostCartAdd(data);
-                    $.spinner().stop();
-                },
-                error: function () {
-                    $.spinner().stop();
-                }
+        });
+    },
+    updateAttribute: function () {
+        $('body').on('product:afterAttributeSelect', function (e, response) {
+            if ($('.product-detail>.bundle-items').length) {
+                response.container.data('pid', response.data.product.id);
+                response.container.find('.product-id').text(response.data.product.id);
+            } else {
+                $('.product-id').text(response.data.product.id);
+                $('.product-detail:not(".bundle-item")').data('pid', response.data.product.id);
+            }
+        });
+    },
+    updateAddToCart: function () {
+        $('body').on('product:updateAddToCart', function (e, response) {
+            // update local add to cart (for sets)
+            $('button.add-to-cart', response.$productContainer).attr('disabled',
+                (!response.product.readyToOrder || !response.product.available));
+
+            var enable = $('.product-availability').toArray().every(function (item) {
+                return $(item).data('available') && $(item).data('ready-to-order');
             });
-        }
-    });
+            $('button.add-to-cart-global').attr('disabled', !enable);
+        });
+    },
+    updateAvailability: function () {
+        $('body').on('product:updateAvailability', function (e, response) {
+            $('div.availability', response.$productContainer)
+                .data('ready-to-order', response.product.readyToOrder)
+                .data('available', response.product.available);
+
+            $('.availability-msg', response.$productContainer)
+                .empty().html(response.message);
+
+            if ($('.global-availability').length) {
+                var allAvailable = $('.product-availability').toArray()
+                    .every(function (item) { return $(item).data('available'); });
+
+                var allReady = $('.product-availability').toArray()
+                    .every(function (item) { return $(item).data('ready-to-order'); });
+
+                $('.global-availability')
+                    .data('ready-to-order', allReady)
+                    .data('available', allAvailable);
+
+                $('.global-availability .availability-msg').empty()
+                    .html(allReady ? response.message : response.resources.info_selectforstock);
+            }
+        });
+    }
 };

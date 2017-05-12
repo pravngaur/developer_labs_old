@@ -1,6 +1,7 @@
 var assert = require('chai').assert;
 var request = require('request-promise');
 var config = require('../it.config');
+var jsonHelpers = require('../helpers/jsonUtils');
 
 /**
  * Test case:
@@ -33,6 +34,7 @@ describe('billingForm', function () {
             };
 
             var ExpectedResBody = {
+                locale: 'en_US',
                 address: {
                     firstName: { value: 'John' },
                     lastName: { value: 'Smith' },
@@ -72,8 +74,8 @@ describe('billingForm', function () {
                 error: true,
                 cartError: true,
                 fieldErrors: [],
-                serverErrors: [],
-                redirectUrl: '/s/SiteGenesis/cart?lang=en_US'
+                serverErrors: []
+                /* ,redirectUrl: '/s/SiteGenesis/cart?lang=en_US' */
             };
 
             request.post({
@@ -82,12 +84,14 @@ describe('billingForm', function () {
                 rejectUnauthorized: false,
                 resolveWithFullResponse: true
             }, function responseCallBack(err, httpResponse) {
-                var bodyAsJson = JSON.parse(httpResponse.body);
                 if (err) {
                     throw new Error('Checkout-SubmitPayment request failed with error: ' + err);
                 }
+                // This will fail without SEO urls turned on
+                var bodyAsJson = JSON.parse(httpResponse.body);
+                var strippedBody = jsonHelpers.deleteProperties(bodyAsJson, ['redirectUrl', 'action', 'queryString']);
                 assert.equal(httpResponse.statusCode, 200, 'Expected Checkout-SubmitPayment statusCode to be 200.');
-                assert.deepEqual(bodyAsJson, ExpectedResBody, 'Expecting ' + ExpectedResBody + 'to be equal to ' + bodyAsJson);
+                assert.deepEqual(strippedBody, ExpectedResBody, 'Expecting actual response to be equal match expected response');
                 return done();
             });
         });

@@ -56,7 +56,19 @@ $receipt-spacing: 0.625em;
     }
 }
 
-.product-line-item + .product-line-item::before {
+.product-line-item + .product-line-item::before,
+.multi-shipping + .product-line-item::before {
+    content: "";
+    display: block;
+    border-bottom: 0.063em dashed $horizontal-rule-grey;
+    margin: $receipt-spacing -0.625em;
+
+    @include media-breakpoint-up(lg) {
+        margin: $receipt-spacing -1.225em;
+    }
+}
+
+.shipment-block + .shipment-block::before {
     content: "";
     display: block;
     border-bottom: 0.063em dashed $horizontal-rule-grey;
@@ -123,6 +135,10 @@ $receipt-spacing: 0.625em;
 .summary-details {
     font-size: 0.938em;
     margin-bottom: 1em;
+}
+
+.summary-details .address-summary {
+    margin-bottom: 0.5em;
 }
 
 .summary-section-label {

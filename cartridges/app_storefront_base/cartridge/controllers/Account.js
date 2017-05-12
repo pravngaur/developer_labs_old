@@ -3,13 +3,6 @@
 var server = require('server');
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
-var ShippingMgr = require('dw/order/ShippingMgr');
-var AccountModel = require('~/cartridge/models/account');
-var AddressModel = require('~/cartridge/models/address');
-var OrderModel = require('~/cartridge/models/order');
-var ProductLineItemsModel = require('~/cartridge/models/productLineItems');
-var ShippingModel = require('~/cartridge/models/shipping');
-var TotalsModel = require('~/cartridge/models/totals');
 var Transaction = require('dw/system/Transaction');
 var CustomerMgr = require('dw/customer/CustomerMgr');
 var Resource = require('dw/web/Resource');
@@ -18,6 +11,10 @@ var Mail = require('dw/net/Mail');
 var Template = require('dw/util/Template');
 var Site = require('dw/system/Site');
 var HashMap = require('dw/util/HashMap');
+
+var AccountModel = require('~/cartridge/models/account');
+var AddressModel = require('~/cartridge/models/address');
+var OrderModel = require('~/cartridge/models/order');
 
 /**
  * Creates an account model for the current customer
@@ -43,29 +40,11 @@ function getModel(req) {
     var order = customerOrders.first();
 
     if (order) {
-        var defaultShipment = order.defaultShipment;
-        var ordershippingAdress = defaultShipment.shippingAddress;
-        var shippingAddressModel = new AddressModel(ordershippingAdress);
-        var shipmentShippingModel = ShippingMgr.getShipmentShippingModel(defaultShipment);
-        var shippingModel = new ShippingModel(
-            defaultShipment,
-            shipmentShippingModel,
-            shippingAddressModel
-        );
-        var productLineItemsModel = new ProductLineItemsModel(order);
-        var totalsModel = new TotalsModel(order);
         var config = {
             numberOfLineItems: 'single'
         };
 
-        var modelsObject = {
-            billingModel: null,
-            shippingModel: shippingModel,
-            totalsModel: totalsModel,
-            productLineItemsModel: productLineItemsModel
-        };
-
-        orderModel = new OrderModel(order, modelsObject, config);
+        orderModel = new OrderModel(order, { config: config });
     } else {
         orderModel = null;
     }
@@ -141,7 +120,13 @@ server.get('Show', server.middleware.https, function (req, res, next) {
     if (accountModel) {
         res.render('account/accountdashboard', {
             account: accountModel,
-            accountlanding: true
+            accountlanding: true,
+            breadcrumbs: [
+                {
+                    htmlValue: Resource.msg('global.home', 'common', null),
+                    url: URLUtils.home().toString()
+                }
+            ]
         });
     } else {
         res.redirect(URLUtils.url('Login-Show'));
@@ -279,7 +264,19 @@ server.get('EditProfile', server.middleware.https, function (req, res, next) {
         profileForm.customer.lastname.value = accountModel.profile.lastName;
         profileForm.customer.phone.value = accountModel.profile.phone;
         profileForm.customer.email.value = accountModel.profile.email;
-        res.render('account/profile', { profileForm: profileForm });
+        res.render('account/profile', {
+            profileForm: profileForm,
+            breadcrumbs: [
+                {
+                    htmlValue: Resource.msg('global.home', 'common', null),
+                    url: URLUtils.home().toString()
+                },
+                {
+                    htmlValue: Resource.msg('page.title.myaccount', 'account', null),
+                    url: URLUtils.url('Account-Show').toString()
+                }
+            ]
+        });
     } else {
         res.redirect(URLUtils.url('Login-Show'));
     }
@@ -358,7 +355,19 @@ server.get('EditPassword', server.middleware.https, function (req, res, next) {
     if (accountModel) {
         var profileForm = server.forms.getForm('profile');
         profileForm.clear();
-        res.render('account/password', { profileForm: profileForm });
+        res.render('account/password', {
+            profileForm: profileForm,
+            breadcrumbs: [
+                {
+                    htmlValue: Resource.msg('global.home', 'common', null),
+                    url: URLUtils.home().toString()
+                },
+                {
+                    htmlValue: Resource.msg('page.title.myaccount', 'account', null),
+                    url: URLUtils.url('Account-Show').toString()
+                }
+            ]
+        });
     } else {
         res.redirect(URLUtils.url('Login-Show'));
     }

@@ -8,7 +8,6 @@ var ProductSearchModel = require('dw/catalog/ProductSearchModel');
 var ProductSearch = require('~/cartridge/models/search/productSearch');
 var ProductSortOptions = require('~/cartridge/models/search/productSortOptions');
 
-
 /**
  * Set search configuration values
  *
@@ -46,7 +45,9 @@ server.get('UpdateGrid', function (req, res, next) {
     dwProductSearch.search();
     productSearch = new ProductSearch(dwProductSearch, params);
 
-    res.render('/search/productgrid', { productSearch: productSearch });
+    res.render('/search/productgrid', {
+        productSearch: productSearch
+    });
 
     next();
 });
@@ -60,6 +61,7 @@ server.get('Show', function (req, res, next) {
     var resultsTemplate = isAjax ? 'search/searchresults_nodecorator' : 'search/searchresults';
     var params = search.parseParams(req.querystring);
     var dwProductSearch = new ProductSearchModel();
+    var maxSlots = 4;
 
     dwProductSearch = setupSearch(dwProductSearch, params);
     dwProductSearch.search();
@@ -79,18 +81,49 @@ server.get('Show', function (req, res, next) {
         && categoryTemplate
         && dwProductSearch.category.parent.ID === 'root'
     ) {
-        res.render(categoryTemplate, {
-            productSearch: productSearch,
-            category: dwProductSearch.category
-        });
+        if (isAjax) {
+            res.render(resultsTemplate, {
+                productSearch: productSearch,
+                maxSlots: maxSlots,
+                productSort: productSort
+            });
+        } else {
+            res.render(categoryTemplate, {
+                productSearch: productSearch,
+                maxSlots: maxSlots,
+                category: dwProductSearch.category
+            });
+        }
     } else {
         res.render(resultsTemplate, {
             productSearch: productSearch,
-            productSort: productSort,
-            category: dwProductSearch.category
+            maxSlots: maxSlots,
+            productSort: productSort
         });
     }
 
+    next();
+});
+
+server.get('Content', function (req, res, next) {
+    var ContentSearchModel = require('dw/content/ContentSearchModel');
+    var ContentSearch = require('~/cartridge/models/search/contentSearch');
+    var apiContentSearchModel = new ContentSearchModel();
+    var contentSearch;
+    var contentSearchResult;
+    var queryPhrase = req.querystring.q;
+    var startingPage = Number(req.querystring.startingPage);
+
+    apiContentSearchModel.setRecursiveFolderSearch(true);
+    apiContentSearchModel.setSearchPhrase(req.querystring.q);
+    apiContentSearchModel.search();
+    contentSearchResult = apiContentSearchModel.getContent();
+    var count = Number(apiContentSearchModel.getCount());
+    contentSearch = new ContentSearch(contentSearchResult, count, queryPhrase, startingPage, null);
+
+    res.render('/search/contentgrid', {
+        contentSearch: contentSearch
+    });
     next();
 });
 

@@ -1,5 +1,36 @@
 'use strict';
 
+var Resource = require('dw/web/Resource');
+
+var AddressModel = require('~/cartridge/models/address');
+var BillingModel = require('~/cartridge/models/billing');
+var PaymentModel = require('~/cartridge/models/payment');
+var ProductLineItemsModel = require('~/cartridge/models/productLineItems');
+var TotalsModel = require('~/cartridge/models/totals');
+
+var ShippingHelpers = require('~/cartridge/scripts/checkout/shippingHelpers');
+
+var DEFAULT_MODEL_CONFIG = {
+    numberOfLineItems: '*'
+};
+
+var RESOURCES = {
+    noSelectedPaymentMethod: Resource.msg('error.no.selected.payment.method', 'creditCard', null),
+    cardType: Resource.msg('msg.payment.type.credit', 'confirmation', null),
+    cardEnding: Resource.msg('msg.card.type.ending', 'confirmation', null),
+    shippingMethod: Resource.msg('Shipping Method', 'checkout', null),
+    items: Resource.msg('msg.items', 'checkout', null),
+    item: Resource.msg('msg.item', 'checkout', null),
+    addNewAddress: Resource.msg('msg.add.new.address', 'checkout', null),
+    newAddress: Resource.msg('msg.new.address', 'checkout', null),
+    shipToAddress: Resource.msg('msg.ship.to.address', 'checkout', null),
+    shippingAddresses: Resource.msg('msg.shipping.addresses', 'checkout', null),
+    accountAddresses: Resource.msg('msg.account.addresses', 'checkout', null),
+    shippingTo: Resource.msg('msg.shipping.to', 'checkout', null),
+    pickupInStore: Resource.msg('msg.pickup.in.store', 'checkout', null),
+    addressIncomplete: Resource.msg('heading.address.incomplete', 'checkout', null)
+};
+
 /**
  * Creates an object of information that contains information about the steps
  * @param {dw.order.LineItemCtnr} lineItemContainer - Current users's basket
@@ -35,24 +66,89 @@ function getFirstProductLineItem(productLineItemsModel) {
 }
 
 /**
+ * Returns the matching address ID or UUID for a billing address
+ * @param {dw.order.Basket} basket - line items model
+ * @param {Object} customer - customer model
+ * @return {string|boolean} returns matching ID or false
+*/
+function getAssociatedAddress(basket, customer) {
+    var address = basket.billingAddress;
+    var matchingId;
+    var anAddress;
+
+    if (!address) return false;
+
+    // First loop through all shipping addresses
+    for (var i = 0, ii = basket.shipments.length; i < ii; i++) {
+        anAddress = basket.shipments[i].shippingAddress;
+
+        if (anAddress && anAddress.isEquivalentAddress(address)) {
+            matchingId = basket.shipments[i].UUID;
+            break;
+        }
+    }
+
+    // If we still haven't found a match, then loop through customer addresses to find a match
+    if (!matchingId && customer && customer.addressBook && customer.addressBook.addresses) {
+        for (var j = 0, jj = customer.addressBook.addresses.length; j < jj; j++) {
+            anAddress = customer.addressBook.addresses[j];
+
+            if (anAddress && anAddress.isEquivalentAddress(address)) {
+                matchingId = anAddress.ID;
+                break;
+            }
+        }
+    }
+
+    return matchingId;
+}
+
+/**
  * Order class that represents the current order
  * @param {dw.order.LineItemCtnr} lineItemContainer - Current users's basket/order
- * @param {Object} modelsObject - object with models for building a order model
- * @param {Object} modelsObject.billingModel - The current order's billing information
- * @param {Object} modelsObject.shippingModel - The current order's shipping information
- * @param {Object} modelsObject.totalsModel - The current order's total information
- * @param {Object} modelsObject.productLineItemsModel - The current order's line items
- * @param {Object} config - Object to help configure the orderModel
- * @param {string} config.numberOfLineItems - helps determine the number of lineitems needed
+ * @param {Object} options - The current order's line items
+ * @param {Object} options.config - Object to help configure the orderModel
+ * @param {string} options.config.numberOfLineItems - helps determine the number of lineitems needed
  * @constructor
  */
-function Order(lineItemContainer, modelsObject, config) {
-    if (lineItemContainer) {
+function OrderModel(lineItemContainer, options) {
+    this.resources = RESOURCES;
+
+    if (!lineItemContainer) {
+        this.orderNumber = null;
+        this.creationDate = null;
+        this.orderEmail = null;
+        this.orderStatus = null;
+        this.usingMultiShipping = null;
+        this.shippable = null;
+    } else {
+        var safeOptions = options || {};
+
+        var modelConfig = safeOptions.config || DEFAULT_MODEL_CONFIG;
+        var customer = safeOptions.customer || lineItemContainer.customer;
+        var currencyCode = safeOptions.currencyCode || lineItemContainer.currencyCode;
+        var usingMultiShipping = (safeOptions.usingMultiShipping
+            || lineItemContainer.shipments.length > 1);
+
+        var shippingModels = ShippingHelpers.getShippingModels(lineItemContainer);
+
+        var paymentModel = new PaymentModel(lineItemContainer, customer, currencyCode);
+
+        var billingAddressModel = new AddressModel(lineItemContainer.billingAddress);
+
+        var associatedAddress = getAssociatedAddress(lineItemContainer, customer);
+
+        var billingModel = new BillingModel(billingAddressModel, paymentModel, associatedAddress);
+
+        var productLineItemsModel = new ProductLineItemsModel(lineItemContainer.productLineItems);
+        var totalsModel = new TotalsModel(lineItemContainer);
+
+        this.shippable = safeOptions.shippable || false;
+        this.usingMultiShipping = usingMultiShipping;
         this.orderNumber = Object.hasOwnProperty.call(lineItemContainer, 'orderNo')
             ? lineItemContainer.orderNo
             : null;
-        this.priceTotal = modelsObject.totalsModel
-            ? modelsObject.totalsModel.grandTotal
+        this.priceTotal = totalsModel ? totalsModel.grandTotal
             : null;
         this.creationDate = Object.hasOwnProperty.call(lineItemContainer, 'creationDate')
             ? lineItemContainer.creationDate
@@ -64,28 +160,21 @@ function Order(lineItemContainer, modelsObject, config) {
         this.productQuantityTotal = lineItemContainer.productQuantityTotal ?
                 lineItemContainer.productQuantityTotal : null;
 
-        if (config.numberOfLineItems === '*') {
-            this.totals = modelsObject.totalsModel;
-            this.lineItemTotal = modelsObject.productLineItemsModel
-                ? modelsObject.productLineItemsModel.length
-                : null;
+        if (modelConfig.numberOfLineItems === '*') {
+            this.totals = totalsModel;
+            this.lineItemTotal = productLineItemsModel ? productLineItemsModel.length : null;
             this.steps = lineItemContainer
                 ? getCheckoutStepInformation(lineItemContainer)
                 : null;
-            this.items = modelsObject.productLineItemsModel;
-            this.billing = modelsObject.billingModel;
-            this.shipping = modelsObject.shippingModel;
-        } else if (config.numberOfLineItems === 'single') {
-            this.firstLineItem = getFirstProductLineItem(modelsObject.productLineItemsModel);
-            this.shippedToFirstName = modelsObject.shippingModel.shippingAddress.firstName;
-            this.shippedToLastName = modelsObject.shippingModel.shippingAddress.lastName;
+            this.items = productLineItemsModel;
+            this.billing = billingModel;
+            this.shipping = shippingModels;
+        } else if (modelConfig.numberOfLineItems === 'single') {
+            this.firstLineItem = getFirstProductLineItem(productLineItemsModel);
+            this.shippedToFirstName = shippingModels[0].shippingAddress.firstName;
+            this.shippedToLastName = shippingModels[0].shippingAddress.lastName;
         }
-    } else {
-        this.orderNumber = null;
-        this.creationDate = null;
-        this.orderEmail = null;
-        this.orderStatus = null;
     }
 }
 
-module.exports = Order;
+module.exports = OrderModel;

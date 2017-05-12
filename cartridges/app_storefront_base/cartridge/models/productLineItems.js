@@ -1,7 +1,7 @@
 'use strict';
 
 var helper = require('~/cartridge/scripts/dwHelpers');
-var ProductLineItemModel = require('./productLineItem');
+var ProductFactory = require('../scripts/factories/product');
 
 /**
  * Creates an array of product line items
@@ -11,7 +11,15 @@ var ProductLineItemModel = require('./productLineItem');
  */
 function createProductLineItemsObject(allLineItems) {
     var lineItems = helper.map(allLineItems, function (item) {
-        return new ProductLineItemModel(item.product, null, item.quantity.value, item);
+        var params = {
+            pid: item.product.ID,
+            quantity: item.quantity.value,
+            variables: null,
+            pview: 'productLineItem',
+            lineItem: item
+        };
+
+        return ProductFactory.get(params);
     });
 
     return lineItems;
@@ -36,20 +44,21 @@ function getTotalQuantity(items) {
 /**
  * @constructor
  * @classdesc class that represents a collection of line items and total quantity of
- * items in current basket
+ * items in current basket or per shipment
  *
- * @param {dw.order.Basket} basket Current users's basket
+ * @param {dw.util.Collection<dw.order.ProductLineItem>} productLineItems - the product line items
+ *                                                       of the current line item container
  */
-function productLineItems(basket) {
-    if (basket) {
-        this.items = createProductLineItemsObject(basket.allProductLineItems);
-        this.totalQuantity = getTotalQuantity(basket.allProductLineItems);
+function ProductLineItems(productLineItems) {
+    if (productLineItems) {
+        this.items = createProductLineItemsObject(productLineItems);
+        this.totalQuantity = getTotalQuantity(productLineItems);
     } else {
         this.items = [];
         this.totalQuantity = 0;
     }
 }
 
-productLineItems.getTotalQuantity = getTotalQuantity;
+ProductLineItems.getTotalQuantity = getTotalQuantity;
 
-module.exports = productLineItems;
+module.exports = ProductLineItems;

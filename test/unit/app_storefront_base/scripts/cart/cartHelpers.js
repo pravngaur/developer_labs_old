@@ -20,9 +20,20 @@ var createApiBasket = function (productInBasket) {
         currentBasket.productLineItems = [
             {
                 productID: 'someProductID',
-                quantity: 1,
+                quantity: {
+                    value: 1
+                },
                 setQuantityValue: function () {
                     return;
+                },
+                product: {
+                    availabilityModel: {
+                        inventoryRecord: {
+                            ATS: {
+                                value: 3
+                            }
+                        }
+                    }
                 }
             }
         ];
@@ -42,9 +53,20 @@ describe('cartHelpers', function () {
                 };
             }
         },
+        '~/cartridge/scripts/util/collections': {
+        },
+        '~/cartridge/scripts/checkout/shippingHelpers': {},
         'dw/system/Transaction': {
             wrap: function (item) {
                 item();
+            }
+        },
+        'dw/web/Resource': {
+            msg: function () {
+                return 'someString';
+            },
+            msgf: function () {
+                return 'someString';
             }
         }
     });
@@ -67,5 +89,22 @@ describe('cartHelpers', function () {
         cartHelpers.addProductToCart(currentBasket, 'someProductID', 1);
         assert.isTrue(spy.calledOnce);
         currentBasket.productLineItems[0].setQuantityValue.restore();
+    });
+
+    it('should not add a product to the cart', function () {
+        var currentBasket = createApiBasket(true);
+
+        var result = cartHelpers.addProductToCart(currentBasket, 'someProductID', 4, []);
+        assert.isTrue(result.error);
+        assert.equal(result.message, 'someString');
+    });
+
+    it('should not add a product to the cart when ATS is already in cart', function () {
+        var currentBasket = createApiBasket(true);
+        currentBasket.productLineItems[0].quantity.value = 3;
+
+        var result = cartHelpers.addProductToCart(currentBasket, 'someProductID', 3, []);
+        assert.isTrue(result.error);
+        assert.equal(result.message, 'someString');
     });
 });

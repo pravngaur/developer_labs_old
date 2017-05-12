@@ -22,14 +22,14 @@ module.exports = [{
     name: 'js',
     entry: createJSPath(),
     output: {
-        path: './cartridges/app_storefront_base/cartridge/static/default/js/',
+        path: path.resolve('./cartridges/app_storefront_base/cartridge/static/default/js/'),
         filename: '[name].js'
     },
     module: {
         loaders: [
             {
                 test: /bootstrap(.)*\.js$/,
-                loader: 'babel', // 'babel-loader' is also a valid name to reference
+                loader: 'babel-loader',
                 query: {
                     presets: ['es2015']
                 }

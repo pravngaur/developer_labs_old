@@ -8,7 +8,7 @@
 }
 
 .line-item-attributes {
-    font-size: 0.813em;
+    font-size: 0.813rem;
     margin: 0;
 }
 
@@ -52,4 +52,36 @@
 .product-image {
     width: 5.625em;
     margin-right: 0.625em;
+}
+
+.non-adjusted-price {
+    display: none;
+}
+
+.line-item-promo {
+    color: $brand-success;
+    font-size: 0.813em;
+}
+
+.line-item-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.bundled-line-item + .bundled-line-item {
+    margin-top: 0.625em;
+}
+
+.bundle-includes {
+    font-size: 0.813em;
+    margin-bottom: 0.625em;
+}
+
+.line-item-divider {
+    margin: 0.625em -1.225em 0.625em -1.325em;
+}
+
+.line-item-availability {
+    font-size: 0.813rem;
 }

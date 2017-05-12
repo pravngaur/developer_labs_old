@@ -1,7 +1,72 @@
 'use strict';
 
+var formatMoney = require('dw/util/StringUtils').formatMoney;
+var Collections = require('~/cartridge/scripts/util/collections');
+
+var HookMgr = require('dw/system/HookMgr');
 var URLUtils = require('dw/web/URLUtils');
 var Resource = require('dw/web/Resource');
+var PromotionMgr = require('dw/campaign/PromotionMgr');
+
+var TotalsModel = require('~/cartridge/models/totals');
+var ProductLineItemsModel = require('~/cartridge/models/productLineItems');
+
+var ShippingHelpers = require('~/cartridge/scripts/checkout/shippingHelpers');
+
+/**
+ * Generates an object of approaching discounts
+ * @param {dw.order.Basket} basket - Current users's basket
+ * @param {dw.campaign.DiscountPlan} discountPlan - set of applicable discounts
+ * @returns {Object} an object of approaching discounts
+ */
+function getApproachingDiscounts(basket, discountPlan) {
+    var approachingOrderDiscounts;
+    var approachingShippingDiscounts;
+    var orderDiscountObject;
+    var shippingDiscountObject;
+    var discountObject;
+
+    if (basket && basket.productLineItems) {
+        // TODO: Account for giftCertificateLineItems once gift certificates are implemented
+        approachingOrderDiscounts = discountPlan.getApproachingOrderDiscounts();
+        approachingShippingDiscounts =
+            discountPlan.getApproachingShippingDiscounts(basket.defaultShipment);
+
+        orderDiscountObject =
+            Collections.map(approachingOrderDiscounts, function (approachingOrderDiscount) {
+                return {
+                    discountMsg: Resource.msgf(
+                        'msg.approachingpromo',
+                        'cart',
+                        null,
+                        formatMoney(
+                            approachingOrderDiscount.getDistanceFromConditionThreshold()
+                        ),
+                        approachingOrderDiscount.getDiscount()
+                            .getPromotion().getCalloutMsg()
+                    )
+                };
+            });
+
+        shippingDiscountObject =
+            Collections.map(approachingShippingDiscounts, function (approachingShippingDiscount) {
+                return {
+                    discountMsg: Resource.msgf(
+                        'msg.approachingpromo',
+                        'cart',
+                        null,
+                        formatMoney(
+                            approachingShippingDiscount.getDistanceFromConditionThreshold()
+                        ),
+                        approachingShippingDiscount.getDiscount()
+                            .getPromotion().getCalloutMsg()
+                    )
+                };
+            });
+        discountObject = orderDiscountObject.concat(shippingDiscountObject);
+    }
+    return discountObject;
+}
 
 /**
  * Generates an object of URLs
@@ -19,31 +84,53 @@ function getCartActionUrls() {
 
 /**
  * @constructor
- * @classdesc Cart class that represents the current basket
+ * @classdesc CartModel class that represents the current basket
  *
  * @param {dw.order.Basket} basket - Current users's basket
- * @param {Object} shippingModel - Instance of the shipping model
- * @param {Object} productLineItemModel - Model for a given product line items
- * @param {Object} totalsModel - Model with total costs for the cart
+ * @param {dw.campaign.DiscountPlan} discountPlan - set of applicable discounts
  */
-function cart(basket, shippingModel, productLineItemModel, totalsModel) {
+function CartModel(basket) {
     if (basket !== null) {
+        var shippingModels = ShippingHelpers.getShippingModels(basket);
+        var productLineItemsModel = new ProductLineItemsModel(basket.productLineItems);
+        var totalsModel = new TotalsModel(basket);
+
         this.actionUrls = getCartActionUrls();
         this.numOfShipments = basket.shipments.length;
         this.totals = totalsModel;
 
-        if (shippingModel) {
-            this.shippingMethods = shippingModel.applicableShippingMethods;
-            this.selectedShippingMethod = shippingModel.selectedShippingMethod.ID;
+        if (shippingModels) {
+            this.shipments = shippingModels.map(function (shippingModel) {
+                var result = {};
+                result.shippingMethods = shippingModel.applicableShippingMethods;
+                if (shippingModel.selectedShippingMethod) {
+                    result.selectedShippingMethod = shippingModel.selectedShippingMethod.ID;
+                }
+
+                return result;
+            });
         }
+        var discountPlan = PromotionMgr.getDiscounts(basket);
+        if (discountPlan) {
+            this.approachingDiscounts = getApproachingDiscounts(basket, discountPlan);
+        }
+        this.items = productLineItemsModel.items;
+        this.numItems = productLineItemsModel.totalQuantity;
+        this.valid = HookMgr.callHook(
+            'app.validate.basket',
+            'validateBasket',
+            basket,
+            false
+        );
+    } else {
+        this.items = [];
+        this.numItems = 0;
     }
 
-    this.items = productLineItemModel.items;
-    this.numItems = productLineItemModel.totalQuantity;
     this.resources = {
         numberOfItems: Resource.msgf('label.number.items.in.cart', 'cart', null, this.numItems),
         emptyCartMsg: Resource.msg('info.cart.empty.msg', 'cart', null)
     };
 }
 
-module.exports = cart;
+module.exports = CartModel;

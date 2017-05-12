@@ -7,14 +7,15 @@ describe('Cart: Selecting Shipping Methods', function () {
     this.timeout(5000);
 
     var variantPid1 = '740357440196';
-    var qty1 = 1;
+    var qty1 = '1';
     var variantPid2 = '013742335538';
-    var qty2 = 1;
+    var qty2 = '1';
 
     var cookieJar = request.jar();
     var myRequest = {
         url: '',
         method: 'POST',
+        form: {},
         rejectUnauthorized: false,
         resolveWithFullResponse: true,
         jar: cookieJar
@@ -26,8 +27,13 @@ describe('Cart: Selecting Shipping Methods', function () {
     // values depending on on the selected shipping method and thus they are not included here.
     // Leaving the commented out 'src' property here for reference because it should be included in the
     // 'image' property in the response but the string can not be used for comparison as it because
-    // the path has radomly generated code.
+    // the path has randomly generated code.
     var expectedResponseCommon = {
+        'action': 'Cart-SelectShippingMethod',
+        'valid': {
+            'error': false,
+            'message': null
+        },
         'actionUrls': {
             'removeCouponLineItem': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-RemoveCouponLineItem',
             'removeProductLineItemUrl': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-RemoveProductLineItem',
@@ -35,49 +41,54 @@ describe('Cart: Selecting Shipping Methods', function () {
             'submitCouponCodeUrl': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-AddCoupon',
             'selectShippingUrl': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-SelectShippingMethod'
         },
+        'approachingDiscounts': [],
         'numOfShipments': 1,
-        'shippingMethods': [
+        'shipments': [
             {
-                'description': 'Order received within 7-10 business days',
-                'displayName': 'Ground',
-                'ID': '001',
-                'shippingCost': '$7.99',
-                'estimatedArrivalTime': '7-10 Business Days'
-            },
-            {
-                'description': 'Order received in 2 business days',
-                'displayName': '2-Day Express',
-                'ID': '002',
-                'shippingCost': '$11.99',
-                'estimatedArrivalTime': '2 Business Days'
-            },
-            {
-                'description': 'Order received the next business day',
-                'displayName': 'Overnight',
-                'ID': '003',
-                'shippingCost': '$19.99',
-                'estimatedArrivalTime': 'Next Day'
-            },
-            {
-                'description': 'Store Pickup',
-                'displayName': 'Store Pickup',
-                'ID': '005',
-                'shippingCost': '$0.00',
-                'estimatedArrivalTime': null
-            },
-            {
-                'description': 'Orders shipped outside continental US received in 2-3 business days',
-                'displayName': 'Express',
-                'ID': '012',
-                'shippingCost': '$22.99',
-                'estimatedArrivalTime': '2-3 Business Days'
-            },
-            {
-                'description': 'Order shipped by USPS received within 7-10 business days',
-                'displayName': 'USPS',
-                'ID': '021',
-                'shippingCost': '$7.99',
-                'estimatedArrivalTime': '7-10 Business Days'
+                'shippingMethods': [
+                    {
+                        'description': 'Order received within 7-10 business days',
+                        'displayName': 'Ground',
+                        'ID': '001',
+                        'shippingCost': '$7.99',
+                        'estimatedArrivalTime': '7-10 Business Days'
+                    },
+                    {
+                        'description': 'Order received in 2 business days',
+                        'displayName': '2-Day Express',
+                        'ID': '002',
+                        'shippingCost': '$11.99',
+                        'estimatedArrivalTime': '2 Business Days'
+                    },
+                    {
+                        'description': 'Order received the next business day',
+                        'displayName': 'Overnight',
+                        'ID': '003',
+                        'shippingCost': '$19.99',
+                        'estimatedArrivalTime': 'Next Day'
+                    },
+                    {
+                        'description': 'Store Pickup',
+                        'displayName': 'Store Pickup',
+                        'ID': '005',
+                        'shippingCost': '$0.00',
+                        'estimatedArrivalTime': null
+                    },
+                    {
+                        'description': 'Orders shipped outside continental US received in 2-3 business days',
+                        'displayName': 'Express',
+                        'ID': '012',
+                        'shippingCost': '$22.99',
+                        'estimatedArrivalTime': '2-3 Business Days'
+                    },
+                    {
+                        'description': 'Order shipped by USPS received within 7-10 business days',
+                        'displayName': 'USPS',
+                        'ID': '021',
+                        'shippingCost': '$7.99',
+                        'estimatedArrivalTime': '7-10 Business Days'
+                    }
+                ]
             }
         ],
         'items': [
@@ -101,7 +112,8 @@ describe('Cart: Selecting Shipping Methods', function () {
                     }]
                 },
                 'rating': 1,
-                'attributes': [
+                'renderedPromotions': '',
+                'variationAttributes': [
                     {
                         'attributeId': 'color',
                         'displayName': 'Color',
@@ -126,12 +138,22 @@ describe('Cart: Selecting Shipping Methods', function () {
                     'maxOrderQuantity': 10
                 },
 
-                'priceTotal': '$99.00',
+                'priceTotal': {
+                    'price': '$99.00',
+                    'renderedPrice': '\n\n\n<div class="strike-through\nnon-adjusted-price"\n>\n    null\n</div>\n<div class="pricing line-item-total-price-amount item-total-null">$99.00</div>\n\n'
+                },
+                'promotions': null,
                 'isBonusProductLineItem': false,
                 'isGift': false,
                 'UUID': '',
+                'attributes': null,
+                'availability': {
+                    'inStockDate': null,
+                    'messages': ['In Stock']
+                },
                 'quantity': 1,
-                'isOrderable': true
+                'isOrderable': true,
+                'isAvailableForInStorePickup': false
             },
             {
                 'id': '013742335538',
@@ -153,7 +175,8 @@ describe('Cart: Selecting Shipping Methods', function () {
                     }]
                 },
                 'rating': 0,
-                'attributes': [
+                'renderedPromotions': '',
+                'variationAttributes': [
                     {
                         'attributeId': 'color',
                         'displayName': 'Color',
@@ -165,15 +188,26 @@ describe('Cart: Selecting Shipping Methods', function () {
                     'minOrderQuantity': 1,
                     'maxOrderQuantity': 10
                 },
-                'priceTotal': '$40.00',
+                'priceTotal': {
+                    'price': '$40.00',
+                    'renderedPrice': '\n\n\n<div class="strike-through\nnon-adjusted-price"\n>\n    null\n</div>\n<div class="pricing line-item-total-price-amount item-total-null">$40.00</div>\n\n'
+                },
+                'promotions': null,
                 'isBonusProductLineItem': false,
                 'isGift': false,
                 'UUID': '',
+                'attributes': null,
+                'availability': {
+                    'inStockDate': null,
+                    'messages': ['In Stock']
+                },
                 'quantity': 1,
-                'isOrderable': true
+                'isOrderable': true,
+                'isAvailableForInStorePickup': false
             }
         ],
         'numItems': 2,
+        'locale': 'en_US',
         'resources': {
             'numberOfItems': '2 Items',
             'emptyCartMsg': 'Your Shopping Cart is Empty'
@@ -182,7 +216,12 @@ describe('Cart: Selecting Shipping Methods', function () {
 
     before(function () {
         // ----- adding product #1:
-        myRequest.url = config.baseUrl + '/Cart-AddProduct?pid=' + variantPid1 + '&quantity=' + qty1;
+        myRequest.url = config.baseUrl + '/Cart-AddProduct';
+        myRequest.form = {
+            pid: variantPid1,
+            childPids: [],
+            quantity: qty1
+        };
 
         return request(myRequest)
             .then(function () {
@@ -191,7 +230,11 @@ describe('Cart: Selecting Shipping Methods', function () {
 
             // ----- adding product #2, a different variant of same product 1:
             .then(function () {
-                myRequest.url = config.baseUrl + '/Cart-AddProduct?pid=' + variantPid2 + '&quantity=' + qty2;
+                myRequest.form = {
+                    pid: variantPid2,
+                    childPids: [],
+                    quantity: qty2
+                };
 
                 var cookie = request.cookie(cookieString);
                 cookieJar.setCookie(cookie, myRequest.url);
@@ -199,21 +242,12 @@ describe('Cart: Selecting Shipping Methods', function () {
                 return request(myRequest);
             })
 
-            // ----- select a shipping method in order to get cart content to obtain UUID of the product line item:
-            .then(function () {
-                var shipMethodId = '001';   // 001 = Ground
-
-                myRequest.method = 'GET';
-                myRequest.url = config.baseUrl + '/Cart-SelectShippingMethod?methodID=' + shipMethodId;
-                return request(myRequest);
-            })
-
             // ----- Get UUID information
-            .then(function (response4) {
-                var bodyAsJson = JSON.parse(response4.body);
+            .then(function (response) {
+                var bodyAsJson = JSON.parse(response.body);
 
-                expectedResponseCommon.items[0].UUID = bodyAsJson.items[0].UUID;
-                expectedResponseCommon.items[1].UUID = bodyAsJson.items[1].UUID;
+                expectedResponseCommon.items[0].UUID = bodyAsJson.cart.items[0].UUID;
+                expectedResponseCommon.items[1].UUID = bodyAsJson.cart.items[1].UUID;
             });
     });
 
@@ -237,7 +271,7 @@ describe('Cart: Selecting Shipping Methods', function () {
 
         var shipMethodId = '003';   // 003 = Overnight
 
-        myRequest.method = 'GET';
+        myRequest.method = 'POST';
         myRequest.url = config.baseUrl + '/Cart-SelectShippingMethod?methodID=' + shipMethodId;
 
         return request(myRequest)
@@ -247,11 +281,11 @@ describe('Cart: Selecting Shipping Methods', function () {
                 var bodyAsJson = JSON.parse(response.body);
 
                 // ----- strip out all 'totals', 'selectedShippingMethod' properties from the actual response
-                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod']);
+                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod', 'selected', 'default', 'queryString']);
 
                 assert.deepEqual(actualRespBodyStripped, expectedResponseCommon, 'Actual response not as expected.');
                 assert.deepEqual(bodyAsJson.totals, expectTotals, 'Actual response total not as expected.');
-                assert.equal(bodyAsJson.selectedShippingMethod, shipMethodId, 'Actual response selectedShippingMethod not as expected.');
+                assert.equal(bodyAsJson.shipments[0].selectedShippingMethod, shipMethodId, 'Actual response selectedShippingMethod not as expected.');
             });
     });
 
@@ -275,7 +309,7 @@ describe('Cart: Selecting Shipping Methods', function () {
 
         var shipMethodId = '001';   // 001 = Ground
 
-        myRequest.method = 'GET';
+        myRequest.method = 'POST';
         myRequest.url = config.baseUrl + '/Cart-SelectShippingMethod?methodID=' + shipMethodId;
 
         return request(myRequest)
@@ -285,11 +319,11 @@ describe('Cart: Selecting Shipping Methods', function () {
                 var bodyAsJson = JSON.parse(response.body);
 
                 // ----- strip out all 'totals', 'selectedShippingMethod' properties from the actual response
-                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod']);
+                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod', 'selected', 'default', 'queryString']);
 
                 assert.deepEqual(actualRespBodyStripped, expectedResponseCommon, 'Actual response not as expected.');
                 assert.deepEqual(bodyAsJson.totals, expectTotals, 'Actual response total not as expected.');
-                assert.equal(bodyAsJson.selectedShippingMethod, shipMethodId, 'Actual response selectedShippingMethod not as expected.');
+                assert.equal(bodyAsJson.shipments[0].selectedShippingMethod, shipMethodId, 'Actual response selectedShippingMethod not as expected.');
             });
     });
 
@@ -313,7 +347,7 @@ describe('Cart: Selecting Shipping Methods', function () {
 
         var shipMethodId = '002';   // 002 = 2-Day Express
 
-        myRequest.method = 'GET';
+        myRequest.method = 'POST';
         myRequest.url = config.baseUrl + '/Cart-SelectShippingMethod?methodID=' + shipMethodId;
 
         return request(myRequest)
@@ -324,7 +358,7 @@ describe('Cart: Selecting Shipping Methods', function () {
 
                 assert.deepEqual(bodyAsJson.totals, expectTotals, 'Actual response not as expected.');
                 assert.deepEqual(bodyAsJson.shippingMethods, expectedResponseCommon.shippingMethods, 'Actual response not as expected.');
-                assert.equal(bodyAsJson.selectedShippingMethod, shipMethodId, 'Actual response not as expected.');
+                assert.equal(bodyAsJson.shipments[0].selectedShippingMethod, shipMethodId, 'Actual response not as expected.');
             });
     });
 
@@ -348,7 +382,7 @@ describe('Cart: Selecting Shipping Methods', function () {
 
         var shipMethodId = '005';   // 001 = Store Pickup
 
-        myRequest.method = 'GET';
+        myRequest.method = 'POST';
         myRequest.url = config.baseUrl + '/Cart-SelectShippingMethod?methodID=' + shipMethodId;
 
         return request(myRequest)
@@ -358,11 +392,11 @@ describe('Cart: Selecting Shipping Methods', function () {
                 var bodyAsJson = JSON.parse(response.body);
 
                 // ----- strip out all 'totals', 'selectedShippingMethod' properties from the actual response
-                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod']);
+                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod', 'selected', 'default', 'queryString']);
 
                 assert.deepEqual(actualRespBodyStripped, expectedResponseCommon, 'Actual response not as expected.');
                 assert.deepEqual(bodyAsJson.totals, expectTotals, 'Actual response total not as expected.');
-                assert.equal(bodyAsJson.selectedShippingMethod, shipMethodId, 'Actual response selectedShippingMethod not as expected.');
+                assert.equal(bodyAsJson.shipments[0].selectedShippingMethod, shipMethodId, 'Actual response selectedShippingMethod not as expected.');
             });
     });
 
@@ -386,7 +420,7 @@ describe('Cart: Selecting Shipping Methods', function () {
 
         var shipMethodId = '012';   // 012 = Express
 
-        myRequest.method = 'GET';
+        myRequest.method = 'POST';
         myRequest.url = config.baseUrl + '/Cart-SelectShippingMethod?methodID=' + shipMethodId;
 
         return request(myRequest)
@@ -396,11 +430,11 @@ describe('Cart: Selecting Shipping Methods', function () {
                 var bodyAsJson = JSON.parse(response.body);
 
                 // ----- strip out all 'totals', 'selectedShippingMethod' properties from the actual response
-                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod']);
+                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod', 'selected', 'default', 'queryString']);
 
                 assert.deepEqual(actualRespBodyStripped, expectedResponseCommon, 'Actual response not as expected.');
                 assert.deepEqual(bodyAsJson.totals, expectTotals, 'Actual response total not as expected.');
-                assert.equal(bodyAsJson.selectedShippingMethod, shipMethodId, 'Actual response selectedShippingMethod not as expected.');
+                assert.equal(bodyAsJson.shipments[0].selectedShippingMethod, shipMethodId, 'Actual response selectedShippingMethod not as expected.');
             });
     });
 
@@ -424,7 +458,7 @@ describe('Cart: Selecting Shipping Methods', function () {
 
         var shipMethodId = '021';   // 021 = USPS
 
-        myRequest.method = 'GET';
+        myRequest.method = 'POST';
         myRequest.url = config.baseUrl + '/Cart-SelectShippingMethod?methodID=' + shipMethodId;
 
         return request(myRequest)
@@ -434,11 +468,11 @@ describe('Cart: Selecting Shipping Methods', function () {
                 var bodyAsJson = JSON.parse(response.body);
 
                 // ----- strip out all 'totals', 'selectedShippingMethod' properties from the actual response
-                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod']);
+                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod', 'selected', 'default', 'queryString']);
 
                 assert.deepEqual(actualRespBodyStripped, expectedResponseCommon, 'Actual response not as expected.');
                 assert.deepEqual(bodyAsJson.totals, expectTotals, 'Actual response total not as expected.');
-                assert.equal(bodyAsJson.selectedShippingMethod, shipMethodId, 'Actual response selectedShippingMethod not as expected.');
+                assert.equal(bodyAsJson.shipments[0].selectedShippingMethod, shipMethodId, 'Actual response selectedShippingMethod not as expected.');
             });
     });
 
@@ -463,7 +497,7 @@ describe('Cart: Selecting Shipping Methods', function () {
         var shipMethodId = '004';   // 004 = Super Saver, has excluded Products
         var groundShipMethodId = '001';
 
-        myRequest.method = 'GET';
+        myRequest.method = 'POST';
         myRequest.url = config.baseUrl + '/Cart-SelectShippingMethod?methodID=' + shipMethodId;
 
         return request(myRequest)
@@ -473,11 +507,11 @@ describe('Cart: Selecting Shipping Methods', function () {
                 var bodyAsJson = JSON.parse(response.body);
 
                 // ----- strip out all 'totals', 'selectedShippingMethod' properties from the actual response
-                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod']);
+                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod', 'selected', 'default', 'queryString']);
 
                 assert.deepEqual(actualRespBodyStripped, expectedResponseCommon, 'Actual response not as expected.');
                 assert.deepEqual(bodyAsJson.totals, expectTotals, 'Actual response total not as expected.');
-                assert.equal(bodyAsJson.selectedShippingMethod, groundShipMethodId, 'Actual response selectedShippingMethod not as expected.');
+                assert.equal(bodyAsJson.shipments[0].selectedShippingMethod, groundShipMethodId, 'Actual response selectedShippingMethod not as expected.');
             });
     });
 
@@ -502,7 +536,7 @@ describe('Cart: Selecting Shipping Methods', function () {
         var shipMethodId = '9999';
         var groundShipMethodId = '001';
 
-        myRequest.method = 'GET';
+        myRequest.method = 'POST';
         myRequest.url = config.baseUrl + '/Cart-SelectShippingMethod?methodID=' + shipMethodId;
 
         return request(myRequest)
@@ -512,11 +546,11 @@ describe('Cart: Selecting Shipping Methods', function () {
                 var bodyAsJson = JSON.parse(response.body);
 
                 // ----- strip out all 'totals', 'selectedShippingMethod' properties from the actual response
-                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod']);
+                var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src', 'totals', 'selectedShippingMethod', 'selected', 'default', 'queryString']);
 
                 assert.deepEqual(actualRespBodyStripped, expectedResponseCommon, 'Actual response not as expected.');
                 assert.deepEqual(bodyAsJson.totals, expectTotals, 'Actual response total not as expected.');
-                assert.equal(bodyAsJson.selectedShippingMethod, groundShipMethodId, 'Actual response selectedShippingMethod not as expected.');
+                assert.equal(bodyAsJson.shipments[0].selectedShippingMethod, groundShipMethodId, 'Actual response selectedShippingMethod not as expected.');
             });
     });
 });

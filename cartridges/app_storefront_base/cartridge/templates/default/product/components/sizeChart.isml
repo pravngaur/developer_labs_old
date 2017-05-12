@@ -1,0 +1,1 @@
+<a href="${"#"}" class="size-chart">${Resource.msg('link.size_chart', 'product', null)}</a>

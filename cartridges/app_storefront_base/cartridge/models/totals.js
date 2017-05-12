@@ -1,7 +1,6 @@
 'use strict';
 
 var formatMoney = require('dw/util/StringUtils').formatMoney;
-var money = require('dw/value/Money');
 var helper = require('~/cartridge/scripts/dwHelpers');
 var HashMap = require('dw/util/HashMap');
 var Template = require('dw/util/Template');
@@ -12,7 +11,7 @@ var Template = require('dw/util/Template');
  * @returns {string} the formatted money value
  */
 function getTotals(total) {
-    return !total.available ? '-' : formatMoney(money(total.value, total.currencyCode));
+    return !total.available ? '-' : formatMoney(total);
 }
 
 /**
@@ -28,7 +27,7 @@ function getOrderLevelDiscountTotal(lineItemContainer) {
 
     return {
         value: orderDiscount.value,
-        formatted: formatMoney(money(orderDiscount.value, orderDiscount.currencyCode))
+        formatted: formatMoney(orderDiscount)
     };
 }
 
@@ -45,8 +44,31 @@ function getShippingLevelDiscountTotal(lineItemContainer) {
 
     return {
         value: shippingDiscount.value,
-        formatted: formatMoney(money(shippingDiscount.value, shippingDiscount.currencyCode))
+        formatted: formatMoney(shippingDiscount)
     };
+}
+
+/**
+ * Adds discounts to a discounts object
+ * @param {dw.util.Collection} collection - a collection of price adjustments
+ * @param {Object} discounts - an object of price adjustments
+ * @returns {Object} an object of price adjustments
+ */
+function createDiscountObject(collection, discounts) {
+    var result = discounts;
+    helper.forEach(collection, function (item) {
+        if (!item.basedOnCoupon) {
+            result[item.UUID] = {
+                UUID: item.UUID,
+                lineItemText: item.lineItemText,
+                price: formatMoney(item.price),
+                type: 'promotion',
+                callOutMsg: item.promotion.calloutMsg
+            };
+        }
+    });
+
+    return result;
 }
 
 /**
@@ -72,15 +94,8 @@ function getDiscounts(lineItemContainer) {
         };
     });
 
-    helper.forEach(lineItemContainer.priceAdjustments, function (item) {
-        if (!item.basedOnCoupon) {
-            discounts[item.UUID] = {
-                UUID: item.UUID,
-                type: 'promotion',
-                callOutMsg: item.promotion.calloutMsg
-            };
-        }
-    });
+    discounts = createDiscountObject(lineItemContainer.priceAdjustments, discounts);
+    discounts = createDiscountObject(lineItemContainer.allShippingPriceAdjustments, discounts);
 
     return Object.keys(discounts).map(function (key) {
         return discounts[key];
@@ -114,9 +129,14 @@ function getDiscountsHtml(discounts) {
 function totals(lineItemContainer) {
     if (lineItemContainer) {
         this.subTotal = getTotals(lineItemContainer.getAdjustedMerchandizeTotalPrice(false));
-        this.grandTotal = getTotals(lineItemContainer.totalGrossPrice);
-        this.totalTax = getTotals(lineItemContainer.totalTax);
         this.totalShippingCost = getTotals(lineItemContainer.shippingTotalPrice);
+        if (this.totalShippingCost === '-') {
+            this.totalTax = '-';
+            this.grandTotal = '-';
+        } else {
+            this.grandTotal = getTotals(lineItemContainer.totalGrossPrice);
+            this.totalTax = getTotals(lineItemContainer.totalTax);
+        }
         this.orderLevelDiscountTotal = getOrderLevelDiscountTotal(lineItemContainer);
         this.shippingLevelDiscountTotal = getShippingLevelDiscountTotal(lineItemContainer);
         this.discounts = getDiscounts(lineItemContainer);

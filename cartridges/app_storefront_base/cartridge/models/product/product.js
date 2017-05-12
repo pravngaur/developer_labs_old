@@ -1,8 +1,8 @@
 'use strict';
 
-var ProductBase = require('./productBase').productBase;
-var productBase = require('./productBase');
-var dwHelper = require('~/cartridge/scripts/dwHelpers');
+var base = require('./productBase');
+var ProductBase = base.productBase;
+var URLUtils = require('dw/web/URLUtils');
 
 var DEFAULT_MAX_ORDER_QUANTITY = 9;
 
@@ -32,35 +32,32 @@ function hasRequiredAttrsSelected(variationModel) {
 }
 
 /**
- * @typedef Promotion
- * @type Object
- * @property {string} calloutMsg - Promotion callout message
- * @property {boolean} enabled - Whether Promotion is enabled
- * @property {string} id - Promotion ID
- * @property {string} name - Promotion name
- * @property {string} promotionClass - Type of Promotion (Product, Shipping, or Order)
- * @property {number|null} rank - Promotion rank for sorting purposes
+ * creates a url of the product's selected attributes
+ * @param {dw.catalog.ProductVariationModel} variationModel - The product's variation model
+ * @param {Array} allAttributes - a list of the product's available attributes
+ * @param {string} endPoint - the endpoint to use when generating urls for product attributes
+ * @param {string} id - the current product's id
+ * @returns {string} a url of the product's selected attributes
  */
+function getUrl(variationModel, allAttributes, endPoint, id) {
+    var params = {};
+    var url;
 
-/**
- * Retrieve Promotions that applies to thisProduct
- *
- * @param {dw.util.Collection.<dw.campaign.Promotion>} promotions - Promotions that apply to this
- *                                                                 product
- * @return {Promotion} - JSON representation of Promotion instance
- */
-function getPromotions(promotions) {
-    return dwHelper.map(promotions, function (promotion) {
-        return {
-            calloutMsg: promotion.calloutMsg.markup,
-            details: promotion.details.markup,
-            enabled: promotion.enabled,
-            id: promotion.ID,
-            name: promotion.name,
-            promotionClass: promotion.promotionClass,
-            rank: promotion.rank
-        };
-    });
+    if (allAttributes && variationModel) {
+        allAttributes.forEach(function (attribute) {
+            attribute.values.forEach(function (value) {
+                if (value.selected) {
+                    params[attribute.id] = attribute.value;
+                }
+            });
+        });
+
+        url = variationModel.url('Product-' + endPoint, params).relative().toString();
+    } else {
+        url = URLUtils.url('Product-' + endPoint, 'pid', id).relative().toString();
+    }
+
+    return url;
 }
 
 /**
@@ -75,14 +72,18 @@ function getPromotions(promotions) {
  */
 function FullProduct(product, productVariables, quantity, promotions) {
     this.variationModel = this.getVariationModel(product, productVariables);
-    this.product = this.variationModel.selectedVariant || product;
+    if (this.variationModel) {
+        this.product = this.variationModel.selectedVariant || product;
+    } else {
+        this.product = product;
+    }
     this.imageConfig = {
         types: ['large', 'small'],
         quantity: 'all'
     };
-    this.selectedQuantity = quantity;
+    this.quantity = quantity;
     this.productVariables = productVariables;
-    this.attributeConfig = {
+    this.variationAttributeConfig = {
         attributes: '*',
         endPoint: 'Variation'
     };
@@ -96,14 +97,32 @@ FullProduct.prototype = Object.create(ProductBase.prototype);
 FullProduct.prototype.initialize = function () {
     ProductBase.prototype.initialize.call(this);
     this.available = isAvailable(this.quantity, this.product);
-    this.shortDescription = this.product.shortDescription.markup;
-    this.longDescription = this.product.longDescription.markup;
+    this.shortDescription = this.product.shortDescription
+        ? this.product.shortDescription.markup
+        : null;
+    this.longDescription = this.product.longDescription
+        ? this.product.longDescription.markup
+        : null;
     this.online = this.product.online;
     this.searchable = this.product.searchable;
     this.minOrderQuantity = this.product.minOrderQuantity.value || 1;
     this.maxOrderQuantity = DEFAULT_MAX_ORDER_QUANTITY;
-    this.readyToOrder = hasRequiredAttrsSelected(this.variationModel);
-    this.promotions = getPromotions(this.apiPromotions);
+    this.readyToOrder = this.variationModel
+        ? hasRequiredAttrsSelected(this.variationModel)
+        : true;
+    this.selectedVariantUrl = getUrl(
+        this.variationModel,
+        this.variationAttributes,
+        this.variationAttributeConfig.endPoint,
+        this.id
+    );
+    this.selectedProductUrl = getUrl(
+        this.variationModel,
+        this.variationAttributes,
+        'Show',
+        this.id
+    );
+    this.selectedQuantity = this.quantity ? parseInt(this.quantity, 10) : this.minOrderQuantity;
 };
 
 /**
@@ -117,14 +136,16 @@ FullProduct.prototype.initialize = function () {
  */
 function ProductWrapper(product, productVariables, quantity, promotions) {
     var fullProduct = new FullProduct(product, productVariables, quantity, promotions);
-    var items = ['id', 'productName', 'price', 'productType', 'images', 'rating', 'attributes',
-        'available', 'shortDescription', 'longDescription', 'online', 'searchable',
-        'minOrderQuantity', 'maxOrderQuantity', 'readyToOrder', 'promotions'];
+    var items = ['id', 'productName', 'price', 'productType', 'images', 'rating',
+        'variationAttributes', 'available', 'shortDescription', 'longDescription', 'online',
+        'searchable', 'minOrderQuantity', 'maxOrderQuantity', 'readyToOrder', 'promotions',
+        'attributes', 'availability', 'selectedVariantUrl', 'selectedProductUrl',
+        'selectedQuantity'];
     items.forEach(function (item) {
         this[item] = fullProduct[item];
     }, this);
 }
 
 module.exports = ProductWrapper;
-module.exports.getProductType = productBase.getProductType;
-module.exports.getVariationModel = productBase.getVariationModel;
+module.exports.getProductType = base.getProductType;
+module.exports.getVariationModel = base.getVariationModel;

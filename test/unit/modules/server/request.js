@@ -2,7 +2,6 @@
 
 var Request = require('../../../../cartridges/modules/server/request');
 var assert = require('chai').assert;
-
 var ArrayList = require('../../../mocks/dw.util.Collection');
 
 function createFakeRequest(overrides) {
@@ -68,6 +67,34 @@ function createFakeRequest(overrides) {
             },
             custom: {
                 rememberMe: true
+            },
+            privacyCache: {
+                get: function (key) { // eslint-disable-line no-unused-vars
+                    return this.key;
+                },
+                set: function (value) { // eslint-disable-line no-unused-vars
+                    this.key = value;
+                },
+                key: 'value'
+            },
+            clickStream: {
+                clicks: {
+                    toArray: function () {
+                        return [{
+                            host: 'clickObj.host',
+                            locale: 'clickObj.locale',
+                            path: 'clickObj.path',
+                            pipelineName: 'clickObj-pipelineName',
+                            queryString: 'clickObj.queryString',
+                            referer: 'clickObj.referer',
+                            remoteAddress: 'clickObj.remoteAddress',
+                            timestamp: 'clickObj.timestamp',
+                            url: 'clickObj.url',
+                            userAgent: 'clickObj.userAgent'
+                        }];
+                    }
+                },
+                partial: false
             }
         }
     };
@@ -82,16 +109,18 @@ describe('request', function () {
         var req = new Request(createFakeRequest(), createFakeRequest().customer, createFakeRequest().session);
         assert.isObject(req.querystring);
         assert.equal(Object.keys(req.querystring).length, 0);
+        assert.equal(req.querystring.toString(), '');
     });
     it('should parse simple query string', function () {
         var req = new Request(createFakeRequest({ httpQueryString: 'id=22&name=foo' }), createFakeRequest().customer, createFakeRequest().session);
         assert.isObject(req.querystring);
         assert.equal(req.querystring.id, 22);
         assert.equal(req.querystring.name, 'foo');
+        assert.equal(req.querystring.toString(), 'id=22&name=foo');
     });
     it('should parse query string with variables', function () {
         var req = new Request(createFakeRequest({
-            httpQueryString: 'dwvar_foo_color=1111&dwvar_bar_size=32'
+            httpQueryString: 'dwvar_bar_size=32&dwvar_foo_color=1111'
         }), createFakeRequest().customer, createFakeRequest().session);
         assert.equal(req.querystring.variables.color.id, 'foo');
         assert.equal(req.querystring.variables.color.value, '1111');
@@ -99,6 +128,7 @@ describe('request', function () {
         assert.equal(req.querystring.variables.size.value, '32');
         assert.notProperty(req.querystring, 'dwvar_foo_color');
         assert.notProperty(req.querystring, 'dwvar_bar_size');
+        assert.equal(req.querystring.toString(), 'dwvar_bar_size=32&dwvar_foo_color=1111');
     });
     it('should parse query string with incorrectly formatted variables', function () {
         var req = new Request(createFakeRequest({
@@ -107,6 +137,7 @@ describe('request', function () {
         assert.equal(req.querystring.dwvar_color, '1111');
         assert.equal(req.querystring.dwvar_size, '32');
         assert.notProperty(req.querystring, 'variables');
+        assert.equal(req.querystring.toString(), 'dwvar_color=1111&dwvar_size=32');
     });
     it('should contain correct geolocation object and properties', function () {
         var req = new Request(createFakeRequest(), createFakeRequest().customer, createFakeRequest().session);
@@ -242,5 +273,34 @@ describe('request', function () {
             req.locale.currency,
             expectedResult.session.currency
         );
+    });
+    it('should contain session privacy', function () {
+        var req = new Request(createFakeRequest(), createFakeRequest().customer, createFakeRequest().session);
+        var expectedResult = req.session.raw.privacyCache.get('key');
+        assert.equal(expectedResult, 'value');
+    });
+    it('should contain session clickStream', function () {
+        var req = new Request(createFakeRequest(), createFakeRequest().customer, createFakeRequest().session);
+        var expectedClick = {
+            host: 'clickObj.host',
+            locale: 'clickObj.locale',
+            path: 'clickObj.path',
+            pipelineName: 'clickObj-pipelineName',
+            queryString: 'clickObj.queryString',
+            referer: 'clickObj.referer',
+            remoteAddress: 'clickObj.remoteAddress',
+            timestamp: 'clickObj.timestamp',
+            url: 'clickObj.url',
+            userAgent: 'clickObj.userAgent'
+        };
+
+        var expectedResult = {
+            clicks: [expectedClick],
+            first: expectedClick,
+            last: expectedClick,
+            partial: false
+        };
+
+        assert.deepEqual(req.session.clickStream, expectedResult);
     });
 });

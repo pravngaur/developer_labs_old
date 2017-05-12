@@ -1,37 +1,7 @@
 'use strict';
 
-/**
- * Parse querystring into an object
- * @param {string} querystring - String representing querystring
- * @returns {Object} parsed querystring object
- */
-function parseQueryString(querystring) {
-    var result = {};
-    var pair;
-    var left;
-    if (querystring && querystring.length > 0) {
-        var qs = querystring.substring(querystring.indexOf('?') + 1).split('&');
-        for (var i = qs.length - 1; i >= 0; i--) {
-            pair = qs[i].split('=');
-            left = decodeURIComponent(pair[0]);
-            if (left.indexOf('dwvar_') === 0) {
-                var variableParts = left.split('_');
-                if (variableParts.length === 3) {
-                    if (!result.variables) {
-                        result.variables = {};
-                    }
-                    result.variables[variableParts[2]] = {
-                        id: variableParts[1],
-                        value: decodeURIComponent(pair[1])
-                    };
-                    continue; // eslint-disable-line no-continue
-                }
-            }
-            result[left] = decodeURIComponent(pair[1]);
-        }
-    }
-    return result;
-}
+var QueryString = require('./querystring');
+var SimpleCache = require('./simpleCache');
 
 /**
  *
@@ -81,6 +51,32 @@ function getCurrentLocale(locale, currency) {
 }
 
 /**
+ * Translates global customer's preferredAddress into local object
+ * @param {Object} address - a CustomerAddress or OrderAddress
+ * @returns {Object} local instance of address object
+ */
+function getAddressObject(address) {
+    if (address) {
+        return {
+            address1: address.address1,
+            address2: address.address2,
+            city: address.city,
+            countryCode: {
+                displayValue: address.countryCode.displayValue,
+                value: address.countryCode.value
+            },
+            firstName: address.firstName,
+            lastName: address.lastName,
+            ID: address.ID,
+            phone: address.phone,
+            postalCode: address.postalCode,
+            stateCode: address.stateCode
+        };
+    }
+    return null;
+}
+
+/**
  * Translates global customer object into local object
  * @param {dw.customer.Customer} customer - Global customer object
  * @returns {Object} local instance of customer object
@@ -111,28 +107,17 @@ function getCustomerObject(customer) {
             customerNo: customer.profile.customerNo
         },
         addressBook: {
-            preferredAddress: null
+            preferredAddress: getAddressObject(preferredAddress),
+            addresses: []
         },
         wallet: {
             paymentInstruments: customer.profile.wallet.paymentInstruments
         }
     };
-    if (preferredAddress) {
-        result.addressBook.preferredAddress = {
-            address1: preferredAddress.address1,
-            address2: preferredAddress.address2,
-            city: preferredAddress.city,
-            countryCode: {
-                displayValue: preferredAddress.countryCode.displayValue,
-                value: preferredAddress.countryCode.value
-            },
-            firstName: preferredAddress.firstName,
-            lastName: preferredAddress.lastName,
-            ID: preferredAddress.ID,
-            phone: preferredAddress.phone,
-            postalCode: preferredAddress.postalCode,
-            stateCode: preferredAddress.stateCode
-        };
+    if (customer.addressBook.addresses && customer.addressBook.addresses.length > 0) {
+        for (var i = 0, ii = customer.addressBook.addresses.length; i < ii; i++) {
+            result.addressBook.addresses.push(getAddressObject(customer.addressBook.addresses[i]));
+        }
     }
     return result;
 }
@@ -151,7 +136,7 @@ function Request(request, customer, session) {
     this.host = request.httpHost;
     this.path = request.httpPath;
     this.httpHeaders = request.httpHeaders;
-    this.querystring = parseQueryString(request.httpQueryString);
+    this.querystring = new QueryString(request.httpQueryString);
     this.form = getFormData(request.httpParameterMap, this.querystring);
     this.https = request.isHttpSecure();
     this.locale = getCurrentLocale(request.locale, session.currency);
@@ -164,6 +149,43 @@ function Request(request, customer, session) {
         };
     }
     this.currentCustomer = getCustomerObject(customer);
-}
+    this.setLocale = function (localeID) {
+        return request.setLocale(localeID);
+    };
+    var clickStreamEntries = session.clickStream.clicks.toArray();
+    var clicks = clickStreamEntries.map(function (clickObj) {
+        return {
+            host: clickObj.host,
+            locale: clickObj.locale,
+            path: clickObj.path,
+            pipelineName: clickObj.pipelineName,
+            queryString: clickObj.queryString,
+            referer: clickObj.referer,
+            remoteAddress: clickObj.remoteAddress,
+            timestamp: clickObj.timestamp,
+            url: clickObj.url,
+            userAgent: clickObj.userAgent
+        };
+    });
 
+    this.session = {
+        privacyCache: new SimpleCache(session.privacy),
+        raw: session,
+        clickStream: {
+            clicks: clicks,
+            first: clicks[0],
+            last: clicks[clicks.length - 1],
+            partial: session.clickStream.partial
+        },
+        currency: {
+            currencyCode: session.currency.currencyCode,
+            defaultFractionDigits: session.currency.defaultFractionDigits,
+            name: session.currency.name,
+            symbol: session.currency.symbol
+        },
+        setCurrency: function (value) {
+            session.setCurrency(value);
+        }
+    };
+}
 module.exports = Request;

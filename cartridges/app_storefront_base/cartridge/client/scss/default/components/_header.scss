@@ -1,5 +1,4 @@
 @import "menu";
-@import "search";
 
 $banner-padding: 0.3125em;
 $menu-padding: 0.5em;
@@ -150,4 +149,8 @@ a.normal {
         margin-bottom: 0;
         transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
     }
+}
+
+.dropdown-country-selector {
+    margin-top: -0.0625em;
 }

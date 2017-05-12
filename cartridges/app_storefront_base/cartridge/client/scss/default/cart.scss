@@ -6,6 +6,13 @@
 $spacer: 0.625em;
 $negative-spacer: -0.625rem;
 
+.single-approaching-discount {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    background-color: $white;
+    color: $brand-success;
+    margin-bottom: 0.3125rem;
+}
+
 .checkout-continue {
     position: fixed;
     bottom: 0;
@@ -32,26 +39,15 @@ $negative-spacer: -0.625rem;
 }
 
 .edit-add-to-wishlist {
-    padding-bottom: 0.438em;
-    position: absolute;
-    width: 100%;
-    margin-left: 6.538em;
+    margin-top: auto;
 
     a {
         font-size: 0.813em;
     }
-
-    @include media-breakpoint-down(md) {
-        bottom: 5.313em;
-    }
-
-    @include media-breakpoint-up(lg) {
-        bottom: 0;
-    }
 }
 
 .line-item-attributes {
-    font-size: 0.813em;
+    font-size: 0.813rem;
     margin: 0;
 }
 
@@ -62,8 +58,7 @@ $negative-spacer: -0.625rem;
 }
 
 .line-item-divider {
-    margin-top: $spacer;
-    margin-bottom: $spacer;
+    margin: $spacer $negative-spacer $spacer $negative-spacer;
 }
 
 .line-item-name {
@@ -74,6 +69,7 @@ $negative-spacer: -0.625rem;
     color: $darker-gray;
     font-weight: bold;
     margin-bottom: $spacer;
+    width: 90%;
 }
 
 .line-item-price {
@@ -145,7 +141,7 @@ $negative-spacer: -0.625rem;
         padding: 0;
         position: absolute;
         top: $negative-spacer;
-        right: 1.25rem;
+        right: 0.25rem;
         border: none;
         background-color: $white;
 
@@ -224,4 +220,59 @@ $negative-spacer: -0.625rem;
 
 .coupon-missing-error {
     display: none;
+}
+
+.applied-promotion-discount {
+    color: $brand-success;
+    float: right;
+}
+
+.promotion-information {
+    margin-bottom: 0.625rem;
+    margin-top: 0.625rem;
+}
+
+.line-item-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.bundle-includes {
+    font-size: 0.813em;
+    margin-bottom: 0.625em;
+}
+
+.cart-page .bundled-line-item + .bundled-line-item::before {
+    content: "";
+    display: block;
+    border-bottom: 0.063em dashed $horizontal-rule-grey;
+    margin: 0.625em -0.625em;
+}
+
+.quantity-label {
+    font-size: 0.813em;
+}
+
+.quantity {
+    width: 100%;
+}
+
+.bundle-misc {
+    font-size: 0.813rem;
+
+    @include media-breakpoint-down(md) {
+        margin-bottom: 0.625em;
+    }
+}
+
+.cart-error-messaging.cart-error {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+}
+
+.valid-cart-error {
+    min-height: 6.5rem;
 }

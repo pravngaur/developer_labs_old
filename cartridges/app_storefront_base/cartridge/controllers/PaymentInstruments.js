@@ -120,7 +120,17 @@ server.get('List', function (req, res, next) {
     } else {
         res.render('account/payment/payment', {
             paymentInstruments: getList(req.currentCustomer.wallet.paymentInstruments),
-            actionUrl: URLUtils.url('PaymentInstruments-DeletePayment').toString()
+            actionUrl: URLUtils.url('PaymentInstruments-DeletePayment').toString(),
+            breadcrumbs: [
+                {
+                    htmlValue: Resource.msg('global.home', 'common', null),
+                    url: URLUtils.home().toString()
+                },
+                {
+                    htmlValue: Resource.msg('page.title.myaccount', 'account', null),
+                    url: URLUtils.url('Account-Show').toString()
+                }
+            ]
         });
     }
     next();
@@ -136,7 +146,21 @@ server.get('AddPayment', function (req, res, next) {
     }
     res.render('account/payment/editaddpayment', {
         paymentForm: paymentForm,
-        expirationYears: creditCardExpirationYears
+        expirationYears: creditCardExpirationYears,
+        breadcrumbs: [
+            {
+                htmlValue: Resource.msg('global.home', 'common', null),
+                url: URLUtils.home().toString()
+            },
+            {
+                htmlValue: Resource.msg('page.title.myaccount', 'account', null),
+                url: URLUtils.url('Account-Show').toString()
+            },
+            {
+                htmlValue: Resource.msg('page.heading.payments', 'payment', null),
+                url: URLUtils.url('PaymentInstruments-List').toString()
+            }
+        ]
     });
     next();
 });
@@ -166,19 +190,32 @@ server.get('EditPayment', function (req, res, next) {
     res.render('account/payment/editaddpayment', {
         paymentForm: paymentForm,
         UUID: UUID,
-        expirationYears: creditCardExpirationYears
+        expirationYears: creditCardExpirationYears,
+        breadcrumbs: [
+            {
+                htmlValue: Resource.msg('global.home', 'common', null),
+                url: URLUtils.home().toString()
+            },
+            {
+                htmlValue: Resource.msg('page.title.myaccount', 'account', null),
+                url: URLUtils.url('Account-Show').toString()
+            },
+            {
+                htmlValue: Resource.msg('page.heading.payments', 'payment', null),
+                url: URLUtils.url('PaymentInstruments-List').toString()
+            }
+        ]
     });
     next();
 });
 
 server.post('SavePayment', function (req, res, next) {
-    var creditCardExpirationYears = getExpirationYears();
+    var formErrors = require('~/cartridge/scripts/formErrors');
+
     var UUID = req.querystring.UUID ? req.querystring.UUID : null;
     var paymentForm = server.forms.getForm('creditcard');
     var result = getDetailsObject(paymentForm, UUID);
     var paymentInstruments = req.currentCustomer.wallet.paymentInstruments;
-
-    var isCardInvalid = verifyCard(result, paymentForm, paymentInstruments, UUID);
 
     if (helper.find(paymentInstruments, function (instrument) {
         return instrument.creditCardNumber === result.cardNumber;
@@ -189,7 +226,7 @@ server.post('SavePayment', function (req, res, next) {
             Resource.msg('error.message.creditnumber.exists', 'forms', null);
     }
 
-    if (paymentForm.valid && !isCardInvalid) {
+    if (paymentForm.valid && !verifyCard(result, paymentForm, paymentInstruments, UUID)) {
         res.setViewData(result);
         this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
             var formInfo = res.getViewData();
@@ -217,13 +254,15 @@ server.post('SavePayment', function (req, res, next) {
                     paymentToEdit.setCreditCardExpirationYear(formInfo.expirationYear);
                 });
             }
-            res.redirect(URLUtils.url('PaymentInstruments-List'));
+            res.json({
+                success: true,
+                redirectUrl: URLUtils.url('PaymentInstruments-List').toString()
+            });
         });
     } else {
-        res.render('account/payment/editaddpayment', {
-            paymentForm: paymentForm,
-            UUID: UUID,
-            expirationYears: creditCardExpirationYears
+        res.json({
+            success: false,
+            fields: formErrors(paymentForm)
         });
     }
     next();

@@ -16,6 +16,29 @@ function appendToUrl(url, params) {
 }
 
 /**
+ * Checks whether the basket is valid. if invalid displays error message and disables
+ * checkout button
+ * @param {Object} data - AJAX response from the server
+ */
+function validateBasket(data) {
+    if (data.valid.error === true) {
+        if (data.valid.message) {
+            var errorHtml = '<div class="alert alert-danger alert-dismissible valid-cart-error ' +
+                'fade show" role="alert">' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                '<span aria-hidden="true">&times;</span>' +
+                '</button>' + data.valid.message + '</div>';
+
+            $('.cart-error').append(errorHtml);
+        }
+
+        $('.checkout-btn').addClass('disabled');
+    } else {
+        $('.checkout-btn').removeClass('disabled');
+    }
+}
+
+/**
  * re-renders the order totals and the number of items in the cart
  * @param {Object} data - AJAX response from the server
  */
@@ -36,12 +59,17 @@ function updateCartTotals(data) {
     }
 
     if (data.totals.shippingLevelDiscountTotal.value > 0) {
-        $('.shipping-discount').show();
-        $('.shipping-discount-total').text('- ' +
+        $('.shipping-discount').removeClass('hide-shipping-discount');
+        $('.shipping-discount-total').empty().append('- ' +
             data.totals.shippingLevelDiscountTotal.formatted);
     } else {
-        $('.shipping-discount').hide();
+        $('.shipping-discount').addClass('hide-shipping-discount');
     }
+
+    data.items.forEach(function (item) {
+        $('.item-' + item.UUID).empty().append(item.renderedPromotions);
+        $('.item-total-' + item.UUID).empty().append(item.priceTotal.renderedPrice);
+    });
 }
 
 /**
@@ -49,14 +77,64 @@ function updateCartTotals(data) {
  * @param {Object} message - Error message to display
  */
 function createErrorNotification(message) {
-    $('<div class="alert alert-danger alert-dismissible fade show col-12 ' +
-        'text-center notify" role="alert"> ' +
-        '<button type="button" class="close" data-dismiss="alert" ' +
-        'aria-label="Close"> ' +
-        '<span aria-hidden="true">&times;</span> ' +
-        '</button> ' + message +
-        '</div>'
-    ).appendTo('.page');
+    var errorHtml = '<div class="alert alert-danger alert-dismissible valid-cart-error ' +
+        'fade show" role="alert">' +
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+        '<span aria-hidden="true">&times;</span>' +
+        '</button>' + message + '</div>';
+
+    $('.cart-error').append(errorHtml);
+}
+
+/**
+ * re-renders the approaching discount messages
+ * @param {Object} approachingDiscounts - updated approaching discounts for the cart
+ */
+function updateApproachingDiscounts(approachingDiscounts) {
+    var html = '';
+    $('.approaching-discounts').empty();
+    if (approachingDiscounts.length > 0) {
+        approachingDiscounts.forEach(function (item) {
+            html += '<div class="single-approaching-discount text-center">'
+                + item.discountMsg + '</div>';
+        });
+    }
+    $('.approaching-discounts').append(html);
+}
+
+/**
+ * Updates the availability of a product line item
+ * @param {Object} data - AJAX response from the server
+ * @param {string} uuid - The uuid of the product line item to update
+ */
+function updateAvailability(data, uuid) {
+    var lineItem;
+    var messages = '';
+
+    for (var i = 0; i < data.items.length; i++) {
+        if (data.items[i].UUID === uuid) {
+            lineItem = data.items[i];
+            break;
+        }
+    }
+
+    $('.availability-' + lineItem.UUID).empty();
+
+    if (lineItem.availability) {
+        if (lineItem.availability.messages) {
+            lineItem.availability.messages.forEach(function (message) {
+                messages += '<p class="line-item-attributes">' + message + '</p>';
+            });
+        }
+
+        if (lineItem.availability.inStockDate) {
+            messages += '<p class="line-item-attributes line-item-instock-date">'
+                + lineItem.availability.inStockDate
+                + '</p>';
+        }
+    }
+
+    $('.availability-' + lineItem.UUID).html(messages);
 }
 
 module.exports = function () {
@@ -121,6 +199,8 @@ module.exports = function () {
                     $('.uuid-' + uuid).remove();
                     $('.coupons-and-promos').empty().append(data.totals.discountsHtml);
                     updateCartTotals(data);
+                    updateApproachingDiscounts(data.approachingDiscounts);
+                    validateBasket(data);
                 }
                 $.spinner().stop();
             },
@@ -151,16 +231,12 @@ module.exports = function () {
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                $('.item-total-' + uuid).empty();
                 $('.quantity[data-uuid="' + uuid + '"]').val(quantity);
-                for (var i = 0; i < data.items.length; i++) {
-                    if (data.items[i].UUID === uuid) {
-                        $('.item-total-' + uuid).append(data.items[i].priceTotal);
-                        break;
-                    }
-                }
                 $('.coupons-and-promos').empty().append(data.totals.discountsHtml);
                 updateCartTotals(data);
+                updateApproachingDiscounts(data.approachingDiscounts);
+                updateAvailability(data, uuid);
+                validateBasket(data);
                 $.spinner().stop();
             },
             error: function (err) {
@@ -175,18 +251,22 @@ module.exports = function () {
         var urlParams = {
             methodID: $(this).find(':selected').attr('data-shipping-id')
         };
-        url = appendToUrl(url, urlParams);
+        // url = appendToUrl(url, urlParams);
 
         $('.totals').spinner().start();
         $.ajax({
             url: url,
-            type: 'get',
+            type: 'post',
             dataType: 'json',
+            data: urlParams,
             success: function (data) {
                 if (data.error) {
                     window.location.href = data.redirectUrl;
                 } else {
+                    $('.coupons-and-promos').empty().append(data.totals.discountsHtml);
                     updateCartTotals(data);
+                    updateApproachingDiscounts(data.approachingDiscounts);
+                    validateBasket(data);
                 }
                 $.spinner().stop();
             },
@@ -224,6 +304,8 @@ module.exports = function () {
                 } else {
                     $('.coupons-and-promos').empty().append(data.totals.discountsHtml);
                     updateCartTotals(data);
+                    updateApproachingDiscounts(data.approachingDiscounts);
+                    validateBasket(data);
                 }
                 $('.coupon-code-field').val('');
                 $.spinner().stop();
@@ -273,6 +355,8 @@ module.exports = function () {
             success: function (data) {
                 $('.coupon-uuid-' + uuid).remove();
                 updateCartTotals(data);
+                updateApproachingDiscounts(data.approachingDiscounts);
+                validateBasket(data);
                 $.spinner().stop();
             },
             error: function (err) {

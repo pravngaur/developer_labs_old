@@ -4,7 +4,7 @@ var config = require('../it.config');
 var jsonHelpers = require('../helpers/jsonUtils');
 
 describe('Update quantity for product variant', function () {
-    this.timeout(5000);
+    this.timeout(45000);
 
     var variantPid1 = '701643421084';
     var qty1 = 2;
@@ -28,7 +28,11 @@ describe('Update quantity for product variant', function () {
 
     before(function () {
         // ----- adding product #1:
-        myRequest.url = config.baseUrl + '/Cart-AddProduct?pid=' + variantPid1 + '&quantity=' + qty1;
+        myRequest.url = config.baseUrl + '/Cart-AddProduct';
+        myRequest.form = {
+            pid: variantPid1,
+            quantity: qty1
+        };
 
         return request(myRequest)
             .then(function () {
@@ -37,7 +41,11 @@ describe('Update quantity for product variant', function () {
 
             // ----- adding product #2, a different variant of same product 1:
             .then(function () {
-                myRequest.url = config.baseUrl + '/Cart-AddProduct?pid=' + variantPid2 + '&quantity=' + qty2;
+                myRequest.url = config.baseUrl + '/Cart-AddProduct';
+                myRequest.form = {
+                    pid: variantPid2,
+                    quantity: qty2
+                };
 
                 var cookie = request.cookie(cookieString);
                 cookieJar.setCookie(cookie, myRequest.url);
@@ -47,27 +55,32 @@ describe('Update quantity for product variant', function () {
 
             // ----- adding product #3:
             .then(function () {
-                myRequest.url = config.baseUrl + '/Cart-AddProduct?pid=' + variantPid3 + '&quantity=' + qty3;
+                myRequest.url = config.baseUrl + '/Cart-AddProduct';
+                myRequest.form = {
+                    pid: variantPid3,
+                    quantity: qty3
+                };
                 return request(myRequest);
             })
 
-            // ----- select a shipping method in order to get cart content to obtain UUID of the product line item:
-           .then(function () {
-               var shipMethodId = '001';   // 001 = Ground
+            // ----- select a shipping method. Need to have shipping method so that shipping cost, sales tax,
+            //       and grand total can be calculated
+            .then(function () {
+                var shipMethodId = '001';   // 001 = Ground
 
-               myRequest.method = 'GET';
-               myRequest.url = config.baseUrl + '/Cart-SelectShippingMethod?methodID=' + shipMethodId;
-               return request(myRequest);
-           })
+                myRequest.method = 'POST';
+                myRequest.url = config.baseUrl + '/Cart-SelectShippingMethod?methodID=' + shipMethodId;
+                return request(myRequest);
+            })
 
-           // ----- Get UUID information
-           .then(function (response4) {
-               var bodyAsJson = JSON.parse(response4.body);
+            // ----- Get UUID for each product line items
+            .then(function (response4) {
+                var bodyAsJson = JSON.parse(response4.body);
 
-               prodIdUuidMap[bodyAsJson.items[0].id] = bodyAsJson.items[0].UUID;
-               prodIdUuidMap[bodyAsJson.items[1].id] = bodyAsJson.items[1].UUID;
-               prodIdUuidMap[bodyAsJson.items[2].id] = bodyAsJson.items[2].UUID;
-           });
+                prodIdUuidMap[bodyAsJson.items[0].id] = bodyAsJson.items[0].UUID;
+                prodIdUuidMap[bodyAsJson.items[1].id] = bodyAsJson.items[1].UUID;
+                prodIdUuidMap[bodyAsJson.items[2].id] = bodyAsJson.items[2].UUID;
+            });
     });
 
     it('should update line item quantity', function () {
@@ -84,6 +97,11 @@ describe('Update quantity for product variant', function () {
         var variantUuid3 = prodIdUuidMap[variantPid3];
 
         var expectedUpdateRep = {
+            'action': 'Cart-UpdateQuantity',
+            'valid': {
+                'error': false,
+                'message': null
+            },
             'actionUrls': {
                 'removeCouponLineItem': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-RemoveCouponLineItem',
                 'removeProductLineItemUrl': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-RemoveProductLineItem',
@@ -91,6 +109,7 @@ describe('Update quantity for product variant', function () {
                 'submitCouponCodeUrl': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-AddCoupon',
                 'selectShippingUrl': '/on/demandware.store/Sites-SiteGenesis-Site/en_US/Cart-SelectShippingMethod'
             },
+            'approachingDiscounts': [],
             'numOfShipments': 1,
             'totals': {
                 'subTotal': '$257.97',
@@ -108,51 +127,67 @@ describe('Update quantity for product variant', function () {
                 'discounts': [],
                 'discountsHtml': '\n'
             },
-            'shippingMethods': [
+            'shipments': [
                 {
-                    'description': 'Order received within 7-10 business days',
-                    'displayName': 'Ground',
-                    'ID': '001',
-                    'shippingCost': '$9.99',
-                    'estimatedArrivalTime': '7-10 Business Days'
-                },
-                {
-                    'description': 'Order received in 2 business days',
-                    'displayName': '2-Day Express',
-                    'ID': '002',
-                    'shippingCost': '$15.99',
-                    'estimatedArrivalTime': '2 Business Days'
-                },
-                {
-                    'description': 'Order received the next business day',
-                    'displayName': 'Overnight',
-                    'ID': '003',
-                    'shippingCost': '$21.99',
-                    'estimatedArrivalTime': 'Next Day'
-                },
-                {
-                    'description': 'Store Pickup',
-                    'displayName': 'Store Pickup',
-                    'ID': '005',
-                    'shippingCost': '$0.00',
-                    'estimatedArrivalTime': null
-                },
-                {
-                    'description': 'Orders shipped outside continental US received in 2-3 business days',
-                    'displayName': 'Express',
-                    'ID': '012',
-                    'shippingCost': '$28.99',
-                    'estimatedArrivalTime': '2-3 Business Days'
-                },
-                {
-                    'description': 'Order shipped by USPS received within 7-10 business days',
-                    'displayName': 'USPS',
-                    'ID': '021',
-                    'shippingCost': '$9.99',
-                    'estimatedArrivalTime': '7-10 Business Days'
+                    'selectedShippingMethod': '001',
+                    'shippingMethods': [
+                        {
+                            'description': 'Order received within 7-10 business days',
+                            'displayName': 'Ground',
+                            'ID': '001',
+                            'shippingCost': '$9.99',
+                            'estimatedArrivalTime': '7-10 Business Days',
+                            'default': true,
+                            'selected': true
+                        },
+                        {
+                            'description': 'Order received in 2 business days',
+                            'displayName': '2-Day Express',
+                            'ID': '002',
+                            'shippingCost': '$15.99',
+                            'estimatedArrivalTime': '2 Business Days',
+                            'default': false,
+                            'selected': false
+                        },
+                        {
+                            'description': 'Order received the next business day',
+                            'displayName': 'Overnight',
+                            'ID': '003',
+                            'shippingCost': '$21.99',
+                            'estimatedArrivalTime': 'Next Day',
+                            'default': false,
+                            'selected': false
+                        },
+                        {
+                            'description': 'Store Pickup',
+                            'displayName': 'Store Pickup',
+                            'ID': '005',
+                            'shippingCost': '$0.00',
+                            'estimatedArrivalTime': null,
+                            'default': false,
+                            'selected': false
+                        },
+                        {
+                            'description': 'Orders shipped outside continental US received in 2-3 business days',
+                            'displayName': 'Express',
+                            'ID': '012',
+                            'shippingCost': '$28.99',
+                            'estimatedArrivalTime': '2-3 Business Days',
+                            'default': false,
+                            'selected': false
+                        },
+                        {
+                            'description': 'Order shipped by USPS received within 7-10 business days',
+                            'displayName': 'USPS',
+                            'ID': '021',
+                            'shippingCost': '$9.99',
+                            'estimatedArrivalTime': '7-10 Business Days',
+                            'default': false,
+                            'selected': false
+                        }
+                    ]
                 }
             ],
-            'selectedShippingMethod': '001',
             'items': [
                 {
                     'id': variantPid1,
@@ -174,7 +209,8 @@ describe('Update quantity for product variant', function () {
                         }]
                     },
                     'rating': 1,
-                    'attributes': [
+                    'renderedPromotions': '',
+                    'variationAttributes': [
                         {
                             'attributeId': 'color',
                             'displayName': 'Color',
@@ -192,12 +228,22 @@ describe('Update quantity for product variant', function () {
                         'minOrderQuantity': 1,
                         'maxOrderQuantity': 10
                     },
-                    'priceTotal': '$48.00',
+                    'priceTotal': {
+                        'price': '$48.00',
+                        'renderedPrice': '\n\n\n<div class="strike-through\nnon-adjusted-price"\n>\n    null\n</div>\n<div class="pricing line-item-total-price-amount item-total-null">$48.00</div>\n\n'
+                    },
                     'isBonusProductLineItem': false,
+                    'promotions': null,
                     'isGift': false,
                     'UUID': variantUuid1,
+                    'attributes': null,
+                    'availability': {
+                        'inStockDate': null,
+                        'messages': ['In Stock']
+                    },
                     'quantity': expectQty1,
-                    'isOrderable': true
+                    'isOrderable': true,
+                    'isAvailableForInStorePickup': false
                 },
                 {
                     'id': variantPid2,
@@ -219,7 +265,8 @@ describe('Update quantity for product variant', function () {
                         }]
                     },
                     'rating': 3,
-                    'attributes': [
+                    'renderedPromotions': '',
+                    'variationAttributes': [
                         {
                             'attributeId': 'color',
                             'displayName': 'Color',
@@ -237,12 +284,22 @@ describe('Update quantity for product variant', function () {
                         'minOrderQuantity': 1,
                         'maxOrderQuantity': 10
                     },
-                    'priceTotal': '$120.00',
+                    'priceTotal': {
+                        'price': '$120.00',
+                        'renderedPrice': '\n\n\n<div class="strike-through\nnon-adjusted-price"\n>\n    null\n</div>\n<div class="pricing line-item-total-price-amount item-total-null">$120.00</div>\n\n'
+                    },
                     'isBonusProductLineItem': false,
+                    'promotions': null,
                     'isGift': false,
                     'UUID': variantUuid2,
+                    'attributes': null,
+                    'availability': {
+                        'inStockDate': null,
+                        'messages': ['In Stock']
+                    },
                     'quantity': expectQty2,
-                    'isOrderable': true
+                    'isOrderable': true,
+                    'isAvailableForInStorePickup': false
                 },
                 {
                     'id': variantPid3,
@@ -268,7 +325,8 @@ describe('Update quantity for product variant', function () {
                         }]
                     },
                     'rating': 0,
-                    'attributes': [
+                    'renderedPromotions': '',
+                    'variationAttributes': [
                         {
                             'attributeId': 'color',
                             'displayName': 'Color',
@@ -281,15 +339,26 @@ describe('Update quantity for product variant', function () {
                         'maxOrderQuantity': 10
                     },
 
-                    'priceTotal': '$89.97',
+                    'priceTotal': {
+                        'price': '$89.97',
+                        'renderedPrice': '\n\n\n<div class="strike-through\nnon-adjusted-price"\n>\n    null\n</div>\n<div class="pricing line-item-total-price-amount item-total-null">$89.97</div>\n\n'
+                    },
                     'isBonusProductLineItem': false,
+                    'promotions': null,
                     'isGift': false,
                     'UUID': variantUuid3,
+                    'attributes': null,
+                    'availability': {
+                        'inStockDate': null,
+                        'messages': ['In Stock']
+                    },
                     'quantity': expectQty3,
-                    'isOrderable': true
+                    'isOrderable': true,
+                    'isAvailableForInStorePickup': false
                 }
             ],
             'numItems': newTotal,
+            'locale': 'en_US',
             'resources': {
                 'numberOfItems': newTotal + ' Items',
                 'emptyCartMsg': 'Your Shopping Cart is Empty'
@@ -306,8 +375,7 @@ describe('Update quantity for product variant', function () {
             .then(function (updateRsp) {
                 assert.equal(updateRsp.statusCode, 200, 'Expected statusCode to be 200.');
 
-                var bodyAsJson = JSON.parse(updateRsp.body);
-
+                var bodyAsJson = jsonHelpers.deleteProperties(JSON.parse(updateRsp.body), ['queryString']);
                 // ----- strip out all 'src' properties from the actual response
                 var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['src']);
 
