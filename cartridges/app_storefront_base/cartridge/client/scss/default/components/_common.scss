@@ -17,6 +17,11 @@ header ~ .container a:not(.btn-primary) {
     color: $blue;
 }
 
+header ~ .container .description-and-detail a {
+    color: $black;
+    text-decoration: none;
+}
+
 .hide-order-discount {
     display: none;
 }

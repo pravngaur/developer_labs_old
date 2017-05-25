@@ -17,11 +17,11 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <!-- Product Images Carousel -->
                 <isinclude template="product/components/image_carousel" />
-                
+
                 <div class="col-12 col-sm-6">
                     <!-- Product Name -->
                     <h3 class="product-name hidden-sm-down">
@@ -29,9 +29,9 @@
                             ${product.productName}
                         </a>
                     </h3>
-                    
+
                     <isinclude template="product/components/pidRating" />
-                    
+
                     <div class="row justify-content-center">
                         <div class="col-md-10 col-12">
                             <isinclude template="product/components/mainAttributes" />
@@ -53,8 +53,8 @@
                                     <isinclude template="/product/components/quantity" />
                                 </div>
                             </isif>
-                        </div>                
-        
+                        </div>
+
 
                         <!-- Size Chart -->
                         <isif condition="${product.variationAttributes}">
@@ -62,17 +62,17 @@
                                 <isinclude template="product/components/sizeChart" />
                             </span>
                         </isif>
-                        
+
                         <!-- Availability -->
                         <div class="col-12 col-md-10 availability product-availability" data-ready-to-order="${product.readyToOrder}" data-available="${product.available}">
                             <isinclude template="product/components/availability" />
                         </div>
-        
+
                         <!-- Applicable Promotions -->
                         <div class="col-md-10 col-12 promotions">
                            <isinclude template="product/components/promotions" />
                        </div>
-        
+
                        <div class="col-md-10 col-12">
                            <hr>
                        </div>
@@ -83,14 +83,14 @@
                                <isset name="price" value="${product.price}" scope="page" />
                                <isinclude template="product/components/pricing/main" />
                            </div>
-        
+
                            <!-- Cart and [Optionally] Apple Pay -->
                            <isinclude template="product/components/addToCartProduct" />
                        </div>
-                       
+
                        <!-- Add to Wishlist and Social Sharing Icons -->
                        <isinclude template="product/components/wishlistSocial" />
-        
+
                     </div>
                 </div>
             </div>
@@ -100,22 +100,26 @@
             <div class="row product-attributes collapsable-xs">
                 <isinclude template="/product/components/attributes" />
             </div>
-    
+
             <isif condition="${product.attributes && product.attributes.length}">
                 <hr class="hidden-sm-up">
             </isif>
-    
+
             <div class="row description collapsable-xs <isif condition="${!product.shortDescription}">hidden-xl-down</isif>">
-                <h2 class="col-sm-12 col-md-4 col-lg-3 title">${Resource.msg('label.description', 'product', null)}</h2>
+                <h2 class="col-sm-12 col-md-4 col-lg-3">
+                  <a class="title" href="#">${Resource.msg('label.description', 'product', null)}</a>
+                </h2>
                 <isinclude template="/product/components/description" />
             </div>
-    
+
             <isif condition="${product.longDescription}">
                 <hr class="hidden-sm-up">
             </isif>
-    
+
             <div class="row details collapsable-xs <isif condition="${!product.longDescription}">hidden-xl-down</isif>">
-                <h2 class="col-sm-12 col-md-4 col-lg-3 title">${Resource.msg('label.details', 'product', null)}</h2>
+                <h2 class="col-sm-12 col-md-4 col-lg-3">
+                  <a class="title" href="#">${Resource.msg('label.details', 'product', null)}</a>
+                </h2>
                 <isinclude template="/product/components/details" />
             </div>
         </div>
