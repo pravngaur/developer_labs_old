@@ -15,7 +15,7 @@ Your feedback on the ease-of-use and limitations of this new architecture is inv
 *Note:* you can't upload the modules folder through Studio.
 You can upload via dwupload command. For example:
 
-dwupload --hostname sbox01-realm1-company.demandware.net --username admin --password "Grid is a-4letter-word!" --cartridge modules
+dwupload --hostname sbox01-realm1-mycompany.demandware.net --username admin --password "MyPassword" --cartridge modules
 
 3 Upload the `app_storefront_base` and `applepay` cartridges via Studio or use a WebDAV client to upload it to the WebDAV Cartridge location.
 
@@ -175,7 +175,7 @@ npm run test:functional:sauce -- --baseUrl http://sbox01-realm1-company.demandwa
 ```
 
 ```
-npm run test:functional:sauce -- --baseUrl http://sbox01-realm1-company.demandware.net/s/SiteGenesis --sauce --client appium â€”name appiumIntegrationBranch
+npm run test:functional:sauce -- --baseUrl http://sbox01-realm1-company.demandware.net/s/SiteGenesis --sauce --client appium —name appiumIntegrationBranch
 ```
 
 **Note:** To run both browsers with one command :
