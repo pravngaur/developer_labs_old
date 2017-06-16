@@ -47,6 +47,7 @@ module.exports = {
             $.spinner().start();
         });
     },
+
     updateAttribute: function () {
         $('body').on('product:afterAttributeSelect', function (e, response) {
             if ($('.product-detail>.bundle-items').length) {
@@ -61,6 +62,7 @@ module.exports = {
             }
         });
     },
+
     updateAddToCart: function () {
         $('body').on('product:updateAddToCart', function (e, response) {
             // update local add to cart (for sets)
@@ -73,6 +75,7 @@ module.exports = {
             $('button.add-to-cart-global').attr('disabled', !enable);
         });
     },
+
     updateAvailability: function () {
         $('body').on('product:updateAvailability', function (e, response) {
             $('div.availability', response.$productContainer)

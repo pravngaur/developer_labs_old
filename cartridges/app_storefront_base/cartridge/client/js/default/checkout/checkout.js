@@ -1,5 +1,9 @@
 'use strict';
 
+var addressHelpers = require('./addressHelpers');
+var billingHelpers = require('./billing');
+var shippingHelpers = require('./shipping');
+
 /**
  * Create the jQuery Checkout Plugin.
  *
@@ -44,18 +48,6 @@
         ];
 
         /**
-         * Populate the Billing Address Summary View
-         * @param {string} parentSelector - the top level DOM selector for a unique address summary
-         * @param {Object} address - the address data
-         */
-        function populateAddressSummary(parentSelector, address) {
-            $.each(address, function (attr) {
-                var val = address[attr];
-                $('.' + attr, parentSelector).text(val || '');
-            });
-        }
-
-        /**
          * updates the totals summary
          * @param {Array} totals - the totals data
          */
@@ -79,410 +71,6 @@
             } else {
                 $('.shipping-discount').hide();
             }
-        }
-
-        /**
-         * returns a formed <option /> element
-         * @param {Object} shipping - the shipping object (shipment model)
-         * @param {boolean} selected - current shipping is selected (for PLI)
-         * @param {order} order - the Order model
-         * @param {Object} [options] - options
-         * @returns {Object} - the jQuery / DOMElement
-         */
-        function optionValueForAddress(shipping, selected, order, options) {
-            var safeOptions = options || {};
-            var isBilling = safeOptions.type && safeOptions.type === 'billing';
-            var className = safeOptions.className || '';
-            var isSelected = selected;
-            var isNew = !shipping;
-            if (typeof shipping === 'string') {
-                return $('<option class="' + className + '" disabled>' + shipping + '</option>');
-            }
-            var safeShipping = shipping || {};
-            var shippingAddress = safeShipping.shippingAddress || {};
-
-            if (isBilling && isNew && !order.billing.matchingAddressId) {
-                shippingAddress = order.billing.billingAddress.address || {};
-                isNew = false;
-                isSelected = true;
-                safeShipping.UUID = 'manual-entry';
-            }
-
-            var uuid = safeShipping.UUID ? safeShipping.UUID : 'new';
-            var optionEl = $('<option class="' + className + '" />');
-            optionEl.val(uuid);
-
-            var title;
-
-            if (isNew) {
-                title = order.resources.addNewAddress;
-            } else {
-                title = [];
-                if (shippingAddress.firstName) {
-                    title.push(shippingAddress.firstName);
-                }
-                if (shippingAddress.lastName) {
-                    title.push(shippingAddress.lastName);
-                }
-                if (shippingAddress.address1) {
-                    title.push(shippingAddress.address1);
-                }
-                if (shippingAddress.address2) {
-                    title.push(shippingAddress.address2);
-                }
-                if (shippingAddress.city) {
-                    if (shippingAddress.state) {
-                        title.push(shippingAddress.city + ',');
-                    } else {
-                        title.push(shippingAddress.city);
-                    }
-                }
-                if (shippingAddress.stateCode) {
-                    title.push(shippingAddress.stateCode);
-                }
-                if (shippingAddress.postalCode) {
-                    title.push(shippingAddress.postalCode);
-                }
-                if (!isBilling && safeShipping.selectedShippingMethod) {
-                    title.push('-');
-                    title.push(safeShipping.selectedShippingMethod.displayName);
-                }
-
-                if (title.length > 2) {
-                    title = title.join(' ');
-                } else {
-                    title = order.resources.newAddress;
-                }
-            }
-            optionEl.text(title);
-
-            var keyMap = {
-                'data-first-name': 'firstName',
-                'data-last-name': 'lastName',
-                'data-address1': 'address1',
-                'data-address2': 'address2',
-                'data-city': 'city',
-                'data-state-code': 'stateCode',
-                'data-postal-code': 'postalCode',
-                'data-country-code': 'countryCode',
-                'data-phone': 'phone'
-            };
-            $.each(keyMap, function (key) {
-                var mappedKey = keyMap[key];
-                var mappedValue = shippingAddress[mappedKey];
-                // In case of country code
-                if (mappedValue && typeof mappedValue === 'object') {
-                    mappedValue = mappedValue.value;
-                }
-
-                optionEl.attr(key, mappedValue || '');
-            });
-
-            if (isSelected) {
-                optionEl.attr('selected', true);
-            }
-
-            return optionEl;
-        }
-
-        /**
-         * updates the shipping address selector within shipping forms
-         * @param {Object} productLineItem - the productLineItem model
-         * @param {Object} shipping - the shipping (shipment model) model
-         * @param {Object} order - the order model
-         * @param {Object} customer - the customer model
-         */
-        function updateShippingAddressSelector(productLineItem, shipping, order, customer) {
-            var uuidEl = $('input[value=' + productLineItem.UUID + ']');
-            var shippings = order.shipping;
-
-            var form;
-            var $shippingAddressSelector;
-            var hasSelectedAddress = false;
-
-            if (uuidEl && uuidEl.length > 0) {
-                form = uuidEl[0].form;
-                $shippingAddressSelector = $('.addressSelector', form);
-            }
-
-            if ($shippingAddressSelector && $shippingAddressSelector.length === 1) {
-                $shippingAddressSelector.empty();
-                // Add New Address option
-                $shippingAddressSelector.append(optionValueForAddress(null, false, order));
-                // Separator -
-                $shippingAddressSelector.append(optionValueForAddress(
-                    order.resources.shippingAddresses, false, order, { className: 'multi-shipping' }
-                ));
-                shippings.forEach(function (aShipping) {
-                    var isSelected = shipping.UUID === aShipping.UUID;
-                    hasSelectedAddress = hasSelectedAddress || isSelected;
-                    $shippingAddressSelector.append(
-                        optionValueForAddress(aShipping, isSelected, order,
-                                { className: 'multi-shipping' }
-                        )
-                    );
-                });
-                if (customer.addresses && customer.addresses.length > 0) {
-                    $shippingAddressSelector.append(optionValueForAddress(
-                            order.resources.accountAddresses, false, order));
-                    customer.addresses.forEach(function (address) {
-                        var isSelected = shipping.matchingAddressId === address.ID;
-                        $shippingAddressSelector.append(
-                            optionValueForAddress({
-                                UUID: 'ab_' + address.ID,
-                                shippingAddress: address
-                            }, isSelected, order)
-                        );
-                    });
-                }
-            }
-
-            if (!hasSelectedAddress) {
-                // show
-                $(form).addClass('hide-details');
-            } else {
-                $(form).removeClass('hide-details');
-            }
-        }
-
-        /**
-         * updates the billing address selector within billing forms
-         * @param {Object} order - the order model
-         * @param {Object} customer - the customer model
-         */
-        function updateBillingAddressSelector(order, customer) {
-            var shippings = order.shipping;
-
-            var form = $('form[name$=billing]')[0];
-            var $billingAddressSelector = $('.addressSelector', form);
-            var hasSelectedAddress = false;
-
-            if ($billingAddressSelector && $billingAddressSelector.length === 1) {
-                $billingAddressSelector.empty();
-                // Add New Address option
-                $billingAddressSelector.append(optionValueForAddress(null, false, order,
-                    { type: 'billing' }));
-
-                // Separator -
-                $billingAddressSelector.append(optionValueForAddress(
-                    order.resources.shippingAddresses, false, order, {
-                        // className: 'multi-shipping',
-                        type: 'billing'
-                    }
-                ));
-                shippings.forEach(function (aShipping) {
-                    var isSelected = order.billing.matchingAddressId === aShipping.UUID;
-                    hasSelectedAddress = hasSelectedAddress || isSelected;
-                    // Shipping Address option
-                    $billingAddressSelector.append(
-                        optionValueForAddress(aShipping, isSelected, order,
-                            {
-                                // className: 'multi-shipping',
-                                type: 'billing'
-                            }
-                        )
-                    );
-                });
-                if (customer.addresses && customer.addresses.length > 0) {
-                    $billingAddressSelector.append(optionValueForAddress(
-                            order.resources.accountAddresses, false, order));
-                    customer.addresses.forEach(function (address) {
-                        var isSelected = order.billing.matchingAddressId === address.ID;
-                        hasSelectedAddress = hasSelectedAddress || isSelected;
-                        // Customer Address option
-                        $billingAddressSelector.append(
-                            optionValueForAddress({
-                                UUID: 'ab_' + address.ID,
-                                shippingAddress: address
-                            }, isSelected, order, { type: 'billing' })
-                        );
-                    });
-                }
-            }
-
-            if (hasSelectedAddress || !order.billing.matchingAddressId) {
-                // show
-                $(form).attr('data-address-mode', 'edit');
-            } else {
-                $(form).attr('data-address-mode', 'new');
-            }
-        }
-
-        /**
-         * returns address properties from a UI form
-         * @param {Form} form - the Form element
-         * @returns {Object} - a JSON object with all values
-         */
-        function getAddressFieldsFromUI(form) {
-            var address = {
-                firstName: $('input[name$=_firstName]', form).val(),
-                lastName: $('input[name$=_lastName]', form).val(),
-                address1: $('input[name$=_address1]', form).val(),
-                address2: $('input[name$=_address2]', form).val(),
-                city: $('input[name$=_city]', form).val(),
-                postalCode: $('input[name$=_postalCode]', form).val(),
-                stateCode: $('select[name$=_stateCode]', form).val(),
-                countryCode: $('select[name$=_countryCode]', form).val(),
-                phone: $('input[name$=_phone]', form).val()
-            };
-            return address;
-        }
-
-        /**
-         * updates the shipping address form values within shipping forms
-         * @param {Object} shipping - the shipping (shipment model) model
-         */
-        function updateShippingAddressFormValues(shipping) {
-            if (!shipping.shippingAddress) return;
-
-            $('input[value=' + shipping.UUID + ']').each(function (formIndex, el) {
-                var form = el.form;
-                if (!form) return;
-
-                $('input[name$=_firstName]', form).val(shipping.shippingAddress.firstName);
-                $('input[name$=_lastName]', form).val(shipping.shippingAddress.lastName);
-                $('input[name$=_address1]', form).val(shipping.shippingAddress.address1);
-                $('input[name$=_address2]', form).val(shipping.shippingAddress.address2);
-                $('input[name$=_city]', form).val(shipping.shippingAddress.city);
-                $('input[name$=_postalCode]', form).val(shipping.shippingAddress.postalCode);
-                $('select[name$=_stateCode]', form).val(shipping.shippingAddress.stateCode);
-                $('select[name$=_countryCode]', form).val(shipping.shippingAddress.countryCode);
-                $('input[name$=_phone]', form).val(shipping.shippingAddress.phone);
-            });
-        }
-
-        /**
-         * updates the billing address form values within payment forms
-         * @param {Object} order - the order model
-         */
-        function updateBillingAddressFormValues(order) {
-            var billing = order.billing;
-            if (!billing.billingAddress || !billing.billingAddress.address) return;
-
-            var form = $('form[name=dwfrm_billing]');
-            if (!form) return;
-
-            $('input[name$=_firstName]', form).val(billing.billingAddress.address.firstName);
-            $('input[name$=_lastName]', form).val(billing.billingAddress.address.lastName);
-            $('input[name$=_address1]', form).val(billing.billingAddress.address.address1);
-            $('input[name$=_address2]', form).val(billing.billingAddress.address.address2);
-            $('input[name$=_city]', form).val(billing.billingAddress.address.city);
-            $('input[name$=_postalCode]', form).val(billing.billingAddress.address.postalCode);
-            $('select[name$=_stateCode]', form).val(billing.billingAddress.address.stateCode);
-            $('select[name$=_countryCode]', form).val(billing.billingAddress.address.countryCode);
-            $('input[name$=_phone]', form).val(billing.billingAddress.address.phone);
-            $('input[name$=_email]', form).val(order.orderEmail);
-
-            if (billing.payment && billing.payment.selectedPaymentInstruments
-                    && billing.payment.selectedPaymentInstruments.length > 0) {
-                var instrument = billing.payment.selectedPaymentInstruments[0];
-                $('select[name$=expirationMonth]', form).val(instrument.expirationMonth);
-                $('select[name$=expirationYear]', form).val(instrument.expirationYear);
-                // Force security code and card number clear
-                $('input[name$=securityCode]', form).val('');
-                $('input[name$=cardNumber]', form).val('');
-            }
-        }
-
-        /**
-         * clears the billing address form values
-         */
-        function clearBillingAddressFormValues() {
-            updateBillingAddressFormValues({
-                billing: {
-                    billingAddress: {
-                        address: {}
-                    }
-                }
-            });
-        }
-
-        /**
-         * updates the shipping method radio buttons within shipping forms
-         * @param {Object} shipping - the shipping (shipment model) model
-         */
-        function updateShippingMethods(shipping) {
-            var uuidEl = $('input[value=' + shipping.UUID + ']');
-            if (uuidEl && uuidEl.length > 0) {
-                $.each(uuidEl, function (shipmentIndex, el) {
-                    var form = el.form;
-                    if (!form) return;
-
-                    var $shippingMethodList = $('.shipping-method-list', form);
-
-                    if ($shippingMethodList && $shippingMethodList.length > 0) {
-                        $shippingMethodList.empty();
-
-                        var shippingMethods = shipping.applicableShippingMethods;
-                        var shippingMethodFormID = form.name + '_shippingAddress_shippingMethodID';
-                        var selected = shipping.selectedShippingMethod || {};
-
-                        //
-                        // Create the new rows for each shipping method
-                        //
-                        $.each(shippingMethods, function (methodIndex, shippingMethod) {
-                            var tmpl = $('#shipping-method-template').clone();
-                            // set input
-                            $('input', tmpl)
-                                .prop('id', 'shippingMethod-' + shippingMethod.ID)
-                                .prop('name', shippingMethodFormID)
-                                .prop('value', shippingMethod.ID)
-                                .attr('checked', shippingMethod.ID === selected.ID);
-
-                            // set shipping method name
-                            $('.display-name', tmpl).text(shippingMethod.displayName);
-
-                            // set or hide arrival time
-                            if (shippingMethod.estimatedArrivalTime) {
-                                $('.arrival-time', tmpl)
-                                    .text('(' + shippingMethod.estimatedArrivalTime + ')')
-                                    .show();
-                            }
-
-                            // set shipping cost
-                            $('.shipping-cost', tmpl).text(shippingMethod.shippingCost);
-
-                            $shippingMethodList.append(tmpl.html());
-                        });
-                    }
-                });
-            }
-        }
-
-        /**
-         * updates the order shipping summary for an order shipment model
-         * @param {Object} shipping - the shipping (shipment model) model
-         */
-        function updateShippingSummaryInformation(shipping) {
-            $('[data-shipment-summary=' + shipping.UUID + ']').each(function (i, el) {
-                var $container = $(el);
-                var $addressContainer = $container.find('.address-summary');
-                var $shippingPhone = $container.find('.shipping-phone');
-                var $methodTitle = $container.find('.shipping-method-title');
-                var $methodArrivalTime = $container.find('.shipping-method-arrival-time');
-                var $methodPrice = $container.find('.shipping-method-price');
-
-                var address = shipping.shippingAddress;
-                var selectedShippingMethod = shipping.selectedShippingMethod;
-
-                populateAddressSummary($addressContainer, address);
-
-                if (address && address.phone) {
-                    $shippingPhone.text(address.phone);
-                }
-
-                if (selectedShippingMethod) {
-                    $methodTitle.text(selectedShippingMethod.displayName);
-                    if (selectedShippingMethod.estimatedArrivalTime) {
-                        $methodArrivalTime.text(
-                            '( ' + selectedShippingMethod.estimatedArrivalTime + ' )'
-                        );
-                    } else {
-                        $methodArrivalTime.empty();
-                    }
-                    $methodPrice.text(selectedShippingMethod.shippingCost);
-                }
-            });
         }
 
         /**
@@ -522,6 +110,7 @@
                 } else {
                     $('h5 > span').text('');
                 }
+
                 if (shipping.shippingAddress
                         && shipping.shippingAddress.firstName
                         && shipping.shippingAddress.lastName
@@ -529,14 +118,17 @@
                         && shipping.shippingAddress.city
                         && shipping.shippingAddress.stateCode
                         && shipping.shippingAddress.countryCode
-                        && shipping.shippingAddress.phone) {
+                        && shipping.shippingAddress.phone
+                ) {
                     $('.ship-to-name', tmpl).text(nameLine);
                     $('.ship-to-address1', tmpl).text(address1Line);
                     $('.ship-to-address2', tmpl).text(address2Line);
                     $('.ship-to-city', tmpl).text(address.city);
+
                     if (address.stateCode) {
                         $('.ship-to-st', tmpl).text(address.stateCode);
                     }
+
                     $('.ship-to-zip', tmpl).text(address.postalCode);
                     $('.ship-to-phone', tmpl).text(phoneLine);
 
@@ -570,188 +162,6 @@
         }
 
         /**
-         * Update the read-only portion of the shipment display (per PLI)
-         * @param {Object} productLineItem - the productLineItem model
-         * @param {Object} shipping - the shipping (shipment model) model
-         * @param {Object} order - the order model
-         * @param {Object} [options] - options for updating PLI summary info
-         * @param {Object} [options.keepOpen] - if true, prevent changing PLI view mode to 'view'
-         */
-        function updatePLIShippingSummaryInformation(productLineItem, shipping, order, options) {
-            var keepOpen = options && options.keepOpen;
-
-            var $pli = $('input[value=' + productLineItem.UUID + ']');
-            var form = $pli && $pli.length > 0 ? $pli[0].form : null;
-
-            if (!form) return;
-
-            var $viewBlock = $('.view-address-block', form);
-
-            var hasAddress = !!shipping.shippingAddress;
-            var address = shipping.shippingAddress || {};
-            var selectedMethod = shipping.selectedShippingMethod;
-
-            var nameLine = address.firstName ? address.firstName + ' ' : '';
-            if (address.lastName) nameLine += address.lastName;
-
-            var address1Line = address.address1;
-            var address2Line = address.address2;
-
-            var phoneLine = address.phone;
-
-            var shippingCost = selectedMethod ? selectedMethod.shippingCost : '';
-            var methodNameLine = selectedMethod ? selectedMethod.displayName : '';
-            var methodArrivalTime = selectedMethod && selectedMethod.estimatedArrivalTime
-                ? '(' + selectedMethod.estimatedArrivalTime + ')'
-                : '';
-
-            var tmpl = $('#pli-shipping-summary-template').clone();
-
-            $('.ship-to-name', tmpl).text(nameLine);
-            $('.ship-to-address1', tmpl).text(address1Line);
-            $('.ship-to-address2', tmpl).text(address2Line);
-            $('.ship-to-city', tmpl).text(address.city);
-            if (address.stateCode) {
-                $('.ship-to-st', tmpl).text(address.stateCode);
-            }
-            $('.ship-to-zip', tmpl).text(address.postalCode);
-            $('.ship-to-phone', tmpl).text(phoneLine);
-
-            if (!address2Line) {
-                $('.ship-to-address2', tmpl).hide();
-            }
-
-            if (!phoneLine) {
-                $('.ship-to-phone', tmpl).hide();
-            }
-
-            if (shipping.selectedShippingMethod) {
-                $('.display-name', tmpl).text(methodNameLine);
-                $('.arrival-time', tmpl).text(methodArrivalTime);
-                $('.price', tmpl).text(shippingCost);
-            }
-
-            $viewBlock.html(tmpl.html());
-
-            if (!keepOpen) {
-                if (hasAddress) {
-                    $viewBlock.parents('[data-view-mode]').attr('data-view-mode', 'view');
-                } else {
-                    $viewBlock.parents('[data-view-mode]').attr('data-view-mode', 'enter');
-                }
-            }
-        }
-
-        /**
-         * Update the hidden form values that associate shipping info with product line items
-         * @param {Object} productLineItem - the productLineItem model
-         * @param {Object} shipping - the shipping (shipment model) model
-         */
-        function updateProductLineItemShipmentUUIDs(productLineItem, shipping) {
-            $('input[value=' + productLineItem.UUID + ']').each(function (key, pli) {
-                var form = pli.form;
-                $('[name=shipmentUUID]', form).val(shipping.UUID);
-                $('[name=originalShipmentUUID]', form).val(shipping.UUID);
-            });
-        }
-
-        /**
-         * Update the shipping UI for a single shipping info (shipment model)
-         * @param {Object} shipping - the shipping (shipment model) model
-         * @param {Object} order - the order/basket model
-         * @param {Object} customer - the customer model
-         * @param {Object} [options] - options for updating PLI summary info
-         * @param {Object} [options.keepOpen] - if true, prevent changing PLI view mode to 'view'
-         */
-        function updateShippingInformation(shipping, order, customer, options) {
-            // First copy over shipmentUUIDs from response, to each PLI form
-            order.shipping.forEach(function (aShipping) {
-                aShipping.productLineItems.items.forEach(function (productLineItem) {
-                    updateProductLineItemShipmentUUIDs(productLineItem, aShipping);
-                });
-            });
-
-            // Now update shipping information, based on those associations
-            updateShippingMethods(shipping);
-            updateShippingAddressFormValues(shipping);
-            updateShippingSummaryInformation(shipping, order);
-
-            // And update the PLI-based summary information as well
-            shipping.productLineItems.items.forEach(function (productLineItem) {
-                updateShippingAddressSelector(productLineItem, shipping, order, customer);
-                updatePLIShippingSummaryInformation(productLineItem, shipping, order, options);
-            });
-        }
-
-        /**
-         * Update the checkout state (single vs. multi-ship) via Session.privacy cache
-         * @param {Object} order - checkout model to use as basis of new truth
-         */
-        function updateMultiShipInformation(order) {
-            var $checkoutMain = $('#checkout-main');
-            var $checkbox = $('[name=usingMultiShipping]');
-            var $submitShippingBtn = $('button.submit-shipping');
-
-            if (order.usingMultiShipping) {
-                $checkoutMain.addClass('multi-ship');
-                $checkbox.prop('checked', true);
-            } else {
-                $checkoutMain.removeClass('multi-ship');
-                $checkbox.prop('checked', null);
-                $submitShippingBtn.prop('disabled', null);
-            }
-        }
-
-        /**
-         * Updates the billing information in checkout, based on the supplied order model
-         * @param {Object} order - checkout model to use as basis of new truth
-         * @param {Object} customer - customer model to use as basis of new truth
-         * @param {Object} [options] - options
-         */
-        function updateBillingInformation(order, customer) {
-            updateBillingAddressSelector(order, customer);
-
-            // update billing address form
-            updateBillingAddressFormValues(order);
-
-            // update billing address summary
-            populateAddressSummary('.billing .address-summary',
-                order.billing.billingAddress.address);
-
-            // update billing parts of order summary
-            $('.order-summary-email').text(order.orderEmail);
-
-            if (order.billing.billingAddress.address) {
-                $('.order-summary-phone').text(order.billing.billingAddress.address.phone);
-            }
-        }
-
-        /**
-         * Updates the payment information in checkout, based on the supplied order model
-         * @param {Object} order - checkout model to use as basis of new truth
-         */
-        function updatePaymentInformation(order) {
-            // update payment details
-            var $paymentSummary = $('.payment-details');
-            var htmlToAppend = '';
-
-            if (order.billing.payment && order.billing.payment.selectedPaymentInstruments
-                    && order.billing.payment.selectedPaymentInstruments.length > 0) {
-                htmlToAppend += '<span>' + order.resources.cardType + ' '
-                    + order.billing.payment.selectedPaymentInstruments[0].type
-                    + '</span><div>'
-                    + order.billing.payment.selectedPaymentInstruments[0].maskedCreditCardNumber
-                    + '</div><div><span>'
-                    + order.resources.cardEnding + ' '
-                    + order.billing.payment.selectedPaymentInstruments[0].expirationMonth
-                    + '/' + order.billing.payment.selectedPaymentInstruments[0].expirationYear
-                    + '</span></div>';
-            }
-
-            $paymentSummary.empty().append(htmlToAppend);
-        }
-
-        /**
          * Update the entire Checkout UI, based on current state (order model)
          * @param {Object} order - checkout model
          * @param {Object} customer - customer model
@@ -759,31 +169,15 @@
          * @param {Object} [options.keepOpen] - if true, prevent changing PLI view mode to 'view'
          */
         function updateCheckoutView(order, customer, options) {
-            updateMultiShipInformation(order);
+            shippingHelpers.updateMultiShipInformation(order);
             updateTotals(order.totals);
             order.shipping.forEach(function (shipping) {
-                updateShippingInformation(shipping, order, customer, options);
+                shippingHelpers.updateShippingInformation(shipping, order, customer, options);
             });
-            updateBillingInformation(order, customer, options);
-            updatePaymentInformation(order, options);
+            billingHelpers.updateBillingInformation(order, customer, options);
+            billingHelpers.updatePaymentInformation(order, options);
             updateOrderProductSummaryInformation(order, options);
         }
-
-//        /**
-//         * Updates the shipping method in the shipping summary
-//         * @param {Object} shippingMethod - the selected shipping method data
-//         * @param {Array} totals - the totals data
-//         */
-//        function updateShippingSummary(shippingMethod, totals) {
-//            $('.shipping-method-title').text(shippingMethod.displayName);
-//            if (shippingMethod.estimatedArrivalTime) {
-//                $('.shipping-method-arrival-time')
-//                    .text('(' + shippingMethod.estimatedArrivalTime + ')');
-//            } else {
-//                $('.shipping-method-arrival-time').empty();
-//            }
-//            $('.shipping-method-price').text(totals.totalShippingCost);
-//        }
 
         /**
          * Display error messages and highlight form fields with errors.
@@ -802,16 +196,6 @@
         }
 
         /**
-         * Clear the form errors.
-         * @param {string} parentSelector - the parent form selector.
-         */
-        function clearPreviousErrors(parentSelector) {
-            $('*[name]', parentSelector)
-                .parents('.form-group').removeClass('has-danger');
-            $('.error-message').hide();
-        }
-
-        /**
          * Handle response from the server for valid or invalid form fields.
          * @param {Object} defer - the deferred object which will resolve on success or reject.
          * @param {Object} data - the response data with the invalid form fields or
@@ -820,7 +204,7 @@
         function shippingFormResponse(defer, data) {
             var isMultiShip = $('#checkout-main').hasClass('multi-ship');
             var formSelector = isMultiShip ?
-                    '.multi-shipping .active form' : '.single-shipping .active form';
+                '.multi-shipping .active form' : '.single-shipping .active form';
 
             // highlight fields with errors
             if (data.error) {
@@ -847,6 +231,17 @@
             }
         }
 
+
+        /**
+         * Clear the form errors.
+         * @param {string} parentSelector - the parent form selector.
+         */
+        function clearPreviousErrors(parentSelector) {
+            $('*[name]', parentSelector)
+                .parents('.form-group').removeClass('has-danger');
+            $('.error-message').hide();
+        }
+
         /**
          * Updates the URL to determine stage
          * @param {number} currentStage - The current stage the user is currently on in the checkout
@@ -861,18 +256,6 @@
                 + '#'
                 + checkoutStages[currentStage]
             );
-        }
-
-        /**
-         * clears the credit card form
-         */
-        function clearCreditCardForm() {
-            $('input[name$="_cardNumber"]').val('');
-            $('select[name$="_expirationMonth"]').val('');
-            $('select[name$="_expirationYear"]').val('');
-            $('input[name$="_securityCode"]').val('');
-            $('input[name$="_email"]').val('');
-            $('input[name$="_phone"]').val('');
         }
 
         //
@@ -1076,7 +459,7 @@
                 setTimeout(function () {
                     var $shippingForm = $(event.currentTarget.form);
                     var $shippingMethodList = $shippingForm.find('.shipping-method-list');
-                    var urlParams = getAddressFieldsFromUI($shippingForm);
+                    var urlParams = addressHelpers.getAddressFieldsFromUI($shippingForm);
                     var shipmentUUID = $shippingForm.find('[name=shipmentUUID]').val();
                     var url = $shippingMethodList.data('actionUrl');
                     urlParams.shipmentUUID = shipmentUUID;
@@ -1111,21 +494,6 @@
                     .indexOf($('.data-checkout-stage').data('checkout-stage'));
                 $(plugin).attr('data-checkout-stage', checkoutStages[members.currentStage]);
 
-                /**
-                 * Toggle "billing same as shipping"
-                 * There are two input checkboxes to keep in sync here and one billing form.
-                 *
-                 * If the the billing isn't the same as shipping the billing form should be visible
-                 * in the payment state of checkout.
-                 * @param {boolean} checked - is the checkbox checked
-                 */
-                var toggleBillingForm = function (checked) {
-                    $('input[name$="_shippingAddressUseAsBillingAddress"]').prop(
-                        'checked',
-                        checked
-                    );
-                };
-
                 var toggleMultiShip = function (checked) {
                     var url = $('.shipping-nav form').attr('action');
                     $.spinner().start();
@@ -1150,14 +518,6 @@
                     });
                 };
 
-                //
-                // Handle "Billing Same as Shipping" Checkbox
-                //
-                $('input[name$="_shippingAddressUseAsBillingAddress"]').on('change', function () {
-                    var checked = this.checked;
-                    toggleBillingForm(checked);
-                });
-
                 $('input[name="usingMultiShipping"]').on('change', function () {
                     var checked = this.checked;
                     toggleMultiShip(checked);
@@ -1175,7 +535,7 @@
                     var $el = $(this);
                     if ($el.parents('#dwfrm_billing').length > 0) {
                         // Handle billing address case
-                        clearBillingAddressFormValues();
+                        billingHelpers.clearBillingAddressFormValues();
                         var $option = $($el.parents('form').find('.addressSelector option')[0]);
                         $option.attr('value', 'new');
                         $option.text('New Address');
@@ -1356,7 +716,7 @@
                             }
 
                             $rootEl.attr('data-view-mode', 'edit');
-                            var addressInfo = getAddressFieldsFromUI(form);
+                            var addressInfo = addressHelpers.getAddressFieldsFromUI(form);
                             var savedState = {
                                 UUID: $('input[name=shipmentUUID]', form).val(),
                                 shippingAddress: addressInfo
@@ -1368,7 +728,9 @@
                             // Should clear out changes / restore previous state
                             var restoreState = $rootEl.data('saved-state');
                             if (restoreState) {
-                                updateShippingAddressFormValues(JSON.parse(restoreState));
+                                shippingHelpers.updateShippingAddressFormValues(
+                                    JSON.parse(restoreState)
+                                );
                             }
                             $(form).attr('data-address-mode', 'edit');
                             break;
@@ -1415,12 +777,6 @@
                             // console.error('unhandled tab target: ' + testTarget);
                     }
                     return false;
-                });
-                //
-                // Handle Payment option selection
-                //
-                $('input[name$="paymentMethod"]', plugin).on('change', function () {
-                    $('.credit-card-form').toggle($(this).val() === 'CREDIT_CARD');
                 });
 
                 //
@@ -1491,7 +847,7 @@
                     var $shippingForm = $(this).parents('form');
                     var methodID = $(':checked', this).val();
                     var shipmentUUID = $shippingForm.find('[name=shipmentUUID]').val();
-                    var urlParams = getAddressFieldsFromUI($shippingForm);
+                    var urlParams = addressHelpers.getAddressFieldsFromUI($shippingForm);
                     urlParams.shipmentUUID = shipmentUUID;
                     urlParams.methodID = methodID;
 
@@ -1516,12 +872,14 @@
                      });
                 });
 
+                // billingHelpers.paymentMethodSelect
                 $('.payment-options .nav-item').on('click', function (e) {
                     e.preventDefault();
                     var methodID = $(this).data('method-id');
                     $('.payment-information').data('payment-method-id', methodID);
                 });
 
+                // billingHelpers.selectSavedPaymentInstrument
                 $(document).on('click', '.saved-payment-instrument', function (e) {
                     e.preventDefault();
                     $('.saved-payment-security-code').val('');
@@ -1535,18 +893,20 @@
                         '.security-code-input').removeClass('checkout-hidden');
                 });
 
+                // billingHelpers.addNewPayment
                 $('.btn.add-payment').on('click', function (e) {
                     e.preventDefault();
                     $('.payment-information').data('is-new-payment', true);
-                    clearCreditCardForm();
+                    billingHelpers.clearCreditCardForm();
                     $('.credit-card-form').removeClass('checkout-hidden');
                     $('.user-payment-instruments').addClass('checkout-hidden');
                 });
 
+                // billingHelpers.cancelAddNewPayment
                 $('.cancel-new-payment').on('click', function (e) {
                     e.preventDefault();
                     $('.payment-information').data('is-new-payment', false);
-                    clearCreditCardForm();
+                    billingHelpers.clearCreditCardForm();
                     $('.user-payment-instruments').removeClass('checkout-hidden');
                     $('.credit-card-form').addClass('checkout-hidden');
                 });
@@ -1573,15 +933,6 @@
                     if (data) {
                         if (data.errorStage) {
                             members.gotoStage(data.errorStage.stage);
-
-                            if (data.errorStage.step === 'billingAddress') {
-                                var $billingAddressSameAsShipping = $(
-                                    'input[name$="_shippingAddressUseAsBillingAddress"]'
-                                );
-                                if ($billingAddressSameAsShipping.is(':checked')) {
-                                    $billingAddressSameAsShipping.prop('checked', false);
-                                }
-                            }
                         }
 
                         if (data.errorMessage) {
