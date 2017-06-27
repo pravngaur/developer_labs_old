@@ -97,7 +97,9 @@ function validateFields(form, formKeys) {
         }
         if (item instanceof Object) {
             if (item.valid === false) {
-                result[item.htmlName] = Resource.msg(item.error, 'address', null);
+                result[item.htmlName] = item.error
+                    ? Resource.msg(item.error, 'address', null)
+                    : Resource.msg('error.message.required', 'address', null);
             }
         }
     });
@@ -396,15 +398,15 @@ function validateCreditCard(form) {
     }
 
     var formKeys = [
-        'creditCardFields.cardNumber',
-        'creditCardFields.expirationYear',
-        'creditCardFields.expirationMonth',
-        'creditCardFields.securityCode',
-        'creditCardFields.email',
-        'creditCardFields.phone'
+        'cardNumber',
+        'expirationYear',
+        'expirationMonth',
+        'securityCode',
+        'email',
+        'phone'
     ];
 
-    return validateFields(form, formKeys);
+    return validateFields(form.creditCardFields, formKeys);
 }
 
 /**
