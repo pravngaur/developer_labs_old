@@ -2,7 +2,7 @@
 
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
-var helpers = require('../dwHelpers');
+var collections = require('../util/collections');
 
 var AddressModel = require('./address');
 var ProductLineItemsModel = require('./productLineItems');
@@ -12,12 +12,11 @@ var ShippingMgr = require('../dw/order/ShippingMgr');
 
 function proxyModel() {
     return proxyquire('../../../cartridges/app_storefront_base/cartridge/models/shipping', {
-        '~/cartridge/models/address': AddressModel,
-        '~/cartridge/models/productLineItems': ProductLineItemsModel,
-        '~/cartridge/models/shipping/shippingMethod': ShippingMethodModel,
-        '~/cartridge/scripts/dwHelpers': helpers,
-        '~/cartridge/scripts/util/collections': helpers,
-        '~/cartridge/scripts/util/formatting': {},
+        '*/cartridge/models/address': AddressModel,
+        '*/cartridge/models/productLineItems': ProductLineItemsModel,
+        '*/cartridge/models/shipping/shippingMethod': ShippingMethodModel,
+        '*/cartridge/scripts/util/collections': collections,
+        '*/cartridge/scripts/util/formatting': {},
         'dw/util/StringUtils': {
             formatMoney: function () {
                 return 'formattedMoney';

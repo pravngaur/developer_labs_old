@@ -10,7 +10,8 @@
     @include swatch(2.5em, $white);
 }
 
-.product-detail [disabled] .swatch-circle {
+.product-detail [disabled] .swatch-circle,
+.product-detail .swatch-circle.unselectable {
     cursor: not-allowed;
 
     &.color-value.selected::after {
@@ -114,4 +115,17 @@ label.availability {
 
 .price {
     font-size: 1.5rem;
+}
+
+.product-options {
+    margin-top: 1.25em;
+
+    .quantity {
+        bottom: 0;
+        min-width: 6.25em;
+        padding-left: 0.938em;
+        padding-right: 0.938em;
+        position: absolute;
+        right: 0;
+    }
 }

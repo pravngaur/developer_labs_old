@@ -3,11 +3,12 @@
 @import "bootstrap/scss/mixins/breakpoints";
 
 .item-attributes {
-    display: inline-block;
     vertical-align: top;
+    padding-left: 0;
 }
 
-.line-item-attributes {
+.line-item-attributes,
+.line-item-option {
     font-size: 0.813rem;
     margin: 0;
 }
@@ -50,8 +51,11 @@
 }
 
 .product-image {
+    height: 5.625em;
     width: 5.625em;
-    margin-right: 0.625em;
+    margin-right: 0.938em;
+    flex-grow: 0;
+    flex-shrink: 0;
 }
 
 .non-adjusted-price {
@@ -84,4 +88,8 @@
 
 .line-item-availability {
     font-size: 0.813rem;
+}
+
+.product-line-item-details {
+    overflow-y: auto;
 }

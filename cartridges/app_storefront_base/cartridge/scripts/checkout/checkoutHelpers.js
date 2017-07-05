@@ -2,8 +2,7 @@
 
 var server = require('server');
 
-var Collections = require('~/cartridge/scripts/util/collections');
-var Objects = require('~/cartridge/scripts/util/objects');
+var collections = require('*/cartridge/scripts/util/collections');
 
 var BasketMgr = require('dw/order/BasketMgr');
 var HashMap = require('dw/util/HashMap');
@@ -19,33 +18,13 @@ var Site = require('dw/system/Site');
 var Template = require('dw/util/Template');
 var Transaction = require('dw/system/Transaction');
 
-var AddressModel = require('~/cartridge/models/address');
-var OrderModel = require('~/cartridge/models/order');
+var AddressModel = require('*/cartridge/models/address');
+var formErrors = require('*/cartridge/scripts/formErrors');
 
-var ShippingHelper = require('~/cartridge/scripts/checkout/shippingHelpers');
-
+var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
+var ShippingHelper = require('*/cartridge/scripts/checkout/shippingHelpers');
 
 // static functions needed for Checkout Controller logic
-
-var SHIPPING_FORM_MAP = {
-    firstName: 'firstName',
-    lastName: 'lastName',
-    address1: 'address1',
-    address2: 'address2',
-    city: 'city',
-    postalCode: 'postalCode',
-    countryCode: 'country',
-    phone: 'phone',
-    stateCode: 'states.stateCode'
-};
-
-/**
- * Returns array of shipping form keys
- * @returns {string[]} the names of the invalid form fields
- */
-function getShippingFormKeys() {
-    return Objects.values(SHIPPING_FORM_MAP);
-}
 
 /**
  * Prepares the Shipping form
@@ -73,35 +52,10 @@ function prepareBillingForm() {
 /**
  * Validate billing form
  * @param {Object} form - the form object with pre-validated form fields
- * @param {Array} formKeys - the name of the form fields to validate in form
  * @returns {Object} the names of the invalid form fields
  */
-function validateFields(form, formKeys) {
-    var result = {};
-
-    //
-    // Look for invalid form fields
-    //
-    formKeys.forEach(function (key) {
-        var item;
-        if (key.indexOf('.')) {
-            // nested property
-            item = form;
-            var properties = key.split('.');
-            properties.forEach(function (property) {
-                item = item[property];
-            });
-        } else {
-            item = form[key];
-        }
-        if (item instanceof Object) {
-            if (item.valid === false) {
-                result[item.htmlName] = Resource.msg(item.error, 'address', null);
-            }
-        }
-    });
-
-    return result;
+function validateFields(form) {
+    return formErrors(form);
 }
 
 /**
@@ -111,7 +65,7 @@ function validateFields(form, formKeys) {
  * @returns {Object} the names of the invalid form fields
  */
 function validateShippingForm(form) {
-    return validateFields(form, getShippingFormKeys());
+    return validateFields(form);
 }
 
 /**
@@ -132,6 +86,19 @@ function isShippingAddressInitialized(shipment) {
     }
 
     return initialized;
+}
+
+/**
+ * Returns true if Basket represents a pick up in store basket
+ * @param {dw.order.Basket} basket - a ScriptAPI Basket object
+ * @returns {boolean} - true, if pick up in store method is selected
+ */
+function isPickUpInStore(basket) {
+    var isPickUpInStoreResult = false;
+    if (basket && basket.defaultShipment && basket.defaultShipment.shippingMethodID === '005') {
+        isPickUpInStoreResult = true;
+    }
+    return isPickUpInStoreResult;
 }
 
 /**
@@ -268,10 +235,10 @@ function getFirstNonDefaultShipmentWithProductLineItems(currentBasket) {
 }
 
 /**
- * Copies a raw address object to the baasket billing address
- * @param {Object} address - an address-similar Object (firstName, ...)
+ * Ensures that no shipment exists with 0 product line items
+ * @param {Object} req - the request object needed to access session.privacyCache
  */
-function ensureNoEmptyShipments() {
+function ensureNoEmptyShipments(req) {
     Transaction.wrap(function () {
         var currentBasket = BasketMgr.getCurrentBasket();
 
@@ -288,7 +255,11 @@ function ensureNoEmptyShipments() {
                     var altShipment = getFirstNonDefaultShipmentWithProductLineItems(currentBasket);
                     if (!altShipment) return;
 
-                    Collections.forEach(altShipment.productLineItems,
+                    // Move the valid marker with the shipment
+                    var altValid = req.session.privacyCache.get(altShipment.UUID);
+                    req.session.privacyCache.set(currentBasket.defaultShipment.UUID, altValid);
+
+                    collections.forEach(altShipment.productLineItems,
                         function (lineItem) {
                             lineItem.setShipment(currentBasket.defaultShipment);
                         });
@@ -355,18 +326,7 @@ function getProductLineItem(currentBasket, pliUUID) {
  * @returns {Object} the names of the invalid form fields
  */
 function validateBillingForm(form) {
-    var formKeys = [
-        'firstName',
-        'lastName',
-        'address1',
-        'address2',
-        'city',
-        'postalCode',
-        'country',
-        'states.stateCode'
-    ];
-
-    return validateFields(form, formKeys);
+    return validateFields(form);
 }
 
 /**
@@ -387,16 +347,7 @@ function validateCreditCard(form) {
         return result;
     }
 
-    var formKeys = [
-        'creditCardFields.cardNumber',
-        'creditCardFields.expirationYear',
-        'creditCardFields.expirationMonth',
-        'creditCardFields.securityCode',
-        'creditCardFields.email',
-        'creditCardFields.phone'
-    ];
-
-    return validateFields(form, formKeys);
+    return validateFields(form);
 }
 
 /**
@@ -564,6 +515,8 @@ function handlePayments(order, orderNumber) {
  * @returns {void}
  */
 function sendConfirmationEmail(order) {
+    var OrderModel = require('*/cartridge/models/order');
+
     var confirmationEmail = new Mail();
     var context = new HashMap();
 
@@ -611,11 +564,78 @@ function placeOrder(order) {
     return result;
 }
 
+/**
+ * saves payment instruemnt to customers wallet
+ * @param {Object} billingData - billing information entered by the user
+ * @param {dw.order.Basket} currentBasket - The current basket
+ * @param {dw.customer.Customer} customer - The current customer
+ * @returns {dw.customer.CustomerPaymentInstrument} newly stored payment Instrument
+ */
+function savePaymentInstrumentToWallet(billingData, currentBasket, customer) {
+    var wallet = customer.getProfile().getWallet();
+
+    return Transaction.wrap(function () {
+        var storedPaymentInstrument = wallet.createPaymentInstrument('CREDIT_CARD');
+
+        storedPaymentInstrument.setCreditCardHolder(
+            currentBasket.billingAddress.fullName
+        );
+        storedPaymentInstrument.setCreditCardNumber(
+            billingData.paymentInformation.cardNumber.value
+        );
+        storedPaymentInstrument.setCreditCardType(
+            billingData.paymentInformation.cardType.value
+        );
+        storedPaymentInstrument.setCreditCardExpirationMonth(
+            billingData.paymentInformation.expirationMonth.value
+        );
+        storedPaymentInstrument.setCreditCardExpirationYear(
+            billingData.paymentInformation.expirationYear.value
+        );
+
+        var token = HookMgr.callHook(
+            'app.payment.processor.basic_credit',
+            'createMockToken'
+        );
+
+        storedPaymentInstrument.setCreditCardToken(token);
+
+        return storedPaymentInstrument;
+    });
+}
+
+/**
+ * renders the user's stored payment Instruments
+ * @param {Object} req - The request object
+ * @param {Object} accountModel - The account model for the current customer
+ * @returns {string|null} newly stored payment Instrument
+ */
+function getRenderedPaymentInstruments(req, accountModel) {
+    var result;
+
+    if (req.currentCustomer.raw.authenticated
+        && req.currentCustomer.raw.registered
+        && req.currentCustomer.raw.profile.wallet.paymentInstruments.getLength()
+    ) {
+        var context;
+        var template = 'checkout/billing/storedPaymentInstruments';
+
+        context = { customer: accountModel };
+        result = renderTemplateHelper.getRenderedHtml(
+            context,
+            template
+        );
+    }
+
+    return result || null;
+}
+
 module.exports = {
+    getFirstNonDefaultShipmentWithProductLineItems: getFirstNonDefaultShipmentWithProductLineItems,
     ensureNoEmptyShipments: ensureNoEmptyShipments,
-    getShippingFormKeys: getShippingFormKeys,
     getProductLineItem: getProductLineItem,
     isShippingAddressInitialized: isShippingAddressInitialized,
+    isPickUpInStore: isPickUpInStore,
     prepareShippingForm: prepareShippingForm,
     prepareBillingForm: prepareBillingForm,
     copyCustomerAddressToShipment: copyCustomerAddressToShipment,
@@ -632,5 +652,7 @@ module.exports = {
     handlePayments: handlePayments,
     createOrder: createOrder,
     placeOrder: placeOrder,
+    savePaymentInstrumentToWallet: savePaymentInstrumentToWallet,
+    getRenderedPaymentInstruments: getRenderedPaymentInstruments,
     sendConfirmationEmail: sendConfirmationEmail
 };

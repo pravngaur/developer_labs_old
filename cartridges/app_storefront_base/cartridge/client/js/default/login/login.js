@@ -26,8 +26,12 @@ module.exports = {
                     }
                 },
                 error: function (data) {
-                    $('form.login').trigger('login:error', data);
-                    form.spinner().stop();
+                    if (data.responseJSON.redirectUrl) {
+                        window.location.href = data.responseJSON.redirectUrl;
+                    } else {
+                        $('form.login').trigger('login:error', data);
+                        form.spinner().stop();
+                    }
                 }
             });
             return false;
@@ -54,7 +58,11 @@ module.exports = {
                         location.href = data.redirectUrl;
                     }
                 },
-                error: function () {
+                error: function (err) {
+                    if (err.responseJSON.redirectUrl) {
+                        window.location.href = err.responseJSON.redirectUrl;
+                    }
+
                     form.spinner().stop();
                 }
             });
@@ -79,9 +87,20 @@ module.exports = {
                     if (!data.success) {
                         formValidation(form, data);
                     } else {
-                        $('.modal-title').text(data.receivedMsgHeading);
-                        $('.modal-body').empty().append('<p>' + data.receivedMsgBody + '</p>');
-                        $('#modalButton').text(data.buttonText).attr('data-dismiss', 'modal');
+                        $('.request-password-title').text(data.receivedMsgHeading);
+                        $('.request-password-body').empty()
+                            .append('<p>' + data.receivedMsgBody + '</p>');
+                        if (!data.mobile) {
+                            $('#submitEmailButton').text(data.buttonText)
+                                .attr('data-dismiss', 'modal');
+                        } else {
+                            $('.send-email-btn').empty()
+                                .html('<a href="'
+                                    + data.returnUrl
+                                    + '" class="btn btn-primary btn-block">'
+                                    + data.buttonText + '</a>'
+                                );
+                        }
                     }
                 },
                 error: function () {

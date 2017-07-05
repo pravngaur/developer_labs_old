@@ -5,18 +5,25 @@ var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 var ArrayList = require('../../../mocks/dw.util.Collection');
 var toProductMock = require('../../../util');
 
+var option1Mock = {
+    abc: '123'
+};
+
 describe('Product Line Item', function () {
     var ProductLineItem = proxyquire('../../../../cartridges/app_storefront_base/cartridge/models/productLineItem/productLineItem', {
         './../product/productBase': proxyquire('../../../../cartridges/app_storefront_base/cartridge/models/product/productBase', {
             './productImages': function () {},
             './productAttributes': function () { return []; },
-            '../../scripts/dwHelpers': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/dwHelpers', {
+            '*/cartridge/scripts/util/collections': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/util/collections', {
                 'dw/util/ArrayList': ArrayList
             }),
             '../../scripts/factories/price': { getPrice: function () {} },
             'dw/web/Resource': {
                 msgf: function () { return 'some string with param'; },
                 msg: function () { return 'some string'; }
+            },
+            '*/cartridge/scripts/helpers/productHelpers': {
+                getSelectedOptionsUrl: function () { return ''; }
             }
         }),
         'dw/util/StringUtils': {
@@ -28,9 +35,13 @@ describe('Product Line Item', function () {
         '~/cartridge/scripts/renderTemplateHelper': {
             getRenderedHtml: function () { return 'string'; }
         },
-        '~/cartridge/scripts/dwHelpers': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/dwHelpers', {
+        '*/cartridge/scripts/util/collections': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/util/collections', {
             'dw/util/ArrayList': ArrayList
-        })
+        }),
+        '*/cartridge/scripts/helpers/productHelpers': {
+            getOptions: function () { return [option1Mock]; },
+            getCurrentOptionModel: function () {}
+        }
     });
 
     var attributeModel = {
@@ -90,7 +101,8 @@ describe('Product Line Item', function () {
         minOrderQuantity: {
             value: 2
         },
-        attributeModel: attributeModel
+        attributeModel: attributeModel,
+        optionModel: { options: new ArrayList() }
     };
 
     var productMock = {
@@ -114,17 +126,20 @@ describe('Product Line Item', function () {
         }
     ]);
 
+    var optionProductLineItemMock = { productName: 'product 1' };
     var lineItem = {
         bonusProductLineItem: false,
         gift: false,
         UUID: 'some UUID',
         adjustedPrice: {
             value: 'some value',
-            currencyCode: 'US'
+            currencyCode: 'US',
+            add: function () {}
         },
         priceAdjustments: priceAdjustments,
         getPrice: function () { return 'money object'; },
         product: toProductMock(productMock),
+        optionProductLineItems: new ArrayList([optionProductLineItemMock]),
         shipment: {
             UUID: 'shipment UUID'
         }
@@ -150,5 +165,11 @@ describe('Product Line Item', function () {
         assert.deepEqual(productLineItem.appliedPromotions,
             [{ callOutMsg: 'string', name: 'some name', details: 'string' }]);
         assert.equal(productLineItem.renderedPromotions, 'string');
+    });
+
+    it('should have options when associated', function () {
+        var productLineItem = new ProductLineItem(lineItem.product, null, 1, lineItem);
+
+        assert.deepEqual(productLineItem.options, [optionProductLineItemMock.productName]);
     });
 });

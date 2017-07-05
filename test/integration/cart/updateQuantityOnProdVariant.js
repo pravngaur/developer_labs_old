@@ -159,15 +159,6 @@ describe('Update quantity for product variant', function () {
                             'selected': false
                         },
                         {
-                            'description': 'Store Pickup',
-                            'displayName': 'Store Pickup',
-                            'ID': '005',
-                            'shippingCost': '$0.00',
-                            'estimatedArrivalTime': null,
-                            'default': false,
-                            'selected': false
-                        },
-                        {
                             'description': 'Orders shipped outside continental US received in 2-3 business days',
                             'displayName': 'Express',
                             'ID': '012',
@@ -243,6 +234,7 @@ describe('Update quantity for product variant', function () {
                     },
                     'quantity': expectQty1,
                     'isOrderable': true,
+                    'options': [],
                     'isAvailableForInStorePickup': false
                 },
                 {
@@ -299,6 +291,7 @@ describe('Update quantity for product variant', function () {
                     },
                     'quantity': expectQty2,
                     'isOrderable': true,
+                    'options': [],
                     'isAvailableForInStorePickup': false
                 },
                 {
@@ -354,6 +347,7 @@ describe('Update quantity for product variant', function () {
                     },
                     'quantity': expectQty3,
                     'isOrderable': true,
+                    'options': [],
                     'isAvailableForInStorePickup': false
                 }
             ],

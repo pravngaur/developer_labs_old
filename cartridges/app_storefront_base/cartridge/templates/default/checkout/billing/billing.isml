@@ -9,7 +9,9 @@
         <h4>${Resource.msg('heading.payment', 'checkout', null)}</h4>
     </div>
     <div class="card-block">
-        <form autocomplete="on" method="POST" action="${URLUtils.url('Checkout-SubmitPayment')}" data-address-mode="${pdict.order.billing.matchingAddressId ? 'edit' : 'new'}" <isprint value=${pdict.forms.billingForm.attributes} encoding="off" /> >
+        <form autocomplete="on" method="POST" action="${URLUtils.url('Checkout-SubmitPayment')}"
+            data-address-mode="${pdict.order.isPickUpInStore && !pdict.order.billing.billingAddress.address ? 'new' : 'edit'}"
+            <isprint value=${pdict.forms.billingForm.attributes} encoding="off" /> >
 
             <!-------------------------------------------------------------------------->
             <!-- Billing Address Selector                                             -->
@@ -19,7 +21,7 @@
                     <label class="form-control-label" for="shipmentSelector">
                         ${Resource.msg('heading.billing.address', 'checkout', null)}
                     </label>
-                    
+
                     <isinclude template="checkout/billing/addressSelector" />
                     <div class="form-control-feedback"></div>
                     <div class="row">
@@ -43,12 +45,7 @@
                 <isinclude template="checkout/billing/paymentOptions" />
             </fieldset>
 
-            <!-------------------------------------------------------------------------->
-            <!-- credit Card Form                                                     -->
-            <!-------------------------------------------------------------------------->
-            <fieldset class="credit-card-form">
-                <isinclude template="checkout/billing/creditCardForm" />
-            </fieldset>
+            <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
         </form>
     </div>
 </div>

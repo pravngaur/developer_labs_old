@@ -12,28 +12,31 @@ function formField(field) {
     Object.defineProperty(result, 'attributes', {
         get: function () {
             var attributes = '';
-            attributes += 'name = "' + result.htmlName + '"';
+            attributes += 'name="' + result.htmlName + '"';
             if (result.mandatory) {
                 attributes += ' required';
             }
+            if (field.options && field.options.optionsCount > 0) {
+                return attributes;
+            }
             if (!result.checked && !result.selected) {
                 var value = field.htmlValue == null ? '' : field.htmlValue;
-                attributes += ' value = "' + value + '"';
+                attributes += ' value="' + value + '"';
             }
             if (result.maxValue) {
-                attributes += ' max = "' + result.maxValue + '"';
+                attributes += ' max="' + result.maxValue + '"';
             }
             if (result.minValue) {
-                attributes += ' min = "' + result.minValue + '"';
+                attributes += ' min="' + result.minValue + '"';
             }
             if (result.maxLength) {
-                attributes += ' maxLength = "' + result.maxLength + '"';
+                attributes += ' maxLength="' + result.maxLength + '"';
             }
             if (result.minLength) {
-                attributes += ' minLength = "' + result.minLength + '"';
+                attributes += ' minLength="' + result.minLength + '"';
             }
             if (result.regEx) {
-                attributes += ' pattern = "' + result.regEx + '"';
+                attributes += ' pattern="' + result.regEx + '"';
             }
             return attributes;
         }

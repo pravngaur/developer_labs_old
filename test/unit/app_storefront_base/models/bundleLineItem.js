@@ -10,14 +10,22 @@ describe('Bundle Product Line Item', function () {
         './../product/productBase': proxyquire('../../../../cartridges/app_storefront_base/cartridge/models/product/productBase', {
             './productImages': function () {},
             './productAttributes': function () { return []; },
-            '../../scripts/dwHelpers': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/dwHelpers', {
+            '*/cartridge/scripts/util/collections': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/util/collections', {
                 'dw/util/ArrayList': ArrayList
             }),
             '../../scripts/factories/price': { getPrice: function () {} },
             'dw/web/Resource': {
                 msgf: function () { return 'some string with param'; },
                 msg: function () { return 'some string'; }
-            }
+            },
+            '*/cartridge/scripts/helpers/productHelpers': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/helpers/productHelpers', {
+                '*/cartridge/scripts/util/collections': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/util/collections', {
+                    'dw/util/ArrayList': ArrayList
+                }),
+                '*/cartridge/scripts/helpers/urlHelpers': {
+                    appendQueryParams: function () {}
+                }
+            })
         }),
         'dw/util/StringUtils': {
             formatMoney: function () {
@@ -28,13 +36,16 @@ describe('Bundle Product Line Item', function () {
         '~/cartridge/scripts/renderTemplateHelper': {
             getRenderedHtml: function () { return 'string'; }
         },
-        '~/cartridge/scripts/dwHelpers': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/dwHelpers', {
+        '*/cartridge/scripts/util/collections': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/util/collections', {
             'dw/util/ArrayList': ArrayList
-        })
+        }),
+        '*/cartridge/scripts/helpers/productHelpers': {
+            getCurrentOptionModel: function () {}
+        }
     });
 
     var ProductLineItemBundle = proxyquire('../../../../cartridges/app_storefront_base/cartridge/models/productLineItem/bundleLineItem', {
-        '~/cartridge/scripts/dwHelpers': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/dwHelpers', {
+        '*/cartridge/scripts/util/collections': proxyquire('../../../../cartridges/app_storefront_base/cartridge/scripts/util/collections', {
             'dw/util/ArrayList': ArrayList
         }),
         './productLineItem': ProductLineItem
@@ -119,7 +130,8 @@ describe('Bundle Product Line Item', function () {
         availabilityModel: availabilityModelMock,
         minOrderQuantity: {
             value: 2
-        }
+        },
+        optionModel: { options: new ArrayList() }
     };
 
     var priceAdjustments = new ArrayList([
@@ -146,6 +158,7 @@ describe('Bundle Product Line Item', function () {
         shipment: {
             UUID: 'shipment UUID'
         },
+        optionProductLineItems: new ArrayList(),
         bundledProductLineItems: new ArrayList([{ product: productMock, quantity: { value: 1 } }])
     };
 

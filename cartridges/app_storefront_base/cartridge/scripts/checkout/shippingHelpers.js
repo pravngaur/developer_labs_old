@@ -1,10 +1,10 @@
 'use strict';
 
-var Collections = require('~/cartridge/scripts/util/collections');
+var collections = require('*/cartridge/scripts/util/collections');
 
 var ShippingMgr = require('dw/order/ShippingMgr');
 
-var ShippingModel = require('~/cartridge/models/shipping');
+var ShippingModel = require('*/cartridge/models/shipping');
 
 
 // Public (class) static model functions
@@ -12,15 +12,16 @@ var ShippingModel = require('~/cartridge/models/shipping');
 /**
  * Plain JS object that represents a DW Script API dw.order.ShippingMethod object
  * @param {dw.order.Basket} currentBasket - the target Basket object
+ * @param {Object} customer - the associated Customer Model object
  * @returns {dw.util.ArrayList} an array of ShippingModels
  */
-function getShippingModels(currentBasket) {
+function getShippingModels(currentBasket, customer) {
     var shipments = currentBasket ? currentBasket.getShipments() : null;
 
     if (!shipments) return [];
 
-    return Collections.map(shipments, function (shipment) {
-        return new ShippingModel(shipment);
+    return collections.map(shipments, function (shipment) {
+        return new ShippingModel(shipment, null, customer);
     });
 }
 
@@ -38,9 +39,29 @@ function getAddressFromRequest(req) {
         city: req.form.city,
         stateCode: req.form.stateCode,
         postalCode: req.form.postalCode,
-        countryCode: req.form.stateCode,
+        countryCode: req.form.countryCode,
         phone: req.form.phone
     };
+}
+
+/**
+ * Returns the first shipping method (and maybe prevent in store pickup)
+ * @param {dw.util.Collection} methods - Applicable methods from ShippingShipmentModel
+ * @param {boolean} filterPickupInStore - whether to exclude PUIS method
+ * @returns {dw.order.ShippingMethod} - the first shipping method (maybe non-PUIS)
+ */
+function getFirstApplicableShippingMethod(methods, filterPickupInStore) {
+    var method;
+    var iterator = methods.iterator();
+    while (iterator.hasNext()) {
+        method = iterator.next();
+        // TODO: remove reference to '005' replace with constant
+        if (!filterPickupInStore || (filterPickupInStore && method.ID !== '005')) {
+            break;
+        }
+    }
+
+    return method;
 }
 
 /**
@@ -92,10 +113,13 @@ function selectShippingMethod(shipment, shippingMethodID, shippingMethods, addre
     }
 
     if (!isShipmentSet) {
-        if (applicableShippingMethods.contains(defaultShippingMethod)) {
+        if (collections.find(applicableShippingMethods, function (sMethod) {
+            return sMethod.ID === defaultShippingMethod.ID;
+        })) {
             shipment.setShippingMethod(defaultShippingMethod);
         } else if (applicableShippingMethods.length > 0) {
-            shipment.setShippingMethod(Collections.first(applicableShippingMethods));
+            var firstMethod = getFirstApplicableShippingMethod(applicableShippingMethods, true);
+            shipment.setShippingMethod(firstMethod);
         } else {
             shipment.setShippingMethod(null);
         }
@@ -114,17 +138,17 @@ function ensureShipmentHasMethod(shipment) {
 
         if (!defaultMethod) {
 			// If no defaultMethod set, just use the first one
-            shippingMethod = methods[0];
+            shippingMethod = getFirstApplicableShippingMethod(methods, true);
         } else {
-			// Look for defaultMethod in applicableMethods
-            shippingMethod = Collections.find(methods, function (method) {
+            // Look for defaultMethod in applicableMethods
+            shippingMethod = collections.find(methods, function (method) {
                 return method.ID === defaultMethod.ID;
             });
         }
 
-		// If found, use it.  Otherwise return the first one
+        // If found, use it.  Otherwise return the first one
         if (!shippingMethod && methods && methods.length > 0) {
-            shippingMethod = methods[0];
+            shippingMethod = getFirstApplicableShippingMethod(methods, true);
         }
 
         if (shippingMethod) {
@@ -140,7 +164,7 @@ function ensureShipmentHasMethod(shipment) {
  * @returns {dw.order.Shipment} a Shipment object
  */
 function getShipmentByUUID(basket, uuid) {
-    return Collections.find(basket.shipments, function (shipment) {
+    return collections.find(basket.shipments, function (shipment) {
         return shipment.UUID === uuid;
     });
 }

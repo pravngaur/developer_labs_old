@@ -6,22 +6,22 @@ var base = require('./base');
  *
  */
 function getModalHtmlElement() {
-    if ($('.quickViewDialog').length !== 0) {
+    if ($('#quickViewModal').length !== 0) {
         $('#quickViewModal').remove();
     }
     var htmlString = '<!-- Modal -->'
         + '<div class="modal fade" id="quickViewModal" role="dialog">'
         + '<div class="modal-dialog quick-view-dialog">'
         + '<!-- Modal content-->'
-        + '<div class="modal-content container">'
-        + '<div class="modal-header row">'
+        + '<div class="modal-content">'
+        + '<div class="modal-header">'
         + '    <a class="full-pdp-link" href="">View Full Details</a>'
         + '    <button type="button" class="close pull-right" data-dismiss="modal">'
         + '        <span>Close</span>&times;'
         + '    </button>'
         + '</div>'
-        + '<div class="modal-body row"></div>'
-        + '<div class="modal-footer row"></div>'
+        + '<div class="modal-body"></div>'
+        + '<div class="modal-footer"></div>'
         + '</div>'
         + '</div>'
         + '</div>';
@@ -41,9 +41,10 @@ function getModalHtmlElement() {
  * @return {QuickViewHtml} - QuickView content components
  */
 function parseHtml(html) {
-    var $html = $(html);
-    var body = $html[2].outerHTML;
-    var footer = $html[4].innerHTML;
+    var $html = $('<div>').append($.parseHTML(html));
+
+    var body = $html.find('.product-quickview');
+    var footer = $html.find('.modal-footer').children();
 
     return { body: body, footer: footer };
 }
@@ -113,6 +114,8 @@ module.exports = {
                 $('.modal.show').find(response.container).data('pid', response.data.product.id);
                 $('.modal.show').find(response.container)
                     .find('.product-id').text(response.data.product.id);
+            } else if ($('.set-items').length) {
+                response.container.find('.product-id').text(response.data.product.id);
             } else {
                 $('.modal.show .product-quickview').data('pid', response.data.product.id);
                 $('.modal.show .full-pdp-link')
@@ -127,7 +130,6 @@ module.exports = {
                 (!response.product.readyToOrder || !response.product.available));
 
             // update global add to cart (single products, bundles)
-
             var dialog = $(response.$productContainer)
                 .closest('.quick-view-dialog');
 

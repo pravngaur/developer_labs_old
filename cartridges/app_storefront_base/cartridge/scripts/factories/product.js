@@ -1,9 +1,9 @@
 'use strict';
 
 var ProductMgr = require('dw/catalog/ProductMgr');
-var ProductTile = require('./../../models/product/productBase');
-var Product = require('./../../models/product/product');
-var ProductLineItemModel = require('./../../models/productLineItem/productLineItem');
+var ProductTile = require('*/cartridge/models/product/productBase');
+var Product = require('*/cartridge/models/product/product');
+var ProductLineItemModel = require('*/cartridge/models/productLineItem/productLineItem');
 var PromotionMgr = require('dw/campaign/PromotionMgr');
 
 /**
@@ -16,16 +16,19 @@ ProductFactory.get = function (params) {
     var productId = params.pid;
     var apiProduct = ProductMgr.getProduct(productId);
     var variationModel = Product.getVariationModel(apiProduct, params.variables);
+    var selectedOptions = params.options;
     var productFactory = this;
     var ProductSetTile;
     var ProductSet;
     var ProductBundle;
     var product;
+
     if (variationModel) {
         product = variationModel.getSelectedVariant() || apiProduct;
     } else {
         product = apiProduct;
     }
+
     var promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(product);
     promotions = promotions.length ? promotions : null;
     var productType = Product.getProductType(product);
@@ -33,11 +36,11 @@ ProductFactory.get = function (params) {
     if (productType === 'set') {
         switch (params.pview) {
             case 'tile':
-                ProductSetTile = require('./../../models/product/productSetBase');
+                ProductSetTile = require('*/cartridge/models/product/productSetBase');
                 product = new ProductSetTile(product, params.variables, promotions, productFactory);
                 break;
             default:
-                ProductSet = require('./../../models/product/productSet');
+                ProductSet = require('*/cartridge/models/product/productSet');
                 product = new ProductSet(
                     product,
                     params.quantity,
@@ -46,8 +49,6 @@ ProductFactory.get = function (params) {
                 );
                 break;
         }
-    } else if (productType === 'optionProduct') {
-        // TODO: Add option product
     } else if (productType === 'bundle') {
         switch (params.pview) {
             case 'tile':
@@ -55,7 +56,7 @@ ProductFactory.get = function (params) {
                 break;
             case 'productLineItem':
                 var ProductLineItemBundleModel = require(
-                    './../../models/productLineItem/bundleLineItem'
+                    '*/cartridge/models/productLineItem/bundleLineItem'
                 );
                 product = new ProductLineItemBundleModel(
                     product,
@@ -66,7 +67,7 @@ ProductFactory.get = function (params) {
                 );
                 break;
             default:
-                ProductBundle = require('./../../models/product/productBundle');
+                ProductBundle = require('*/cartridge/models/product/productBundle');
                 product = new ProductBundle(
                     product,
                     params.quantity,
@@ -86,11 +87,13 @@ ProductFactory.get = function (params) {
                     params.variables,
                     params.quantity,
                     params.lineItem,
-                    promotions
+                    promotions,
+                    selectedOptions
                 );
                 break;
             default:
-                product = new Product(product, params.variables, params.quantity, promotions);
+                product = new Product(product, params.variables, params.quantity, promotions,
+                    selectedOptions);
                 break;
         }
     }

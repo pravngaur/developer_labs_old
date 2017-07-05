@@ -1,6 +1,6 @@
 'use strict';
 
-var helper = require('~/cartridge/scripts/dwHelpers');
+var collections = require('*/cartridge/scripts/util/collections');
 var ProductFactory = require('../scripts/factories/product');
 
 /**
@@ -10,13 +10,20 @@ var ProductFactory = require('../scripts/factories/product');
  * @returns {Array} an array of product line items.
  */
 function createProductLineItemsObject(allLineItems) {
-    var lineItems = helper.map(allLineItems, function (item) {
+    var lineItems = collections.map(allLineItems, function (item) {
+        var options = collections.map(item.optionProductLineItems, function (optionItem) {
+            return {
+                optionId: optionItem.optionID,
+                selectedValueId: optionItem.optionValueID
+            };
+        });
         var params = {
             pid: item.product.ID,
             quantity: item.quantity.value,
             variables: null,
             pview: 'productLineItem',
-            lineItem: item
+            lineItem: item,
+            options: options
         };
 
         return ProductFactory.get(params);
@@ -34,7 +41,7 @@ function createProductLineItemsObject(allLineItems) {
 function getTotalQuantity(items) {
     // TODO add giftCertificateLineItems quantity
     var totalQuantity = 0;
-    helper.forEach(items, function (lineItem) {
+    collections.forEach(items, function (lineItem) {
         totalQuantity += lineItem.quantity.value;
     });
 

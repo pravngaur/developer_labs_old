@@ -2,12 +2,13 @@
 
 var server = require('server');
 var URLUtils = require('dw/web/URLUtils');
-var priceHelper = require('../scripts/helpers/pricing');
-var ProductFactory = require('../scripts/factories/product');
+var priceHelper = require('*/cartridge/scripts/helpers/pricing');
+var ProductFactory = require('*/cartridge/scripts/factories/product');
 var Resource = require('dw/web/Resource');
 var CatalogMgr = require('dw/catalog/CatalogMgr');
 var ProductMgr = require('dw/catalog/ProductMgr');
-var renderTemplateHelper = require('~/cartridge/scripts/renderTemplateHelper');
+var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
+var cache = require('*/cartridge/scripts/middleware/cache');
 
 /**
  * Creates the breadcrumbs object
@@ -55,10 +56,6 @@ function getAllBreadcrumbs(cgid, pid, breadcrumbs) {
  */
 function getResources() {
     return {
-        label_instock: Resource.msg('label.instock', 'common', 'In Stock'),
-        label_outofstock: Resource.msg('label.outofstock', 'common', 'Out of Stock'),
-        label_allnotavailable: Resource.msg('label.allnotavailable', 'common',
-            'This item is currently not available'),
         info_selectforstock: Resource.msg('info.selectforstock', 'product',
             'Select Styles for Availability')
     };
@@ -93,12 +90,12 @@ function showProductPage(querystring, res) {
     });
 }
 
-server.get('Show', function (req, res, next) {
+server.get('Show', cache.applyPromotionSenstiveCache, function (req, res, next) {
     showProductPage(req.querystring, res);
     next();
 });
 
-server.get('ShowInCategory', function (req, res, next) {
+server.get('ShowInCategory', cache.applyPromotionSenstiveCache, function (req, res, next) {
     showProductPage(req.querystring, res);
     next();
 });
@@ -124,25 +121,19 @@ server.get('Variation', function (req, res, next) {
     next();
 });
 
-server.get('ShowTile', function (req, res, next) {
+server.get('ShowTile', cache.applyPromotionSenstiveCache, function (req, res, next) {
     // The req parameter has a property called querystring. In this use case the querystring could
     // have the following:
     // pid - the Product ID
-    // compare - boolean to determine if the compare feature should be shown in the tile.
-    // comparisonPage - boolean to determine if this tile will be rendered for product comparison
-    // reviews - boolean to determine if the reviews should be shown in the tile.
+    // ratings - boolean to determine if the reviews should be shown in the tile.
     // swatches - boolean to determine if the swatches should be shown in the tile.
     //
     // pview - string to determine if the product factory returns a model for
     //         a tile or a pdp/quickview display
-    var productTileParams = {
-        pid: req.querystring.pid,
-        compare: req.querystring.compare,
-        comparisonPage: req.querystring.comparisonPage,
-        reviews: req.querystring.reviews,
-        swatches: req.querystring.swatches,
-        pview: 'tile'
-    };
+    var productTileParams = { pview: 'tile' };
+    Object.keys(req.querystring).forEach(function (key) {
+        productTileParams[key] = req.querystring[key];
+    });
 
     var product;
     var productUrl;
@@ -166,29 +157,37 @@ server.get('ShowTile', function (req, res, next) {
         quickViewUrl = URLUtils.url('Home-Show');
     }
 
-    res.render('product/gridTile.isml', {
+    var context = {
         product: product,
         urls: {
             product: productUrl,
             quickView: quickViewUrl
         },
-        display: {
-            swatches: req.querystring.swatches,
-            reviews: req.querystring.reviews,
-            compare: req.querystring.compare === 'true',
-            comparisonPage: !!productTileParams.comparisonPage
+        display: {}
+    };
+
+    Object.keys(req.querystring).forEach(function (key) {
+        if (req.querystring[key] === 'true') {
+            context.display[key] = true;
+        } else if (req.querystring[key] === 'false') {
+            context.display[key] = false;
         }
     });
+
+    res.render('product/gridTile.isml', context);
 
     next();
 });
 
-server.get('ShowQuickView', function (req, res, next) {
+server.get('ShowQuickView', cache.applyPromotionSenstiveCache, function (req, res, next) {
     var params = req.querystring;
     var product = ProductFactory.get(params);
     var addToCartUrl = URLUtils.url('Cart-AddProduct');
+    var template = product.productType === 'set'
+        ? 'product/setQuickview.isml'
+        : 'product/quickview.isml';
 
-    res.render('product/quickview.isml', {
+    res.render(template, {
         product: product,
         addToCartUrl: addToCartUrl,
         resources: getResources()

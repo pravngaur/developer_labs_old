@@ -3,7 +3,8 @@
 var formatMoney = require('dw/util/StringUtils').formatMoney;
 var ProductBase = require('./../product/productBase').productBase;
 var renderTemplateHelper = require('~/cartridge/scripts/renderTemplateHelper');
-var helper = require('~/cartridge/scripts/dwHelpers');
+var collections = require('*/cartridge/scripts/util/collections');
+var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
 
 /**
  * get the min and max numbers to display in the quantity drop down.
@@ -28,6 +29,7 @@ function getMinMaxQuantityOptions(product, quantity) {
  */
 function getTotalPrice(lineItem) {
     var context;
+    var price;
     var result = {};
     var template = 'checkout/productCard/productCardProductRenderedTotalPrice';
 
@@ -35,7 +37,15 @@ function getTotalPrice(lineItem) {
         result.nonAdjustedPrice = formatMoney(lineItem.getPrice());
     }
 
-    result.price = formatMoney(lineItem.adjustedPrice);
+    price = lineItem.adjustedPrice;
+
+    // The platform does not include prices for selected option values in a line item product's
+    // price by default.  So, we must add the option price to get the correct line item total price.
+    collections.forEach(lineItem.optionProductLineItems, function (item) {
+        price = price.add(item.adjustedNetPrice);
+    });
+
+    result.price = formatMoney(price);
     context = { lineItem: { priceTotal: result } };
 
     result.renderedPrice = renderTemplateHelper.getRenderedHtml(context, template);
@@ -53,7 +63,7 @@ function getAppliedPromotions(lineItem) {
     var priceAdjustments;
 
     if (lineItem.priceAdjustments.getLength() > 0) {
-        priceAdjustments = helper.map(lineItem.priceAdjustments, function (priceAdjustment) {
+        priceAdjustments = collections.map(lineItem.priceAdjustments, function (priceAdjustment) {
             return {
                 callOutMsg: priceAdjustment.promotion.calloutMsg ?
                     priceAdjustment.promotion.calloutMsg.markup : null,
@@ -87,6 +97,50 @@ function getRenderedPromotions(appliedPromotions) {
 }
 
 /**
+ * Retrieve product's options and default selected values from product line item
+ *
+ * @param {dw.util.Collection.<dw.order.ProductLineItem>} optionProductLineItems - Option product
+ *     line items
+ * @param {string} productId - Line item product ID
+ * @return {string []} - Product line item options
+ */
+function getLineItemOptions(optionProductLineItems, productId) {
+    return collections.map(optionProductLineItems, function (item) {
+        return {
+            productId: productId,
+            optionId: item.optionID,
+            selectedValueId: item.optionValueID
+        };
+    });
+}
+
+/**
+ * Retrieve product's options and default selected values from product line item
+ *
+ * @param {dw.util.Collection.<dw.order.ProductLineItem>} optionProductLineItems - Option product
+ *     line items
+ * @return {string[]} - Product line item option display values
+ */
+function getLineItemOptionNames(optionProductLineItems) {
+    return collections.map(optionProductLineItems, function (item) {
+        return item.productName;
+    });
+}
+/**
+ * Retrieve product's options and default values
+ *
+ * @param {dw.catalog.ProductOptionModel} optionModel - A product's option model
+ * @param {dw.util.Collection.<dw.catalog.ProductOption>} options - A product's configured options
+ * @return {string []} - Product line item options
+ */
+function getDefaultOptions(optionModel, options) {
+    return collections.map(options, function (option) {
+        var selectedValue = optionModel.getSelectedOptionValue(option);
+        return option.displayName + ': ' + selectedValue.displayValue;
+    });
+}
+
+/**
  * @constructor
  * @classdesc A product model that represents a single product in the cart.
  *
@@ -102,6 +156,17 @@ function ProductLineItem(product, productVariables, quantity, lineItem, promotio
     this.variationModel = this.getVariationModel(safeProduct, productVariables);
     this.product = this.variationModel && this.variationModel.selectedVariant ?
         this.variationModel.selectedVariant : safeProduct;
+
+    var optionModel = this.product.optionModel;
+    var optionLineItems = lineItem.optionProductLineItems;
+    this.currentOptionModel = productHelper.getCurrentOptionModel(
+        optionModel,
+        getLineItemOptions(optionLineItems, this.product.ID)
+    );
+    this.options = optionLineItems.length
+        ? getLineItemOptionNames(optionLineItems)
+        : getDefaultOptions(optionModel, optionModel.options);
+
     this.imageConfig = {
         types: ['small'],
         quantity: 'single'
@@ -142,6 +207,14 @@ ProductLineItem.prototype.initialize = function () {
 };
 
 /**
+ * @typedef SelectedOption
+ * @type Object
+ * @property {string} optionId - Product option ID
+ * @property {string} productId - Product ID
+ * @property {string} selectedValueId - Selected product option value ID
+ */
+
+/**
  * @constructor
  * @classdesc Wrapper around productLineItem model
  *
@@ -150,6 +223,7 @@ ProductLineItem.prototype.initialize = function () {
  * @param {number} quantity - The quantity of this product line item currently in the baskets
  * @param {dw.order.ProductLineItem} lineItem - API ProductLineItem instance
  * @param {dw.util.Collection.<dw.campaign.Promotion>} promotions - a collection of promotions
+ * @param {SelectedOption[]} selectedOptions - Dictionary object of selected options
  */
 function ProductWrapper(product, productVariables, quantity, lineItem, promotions) {
     var productLineItem = new ProductLineItem(
@@ -163,7 +237,7 @@ function ProductWrapper(product, productVariables, quantity, lineItem, promotion
     var items = ['id', 'productName', 'price', 'productType', 'images', 'rating',
         'variationAttributes', 'quantityOptions', 'priceTotal', 'isBonusProductLineItem', 'isGift',
         'UUID', 'quantity', 'isOrderable', 'promotions', 'appliedPromotions', 'renderedPromotions',
-        'attributes', 'availability', 'isAvailableForInStorePickup'];
+        'attributes', 'availability', 'isAvailableForInStorePickup', 'options'];
 
     items.forEach(function (item) {
         this[item] = productLineItem[item];

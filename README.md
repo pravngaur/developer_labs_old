@@ -3,7 +3,7 @@
 This is a repository for the mobile-optimized version of SiteGenesis.
 
 SiteGenesis Mobile First has a base cartridge (`app_storefront_base`) provided by Commerce Cloud that is never directly customized or edited. Instead, customization cartridges are layered on top of the base cartridge. This change is intended to allow for easier adoption of new features and bug fixes.
-SiteGenesis Mobile-First supplies an apple_pay plugin cartridge to demonstrate how to layer customizations for SiteGenesis.
+SiteGenesis Mobile-First supplies an [plugin_applepay](https://bitbucket.org/demandware/plugin-applepay) plugin cartridge to demonstrate how to layer customizations for SiteGenesis.
 
 Your feedback on the ease-of-use and limitations of this new architecture is invaluable during the developer preview. Particularly, feedback on any issues you encounter or workarounds you develop for efficiently customizing the base cartridge without editing it directly.
 
@@ -11,17 +11,17 @@ Your feedback on the ease-of-use and limitations of this new architecture is inv
 
 1 Clone this repository.
 
-2 Upload the `modules` folder to the WebDav location for cartridges for your Sandbox through CyberDuck or any other WebDAV client.
-*Note:* you can't upload the modules folder through Studio.
-You can upload via dwupload command. For example:
+2 Run `npm install` to install all of the local dependancies
+
+3 Run `npm run compile:js` from the command line that would compile all client-side JS files. Run `npm run compile:scss` and `npm run compile:fonts` that would do the same for css and fonts.
 
 dwupload --hostname sbox01-realm1-mycompany.demandware.net --username admin --password "MyPassword" --cartridge modules
 
-3 Upload the `app_storefront_base` and `applepay` cartridges via Studio or use a WebDAV client to upload it to the WebDAV Cartridge location.
+5 Use https://bitbucket.org/demandware/sitegenesisdata to zip and import site date on your sandbox.
 
-4 Add the `app_storefront_base` and `applepay` cartridges to your cartridge path.
+6 Add the `app_storefront_base` cartridge to your cartridge path.
 
-5 Install npm modules for the project in the root directory of the project: `npm install`.
+7 You should now be ready to navigate to and use your site.
 
 
 # NPM scripts
@@ -39,21 +39,23 @@ Use the provided NPM scripts to compile and upload changes to your Sandbox.
 
 ## Watching for changes and uploading
 
-`npm run watch:static` - Watches js and scss files for changes, recompiles them and uploads result to the sandbox. Requires a valid dw.json file at the root that is configured for the sandbox to upload.
-
-`npm run watch:cartridge` - Watches all cartridge files (except for static content) and uploads it to sandbox. Requires a valid dw.json file at the root that is configured for the sandbox to upload.
-
 `npm run watch` - Watches everything and recompiles (if necessary) and uploads to the sandbox. Requires a valid dw.json file at the root that is configured for the sandbox to upload.
+
+## Uploading
+
+`npm run uploadCartridge` - Will upload both `app_storefront_base` and `modules` to the server. Requires a valid dw.json file at the root that is configured for the sandbox to upload.
+
+`npm run upload <filepath>` - Will upload a given file to the server. Requires a valid dw.json file.
 
 #Testing
 ## Running unit tests
 
-You can run `npm test` to execute all unit tests in the project. Run `npm test --coverage` to get coverage information. Coverage will be available in `coverage` folder under root directory.
+You can run `npm test` to execute all unit tests in the project. Run `npm run cover` to get coverage information. Coverage will be available in `coverage` folder under root directory.
 
 * UNIT test code coverage:
 1. Open a terminal and navigate to the root directory of the mfsg repository.
 2. Enter the command: `npm run cover`.
-3. Examine the report that is generated. For example: `Writing coverage reports at [/Users/zsardoone/Demandware/mfsg/coverage]`
+3. Examine the report that is generated. For example: `Writing coverage reports at [/Users/yourusername/SCC/mfsg/coverage]`
 3. Navigate to this directory on your local machine, open up the index.html file. This file contains a detailed report.
 
 ## Running integration tests
@@ -175,7 +177,7 @@ npm run test:functional:sauce -- --baseUrl http://sbox01-realm1-company.demandwa
 ```
 
 ```
-npm run test:functional:sauce -- --baseUrl http://sbox01-realm1-company.demandware.net/s/SiteGenesis --sauce --client appium —name appiumIntegrationBranch
+npm run test:functional:sauce -- --baseUrl http://sbox01-realm1-company.demandware.net/s/SiteGenesis --sauce --client appium â€”name appiumIntegrationBranch
 ```
 
 **Note:** To run both browsers with one command :

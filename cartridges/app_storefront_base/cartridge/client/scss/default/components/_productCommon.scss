@@ -39,6 +39,10 @@
         position: static;
         padding: 0 0.9375em;
     }
+
+    .price {
+        text-align: center;
+    }
 }
 
 .prices {
@@ -67,14 +71,14 @@ div.quantity {
 }
 
 .add-to-cart-messages {
+    transform: translate(-50%, -50%);
     position: fixed;
     top: 15%;
     left: 50%;
 }
 
 .add-to-basket-alert {
-    transform: translate(-50%, -50%);
-    animation: fade 10s linear forwards;
+    animation: fade 5s linear forwards;
     box-shadow: 1px 1px 5px grey;
 
     @keyframes fade {
@@ -117,4 +121,8 @@ div.availability {
 .container.product-detail {
     margin-top: 2em;
     margin-bottom: 2em;
+}
+
+.product-option:not(:first-child) {
+    margin-top: 1.071em;
 }

@@ -19,21 +19,53 @@ var variationAttrsMock = [{
     }]
 }];
 
+var option1Mock = {
+    values: [{ abc: '123' }]
+};
+
 describe('fullProduct', function () {
     var FullProduct = proxyquire('../../../../../cartridges/app_storefront_base/cartridge/models/product/product', {
         './productBase': proxyquire('../../../../../cartridges/app_storefront_base/cartridge/models/product/productBase', {
             './productImages': function () {},
             './productAttributes': function () { return variationAttrsMock; },
-            '../../scripts/dwHelpers': proxyquire('../../../../../cartridges/app_storefront_base/cartridge/scripts/dwHelpers', {
+            '*/cartridge/scripts/util/collections': proxyquire('../../../../../cartridges/app_storefront_base/cartridge/scripts/util/collections', {
                 'dw/util/ArrayList': ArrayList
             }),
             '../../scripts/factories/price': { getPrice: function () {} },
             'dw/web/Resource': {
                 msgf: function () { return 'some string with param'; },
                 msg: function () { return 'some string'; }
+            },
+            '*/cartridge/scripts/helpers/productHelpers': {
+                getSelectedOptionsUrl: function () { return ''; }
             }
         }),
-        'dw/web/URLUtils': { url: function () { return { relative: function () { return 'some url'; } }; } }
+        '*/cartridge/scripts/helpers/productHelpers': {
+            getOptions: function () { return [option1Mock]; },
+            getCurrentOptionModel: function () {},
+            getSelectedOptionsUrl: function () { return ''; }
+        },
+        '*/cartridge/scripts/helpers/urlHelpers': {
+            appendQueryParams: function () {}
+        },
+        'dw/web/URLUtils': {
+            url: function () {
+                return {
+                    relative: function () {
+                        return 'some url';
+                    },
+                    append: function () {
+                        return {
+                            relative: function () {
+                                return {
+                                    toString: function () {}
+                                };
+                            }
+                        };
+                    }
+                };
+            }
+        }
     });
 
     var attributeModel = {
@@ -82,6 +114,32 @@ describe('fullProduct', function () {
         }
     };
 
+    var selectedOptionsMock = new ArrayList([option1Mock]);
+    var optionModelMock = {
+        getOptions: function () {
+            return new ArrayList([option1Mock]);
+        },
+        getPrice: function (value) {
+            return {
+                toFormattedString: function () {
+                    return value.price;
+                },
+                decimalValue: 9.99
+            };
+        },
+        getOptionValue: function () {},
+        getSelectedOptionValue: function (option) {
+            return option.values[0];
+        },
+        setSelectedOptionValue: function () {},
+        urlSelectOptionValue: function () {
+            return {
+                toString: function () { return 'optionUrl'; }
+            };
+        },
+        options: new ArrayList([option1Mock])
+    };
+
     var productVariantMock = {
         ID: '1234567',
         name: 'test product',
@@ -99,7 +157,11 @@ describe('fullProduct', function () {
         minOrderQuantity: {
             value: 2
         },
-        attributeModel: attributeModel
+        stepQuantity: {
+            value: 1
+        },
+        attributeModel: attributeModel,
+        optionModel: optionModelMock
     };
 
     var productMock = {
@@ -122,12 +184,22 @@ describe('fullProduct', function () {
                     relative: {
                         return: 'some url',
                         type: 'function'
+                    },
+                    append: function () {
+                        return {
+                            relative: function () {
+                                return {
+                                    toString: function () {}
+                                };
+                            }
+                        };
                     }
                 },
                 type: 'function'
             }
         },
-        attributeModel: attributeModel
+        attributeModel: attributeModel,
+        optionModel: optionModelMock
     };
 
     var promotions = new ArrayList([{
@@ -142,7 +214,7 @@ describe('fullProduct', function () {
 
     it('should load simple full product', function () {
         var mock = toProductMock(productMock);
-        var product = new FullProduct(mock, null, null, promotions);
+        var product = new FullProduct(mock, null, null, promotions, selectedOptionsMock);
 
         assert.equal(product.productName, 'test product');
         assert.equal(product.id, 1234567);
@@ -157,7 +229,7 @@ describe('fullProduct', function () {
         tempMock.variationModel.selectedVariant = null;
         tempMock = Object.assign({}, productVariantMock, tempMock);
         tempMock.minOrderQuantity.value = null;
-        var product = new FullProduct(toProductMock(tempMock), null, null, promotions);
+        var product = new FullProduct(toProductMock(tempMock), null, null, promotions, selectedOptionsMock);
 
         assert.equal(product.minOrderQuantity, 1);
         assert.equal(product.maxOrderQuantity, 9);
@@ -178,7 +250,7 @@ describe('fullProduct', function () {
         tempMock.variationModel.selectedVariant = null;
         tempMock = Object.assign({}, productVariantMock, tempMock);
         tempMock.minOrderQuantity.value = null;
-        var product = new FullProduct(toProductMock(tempMock), null, null, promotions);
+        var product = new FullProduct(toProductMock(tempMock), null, null, promotions, selectedOptionsMock);
 
         assert.deepEqual(product.promotions, expectedPromotions);
     });
@@ -188,7 +260,7 @@ describe('fullProduct', function () {
         tempMock.variationModel.selectedVariant = null;
         tempMock = Object.assign({}, productVariantMock, tempMock);
         tempMock.minOrderQuantity.value = null;
-        var product = new FullProduct(toProductMock(tempMock), null, null);
+        var product = new FullProduct(toProductMock(tempMock), null, null, null, selectedOptionsMock);
 
         assert.deepEqual(product.promotions, null);
     });
@@ -198,18 +270,18 @@ describe('fullProduct', function () {
         tempMock.variationModel.selectedVariant = null;
         tempMock = Object.assign({}, productVariantMock, tempMock);
         tempMock.variationModel.master = true;
-        var product = new FullProduct(toProductMock(tempMock));
+        var product = new FullProduct(toProductMock(tempMock), null, null, null, selectedOptionsMock);
 
         assert.equal(product.productName, 'test product');
         assert.equal(product.id, 1234567);
         assert.equal(product.rating, 4);
     });
 
-    it('should create a url form the selected attributes', function () {
+    it('should have options when associated', function () {
         var tempMock = Object.assign({}, productMock);
         tempMock = Object.assign({}, productVariantMock, tempMock);
-        var product = new FullProduct(toProductMock(tempMock), null, null);
+        var product = new FullProduct(toProductMock(tempMock), null, null, null, selectedOptionsMock);
 
-        assert.equal(product.selectedVariantUrl, 'some url');
+        assert.deepEqual(product.options, [option1Mock]);
     });
 });

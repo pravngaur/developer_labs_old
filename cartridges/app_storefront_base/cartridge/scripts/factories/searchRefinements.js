@@ -1,6 +1,6 @@
 'use strict';
 
-var dwHelper = require('~/cartridge/scripts/dwHelpers');
+var collections = require('*/cartridge/scripts/util/collections');
 
 /**
  * Retrieves attribute refinement value model
@@ -11,16 +11,16 @@ var dwHelper = require('~/cartridge/scripts/dwHelpers');
  */
 function getAttributeRefinementValueModel(refinementDefinition) {
     if (refinementDefinition.priceRefinement) {
-        return require('~/cartridge/models/search/attributeRefinementValue/price');
+        return require('*/cartridge/models/search/attributeRefinementValue/price');
     } else if (refinementDefinition.attributeID === 'refinementColor') {
-        return require('~/cartridge/models/search/attributeRefinementValue/color');
+        return require('*/cartridge/models/search/attributeRefinementValue/color');
     } else if (refinementDefinition.attributeID === 'size') {
-        return require('~/cartridge/models/search/attributeRefinementValue/size');
+        return require('*/cartridge/models/search/attributeRefinementValue/size');
     } else if (refinementDefinition.categoryRefinement) {
-        return require('~/cartridge/models/search/attributeRefinementValue/category');
+        return require('*/cartridge/models/search/attributeRefinementValue/category');
     }
 
-    return require('~/cartridge/models/search/attributeRefinementValue/boolean');
+    return require('*/cartridge/models/search/attributeRefinementValue/boolean');
 }
 
 /**
@@ -45,7 +45,7 @@ function createCategorySearchRefinement(productSearch, refinementDefinition, Mod
         topCategory.subCategories.push(childCategory);
         insertPoint = topCategory.subCategories[0].subCategories;
     }
-    dwHelper.forEach(currentCategory.subCategories, function (category) {
+    collections.forEach(currentCategory.subCategories, function (category) {
         if (category.online) {
             insertPoint.push(new Model(productSearch, refinementDefinition, category, false));
         }
@@ -70,7 +70,7 @@ function createProductSearchRefinement(productSearch,
     var catalogMgr = require('dw/catalog/CatalogMgr');
     var tree = [];
     var mappedList = {};
-    dwHelper.forEach(refinementValues, function (value) {
+    collections.forEach(refinementValues, function (value) {
         var category = catalogMgr.getCategory(value.value);
         mappedList[value.value] = new Model(
             productSearch,
@@ -118,7 +118,7 @@ function get(productSearch, refinementDefinition, refinementValues) {
             Model);
     }
 
-    return dwHelper.map(refinementValues, function (value) {
+    return collections.map(refinementValues, function (value) {
         return new Model(productSearch, refinementDefinition, value);
     });
 }

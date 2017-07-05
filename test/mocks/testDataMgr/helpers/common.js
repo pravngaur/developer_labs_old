@@ -7,12 +7,12 @@ import * as customers from '../customers';
 
 export const defaultLocale = 'x_default';
 export const supportedLocales = [
-    'en_US',
-    'en_GB',
-    'fr_FR',
-    'it_IT',
-    'ja_JP',
-    'zh_CN'
+    'en_US'
+    // 'en_GB',
+    // 'fr_FR',
+    // 'it_IT',
+    // 'ja_JP',
+    // 'zh_CN'
 ];
 export const PRIMARY_CONTENT = '.container';
 export const CATEGORYSLOT = '.category-slot .category-tile';
@@ -51,7 +51,7 @@ export function selectAttributeByDropDown(attributeName, index) {
     let selector = '.select-' + attributeName;
     return browser.waitForVisible(selector)
         .then(() => browser.selectByIndex(selector, index))
-        .then(() => browser.pause(3000));
+        .then(() => browser.pause(1000));
 }
 
 // function isAttributeSelected(selector) {
@@ -91,7 +91,7 @@ export function addProductVariationToBasket(product, btnAdd) {
             return Promise.resolve();
         })
         .then(() => {
-            return browser.waitForEnabled(btnAdd, 3000)
+            return browser.waitForEnabled(btnAdd, 1000)
                 .click(btnAdd);
         })
         .then(() => Promise.resolve());
@@ -253,7 +253,7 @@ export function createPaymentData(creditCard) {
     const paymentData = {};
 
     const nextYear = new Date().getFullYear() + 1;
-    const creditCardExpiredYear = nextYear.toString() + '.0';
+    const creditCardExpiredYear = nextYear.toString();
 
     const creditCardExpiredMonth = 12;
     const paymentPhone = '781-425-1010';

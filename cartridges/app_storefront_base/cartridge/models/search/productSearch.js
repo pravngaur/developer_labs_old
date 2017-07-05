@@ -1,8 +1,9 @@
 'use strict';
 
-var dwHelper = require('~/cartridge/scripts/dwHelpers');
-var searchRefinementsFactory = require('~/cartridge/scripts/factories/searchRefinements');
+var collections = require('*/cartridge/scripts/util/collections');
+var searchRefinementsFactory = require('*/cartridge/scripts/factories/searchRefinements');
 var URLUtils = require('dw/web/URLUtils');
+var ProductSortOptions = require('*/cartridge/models/search/productSortOptions');
 
 var ACTION_ENDPOINT = 'Search-Show';
 var DEFAULT_PAGE_SIZE = 12;
@@ -33,7 +34,7 @@ function getResetLink(search, httpParams) {
  * @return {Refinement[]} - List of parsed refinements
  */
 function getRefinements(productSearch, refinements, refinementDefinitions) {
-    return dwHelper.map(refinementDefinitions, function (definition) {
+    return collections.map(refinementDefinitions, function (definition) {
         var refinementValues = refinements.getAllRefinementValues(definition);
         var values = searchRefinementsFactory.get(productSearch, definition, refinementValues);
 
@@ -108,19 +109,33 @@ function getPagingModel(productHits, count, pageSize, startIndex) {
 /**
  * Generates URL for [Show] More button
  *
- * @param {dw.web.PagingModel} paging - PagingModel instance
  * @param {dw.catalog.ProductSearchModel} productSearch - Product search object
+ * @param {Object} httpParams - HTTP query parameters
  * @return {string} - More button URL
  */
-function getShowMoreUrl(paging, productSearch) {
+function getShowMoreUrl(productSearch, httpParams) {
     var showMoreEndpoint = 'Search-UpdateGrid';
-    var currentPageSize = paging.getPageSize();
-    var morePageSize = currentPageSize < productSearch.count
-        ? currentPageSize + DEFAULT_PAGE_SIZE
-        : currentPageSize;
-    var baseUrl = productSearch.url(showMoreEndpoint);
+    var currentStart = httpParams.start || 0;
+    var pageSize = httpParams.sz || DEFAULT_PAGE_SIZE;
+    var hitsCount = productSearch.count;
+    var paging = getPagingModel(
+        productSearch.productSearchHits,
+        hitsCount,
+        pageSize,
+        currentStart
+    );
+    var endIdx = paging.getEnd();
+    var nextStart = endIdx + 1 < hitsCount ? endIdx + 1 : null;
 
-    return paging.appendPageSize(baseUrl, morePageSize);
+    if (!nextStart) {
+        return '';
+    }
+
+    paging.setStart(nextStart);
+
+    var baseUrl = productSearch.url(showMoreEndpoint);
+    var finalUrl = paging.appendPaging(baseUrl);
+    return finalUrl;
 }
 
 /**
@@ -129,12 +144,20 @@ function getShowMoreUrl(paging, productSearch) {
  *
  * @param {dw.catalog.ProductSearchModel} productSearch - Product search object
  * @param {Object} httpParams - HTTP query parameters
+ * @param {string} sortingRule - Sorting option rule ID
+ * @param {dw.util.ArrayList.<dw.catalog.SortingOption>} sortingOptions - Options to sort search
+ *     results
+ * @param {dw.catalog.Category} rootCategory - Search result's root category if applicable
  */
-function ProductSearch(productSearch, httpParams) {
+function ProductSearch(productSearch, httpParams, sortingRule, sortingOptions, rootCategory) {
+    this.pageSize = httpParams.sz || DEFAULT_PAGE_SIZE;
+
+    var startIdx = httpParams.start || 0;
     var paging = getPagingModel(
         productSearch.productSearchHits,
         productSearch.count,
-        httpParams.sz || DEFAULT_PAGE_SIZE
+        this.pageSize,
+        startIdx
     );
 
     this.count = productSearch.count;
@@ -149,8 +172,20 @@ function ProductSearch(productSearch, httpParams) {
     this.selectedFilters = getSelectedFilters(this.refinements);
     this.resetLink = getResetLink(productSearch, httpParams);
     this.bannerImageUrl = productSearch.category ? getBannerImageUrl(productSearch.category) : null;
-    this.productIds = dwHelper.pluck(paging.pageElements, 'productID');
-    this.showMoreUrl = getShowMoreUrl(paging, productSearch);
+    this.productIds = collections.map(paging.pageElements, function (item) {
+        return {
+            productID: item.productID,
+            productSearchHit: item
+        };
+    });
+    this.productSort = new ProductSortOptions(
+        productSearch,
+        sortingRule,
+        sortingOptions,
+        rootCategory,
+        paging
+    );
+    this.showMoreUrl = getShowMoreUrl(productSearch, httpParams);
 
     if (productSearch.category) {
         this.category = {

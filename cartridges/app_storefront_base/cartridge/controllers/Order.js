@@ -8,16 +8,28 @@ var Resource = require('dw/web/Resource');
 var Transaction = require('dw/system/Transaction');
 var URLUtils = require('dw/web/URLUtils');
 
-var OrderModel = require('~/cartridge/models/order');
+var OrderModel = require('*/cartridge/models/order');
 
-var OrderHelpers = require('~/cartridge/scripts/order/orderHelpers');
+var OrderHelpers = require('*/cartridge/scripts/order/orderHelpers');
+var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
+var userLoggedIn = require('*/cartridge/scripts/middleware/userLoggedIn');
 
-
-server.get('Confirm', function (req, res, next) {
+server.get('Confirm', csrfProtection.generateToken, function (req, res, next) {
     var order = OrderMgr.getOrder(req.querystring.ID);
+    var token = req.querystring.token ? req.querystring.token : null;
+
+    if (!order || !token || token !== order.orderToken) {
+        res.render('/error', {
+            message: Resource.msg('error.confirmation.error', 'confirmation', null)
+        });
+
+        return next();
+    }
+
     var config = {
         numberOfLineItems: '*'
     };
+
     var orderModel = new OrderModel(order, { config: config });
     var passwordForm;
 
@@ -36,80 +48,87 @@ server.get('Confirm', function (req, res, next) {
         });
     }
 
-    next();
+    return next();
 });
 
-server.post('Track', server.middleware.https, function (req, res, next) {
-    var order;
-    var validForm = true;
+server.post(
+    'Track',
+    server.middleware.https,
+    csrfProtection.validateRequest,
+    csrfProtection.generateToken,
+    function (req, res, next) {
+        var order;
+        var validForm = true;
 
-    var profileForm = server.forms.getForm('profile');
-    profileForm.clear();
+        var profileForm = server.forms.getForm('profile');
+        profileForm.clear();
 
-    if (req.form.trackOrderEmail && req.form.trackOrderPostal && req.form.trackOrderNumber) {
-        order = OrderMgr.getOrder(req.form.trackOrderNumber);
-    } else {
-        validForm = false;
-    }
-
-    if (!order) {
-        res.render('/account/login', {
-            navTabValue: 'login',
-            orderTrackFormError: validForm,
-            profileForm: profileForm,
-            userName: ''
-        });
-        next();
-    } else {
-        var config = {
-            numberOfLineItems: '*'
-        };
-        var orderModel = new OrderModel(order, { config: config });
-
-        // check the email and postal code of the form
-        if (req.form.trackOrderEmail !== orderModel.orderEmail) {
-            validForm = false;
-        }
-
-        if (req.form.trackOrderPostal
-            !== orderModel.billing.billingAddress.address.postalCode) {
-            validForm = false;
-        }
-
-        if (validForm) {
-            var exitLinkText;
-            var exitLinkUrl;
-
-            exitLinkText = !req.currentCustomer.profile
-                ? Resource.msg('link.continue.shop', 'order', null)
-                : Resource.msg('link.orderdetails.myaccount', 'account', null);
-
-            exitLinkUrl = !req.currentCustomer.profile
-                ? URLUtils.https('Home-Show')
-                : URLUtils.https('Account-Show');
-
-            res.render('account/orderdetails', {
-                order: orderModel,
-                exitLinkText: exitLinkText,
-                exitLinkUrl: exitLinkUrl
-            });
+        if (req.form.trackOrderEmail && req.form.trackOrderPostal && req.form.trackOrderNumber) {
+            order = OrderMgr.getOrder(req.form.trackOrderNumber);
         } else {
+            validForm = false;
+        }
+
+        if (!order) {
             res.render('/account/login', {
                 navTabValue: 'login',
+                orderTrackFormError: validForm,
                 profileForm: profileForm,
-                orderTrackFormError: !validForm,
                 userName: ''
             });
+            next();
+        } else {
+            var config = {
+                numberOfLineItems: '*'
+            };
+            var orderModel = new OrderModel(order, { config: config });
+
+            // check the email and postal code of the form
+            if (req.form.trackOrderEmail !== orderModel.orderEmail) {
+                validForm = false;
+            }
+
+            if (req.form.trackOrderPostal
+                !== orderModel.billing.billingAddress.address.postalCode) {
+                validForm = false;
+            }
+
+            if (validForm) {
+                var exitLinkText;
+                var exitLinkUrl;
+
+                exitLinkText = !req.currentCustomer.profile
+                    ? Resource.msg('link.continue.shop', 'order', null)
+                    : Resource.msg('link.orderdetails.myaccount', 'account', null);
+
+                exitLinkUrl = !req.currentCustomer.profile
+                    ? URLUtils.https('Home-Show')
+                    : URLUtils.https('Account-Show');
+
+                res.render('account/orderdetails', {
+                    order: orderModel,
+                    exitLinkText: exitLinkText,
+                    exitLinkUrl: exitLinkUrl
+                });
+            } else {
+                res.render('/account/login', {
+                    navTabValue: 'login',
+                    profileForm: profileForm,
+                    orderTrackFormError: !validForm,
+                    userName: ''
+                });
+            }
+
+            next();
         }
-
-        next();
     }
-});
+);
 
-server.get('History', server.middleware.https, function (req, res, next) {
-    if (!req.currentCustomer.profile) {
-        res.redirect(URLUtils.url('Login-Show'));
-    } else {
+server.get(
+    'History',
+    server.middleware.https,
+    userLoggedIn.validateLoggedIn,
+    function (req, res, next) {
         var ordersResult = OrderHelpers.getOrders(req.currentCustomer, req.querystring);
         var orders = ordersResult.orders;
         var filterValues = ordersResult.filterValues;
@@ -131,14 +150,15 @@ server.get('History', server.middleware.https, function (req, res, next) {
             accountlanding: false,
             breadcrumbs: breadcrumbs
         });
+        next();
     }
-    next();
-});
+);
 
-server.get('Details', server.middleware.https, function (req, res, next) {
-    if (!req.currentCustomer.profile) {
-        res.redirect(URLUtils.url('Login-Show'));
-    } else {
+server.get(
+    'Details',
+    server.middleware.https,
+    userLoggedIn.validateLoggedIn,
+    function (req, res, next) {
         var order = OrderMgr.getOrder(req.querystring.orderID);
         var orderCustomerNo = req.currentCustomer.profile.customerNo;
         var currentCustomerNo = order.customer.profile.customerNo;
@@ -175,14 +195,21 @@ server.get('Details', server.middleware.https, function (req, res, next) {
         } else {
             res.redirect(URLUtils.url('Account-Show'));
         }
+        next();
     }
-    next();
-});
+);
 
-server.get('Filtered', server.middleware.https, function (req, res, next) {
-    if (!req.currentCustomer.profile) {
-        res.redirect(URLUtils.url('Login-Show'));
-    } else {
+server.get(
+    'Filtered',
+    server.middleware.https,
+    userLoggedIn.validateLoggedInAjax,
+    function (req, res, next) {
+        var data = res.getViewData();
+        if (data && !data.loggedin) {
+            res.json();
+            return next();
+        }
+
         var ordersResult = OrderHelpers.getOrders(req.currentCustomer, req.querystring);
         var orders = ordersResult.orders;
         var filterValues = ordersResult.filterValues;
@@ -193,84 +220,96 @@ server.get('Filtered', server.middleware.https, function (req, res, next) {
             orderFilter: req.querystring.orderFilter,
             accountlanding: false
         });
+        return next();
     }
-    next();
-});
+);
 
-server.post('CreateAccount', server.middleware.https, function (req, res, next) {
-    var formErrors = require('~/cartridge/scripts/formErrors');
+server.post(
+    'CreateAccount',
+    server.middleware.https,
+    csrfProtection.validateAjaxRequest,
+    function (req, res, next) {
+        var data = res.getViewData();
+        if (data && data.csrfError) {
+            res.json();
+            return next();
+        }
 
-    var passwordForm = server.forms.getForm('newpasswords');
-    var newPassword = passwordForm.newpassword.htmlValue;
-    var confirmPassword = passwordForm.newpasswordconfirm.htmlValue;
-    if (newPassword !== confirmPassword) {
-        passwordForm.valid = false;
-        passwordForm.newpasswordconfirm.valid = false;
-        passwordForm.newpasswordconfirm.error =
-            Resource.msg('error.message.mismatch.newpassword', 'forms', null);
+        var formErrors = require('*/cartridge/scripts/formErrors');
+
+        var passwordForm = server.forms.getForm('newpasswords');
+        var newPassword = passwordForm.newpassword.htmlValue;
+        var confirmPassword = passwordForm.newpasswordconfirm.htmlValue;
+        if (newPassword !== confirmPassword) {
+            passwordForm.valid = false;
+            passwordForm.newpasswordconfirm.valid = false;
+            passwordForm.newpasswordconfirm.error =
+                Resource.msg('error.message.mismatch.newpassword', 'forms', null);
+        }
+
+        var order = OrderMgr.getOrder(req.querystring.ID);
+
+        var registrationObj = {
+            firstName: order.billingAddress.firstName,
+            lastName: order.billingAddress.lastName,
+            phone: order.billingAddress.phone,
+            email: order.customerEmail,
+            password: newPassword
+        };
+
+        if (passwordForm.valid) {
+            res.setViewData(registrationObj);
+
+            this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
+                var registrationData = res.getViewData();
+
+                var login = registrationData.email;
+                var password = registrationData.password;
+                var newCustomer;
+                var authenticatedCustomer;
+                var newCustomerProfile;
+                var registeredUser;
+
+                // attempt to create a new user and log that user in.
+                try {
+                    Transaction.wrap(function () {
+                        newCustomer = CustomerMgr.createCustomer(login, password);
+                        authenticatedCustomer =
+                            CustomerMgr.loginCustomer(login, password, false);
+                        if (newCustomer && authenticatedCustomer.authenticated) {
+                            // assign values to the profile
+                            newCustomerProfile = newCustomer.getProfile();
+                            newCustomerProfile.firstName = registrationData.firstName;
+                            newCustomerProfile.lastName = registrationData.lastName;
+                            newCustomerProfile.phoneHome = registrationData.phone;
+                            newCustomerProfile.email = registrationData.email;
+                            order.setCustomer(newCustomer);
+                            registeredUser = {
+                                email: login,
+                                firstName: registrationData.firstName,
+                                lastName: registrationData.lastName
+                            };
+                            OrderHelpers.sendConfirmationEmail(registeredUser);
+                            res.json({
+                                success: true,
+                                redirectUrl: URLUtils.url('Account-Show').toString()
+                            });
+                        }
+                    });
+                } catch (e) {
+                    res.json({
+                        error: [Resource.msg('error.account.exists', 'checkout', null)]
+                    }); // Show error if the login email already exists
+                }
+            });
+        } else {
+            res.json({
+                fields: formErrors(passwordForm)
+            });
+        }
+
+        return next();
     }
-
-    var order = OrderMgr.getOrder(req.querystring.ID);
-
-    var registrationObj = {
-        firstName: order.billingAddress.firstName,
-        lastName: order.billingAddress.lastName,
-        phone: order.billingAddress.phone,
-        email: order.customerEmail,
-        password: newPassword
-    };
-
-    if (passwordForm.valid) {
-        res.setViewData(registrationObj);
-
-        this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
-            var registrationData = res.getViewData();
-
-            var login = registrationData.email;
-            var password = registrationData.password;
-            var newCustomer;
-            var authenticatedCustomer;
-            var newCustomerProfile;
-            var registeredUser;
-
-            // attempt to create a new user and log that user in.
-            try {
-                Transaction.wrap(function () {
-                    newCustomer = CustomerMgr.createCustomer(login, password);
-                    authenticatedCustomer =
-                        CustomerMgr.loginCustomer(login, password, false);
-                    if (newCustomer && authenticatedCustomer.authenticated) {
-                        // assign values to the profile
-                        newCustomerProfile = newCustomer.getProfile();
-                        newCustomerProfile.firstName = registrationData.firstName;
-                        newCustomerProfile.lastName = registrationData.lastName;
-                        newCustomerProfile.phoneHome = registrationData.phone;
-                        newCustomerProfile.email = registrationData.email;
-                        order.setCustomer(newCustomer);
-                        registeredUser = {
-                            email: login,
-                            firstName: registrationData.firstName,
-                            lastName: registrationData.lastName
-                        };
-                        OrderHelpers.sendConfirmationEmail(registeredUser);
-                        res.json({
-                            success: true,
-                            redirectUrl: URLUtils.url('Account-Show').toString()
-                        });
-                    }
-                });
-            } catch (e) {
-                res.json({
-                    error: [Resource.msg('error.account.exists', 'checkout', null)]
-                }); // Show error if the login email already exists
-            }
-        });
-    } else {
-        res.json({
-            fields: formErrors(passwordForm)
-        });
-    }
-    next();
-});
+);
 
 module.exports = server.exports();

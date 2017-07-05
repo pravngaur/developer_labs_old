@@ -2,8 +2,7 @@
 
 var PaymentMgr = require('dw/order/PaymentMgr');
 var PaymentInstrument = require('dw/order/PaymentInstrument');
-
-var helper = require('~/cartridge/scripts/dwHelpers');
+var collections = require('*/cartridge/scripts/util/collections');
 
 /**
  * Creates an array of objects containing applicable payment methods
@@ -13,16 +12,12 @@ var helper = require('~/cartridge/scripts/dwHelpers');
  *      current cart
  */
 function applicablePaymentMethods(paymentMethods) {
-    var results = [];
-    helper.forEach(paymentMethods, function (method) {
-        if (method.ID === 'CREDIT_CARD') {
-            results.push({
-                ID: method.ID,
-                name: method.name
-            });
-        }
+    return collections.map(paymentMethods, function (method) {
+        return {
+            ID: method.ID,
+            name: method.name
+        };
     });
-    return results;
 }
 
 /**
@@ -33,7 +28,7 @@ function applicablePaymentMethods(paymentMethods) {
  *      current basket.
  */
 function applicablePaymentCards(paymentCards) {
-    return helper.map(paymentCards, function (card) {
+    return collections.map(paymentCards, function (card) {
         return {
             cardType: card.cardType,
             name: card.name
@@ -48,7 +43,7 @@ function applicablePaymentCards(paymentCards) {
  * @returns {Array} Array of objects that contain information about the selected payment instruments
  */
 function getSelectedPaymentInstruments(selectedPaymentInstruments) {
-    return helper.map(selectedPaymentInstruments, function (paymentInstrument) {
+    return collections.map(selectedPaymentInstruments, function (paymentInstrument) {
         var results = {
             paymentMethod: paymentInstrument.paymentMethod,
             amount: paymentInstrument.paymentTransaction.amount.value
@@ -87,8 +82,7 @@ function Payment(currentBasket, currentCustomer, countryCode) {
         .getApplicablePaymentCards(currentCustomer, countryCode, paymentAmount.value);
     var paymentInstruments = currentBasket.paymentInstruments;
 
-
-	// TODO: Should compare currentBasket and currentCustomer and countryCode to see
+    // TODO: Should compare currentBasket and currentCustomer and countryCode to see
     //     if we need them or not
     this.applicablePaymentMethods =
         paymentMethods ? applicablePaymentMethods(paymentMethods) : null;

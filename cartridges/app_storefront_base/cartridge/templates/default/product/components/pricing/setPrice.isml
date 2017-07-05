@@ -1,0 +1,10 @@
+<div class="price">
+    <span class="starting">
+        ${Resource.msg('label.starting_from', 'pricing', null)}
+        <isif condition="${productCopy.price.min}"> 
+            ${productCopy.price.min.sales.formatted}
+        <iselse>
+            ${productCopy.price.sales.formatted}
+        </isif>
+    </span>
+</div>

@@ -9,13 +9,16 @@ describe('productBase', function () {
     var ProductBase = proxyquire('../../../../../cartridges/app_storefront_base/cartridge/models/product/productBase', {
         './productImages': function () {},
         './productAttributes': function () { return []; },
-        '../../scripts/dwHelpers': proxyquire('../../../../../cartridges/app_storefront_base/cartridge/scripts/dwHelpers', {
+        '*/cartridge/scripts/util/collections': proxyquire('../../../../../cartridges/app_storefront_base/cartridge/scripts/util/collections', {
             'dw/util/ArrayList': ArrayList
         }),
         '../../scripts/factories/price': { getPrice: function () {} },
         'dw/web/Resource': {
             msgf: function (params) { return params; },
             msg: function (params) { return params; }
+        },
+        '*/cartridge/scripts/helpers/productHelpers': {
+            getSelectedOptionsUrl: function () { return ''; }
         }
     });
 
@@ -121,6 +124,7 @@ describe('productBase', function () {
         master: true,
         attributeModel: attributeModel,
         availabilityModel: availabilityModelMock,
+        optionModel: { options: [] },
         minOrderQuantity: {
             value: 2
         }

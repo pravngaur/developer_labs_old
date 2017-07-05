@@ -1,6 +1,7 @@
 'use strict';
 
-var dwHelpers = require('../../scripts/dwHelpers');
+var collections = require('*/cartridge/scripts/util/collections');
+var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
 var VariationAttributesModel = require('./productAttributes');
 var ImageModel = require('./productImages');
 var priceFactory = require('../../scripts/factories/price');
@@ -63,7 +64,7 @@ function getRating(id) {
  * @return {Promotion} - JSON representation of Promotion instance
  */
 function getPromotions(promotions) {
-    return dwHelpers.map(promotions, function (promotion) {
+    return collections.map(promotions, function (promotion) {
         return {
             calloutMsg: promotion.calloutMsg ? promotion.calloutMsg.markup : null,
             details: promotion.details ? promotion.details.markup : null,
@@ -91,9 +92,9 @@ function getVariationModel(product, productVariables) {
         var variationAttrs = variationModel.productVariationAttributes;
         Object.keys(productVariables).forEach(function (attr) {
             if (attr && productVariables[attr].value) {
-                var dwAttr = dwHelpers.find(variationAttrs,
-                    function (item) { return item.attributeID === attr; });
-                var dwAttrValue = dwHelpers.find(variationModel.getAllValues(dwAttr),
+                var dwAttr = collections.find(variationAttrs,
+                    function (item) { return item.ID === attr; });
+                var dwAttrValue = collections.find(variationModel.getAllValues(dwAttr),
                     function (item) { return item.value === productVariables[attr].value; });
 
                 if (dwAttr && dwAttrValue) {
@@ -116,27 +117,30 @@ function getAttributes(product) {
     var visibleAttributeGroups = attributeModel.visibleAttributeGroups;
 
     if (visibleAttributeGroups.getLength() > 0) {
-        attributes = dwHelpers.map(attributeModel.visibleAttributeGroups, function (group) {
+        attributes = collections.map(attributeModel.visibleAttributeGroups, function (group) {
             var visibleAttributeDef = attributeModel.getVisibleAttributeDefinitions(group);
             var attributeResult = {};
 
             attributeResult.ID = group.ID;
             attributeResult.name = group.displayName;
-            attributeResult.attributes = dwHelpers.map(visibleAttributeDef, function (definition) {
-                var definitionResult = {};
-                definitionResult.label = definition.displayName;
+            attributeResult.attributes = collections.map(
+                visibleAttributeDef,
+                function (definition) {
+                    var definitionResult = {};
+                    definitionResult.label = definition.displayName;
 
-                if (definition.multiValueType) {
-                    definitionResult.value = attributeModel.getDisplayValue(definition).map(
-                        function (item) {
-                            return item;
-                        });
-                } else {
-                    definitionResult.value = [attributeModel.getDisplayValue(definition)];
+                    if (definition.multiValueType) {
+                        definitionResult.value = attributeModel.getDisplayValue(definition).map(
+                            function (item) {
+                                return item;
+                            });
+                    } else {
+                        definitionResult.value = [attributeModel.getDisplayValue(definition)];
+                    }
+
+                    return definitionResult;
                 }
-
-                return definitionResult;
-            });
+            );
 
             return attributeResult;
         });
@@ -244,7 +248,7 @@ function ProductBase(product, productVariables, quantity, promotions) {
         types: ['medium'],
         quantity: 'single'
     };
-    this.quantity = quantity;
+    this.quantity = quantity || this.product.minOrderQuantity.value;
 
     this.variationAttributeConfig = {
         attributes: ['color'],
@@ -259,16 +263,22 @@ ProductBase.prototype = {
     initialize: function () {
         this.id = this.product.ID;
         this.productName = this.product.name;
+        this.currentOptionModel = this.currentOptionModel || this.product.optionModel;
         this.price = priceFactory.getPrice(this.product, null, this.useSimplePrice,
-            this.apiPromotions);
+            this.apiPromotions, this.currentOptionModel);
         this.productType = getProductType(this.product);
         this.images = this.variationModel
             ? new ImageModel(this.variationModel, this.imageConfig)
             : new ImageModel(this.product, this.imageConfig);
         this.rating = getRating(this.id);
+        var selectedOptionsQueryParams = productHelper.getSelectedOptionsUrl(
+            this.currentOptionModel);
         this.variationAttributes = this.variationModel
             ? (new VariationAttributesModel(
-                this.variationModel, this.variationAttributeConfig)).slice(0)
+                this.variationModel,
+                this.variationAttributeConfig,
+                selectedOptionsQueryParams,
+                this.quantity)).slice(0)
             : null;
         this.promotions = this.apiPromotions ? getPromotions(this.apiPromotions) : null;
         this.attributes = getAttributes(this.product);
@@ -284,7 +294,6 @@ ProductBase.prototype = {
     getVariationModel: function (product, productVariables) {
         return getVariationModel(product, productVariables);
     }
-
 };
 
 /**

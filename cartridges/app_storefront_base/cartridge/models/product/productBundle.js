@@ -1,7 +1,7 @@
 'use strict';
 
 var ProductBase = require('./productBase').productBase;
-var helper = require('../../scripts/dwHelpers');
+var collections = require('*/cartridge/scripts/util/collections');
 
 var DEFAULT_MAX_ORDER_QUANTITY = 9;
 
@@ -41,12 +41,33 @@ function isReadyToOrder(bundledProducts) {
  * @returns {Array} Array of products in a bundle
  */
 function getBundledProducts(apiBundle, bundledProducts, productFactory) {
-    return helper.map(bundledProducts, function (bundledProduct) {
+    return collections.map(bundledProducts, function (bundledProduct) {
         return productFactory.get({
             pid: bundledProduct.ID,
             quantity: apiBundle.getBundledProductQuantity(bundledProduct).value
         });
     });
+}
+
+/**
+ * Compile quantity meta for pull-down menu selection
+ *
+ * @param {number} minOrderQty - Minimum order quantity
+ * @param {number} stepQuantity - Quantity increment from one value to the next
+ * @param {number} size - Number of quantity values to include in drop-down menu
+ * @return {Array} - Quantity options for PDP pull-down menu
+ */
+function getQuantities(minOrderQty, stepQuantity, size) {
+    var listSize = size || DEFAULT_MAX_ORDER_QUANTITY;
+    var quantities = [];
+    var value;
+    var valueString;
+    for (var i = 1; i < listSize + 1; i++) {
+        value = minOrderQty * i * stepQuantity;
+        valueString = value.toString();
+        quantities.push({ value: valueString });
+    }
+    return quantities;
 }
 
 /**
@@ -83,6 +104,11 @@ ProductBundle.prototype.initialize = function () {
     this.readyToOrder = isReadyToOrder(this.bundledProducts);
     this.longDescription = this.product.longDescription;
     this.shortDescription = this.product.shortDescription;
+    this.quantities = getQuantities(
+        this.product.minOrderQuantity.value,
+        this.product.stepQuantity.value,
+        this.maxOrderQuantity
+    );
 };
 
 /**
@@ -101,8 +127,8 @@ function ProductWrapper(product, quantity, promotions, productFactory) {
         productFactory
     );
     var items = ['id', 'productName', 'price', 'productType', 'images', 'rating', 'bundledProducts',
-        'available', 'online', 'searchable', 'minOrderQuantity', 'maxOrderQuantity', 'readyToOrder',
-        'promotions', 'longDescription', 'shortDescription'];
+        'available', 'availability', 'online', 'searchable', 'minOrderQuantity', 'maxOrderQuantity',
+        'readyToOrder', 'promotions', 'longDescription', 'shortDescription', 'quantities'];
     items.forEach(function (item) {
         this[item] = productBundle[item];
     }, this);

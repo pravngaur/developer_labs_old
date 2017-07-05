@@ -1,11 +1,11 @@
 'use strict';
 
 var money = require('dw/value/Money');
-var dwHelpers = require('../dwHelpers');
-var priceHelper = require('../helpers/pricing');
-var DefaultPrice = require('../../models/price/default');
-var RangePrice = require('../../models/price/range');
-var TieredPrice = require('../../models/price/tiered');
+var collections = require('*/cartridge/scripts/util/collections');
+var priceHelper = require('*/cartridge/scripts/helpers/pricing');
+var DefaultPrice = require('*/cartridge/models/price/default');
+var RangePrice = require('*/cartridge/models/price/range');
+var TieredPrice = require('*/cartridge/models/price/tiered');
 var PROMOTION_CLASS_PRODUCT = require('dw/campaign/Promotion').PROMOTION_CLASS_PRODUCT;
 
 
@@ -47,7 +47,7 @@ function getListPrice(priceModel) {
  */
 function getPromotionPrice(product, promotions, currentOptionModel) {
     var price = money.NOT_AVAILABLE;
-    var promotion = dwHelpers.find(promotions, function (promo) {
+    var promotion = collections.find(promotions, function (promo) {
         return promo.promotionClass && promo.promotionClass.equals(PROMOTION_CLASS_PRODUCT);
     });
 
@@ -78,7 +78,7 @@ function getPrice(inputProduct, currency, useSimplePrice, promotions, currentOpt
     var listPrice;
     var product = inputProduct;
     var promotionPrice = money.NOT_AVAILABLE;
-    var priceModel = product.getPriceModel();
+    var priceModel = product.getPriceModel(currentOptionModel);
     var priceTable = priceModel.getPriceTable();
 
     // TIERED

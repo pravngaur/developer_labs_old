@@ -15,7 +15,7 @@
            max-length="16" missing-error="error.message.required" />
 
     <field formid="cardNumber" label="label.input.creditcard.number" type="string" mandatory="true" binding="cardNumber"
-           max-length="16" missing-error="error.message.required" />
+           max-length="16" missing-error="error.message.required" parse-error="error.message.required" />
 
     <field formid="cardOwner" label="label.input.creditcard.owner" type="string" mandatory="true" binding="cardOwner"
            max-length="16" missing-error="error.message.required" />
@@ -47,7 +47,7 @@
     </field>
 
     <field formid="securityCode" label="profile.securitycode" type="string" mandatory="true" binding="securityCode"
-           max-length="3" missing-error="error.card.info.missing.securityCode" />
+           max-length="4" missing-error="error.card.info.missing.securityCode" />
 
     <field formid="email" label="profile.email" type="string" mandatory="true" binding="email"
            max-length="254" missing-error="error.card.info.missing.email" />
@@ -55,5 +55,6 @@
     <field formid="phone" label="profile.phone" description="address.phone.example" type="string" mandatory="true"
            binding="phone" max-length="20" missing-error="error.card.info.missing.phone" />
 
+    <field formid="saveCard" label="label.save.card" binding="saveCard" type="boolean" mandatory="false" checked="true" />
 
 </form>

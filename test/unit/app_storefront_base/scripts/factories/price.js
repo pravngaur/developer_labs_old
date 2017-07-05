@@ -3,7 +3,7 @@
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 var sinon = require('sinon');
-var mockDwHelpers = require('../../../../mocks/dwHelpers');
+var mockCollections = require('../../../../mocks/util/collections');
 
 
 describe('priceFactory', function () {
@@ -19,10 +19,10 @@ describe('priceFactory', function () {
     var PROMOTION_CLASS_PRODUCT = 'awesome promotion';
 
     var priceFactory = proxyquire('../../../../../cartridges/app_storefront_base/cartridge/scripts/factories/price.js', {
-        '../dwHelpers': {
-            find: mockDwHelpers.find
+        '*/cartridge/scripts/util/collections': {
+            find: mockCollections.find
         },
-        '../helpers/pricing': {
+        '*/cartridge/scripts/helpers/pricing': {
             getRootPriceBook: function () { return { ID: '123' }; }
         },
         'dw/campaign/PromotionMgr': {
@@ -30,9 +30,9 @@ describe('priceFactory', function () {
                 getProductPromotions: stubGetProductPromotions
             }
         },
-        '../../models/price/default': spyDefaultPrice,
-        '../../models/price/range': stubRangePrice,
-        '../../models/price/tiered': spyTieredPrice,
+        '*/cartridge/models/price/default': spyDefaultPrice,
+        '*/cartridge/models/price/range': stubRangePrice,
+        '*/cartridge/models/price/tiered': spyTieredPrice,
         'dw/campaign/Promotion': {
             PROMOTION_CLASS_PRODUCT: PROMOTION_CLASS_PRODUCT
         },

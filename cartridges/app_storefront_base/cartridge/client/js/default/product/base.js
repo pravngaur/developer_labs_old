@@ -1,11 +1,42 @@
 'use strict';
 
 /**
+ * Retrieves the relevant pid value
+ * @param {jquery} $el - DOM container for a given add to cart button
+ * @return {string} - value to be used when adding product to cart
+ */
+function getPidValue($el) {
+    var pid;
+
+    if ($('#quickViewModal').hasClass('show') && !$('.product-set').length) {
+        pid = $($el).closest('.modal-content').find('.product-quickview').data('pid');
+    } else if ($('.product-set-detail').length || $('.product-set').length) {
+        pid = $($el).closest('.product-detail').find('.product-id').text();
+    } else {
+        pid = $('.product-detail:not(".bundle-item")').data('pid');
+    }
+
+    return pid;
+}
+
+/**
+ * Retrieve contextual quantity selector
+ * @param {jquery} $el - DOM container for the relevant quantity
+ * @return {jquery} - quantity selector DOM container
+ */
+function getQuantitySelector($el) {
+    return $el && $('.set-items').length
+        ? $($el).closest('.product-detail').find('.quantity-select')
+        : $('.quantity-select');
+}
+
+/**
  * Retrieves the value associated with the Quantity pull-down menu
+ * @param {jquery} $el - DOM container for the relevant quantity
  * @return {string} - value found in the quantity input
  */
-function getQuantitySelected() {
-    return $('.quantity-select').val();
+function getQuantitySelected($el) {
+    return getQuantitySelector($el).val();
 }
 
 /**
@@ -74,19 +105,6 @@ function processNonSwatchValues(attr, $productContainer) {
             $attrValue.attr('disabled', true);
         }
     });
-}
-
-/**
- * Appends the quantity selected to the Ajax URL.  Used to determine product availability, which is
- * one criteria used to enable the "Add to Cart" button
- *
- * @param {string} url - Attribute value onClick URL used to [de]select an attribute value
- * @return {string} - The provided URL appended with the quantity selected in the query params or
- *     the original provided URL if no quantity selected
- */
-function appendQuantityToUrl(url) {
-    var quantitySelected = getQuantitySelected();
-    return !quantitySelected ? url : url + '&quantity=' + quantitySelected;
 }
 
 /**
@@ -183,6 +201,39 @@ function getAttributesHtml(attributes) {
 }
 
 /**
+ * @typedef UpdatedOptionValue
+ * @type Object
+ * @property {string} id - Option value ID for look up
+ * @property {string} url - Updated option value selection URL
+ */
+
+/**
+ * @typedef OptionSelectionResponse
+ * @type Object
+ * @property {string} priceHtml - Updated price HTML code
+ * @property {Object} options - Updated Options
+ * @property {string} options.id - Option ID
+ * @property {UpdatedOptionValue[]} options.values - Option values
+ */
+
+/**
+ * Updates DOM using post-option selection Ajax response
+ *
+ * @param {OptionSelectionResponse} options - Ajax response options from selecting a product option
+ * @param {jQuery} $productContainer - DOM element for current product
+ */
+function updateOptions(options, $productContainer) {
+    options.forEach(function (option) {
+        var $optionEl = $productContainer.find('.product-option[data-option-id*="' + option.id
+            + '"]');
+        option.values.forEach(function (value) {
+            var valueEl = $optionEl.find('option[data-value-id*="' + value.id + '"]');
+            valueEl.val(value.url);
+        });
+    });
+}
+
+/**
  * Parses JSON from Ajax call made whenever an attribute value is [de]selected
  * @param {Object} response - response from Ajax call
  * @param {Object} response.product - Product object
@@ -207,7 +258,10 @@ function handleVariantResponse(response, $productContainer) {
     });
 
     // Update pricing
-    $('.prices .price', $productContainer).replaceWith(response.product.price.html);
+    var $priceSelector = $('.prices .price', $productContainer).length
+        ? $('.prices .price', $productContainer)
+        : $('.prices .price');
+    $priceSelector.replaceWith(response.product.price.html);
 
     // Update promotions
     $('.promotions').empty().html(getPromotionsHtml(response.product.promotions));
@@ -225,16 +279,26 @@ function handleVariantResponse(response, $productContainer) {
 }
 
 /**
- * Retrieves url to use when updating a product view and appends the quantity
- * @param {string} selectedValueUrl - string The url used to indicate the product variation
- * @return {string|null} - the Url for the selected variation value
+ * @typespec UpdatedQuantity
+ * @type Object
+ * @property {boolean} selected - Whether the quantity has been selected
+ * @property {string} value - The number of products to purchase
+ * @property {string} url - Compiled URL that specifies variation attributes, product ID, options,
+ *     etc.
  */
-function createSelectedValueUrl(selectedValueUrl) {
-    if (selectedValueUrl && selectedValueUrl !== 'null') {
-        return appendQuantityToUrl(selectedValueUrl);
-    }
 
-    return null;
+/**
+ * Updates the quantity DOM elements post Ajax call
+ * @param {UpdatedQuantity[]} quantities -
+ * @param {jQuery} $productContainer - DOM container for a given product
+ */
+function updateQuantities(quantities, $productContainer) {
+    var optionsHtml = quantities.map(function (quantity) {
+        var selected = quantity.selected ? ' selected ' : '';
+        return '<option value="' + quantity.value + '"  data-url="' + quantity.url + '"' +
+            selected + '>' + quantity.value + '</option>';
+    }).join('');
+    getQuantitySelector($productContainer).empty().html(optionsHtml);
 }
 
 /**
@@ -253,9 +317,10 @@ function attributeSelect(selectedValueUrl, $productContainer) {
             method: 'GET',
             success: function (data) {
                 handleVariantResponse(data, $productContainer);
+                updateOptions(data.product.options, $productContainer);
+                updateQuantities(data.product.quantities, $productContainer);
                 $('body').trigger('product:afterAttributeSelect',
                     { data: data, container: $productContainer });
-                $('.quantity-select').data('action', data.product.selectedVariantUrl);
                 $.spinner().stop();
             },
             error: function () {
@@ -296,7 +361,7 @@ function handlePostCartAdd(response) {
 
     setTimeout(function () {
         $('.add-to-basket-alert').remove();
-    }, 10000);
+    }, 5000);
 }
 
 /**
@@ -305,10 +370,39 @@ function handlePostCartAdd(response) {
  *
  * @return {string[]} - List of selected bundle product item ID's
  */
-function getChildPids() {
-    return $('.bundle-item .product-id').map(function () {
-        return $(this).text();
-    }).get().join(',');
+function getChildProducts() {
+    var childProducts = [];
+    $('.bundle-item').each(function () {
+        childProducts.push({
+            pid: $(this).find('.product-id').text(),
+            quantity: parseInt($(this).find('label.quantity').data('quantity'), 10)
+        });
+    });
+
+    return childProducts.length ? JSON.stringify(childProducts) : [];
+}
+
+/**
+ * Retrieve product options
+ *
+ * @param {jQuery} $productContainer - DOM element for current product
+ * @return {string} - Product options and their selected values
+ */
+function getOptions($productContainer) {
+    var options = $productContainer
+        .find('.product-option')
+        .map(function () {
+            var $elOption = $(this).find('.options-select');
+            var urlValue = $elOption.val();
+            var selectedValueId = $elOption.find('option[value="' + urlValue + '"]')
+                .data('value-id');
+            return {
+                optionId: $(this).data('option-id'),
+                selectedValueId: selectedValueId
+            };
+        }).toArray();
+
+    return JSON.stringify(options);
 }
 
 module.exports = {
@@ -327,13 +421,12 @@ module.exports = {
                 $productContainer = $(this).closest('.product-quickview');
             }
 
-            var selectedValueUrl = createSelectedValueUrl(e.currentTarget.href);
-            attributeSelect(selectedValueUrl, $productContainer);
+            attributeSelect(e.currentTarget.href, $productContainer);
         });
     },
 
     selectAttribute: function () {
-        $(document).on('change', 'select[class*="select-"]', function (e) {
+        $(document).on('change', 'select[class*="select-"], .options-select', function (e) {
             e.preventDefault();
 
             var $productContainer = $(this).closest('.product-detail');
@@ -341,15 +434,13 @@ module.exports = {
                 $productContainer = $(this).closest('.product-quickview');
             }
 
-            var selectedValueUrl = createSelectedValueUrl(e.currentTarget.value);
-            attributeSelect(selectedValueUrl, $productContainer);
+            attributeSelect(e.currentTarget.value, $productContainer);
         });
     },
 
     availability: function () {
         $(document).on('change', '.quantity-select', function (e) {
             e.preventDefault();
-            var quantity = getQuantitySelected();
 
             var $productContainer = $(this).closest('.product-detail');
             if (!$productContainer.length) {
@@ -357,7 +448,7 @@ module.exports = {
             }
 
             if ($('.bundle-items', $productContainer).length === 0) {
-                attributeSelect($('.quantity-select').data('action') + '&quantity=' + quantity,
+                attributeSelect($(e.currentTarget).find('option:selected').data('url'),
                     $productContainer);
             }
         });
@@ -367,26 +458,51 @@ module.exports = {
         $(document).on('click', 'button.add-to-cart, button.add-to-cart-global', function () {
             var addToCartUrl;
             var pid;
+            var pidsObj;
+            var setPids;
 
             $('body').trigger('product:beforeAddToCart', this);
 
-            if ($('#quickViewModal').hasClass('show')) {
-                pid = $(this).closest('.modal-content').find('.product-quickview').data('pid');
-            } else {
-                pid = $('.product-detail:not(".bundle-item")').data('pid');
+            if ($('.set-items').length && $(this).hasClass('add-to-cart-global')) {
+                setPids = [];
+
+                $('.product-detail').each(function () {
+                    if (!$(this).hasClass('product-set-detail')) {
+                        setPids.push({
+                            pid: $(this).find('.product-id').text(),
+                            qty: $(this).find('.quantity-select').val(),
+                            options: getOptions($(this))
+                        });
+                    }
+                });
+                pidsObj = JSON.stringify(setPids);
+            }
+
+            pid = getPidValue($(this));
+
+            var $productContainer = $(this).closest('.product-detail');
+            if (!$productContainer.length) {
+                $productContainer = $(this).closest('.quick-view-dialog').find('.product-detail');
             }
 
             addToCartUrl = getAddToCartUrl();
+
+            var form = {
+                pid: pid,
+                pidsObj: pidsObj,
+                childProducts: getChildProducts(),
+                quantity: getQuantitySelected($(this))
+            };
+
+            if (!$('.bundle-item').length) {
+                form.options = getOptions($productContainer);
+            }
 
             if (addToCartUrl) {
                 $.ajax({
                     url: addToCartUrl,
                     method: 'POST',
-                    data: {
-                        pid: pid,
-                        childPids: getChildPids(),
-                        quantity: getQuantitySelected($(this))
-                    },
+                    data: form,
                     success: function (data) {
                         handlePostCartAdd(data);
                         $('body').trigger('product:afterAddToCart', data);

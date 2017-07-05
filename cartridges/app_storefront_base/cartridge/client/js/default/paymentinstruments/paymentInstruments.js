@@ -26,6 +26,12 @@ module.exports = {
                             '</h3><div>';
                             $('.paymentInstruments').after(toInsert);
                         }
+                    },
+                    error: function (err) {
+                        if (err.responseJSON.redirectUrl) {
+                            window.location.href = err.responseJSON.redirectUrl;
+                        }
+                        $.spinner().stop();
                     }
                 });
             });
@@ -52,7 +58,10 @@ module.exports = {
                         location.href = data.redirectUrl;
                     }
                 },
-                error: function () {
+                error: function (err) {
+                    if (err.responseJSON.redirectUrl) {
+                        window.location.href = err.responseJSON.redirectUrl;
+                    }
                     $form.spinner().stop();
                 }
             });

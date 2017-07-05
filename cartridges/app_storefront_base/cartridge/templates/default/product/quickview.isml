@@ -1,7 +1,8 @@
 <isset name="productCopy" value="${pdict.product}" scope="page"/>
 <isset name="product" value="${pdict.product}" scope="page"/>
-<isset name="isBundleOrSet" value="false" scope="page"/>
-<div class="product-quickview product-${product.productType} col product-wrapper" data-pid="${product.id}">
+<isset name="isBundle" value="${false}" scope="page"/>
+<isset name="isQuickView" value="${true}" scope="page"/>
+<div class="product-quickview product-${product.productType} col product-wrapper product-detail" data-pid="${product.id}">
     <div class="row">
         <!-- Product Images Carousel -->
         <isinclude template="product/components/image_carousel" />
@@ -40,6 +41,13 @@
                         </div>
                     </div>
                 </section>
+
+                <isif condition="${product.productType !== 'bundle'}">
+                    <!-- Options -->
+                    <isif condition="${product.options && product.options.length > 0}">
+                        <isinclude template="product/components/options" />
+                    </isif>
+                </isif>
             </div>
         </div>
     </div>

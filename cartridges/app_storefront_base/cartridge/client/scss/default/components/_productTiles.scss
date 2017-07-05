@@ -91,15 +91,7 @@
             }
         }
 
-        .compare {
-            text-align: right;
-            padding-right: 0;
-            font-size: 0.875em;
-        }
-
-        .reviews {
-            padding-left: 0;
-            padding-right: 0;
+        .ratings {
             font-size: 0.9em;
         }
     }
@@ -206,5 +198,13 @@
         border: none;
         border-bottom-right-radius: 0.1875rem;
         border-bottom-left-radius: 0.1875rem;
+
+        .prices .price {
+            font-size: 1.6em;
+        }
+    }
+
+    .prices .sales {
+        font-size: 1.5rem;
     }
 }

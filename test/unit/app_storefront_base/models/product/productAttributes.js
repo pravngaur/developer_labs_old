@@ -8,9 +8,12 @@ var toProductMock = require('../../../../util');
 describe('productAttributes', function () {
     var ProductAttributes = proxyquire('../../../../../cartridges/app_storefront_base/cartridge/models/product/productAttributes', {
         './productImages': function () {},
-        '../../scripts/dwHelpers': proxyquire('../../../../../cartridges/app_storefront_base/cartridge/scripts/dwHelpers', {
+        '*/cartridge/scripts/util/collections': proxyquire('../../../../../cartridges/app_storefront_base/cartridge/scripts/util/collections', {
             'dw/util/ArrayList': ArrayList
-        })
+        }),
+        '*/cartridge/scripts/helpers/urlHelpers': { appendQueryParams: function () {
+            return '?pid=25604524&dwvar_25604524_size=038&dwvar_25604524_color=BLACKFB';
+        } }
     });
 
     var variationsMock = {
@@ -168,7 +171,7 @@ describe('productAttributes', function () {
             value: '038',
             selectable: true,
             selected: false,
-            url: ''
+            url: 'attrID=something'
         }, {
             ID: '039',
             description: '',
@@ -176,7 +179,7 @@ describe('productAttributes', function () {
             value: '039',
             selectable: true,
             selected: false,
-            url: ''
+            url: 'attrID=something'
 
         }]);
 
