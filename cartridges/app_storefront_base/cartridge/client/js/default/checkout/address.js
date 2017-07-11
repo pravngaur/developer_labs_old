@@ -130,7 +130,9 @@ function getAddressFieldsFromUI(form) {
         city: $('input[name$=_city]', form).val(),
         postalCode: $('input[name$=_postalCode]', form).val(),
         stateCode: $('select[name$=_stateCode]', form).val(),
-        countryCode: $('select[name$=_countryCode]', form).val(),
+        countryCode: {
+            value: $('select[name$=_country]', form).val()
+        },
         phone: $('input[name$=_phone]', form).val()
     };
     return address;
@@ -163,6 +165,7 @@ module.exports = {
                 var $option = $($el.parents('form').find('.addressSelector option')[0]);
                 $option.attr('value', 'new');
                 $option.text('New Address');
+                $option.prop('selected', 'selected');
                 $el.parents('[data-address-mode]').attr('data-address-mode', 'new');
             } else {
                 // Handle shipping address case
