@@ -1,0 +1,7 @@
+@import "../../default/checkout/checkout";
+
+.order-receipt-label {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow:visible;
+}
