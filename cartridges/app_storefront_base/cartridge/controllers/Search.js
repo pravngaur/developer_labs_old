@@ -3,9 +3,6 @@
 var server = require('server');
 
 var CatalogMgr = require('dw/catalog/CatalogMgr');
-var search = require('*/cartridge/scripts/search/search');
-var ProductSearchModel = require('dw/catalog/ProductSearchModel');
-var ProductSearch = require('*/cartridge/models/search/productSearch');
 var cache = require('*/cartridge/scripts/middleware/cache');
 
 /**
@@ -16,6 +13,8 @@ var cache = require('*/cartridge/scripts/middleware/cache');
  * @return {dw.catalog.ProductSearchModel} - API search instance
  */
 function setupSearch(apiProductSearch, params) {
+    var search = require('*/cartridge/scripts/search/search');
+
     var sortingRule = params.srule ? CatalogMgr.getSortingRule(params.srule) : null;
     var selectedCategory = CatalogMgr.getCategory(params.cgid);
     selectedCategory = selectedCategory && selectedCategory.online ? selectedCategory : null;
@@ -40,6 +39,9 @@ function getCategoryTemplate(apiProductSearch) {
 }
 
 server.get('UpdateGrid', cache.applyPromotionSensitiveCache, function (req, res, next) {
+    var ProductSearchModel = require('dw/catalog/ProductSearchModel');
+    var ProductSearch = require('*/cartridge/models/search/productSearch');
+
     var apiProductSearch = new ProductSearchModel();
     apiProductSearch = setupSearch(apiProductSearch, req.querystring);
     apiProductSearch.search();
@@ -59,6 +61,10 @@ server.get('UpdateGrid', cache.applyPromotionSensitiveCache, function (req, res,
 });
 
 server.get('Show', cache.applyPromotionSensitiveCache, function (req, res, next) {
+    var ProductSearchModel = require('dw/catalog/ProductSearchModel');
+    var ProductSearch = require('*/cartridge/models/search/productSearch');
+    var reportingUrls = require('*/cartridge/scripts/reportingUrls');
+
     var categoryTemplate = '';
     var productSearch;
     var isAjax = Object.hasOwnProperty.call(req.httpHeaders, 'x-requested-with')
@@ -66,6 +72,7 @@ server.get('Show', cache.applyPromotionSensitiveCache, function (req, res, next)
     var resultsTemplate = isAjax ? 'search/searchresults_nodecorator' : 'search/searchresults';
     var apiProductSearch = new ProductSearchModel();
     var maxSlots = 4;
+    var reportingURLs;
 
     apiProductSearch = setupSearch(apiProductSearch, req.querystring);
     apiProductSearch.search();
@@ -79,6 +86,10 @@ server.get('Show', cache.applyPromotionSensitiveCache, function (req, res, next)
         CatalogMgr.getSiteCatalog().getRoot()
     );
 
+    if (productSearch.searchKeywords !== null && !productSearch.selectedFilters.length) {
+        reportingURLs = reportingUrls.getProductSearchReportingURLs(productSearch);
+    }
+
     if (
         productSearch.isCategorySearch
         && !productSearch.isRefinedCategorySearch
@@ -88,19 +99,22 @@ server.get('Show', cache.applyPromotionSensitiveCache, function (req, res, next)
         if (isAjax) {
             res.render(resultsTemplate, {
                 productSearch: productSearch,
-                maxSlots: maxSlots
+                maxSlots: maxSlots,
+                reportingURLs: reportingURLs
             });
         } else {
             res.render(categoryTemplate, {
                 productSearch: productSearch,
                 maxSlots: maxSlots,
-                category: apiProductSearch.category
+                category: apiProductSearch.category,
+                reportingURLs: reportingURLs
             });
         }
     } else {
         res.render(resultsTemplate, {
             productSearch: productSearch,
-            maxSlots: maxSlots
+            maxSlots: maxSlots,
+            reportingURLs: reportingURLs
         });
     }
 
