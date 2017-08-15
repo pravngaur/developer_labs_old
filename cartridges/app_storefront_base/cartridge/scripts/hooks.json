@@ -15,6 +15,10 @@
         {
             "name": "app.validate.basket",
             "script": "./hooks/validateBasket"
+        },
+        {
+            "name": "app.mail.sendMail",
+            "script": "./hooks/mail/mailHook"
         }
     ]
 }

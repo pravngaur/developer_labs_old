@@ -7,7 +7,6 @@ var collections = require('*/cartridge/scripts/util/collections');
 var BasketMgr = require('dw/order/BasketMgr');
 var HashMap = require('dw/util/HashMap');
 var HookMgr = require('dw/system/HookMgr');
-var Mail = require('dw/net/Mail');
 var OrderMgr = require('dw/order/OrderMgr');
 var PaymentInstrument = require('dw/order/PaymentInstrument');
 var PaymentMgr = require('dw/order/PaymentMgr');
@@ -517,26 +516,44 @@ function handlePayments(order, orderNumber) {
 function sendConfirmationEmail(order) {
     var OrderModel = require('*/cartridge/models/order');
 
-    var confirmationEmail = new Mail();
     var context = new HashMap();
+    var templateName = 'checkout/confirmation/confirmationEmail';
 
     var orderModel = new OrderModel(order);
 
     var orderObject = { order: orderModel };
 
-    confirmationEmail.addTo(order.customerEmail);
-    confirmationEmail.setSubject(Resource.msg('subject.order.confirmation.email', 'order', null));
-    confirmationEmail.setFrom(Site.current.getCustomPreferenceValue('customerServiceEmail')
-        || 'no-reply@salesforce.com');
+    // These context items are added to help keep compatibility with SG
+    context.CurrentForms = session.forms;
+    context.CurrentHttpParameterMap = request.httpParameterMap;
+    context.CurrentCustomer = customer;
+    context.Order = order;
 
     Object.keys(orderObject).forEach(function (key) {
         context.put(key, orderObject[key]);
     });
 
-    var template = new Template('checkout/confirmation/confirmationEmail');
+    var template = new Template(templateName);
     var content = template.render(context).text;
-    confirmationEmail.setContent(content, 'text/html', 'UTF-8');
-    confirmationEmail.send();
+
+    var hookID = 'app.mail.sendMail';
+    if (HookMgr.hasHook(hookID)) {
+        // expects a Status object returned from the hook call
+        HookMgr.callHook(
+            hookID,
+            'sendMail',
+            {
+                template: templateName,
+                fromEmail: Site.current.getCustomPreferenceValue('customerServiceEmail') || 'no-reply@salesforce.com',
+                toEmail: order.customerEmail,
+                subject: Resource.msg('subject.order.confirmation.email', 'order', null),
+                messageBody: content,
+                params: context
+            }
+        );
+    } else {
+        require('dw/system/Logger').error('No hook registered for {0}', hookID);
+    }
 }
 
 /**

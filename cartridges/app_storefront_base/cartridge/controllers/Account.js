@@ -81,16 +81,17 @@ function getPasswordResetToken(customer) {
 /**
  * Sends the email with password reset instructions
  * @param {string} email - email for password reset
- * @param {Object} resettingCustomer - the customer requesting password reset
+ * @param {dw.customer.Customer} resettingCustomer - the customer requesting password reset
  */
 function sendPasswordResetEmail(email, resettingCustomer) {
     var Resource = require('dw/web/Resource');
     var URLUtils = require('dw/web/URLUtils');
-    var Mail = require('dw/net/Mail');
     var Template = require('dw/util/Template');
     var Site = require('dw/system/Site');
     var HashMap = require('dw/util/HashMap');
+    var HookMgr = require('dw/system/HookMgr');
 
+    var templateName = 'account/password/passwordResetEmail';
     var template;
     var content;
     var passwordResetToken = getPasswordResetToken(resettingCustomer);
@@ -101,22 +102,40 @@ function sendPasswordResetEmail(email, resettingCustomer) {
         lastName: resettingCustomer.profile.lastName,
         url: url
     };
-    var resetPasswordEmail = new Mail();
     var context = new HashMap();
+
+    // These context items are added to help keep compatibility with SG
+    context.CurrentForms = session.forms;
+    context.CurrentHttpParameterMap = request.httpParameterMap;
+    context.CurrentCustomer = customer;
+    context.Customer = resettingCustomer;
+    context.ResetPasswordToken = passwordResetToken;
+
     Object.keys(objectForEmail).forEach(function (key) {
         context.put(key, objectForEmail[key]);
     });
 
-    resetPasswordEmail.addTo(email);
-    resetPasswordEmail.setSubject(
-        Resource.msg('subject.profile.resetpassword.email', 'login', null));
-    resetPasswordEmail.setFrom(Site.current.getCustomPreferenceValue('customerServiceEmail')
-        || 'no-reply@salesforce.com');
-
-    template = new Template('account/password/passwordResetEmail');
+    template = new Template(templateName);
     content = template.render(context).text;
-    resetPasswordEmail.setContent(content, 'text/html', 'UTF-8');
-    resetPasswordEmail.send();
+
+    var hookID = 'app.mail.sendMail';
+    if (HookMgr.hasHook(hookID)) {
+        // expects a Status object returned from the hook call
+        HookMgr.callHook(
+            hookID,
+            'sendMail',
+            {
+                template: templateName,
+                fromEmail: Site.current.getCustomPreferenceValue('customerServiceEmail') || 'no-reply@salesforce.com',
+                toEmail: email,
+                subject: Resource.msg('subject.profile.resetpassword.email', 'login', null),
+                messageBody: content,
+                params: context
+            }
+        );
+    } else {
+        require('dw/system/Logger').error('No hook registered for {0}', hookID);
+    }
 }
 
 server.get(

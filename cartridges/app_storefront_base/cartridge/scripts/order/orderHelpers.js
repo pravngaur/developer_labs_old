@@ -1,9 +1,9 @@
 'use strict';
 
 var HashMap = require('dw/util/HashMap');
-var Mail = require('dw/net/Mail');
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
+var HookMgr = require('dw/system/HookMgr');
 var Site = require('dw/system/Site');
 var Template = require('dw/util/Template');
 var Resource = require('dw/web/Resource');
@@ -95,8 +95,8 @@ function getOrders(currentCustomer, querystring) {
  * @returns {void}
  */
 function sendConfirmationEmail(registeredUser) {
-    var confirmationEmail = new Mail();
     var context = new HashMap();
+    var templateName = 'checkout/confirmation/accountRegisteredEmail';
     var template;
     var content;
 
@@ -107,21 +107,36 @@ function sendConfirmationEmail(registeredUser) {
         url: URLUtils.https('Login-Show')
     };
 
-    confirmationEmail.addTo(userObject.email);
-    confirmationEmail.setSubject(
-        Resource.msg('email.subject.new.registration', 'registration', null)
-    );
-    confirmationEmail.setFrom(Site.current.getCustomPreferenceValue('customerServiceEmail')
-        || 'no-reply@salesforce.com');
+    // These context items are added to help keep compatibility with SG
+    context.CurrentForms = session.forms;
+    context.CurrentHttpParameterMap = request.httpParameterMap;
+    context.CurrentCustomer = customer;
 
     Object.keys(userObject).forEach(function (key) {
         context.put(key, userObject[key]);
     });
 
-    template = new Template('checkout/confirmation/accountRegisteredEmail');
+    template = new Template(templateName);
     content = template.render(context).text;
-    confirmationEmail.setContent(content, 'text/html', 'UTF-8');
-    confirmationEmail.send();
+
+    var hookID = 'app.mail.sendMail';
+    if (HookMgr.hasHook(hookID)) {
+        // expects a Status object returned from the hook call
+        HookMgr.callHook(
+            hookID,
+            'sendMail',
+            {
+                template: templateName,
+                fromEmail: Site.current.getCustomPreferenceValue('customerServiceEmail') || 'no-reply@salesforce.com',
+                toEmail: userObject.email,
+                subject: Resource.msg('email.subject.new.registration', 'registration', null),
+                messageBody: content,
+                params: context
+            }
+        );
+    } else {
+        require('dw/system/Logger').error('No hook registered for {0}', hookID);
+    }
 }
 
 module.exports = {
