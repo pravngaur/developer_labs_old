@@ -442,6 +442,7 @@ server.post(
             if (!COHelpers.isShippingAddressInitialized()) {
                 // First use always applies to defaultShipment
                 COHelpers.copyShippingAddressToShipment(result, basket.defaultShipment);
+                shipment = basket.defaultShipment;
             } else {
                 try {
                     Transaction.wrap(function () {
@@ -576,6 +577,13 @@ server.get(
         Transaction.wrap(function () {
             COHelpers.ensureNoEmptyShipments(req);
         });
+
+        if (currentBasket.currencyCode !== req.session.currency.currencyCode) {
+            Transaction.wrap(function () {
+                currentBasket.updateCurrency();
+            });
+        }
+
         COHelpers.recalculateBasket(currentBasket);
 
         var shippingForm = COHelpers.prepareShippingForm(currentBasket);
@@ -897,8 +905,11 @@ server.post(
                 var array = require('*/cartridge/scripts/util/array');
 
                 var currentBasket = BasketMgr.getCurrentBasket();
+                var billingData = res.getViewData();
 
                 if (!currentBasket) {
+                    delete billingData.paymentInformation;
+
                     res.json({
                         error: true,
                         cartError: true,
@@ -910,10 +921,12 @@ server.post(
                 }
 
                 var billingAddress = currentBasket.billingAddress;
-                var billingData = res.getViewData();
-
+                var billingForm = server.forms.getForm('billing');
                 var paymentMethodID = billingData.paymentMethod.value;
                 var result;
+
+                billingForm.creditCardFields.cardNumber.htmlValue = '';
+                billingForm.creditCardFields.securityCode.htmlValue = '';
 
                 Transaction.wrap(function () {
                     if (!billingAddress) {
@@ -947,8 +960,10 @@ server.post(
                     noPaymentMethod[billingData.paymentMethod.htmlName] =
                         Resource.msg('error.no.selected.payment.method', 'creditCard', null);
 
+                    delete billingData.paymentInformation;
+
                     res.json({
-                        form: server.forms.getForm('billing'),
+                        form: billingForm,
                         fieldErrors: [noPaymentMethod],
                         serverErrors: [],
                         error: true
@@ -1001,8 +1016,10 @@ server.post(
 
                 // need to invalidate credit card fields
                 if (result.error) {
+                    delete billingData.paymentInformation;
+
                     res.json({
-                        form: server.forms.getForm('billing'),
+                        form: billingForm,
                         fieldErrors: result.fieldErrors,
                         serverErrors: result.serverErrors,
                         error: true
@@ -1078,11 +1095,13 @@ server.post(
                     accountModel
                 );
 
+                delete billingData.paymentInformation;
+
                 res.json({
                     renderedPaymentInstruments: renderedStoredPaymentInstrument,
                     customer: accountModel,
                     order: basketModel,
-                    form: server.forms.getForm('billing'),
+                    form: billingForm,
                     error: false
                 });
             });
