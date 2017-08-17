@@ -86,13 +86,12 @@ function getPasswordResetToken(customer) {
 function sendPasswordResetEmail(email, resettingCustomer) {
     var Resource = require('dw/web/Resource');
     var URLUtils = require('dw/web/URLUtils');
-    var Template = require('dw/util/Template');
     var Site = require('dw/system/Site');
-    var HashMap = require('dw/util/HashMap');
     var HookMgr = require('dw/system/HookMgr');
+    var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
 
     var templateName = 'account/password/passwordResetEmail';
-    var template;
+    var context;
     var content;
     var passwordResetToken = getPasswordResetToken(resettingCustomer);
     var url = URLUtils.https('Account-SetNewPassword', 'token', passwordResetToken);
@@ -100,20 +99,14 @@ function sendPasswordResetEmail(email, resettingCustomer) {
         passwordResetToken: passwordResetToken,
         firstName: resettingCustomer.profile.firstName,
         lastName: resettingCustomer.profile.lastName,
-        url: url
+        url: url,
+        // These context items are added to help keep compatibility with SG
+        Customer: resettingCustomer,
+        ResetPasswordToken: passwordResetToken
     };
-    var context = new HashMap();
 
-    // These context items are added to help keep compatibility with SG
-    context.Customer = resettingCustomer;
-    context.ResetPasswordToken = passwordResetToken;
-
-    Object.keys(objectForEmail).forEach(function (key) {
-        context.put(key, objectForEmail[key]);
-    });
-
-    template = new Template(templateName);
-    content = template.render(context).text;
+    context = renderTemplateHelper.getMappedObject(objectForEmail);
+    content = renderTemplateHelper.getRenderedHtml(context, templateName);
 
     var hookID = 'app.mail.sendMail';
     if (HookMgr.hasHook(hookID)) {
@@ -666,9 +659,7 @@ server.post('SaveNewPassword', server.middleware.https, function (req, res, next
             var CustomerMgr = require('dw/customer/CustomerMgr');
             var URLUtils = require('dw/web/URLUtils');
             var Mail = require('dw/net/Mail');
-            var Template = require('dw/util/Template');
             var Site = require('dw/system/Site');
-            var HashMap = require('dw/util/HashMap');
 
             var formInfo = res.getViewData();
             var status;
@@ -690,30 +681,45 @@ server.post('SaveNewPassword', server.middleware.https, function (req, res, next
                     token: token
                 });
             } else {
+                var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
+
+                var templateName = 'account/password/passwordChangedEmail';
+                var context;
+                var content;
+
                 var email = resettingCustomer.profile.email;
                 var url = URLUtils.https('Login-Show');
+
                 var objectForEmail = {
                     firstName: resettingCustomer.profile.firstName,
                     lastName: resettingCustomer.profile.lastName,
-                    url: url
+                    url: url,
+                    // These context items are added to help keep compatibility with SG
+                    Customer: resettingCustomer
                 };
-                var passwordChangedEmail = new Mail();
-                var context = new HashMap();
-                Object.keys(objectForEmail).forEach(function (key) {
-                    context.put(key, objectForEmail[key]);
-                });
 
-                passwordChangedEmail.addTo(email);
-                passwordChangedEmail.setSubject(
-                    Resource.msg('subject.profile.resetpassword.email', 'login', null));
-                passwordChangedEmail.setFrom(
-                    Site.current.getCustomPreferenceValue('customerServiceEmail')
-                    || 'no-reply@salesforce.com');
+                context = renderTemplateHelper.getMappedObject(objectForEmail);
+                content = renderTemplateHelper.getRenderedHtml(context, templateName);
 
-                var template = new Template('account/password/passwordChangedEmail');
-                var content = template.render(context).text;
-                passwordChangedEmail.setContent(content, 'text/html', 'UTF-8');
-                passwordChangedEmail.send();
+                var hookID = 'app.mail.sendMail';
+                if (HookMgr.hasHook(hookID)) {
+                    // expects a Status object returned from the hook call
+                    HookMgr.callHook(
+                        hookID,
+                        'sendMail',
+                        {
+                            template: templateName,
+                            fromEmail: Site.current.getCustomPreferenceValue('customerServiceEmail') || 'no-reply@salesforce.com',
+                            toEmail: email,
+                            subject: Resource.msg('subject.profile.resetpassword.email', 'login', null),
+                            messageBody: content,
+                            params: context
+                        }
+                    );
+                } else {
+                    require('dw/system/Logger').error('No hook registered for {0}', hookID);
+                }
+
                 res.redirect(URLUtils.url('Login-Show'));
             }
         });

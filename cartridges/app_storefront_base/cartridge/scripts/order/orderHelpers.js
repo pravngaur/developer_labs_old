@@ -1,11 +1,9 @@
 'use strict';
 
-var HashMap = require('dw/util/HashMap');
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
 var HookMgr = require('dw/system/HookMgr');
 var Site = require('dw/system/Site');
-var Template = require('dw/util/Template');
 var Resource = require('dw/web/Resource');
 var URLUtils = require('dw/web/URLUtils');
 
@@ -95,9 +93,9 @@ function getOrders(currentCustomer, querystring) {
  * @returns {void}
  */
 function sendConfirmationEmail(registeredUser) {
-    var context = new HashMap();
+    var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
+    var context;
     var templateName = 'checkout/confirmation/accountRegisteredEmail';
-    var template;
     var content;
 
     var userObject = {
@@ -107,12 +105,8 @@ function sendConfirmationEmail(registeredUser) {
         url: URLUtils.https('Login-Show')
     };
 
-    Object.keys(userObject).forEach(function (key) {
-        context.put(key, userObject[key]);
-    });
-
-    template = new Template(templateName);
-    content = template.render(context).text;
+    context = renderTemplateHelper.getMappedObject(userObject);
+    content = renderTemplateHelper.getRenderedHtml(context, templateName);
 
     var hookID = 'app.mail.sendMail';
     if (HookMgr.hasHook(hookID)) {

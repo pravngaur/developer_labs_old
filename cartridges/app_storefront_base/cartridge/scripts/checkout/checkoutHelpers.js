@@ -5,7 +5,6 @@ var server = require('server');
 var collections = require('*/cartridge/scripts/util/collections');
 
 var BasketMgr = require('dw/order/BasketMgr');
-var HashMap = require('dw/util/HashMap');
 var HookMgr = require('dw/system/HookMgr');
 var OrderMgr = require('dw/order/OrderMgr');
 var PaymentInstrument = require('dw/order/PaymentInstrument');
@@ -14,7 +13,6 @@ var Order = require('dw/order/Order');
 var Status = require('dw/system/Status');
 var Resource = require('dw/web/Resource');
 var Site = require('dw/system/Site');
-var Template = require('dw/util/Template');
 var Transaction = require('dw/system/Transaction');
 
 var AddressModel = require('*/cartridge/models/address');
@@ -516,22 +514,20 @@ function handlePayments(order, orderNumber) {
 function sendConfirmationEmail(order) {
     var OrderModel = require('*/cartridge/models/order');
 
-    var context = new HashMap();
+    var context;
+    var content;
     var templateName = 'checkout/confirmation/confirmationEmail';
 
     var orderModel = new OrderModel(order);
 
-    var orderObject = { order: orderModel };
+    var orderObject = {
+        order: orderModel,
+        // This context item is added to help keep compatibility with SG
+        Order: order
+    };
 
-    // This context item is added to help keep compatibility with SG
-    context.Order = order;
-
-    Object.keys(orderObject).forEach(function (key) {
-        context.put(key, orderObject[key]);
-    });
-
-    var template = new Template(templateName);
-    var content = template.render(context).text;
+    context = renderTemplateHelper.getMappedObject(orderObject);
+    content = renderTemplateHelper.getRenderedHtml(context, templateName);
 
     var hookID = 'app.mail.sendMail';
     if (HookMgr.hasHook(hookID)) {
