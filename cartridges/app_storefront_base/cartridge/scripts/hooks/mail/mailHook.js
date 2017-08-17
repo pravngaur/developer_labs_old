@@ -10,9 +10,6 @@ var Mail = require('dw/net/Mail');
  * @property {string} subject The communication subject
  * @property {string} messageBody The body of the communication to send
  * @property {dw/util/HashMap|dw.util.HashMap} params Object containing additional parameters for usage by the hook
- * @property {dw/web/Forms|dw.web.Forms} params.CurrentForms The forms available in current session
- * @property {dw/web/HttpParameterMap|dw.web.HttpParameterMap} params.CurrentHttpParameterMap The parameters in current request
- * @property {dw/customer/Customer|dw.customer.Customer} params.CurrentCustomer The current customer
  */
 
 /**

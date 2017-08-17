@@ -105,9 +105,6 @@ function sendPasswordResetEmail(email, resettingCustomer) {
     var context = new HashMap();
 
     // These context items are added to help keep compatibility with SG
-    context.CurrentForms = session.forms;
-    context.CurrentHttpParameterMap = request.httpParameterMap;
-    context.CurrentCustomer = customer;
     context.Customer = resettingCustomer;
     context.ResetPasswordToken = passwordResetToken;
 

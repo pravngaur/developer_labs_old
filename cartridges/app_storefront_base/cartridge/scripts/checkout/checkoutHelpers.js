@@ -523,10 +523,7 @@ function sendConfirmationEmail(order) {
 
     var orderObject = { order: orderModel };
 
-    // These context items are added to help keep compatibility with SG
-    context.CurrentForms = session.forms;
-    context.CurrentHttpParameterMap = request.httpParameterMap;
-    context.CurrentCustomer = customer;
+    // This context item is added to help keep compatibility with SG
     context.Order = order;
 
     Object.keys(orderObject).forEach(function (key) {

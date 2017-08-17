@@ -107,11 +107,6 @@ function sendConfirmationEmail(registeredUser) {
         url: URLUtils.https('Login-Show')
     };
 
-    // These context items are added to help keep compatibility with SG
-    context.CurrentForms = session.forms;
-    context.CurrentHttpParameterMap = request.httpParameterMap;
-    context.CurrentCustomer = customer;
-
     Object.keys(userObject).forEach(function (key) {
         context.put(key, userObject[key]);
     });
