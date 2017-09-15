@@ -97,5 +97,11 @@ module.exports = {
                     .html(allReady ? response.message : response.resources.info_selectforstock);
             }
         });
+    },
+    showInStoreInventory: function () {
+        $('.get-in-store-inventory').on('click', function (e) {
+            alert("get in store inventory");
+            e.stopPropagation();
+        });
     }
 };
