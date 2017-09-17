@@ -39,10 +39,6 @@ ProductSetBase.prototype = Object.create(ProductBase.prototype);
 
 ProductSetBase.prototype.initialize = function () {
     ProductBase.prototype.initialize.call(this);
-    this.individualProducts = getIndividualProducts(
-        this.product.bundledProducts,
-        this.productFactory
-    );
 };
 
 /**
@@ -66,20 +62,18 @@ function ProductWrapper(product, productVariables, promotions, productFactory) {
 
     var items = [
         'id',
-        'individualProducts',
         'price',
         'productName',
         'price',
         'productType',
-        'images',
+        'tileImage',
         'rating',
-        'variationAttributes',
-        'promotions',
-        'attributes'
+        'promotions'
     ];
 
     items.forEach(function (item) {
-        this[item] = productSetBase[item];
+        var initFunction = 'init' + item.charAt(0).toUpperCase() + item.slice(1);
+        this[item] = (initFunction in productSetBase) ? productSetBase[initFunction]() : productSetBase[item];
     }, this);
 }
 

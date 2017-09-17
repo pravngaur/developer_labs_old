@@ -23,7 +23,8 @@ function getListPrice(priceModel) {
     if (priceModel.price.valueOrNull === null && priceModel.minPrice) {
         return priceModel.minPrice;
     }
-
+	
+    
     priceBook = priceHelper.getRootPriceBook(priceModel.priceInfo.priceBook);
     priceBookPrice = priceModel.getPriceBookPrice(priceBook.ID);
 
@@ -59,6 +60,48 @@ function getPromotionPrice(product, promotions, currentOptionModel) {
 
     return price;
 }
+
+
+function getTilePrice(baseSearch, product, currency, promotions) {
+    if (!baseSearch) {
+    	return getPrice(product,currency,true,promotions, null);
+    }
+	var rangePrice;
+    var salesPrice;
+    var listPrice;
+	var priceModel = baseSearch.product.getPriceModel();
+    var priceTable = priceModel.getPriceTable();
+    
+    // TIERED
+    if (priceTable.quantities.length > 1) {
+        return new TieredPrice(priceTable, true);
+    }
+    
+    // Range
+    if ((product.master || product.variationGroup) && baseSearch.maxPrice !== baseSearch.minPrice) {
+    	rangePrice = new RangePrice(baseSearch.minPrice, baseSearch.maxPrice);
+    	
+        if (rangePrice && rangePrice.min.sales.value !== rangePrice.max.sales.value) {
+            return rangePrice;
+        }
+    }
+    
+    promotionPrice = getPromotionPrice(baseSearch.product, promotions, null);
+    listPrice = getListPrice(priceModel);
+    salesPrice = baseSearch.minPrice;
+
+    if (promotionPrice && promotionPrice.available && salesPrice.compareTo(promotionPrice)) {
+        salesPrice = promotionPrice;
+    }
+
+    if (salesPrice && listPrice && salesPrice.value === listPrice.value && !(product.productSet || product.bundle)) {
+        listPrice = null;
+    }
+
+    return new DefaultPrice(salesPrice, listPrice);
+    
+}
+
 
 /**
  * Retrieves Price instance
@@ -119,5 +162,6 @@ function getPrice(inputProduct, currency, useSimplePrice, promotions, currentOpt
 }
 
 module.exports = {
-    getPrice: getPrice
+    getPrice: getPrice,
+    getTilePrice: getTilePrice
 };

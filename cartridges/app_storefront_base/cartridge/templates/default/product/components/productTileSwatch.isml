@@ -1,18 +1,15 @@
 <div class="color-swatches">
     <div class="swatches">
-        <isif condition="${product.variationAttributes && product.variationAttributes.length > 0}">
-            <isloop items="${product.variationAttributes[0].values}" var="swatch" status="loopstate">
-                <isif condition="${loopstate.count < 4
-                                && swatch.images != null
-                                && swatch.images.swatch[0] != null
-                                && swatch.images.swatch[0].url != null}">
-                    <a href="${swatch.url}">
+        <isif condition="${product.swatches && product.swatches.length > 0}">
+            <isloop items="${product.swatches}" var="swatch" status="loopstate">
+                <isif condition="${loopstate.count < 4}">
+                    <a href="${swatch.productUrl}">
                         <span>
                             <img class="swatch swatch-circle"
                                  data-index="${loopstate.count-1}"
-                                 style="background-image: url(${swatch.images.swatch[0].url})"
-                                 src="${swatch.images.swatch[0].url}"
-                                 alt="${swatch.images.swatch[0].alt}"/>
+                                 style="background-image: url(${swatch.imageUrl})"
+                                 src="${swatch.imageUrl}"
+                                 alt="${swatch.imageAlt}"/>
                         </span>
                     </a>
                 <iselse/>

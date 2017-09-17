@@ -1,9 +1,9 @@
 <div class="image-container">
     <a href="${pdict.urls.product}">
         <img class="tile-image"
-             src="${product.images.medium[0].url}"
+             src="${product.tileImage.imageUrl}"
              alt="${product.productName}"
-             title="${product.images.medium[0].title}" />
+             title="${product.tileImage.imageTitle}" />
     </a>
     <isif condition="${pdict.display.showQuickView !== false}">
         <a class="quickview hidden-sm-down" href="${pdict.urls.quickView}">

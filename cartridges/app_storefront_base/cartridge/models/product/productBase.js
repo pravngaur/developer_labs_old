@@ -6,7 +6,7 @@ var VariationAttributesModel = require('*/cartridge/models/product/productAttrib
 var ImageModel = require('*/cartridge/models/product/productImages');
 var priceFactory = require('*/cartridge/scripts/factories/price');
 var Resource = require('dw/web/Resource');
-
+var baseSearch;
 /**
  * Return type of the current product
  * @param  {dw.catalog.ProductVariationModel} product - Current product
@@ -30,6 +30,17 @@ function getProductType(product) {
         result = 'standard';
     }
     return result;
+}
+
+function getBaseSearch(product) {
+    if (!baseSearch) {
+        var searchModel = new dw.catalog.ProductSearchModel();
+        searchModel.setSearchPhrase(product.ID);
+        searchModel.search();
+
+        baseSearch = searchModel.getProductSearchHit(product);
+    }
+    return baseSearch;
 }
 
 /**
@@ -238,7 +249,7 @@ function getProductAvailability(quantity, product) {
  *                                                                 product
  */
 function ProductBase(product, productVariables, quantity, promotions) {
-    this.variationModel = this.getVariationModel(product, productVariables);
+    // this.variationModel = this.getVariationModel(product, productVariables);
     if (this.variationModel) {
         this.product = this.variationModel.selectedVariant || product;
     } else {
@@ -264,26 +275,15 @@ ProductBase.prototype = {
         this.id = this.product.ID;
         this.productName = this.product.name;
         this.currentOptionModel = this.currentOptionModel || this.product.optionModel;
-        this.price = priceFactory.getPrice(this.product, null, this.useSimplePrice,
-            this.apiPromotions, this.currentOptionModel);
+
         this.productType = getProductType(this.product);
-        this.images = this.variationModel
-            ? new ImageModel(this.variationModel, this.imageConfig)
-            : new ImageModel(this.product, this.imageConfig);
+
         this.rating = getRating(this.id);
-        var selectedOptionsQueryParams = productHelper.getSelectedOptionsUrl(
-            this.currentOptionModel);
-        this.variationAttributes = this.variationModel
-            ? (new VariationAttributesModel(
-                this.variationModel,
-                this.variationAttributeConfig,
-                selectedOptionsQueryParams,
-                this.quantity)).slice(0)
-            : null;
+
         this.promotions = this.apiPromotions ? getPromotions(this.apiPromotions) : null;
         this.attributes = getAttributes(this.product);
-        this.availability = getProductAvailability(this.quantity, this.product);
     },
+
     /**
      * Normalize product and return Product variation model
      * @param  {dw.catalog.Product} product - Product instance returned from the API
@@ -293,7 +293,112 @@ ProductBase.prototype = {
      */
     getVariationModel: function (product, productVariables) {
         return getVariationModel(product, productVariables);
+        return {};
+    },
+
+    initVariationAttributes: function initVariationAttributes() {
+        var selectedOptionsQueryParams = productHelper.getSelectedOptionsUrl(this.currentOptionModel);
+
+        var result = this.variationModel
+            ? (new VariationAttributesModel(
+                this.variationModel,
+                this.variationAttributeConfig,
+                selectedOptionsQueryParams,
+                this.quantity)).slice(0)
+            : null;
+        return result;
+    },
+
+    initAvailability: function initAvailability() {
+        return getProductAvailability(this.quantity, this.product);
+    },
+
+    initPrice: function initPrice() {
+         // alternatively one could use
+         // priceFactory.getTilePrice(getBaseSearch(this.product), this.product, null, this.apiPromotions);
+         return priceFactory.getPrice(this.product, null, this.useSimplePrice, this.apiPromotions, this.currentOptionModel);
+    },
+
+    /**
+     * Gets all swatches for this product
+     * @param  {dw.catalog.Product} product - Product instance returned from the API
+     * @return {Array} List of swatches
+     */
+    initSwatches: function initSwatches() {
+        var varmodel = this.product.variationModel;
+        var swatches = [];
+
+    	var colorAttribute = varmodel.getProductVariationAttribute('color');
+
+        if (colorAttribute) {
+        	var colors = varmodel.getAllValues(colorAttribute);
+        	for (var i = 0; i < colors.length; i++) {
+        		var apiImage = colors[i].getImage('swatch', 0);
+        		var item = {};
+
+        		item.imageUrl = apiImage.URL;
+        		item.imageAlt = apiImage.alt;
+
+        		item.productUrl = varmodel.url('Product-Show', 'color', colors[i].ID).toString();
+        		swatches.push(item);
+        	}
+        }
+        return swatches;
+    },
+    
+        /**
+     * Gets all swatches for this product
+     * @param  {dw.catalog.Product} product - Product instance returned from the API
+     * @return {Array} List of swatches
+     */
+    initSwatchesSearch: function initSwatches() {
+        var varmodel = this.product.variationModel;
+        var swatches = [];
+
+    	var hit = getBaseSearch(this.product);
+
+        if (hit) {
+        	var colors = hit.getRepresentedVariationValues('color');
+        	for (var i = 0; i < colors.length; i++) {
+        		var apiImage = colors[i].getImage('swatch', 0);
+        		var item = {};
+
+        		item.imageUrl = apiImage.URL;
+        		item.imageAlt = apiImage.alt;
+
+        		item.productUrl = varmodel.url('Product-Show', 'color', colors[i].ID).toString();
+        		swatches.push(item);
+        	}
+        }
+        return swatches;
+    },
+
+    /**
+     * Gets tile image for this product
+     * @param  {dw.catalog.Product} product - Product instance returned from the API
+     * @return {Array} List of swatches
+     */
+    initTileImage: function initTileImage() {
+        var apiImage = this.product.getImage('medium', 0);
+    	var item = {};
+
+        item.imageUrl = apiImage.getURL().toString();
+        item.imageTitle = apiImage.title;
+
+        return item;
+    },
+
+    /**
+     * Gets tile image for this product
+     * @param  {dw.catalog.Product} product - Product instance returned from the API
+     * @return {Array} List of swatches
+     */
+    initImages: function initImages() {
+        return this.variationModel
+            ? new ImageModel(this.variationModel, this.imageConfig)
+            : new ImageModel(this.product, this.imageConfig);
     }
+
 };
 
 /**
@@ -312,16 +417,16 @@ function ProductWrapper(product, productVariables, promotions) {
         'productName',
         'price',
         'productType',
-        'images',
+        'tileImage',
         'rating',
-        'variationAttributes',
+        'swatches',
         'promotions',
-        'attributes',
-        'availability'
+        'attributes'
     ];
 
     items.forEach(function (item) {
-        this[item] = productBase[item];
+        var initFunction = 'init' + item.charAt(0).toUpperCase() + item.slice(1);
+        this[item] = (initFunction in productBase) ? productBase[initFunction]() : productBase[item];
     }, this);
 }
 

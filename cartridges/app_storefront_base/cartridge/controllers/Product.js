@@ -159,15 +159,12 @@ server.get('ShowTile', cache.applyPromotionSensitiveCache, function (req, res, n
     // able to handle the different product types
     try {
         product = ProductFactory.get(productTileParams);
-        productUrl = cgid ?
-            URLUtils.url('Product-Show', 'pid', product.id, 'cgid', cgid).relative().toString() :
-            URLUtils.url('Product-Show', 'pid', product.id).relative().toString();
-        quickViewUrl = cgid ?
-            URLUtils.url('Product-ShowQuickView', 'pid', product.id, 'cgid', cgid)
-                .relative().toString() :
-            URLUtils.url('Product-ShowQuickView', 'pid', product.id).relative().toString();
+        productUrl =  URLUtils.url('Product-Show', 'pid', product.id).relative().toString();
+        quickViewUrl = URLUtils.url('Product-ShowQuickView', 'pid', product.id).relative().toString();
     } catch (e) {
-        product = false;
+        dw.system.Logger.error(e);
+        var exception = e;
+    	product = false;
         productUrl = URLUtils.url('Home-Show');// TODO: change to coming soon page
         quickViewUrl = URLUtils.url('Home-Show');
     }

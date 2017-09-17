@@ -8,6 +8,8 @@
         <isinclude template="product/components/productTileName" />
 
         <isset name="price" value="${product.price}" scope="page" />
+        
+        <div data-pricejson='${JSON.stringify(product.price)}'></div>
         <isif condition="${product.productType === 'set'}">
             <isinclude template="product/components/pricing/setPrice" />
         <iselse>

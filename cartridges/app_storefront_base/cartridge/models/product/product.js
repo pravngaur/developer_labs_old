@@ -237,7 +237,8 @@ function ProductWrapper(
         'attributes', 'availability', 'selectedProductUrl',
         'selectedQuantity', 'options', 'quantities', 'sizeChartId', 'raw'];
     items.forEach(function (item) {
-        this[item] = fullProduct[item];
+        var initFunction = 'init' + item.charAt(0).toUpperCase() + item.slice(1);
+        this[item] = (initFunction in fullProduct) ? fullProduct[initFunction]() : fullProduct[item];
     }, this);
 }
 

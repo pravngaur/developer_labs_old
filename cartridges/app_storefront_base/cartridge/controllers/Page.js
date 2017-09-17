@@ -108,7 +108,7 @@ server.get('SetLocale', function (req, res, next) {
     next();
 });
 
-server.get('Locale', function (req, res, next) {
+server.get('Locale',cache.applyDefaultCache, function (req, res, next) {
     var LocaleModel = require('*/cartridge/models/locale');
     var Locale = require('dw/util/Locale');
     var Site = require('dw/system/Site');
