@@ -31,7 +31,9 @@ function getProductType(product) {
     }
     return result;
 }
-
+/**
+ *	returns a search hit for the current product which allows to use the enhanced functionality of the search api within the searchTile
+ */
 function getBaseSearch(product) {
     if (!baseSearch) {
         var searchModel = new dw.catalog.ProductSearchModel();
@@ -346,7 +348,7 @@ ProductBase.prototype = {
         return swatches;
     },
     
-        /**
+	/**
      * Gets all swatches for this product
      * @param  {dw.catalog.Product} product - Product instance returned from the API
      * @return {Array} List of swatches
