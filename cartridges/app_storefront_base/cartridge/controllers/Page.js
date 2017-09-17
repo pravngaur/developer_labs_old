@@ -26,6 +26,8 @@ server.get(
         } else {
             Logger.warn('Content asset with ID {0} was included but not found',
                     req.querystring.cid);
+
+            res.render('/components/content/offlinecontent');
         }
         next();
     }
@@ -82,7 +84,7 @@ server.get('SetLocale', function (req, res, next) {
             && (req.querystring.CurrencyCode !== req.session.currency.currencyCode)) {
             req.session.setCurrency(currency);
 
-            if (currentBasket && currentBasket.currencyCode !== currency.currencyCode) {
+            if (currentBasket && currency && currentBasket.currencyCode !== currency.currencyCode) {
                 Transaction.wrap(function () {
                     currentBasket.updateCurrency();
                 });

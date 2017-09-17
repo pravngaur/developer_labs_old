@@ -42,16 +42,22 @@ $menu-item-margin: 0.625em;
             padding: 1em;
             top: 85%;
             left: 0;
-            margin-left: -50%;
+            display: none;
 
             a {
                 white-space: nowrap;
                 margin-bottom: 0.5em;
             }
-        }
 
-        &:hover {
-            .popover {
+            &::before {
+                left: 1.5rem;
+            }
+
+            &::after {
+                left: 1.5rem;
+            }
+
+            &.show {
                 display: block;
             }
         }
@@ -153,4 +159,25 @@ a.normal {
 
 .dropdown-country-selector {
     margin-top: -0.0625em;
+}
+
+.cookie-warning-messaging.cookie-warning {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    text-align: center;
+    display: none;
+}
+
+.valid-cookie-warning {
+    background-color: $blue;
+    color: $white;
+    white-space: nowrap;
+
+    p {
+        margin-top: 0;
+        margin-bottom: 0.2em;
+        padding-right: 2em;
+    }
 }

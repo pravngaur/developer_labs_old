@@ -27,13 +27,18 @@ function getAllBreadcrumbs(cgid, pid, breadcrumbs) {
     var category = cgid && cgid !== 'root'
         ? CatalogMgr.getCategory(cgid)
         : primaryCategory;
-    breadcrumbs.push({
-        htmlValue: category.displayName,
-        url: URLUtils.url('Search-Show', 'cgid', category.ID)
-    });
-    if (category.parent && category.parent.ID !== 'root') {
-        return getAllBreadcrumbs(category.parent.ID, null, breadcrumbs);
+
+    if (category) {
+        breadcrumbs.push({
+            htmlValue: category.displayName,
+            url: URLUtils.url('Search-Show', 'cgid', category.ID)
+        });
+
+        if (category.parent && category.parent.ID !== 'root') {
+            return getAllBreadcrumbs(category.parent.ID, null, breadcrumbs);
+        }
     }
+
     return breadcrumbs;
 }
 
@@ -206,6 +211,22 @@ server.get('ShowQuickView', cache.applyPromotionSensitiveCache, function (req, r
         resources: getResources()
     });
 
+    next();
+});
+
+server.get('SizeChart', function (req, res, next) {
+    var ContentMgr = require('dw/content/ContentMgr');
+
+    var apiContent = ContentMgr.getContent(req.querystring.cid);
+
+    if (apiContent) {
+        res.json({
+            success: true,
+            content: apiContent.custom.body.markup
+        });
+    } else {
+        res.json({});
+    }
     next();
 });
 

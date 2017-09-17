@@ -160,7 +160,7 @@ function getCustomerObject(customer) {
 function setCurrency(request, session) {
     var Locale = require('dw/util/Locale');
     var currency = require('dw/util/Currency');
-    var countries = require('../countries');
+    var countries = require('*/cartridge/config/countries');
     var currentLocale = Locale.getLocale(request.locale);
 
     var currentCountry = !currentLocale
@@ -169,9 +169,46 @@ function setCurrency(request, session) {
             return country.id === currentLocale.ID;
         })[0];
 
-    if (session.currency.currencyCode !== currentCountry.currencyCode) {
+    if (session.currency
+        && currentCountry
+        && session.currency.currencyCode !== currentCountry.currencyCode
+    ) {
         session.setCurrency(currency.getCurrency(currentCountry.currencyCode));
     }
+}
+
+/**
+ * get a local instance of the geo location object
+ * @param {Object} request - Global request object
+ * @returns {Object} object containing geo location information
+ */
+function getGeolocationObject(request) {
+    var Locale = require('dw/util/Locale');
+    var currentLocale = Locale.getLocale(request.locale);
+
+    return {
+        countryCode: request.geolocation ? request.geolocation.countryCode : currentLocale.country,
+        latitude: request.geolocation ? request.geolocation.latitude : 90.0000,
+        longitude: request.geolocation ? request.geolocation.longitude : 0.0000
+    };
+}
+
+/**
+ * Get request body as string if it is a POST or PUT
+ * @param {Object} request - Global request object
+ * @returns {string|Null} the request body as string
+ */
+function getRequestBodyAsString(request) {
+    var result = null;
+
+    if (request
+        && (request.httpMethod === 'POST' || request.httpMethod === 'PUT')
+        && request.httpParameterMap
+    ) {
+        result = request.httpParameterMap.requestBodyAsString;
+    }
+
+    return result;
 }
 
 /**
@@ -193,16 +230,10 @@ function Request(request, customer, session) {
     this.querystring = new QueryString(request.httpQueryString);
     this.form = getFormData(request.httpParameterMap, this.querystring);
     this.https = request.isHttpSecure();
-    this.body = request.httpParameterMap.requestBodyAsString;
+    this.body = getRequestBodyAsString(request);
     this.locale = getCurrentLocale(request.locale, session.currency);
     this.includeRequest = request.includeRequest;
-    if (request.geolocation) {
-        this.geolocation = {
-            countryCode: request.geolocation.countryCode,
-            latitude: request.geolocation.latitude,
-            longitude: request.geolocation.longitude
-        };
-    }
+    this.geolocation = getGeolocationObject(request);
     this.currentCustomer = getCustomerObject(customer);
     this.setLocale = function (localeID) {
         return request.setLocale(localeID);
@@ -243,5 +274,17 @@ function Request(request, customer, session) {
             session.setCurrency(value);
         }
     };
+
+    Object.defineProperty(this, 'remoteAddress', {
+        get: function () {
+            return request.getHttpRemoteAddress();
+        }
+    });
+
+    Object.defineProperty(this, 'referer', {
+        get: function () {
+            return request.getHttpReferer();
+        }
+    });
 }
 module.exports = Request;
