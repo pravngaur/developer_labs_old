@@ -31,18 +31,34 @@ function getProductType(product) {
     }
     return result;
 }
+
+function initBaseSearch(product) {
+    var searchModel = new dw.catalog.ProductSearchModel();
+    searchModel.setSearchPhrase(product.ID.replace(/-/g,' '));
+    searchModel.search();
+
+    var hitToReturn = searchModel.getProductSearchHit(product);
+    if (!hitToReturn) {
+    	let tempHit = searchModel.getProductSearchHits().next();
+    	if (tempHit.firstRepresentedProductID === product.ID) {
+    		hitToReturn = tempHit;
+    	} 
+    } 
+    return hitToReturn;
+}
+
 /**
  *	returns a search hit for the current product which allows to use the enhanced functionality of the search api within the searchTile
  */
 function getBaseSearch(product) {
     if (!baseSearch) {
-        var searchModel = new dw.catalog.ProductSearchModel();
-        searchModel.setSearchPhrase(product.ID);
-        searchModel.search();
-
-        baseSearch = searchModel.getProductSearchHit(product);
+        baseSearch = initBaseSearch(product);
     }
     return baseSearch;
+}
+
+function getColorsOfHit(hit) {
+    return hit.getRepresentedVariationValues('color');
 }
 
 /**
@@ -268,13 +284,20 @@ function ProductBase(product, productVariables, quantity, promotions) {
         endPoint: 'Show'
     };
     this.useSimplePrice = true;
-    this.apiPromotions = promotions;
+    //this.apiPromotions = promotions;
     this.initialize();
 }
 
 ProductBase.prototype = {
     initialize: function () {
         this.id = this.product.ID;
+       	if (this.product.variant || this.product.variationGroup) {
+       		this.masterID = this.product.masterProduct.ID;
+       	} else {
+       		this.masterID = this.product.ID;
+       	}	
+       
+        this.url = dw.web.URLUtils.url('Product-Show', 'pid', this.id);
         this.productName = this.product.name;
         this.currentOptionModel = this.currentOptionModel || this.product.optionModel;
 
@@ -282,7 +305,7 @@ ProductBase.prototype = {
 
         this.rating = getRating(this.id);
 
-        this.promotions = this.apiPromotions ? getPromotions(this.apiPromotions) : null;
+        //this.promotions = this.apiPromotions ? getPromotions(this.apiPromotions) : null;
         this.attributes = getAttributes(this.product);
     },
 
@@ -310,6 +333,19 @@ ProductBase.prototype = {
             : null;
         return result;
     },
+    
+    initPromotions: function() {
+    	var customerPromotionIDs = require('customerpromotions').get();
+    	var productPromotionIDs = getBaseSearch(this.product).discountedPromotionIDs;
+    	
+    	var overlap = customerPromotionIDs.some(function(element){productPromotionIDs.indexOf(element) > -1});
+    	var promotions = new dw.util.ArrayList();
+    	if (overlap && overlap.length) {
+    		promotions.add(dw.campaign.PromotionMgr.getPromotion(overlap.pop()));
+    	}
+    	
+    	return promotions;
+    },
 
     initAvailability: function initAvailability() {
         return getProductAvailability(this.quantity, this.product);
@@ -317,8 +353,11 @@ ProductBase.prototype = {
 
     initPrice: function initPrice() {
          // alternatively one could use
-         // priceFactory.getTilePrice(getBaseSearch(this.product), this.product, null, this.apiPromotions);
-         return priceFactory.getPrice(this.product, null, this.useSimplePrice, this.apiPromotions, this.currentOptionModel);
+        if (this.useSimplePrice) {
+         	return priceFactory.getTilePrice(getBaseSearch(this.product), this.product, null, this.promotions);
+        } else {
+	        return priceFactory.getPrice(this.product, null, this.useSimplePrice, this.promotions, this.currentOptionModel);
+        }
     },
 
     /**
@@ -326,7 +365,7 @@ ProductBase.prototype = {
      * @param  {dw.catalog.Product} product - Product instance returned from the API
      * @return {Array} List of swatches
      */
-    initSwatches: function initSwatches() {
+    initSwatchesDB: function initSwatches() {
         var varmodel = this.product.variationModel;
         var swatches = [];
 
@@ -340,36 +379,37 @@ ProductBase.prototype = {
 
         		item.imageUrl = apiImage.URL;
         		item.imageAlt = apiImage.alt;
-
         		item.productUrl = varmodel.url('Product-Show', 'color', colors[i].ID).toString();
         		swatches.push(item);
         	}
         }
         return swatches;
     },
-    
+
 	/**
      * Gets all swatches for this product
      * @param  {dw.catalog.Product} product - Product instance returned from the API
      * @return {Array} List of swatches
      */
-    initSwatchesSearch: function initSwatches() {
-        var varmodel = this.product.variationModel;
+    initSwatches: function initSwatches() {
         var swatches = [];
 
-    	var hit = getBaseSearch(this.product);
+    	var hit = getBaseSearch(this.masterID);
 
         if (hit) {
-        	var colors = hit.getRepresentedVariationValues('color');
+        	var colors = getColorsOfHit(hit);
+
         	for (var i = 0; i < colors.length; i++) {
         		var apiImage = colors[i].getImage('swatch', 0);
         		var item = {};
 
         		item.imageUrl = apiImage.URL;
         		item.imageAlt = apiImage.alt;
-
-        		item.productUrl = varmodel.url('Product-Show', 'color', colors[i].ID).toString();
+        		var productURL = this.url.toString();
+               	item.productUrl = productURL + ((productURL.indexOf('?') > -1) ? '&' : '?') +'dwvar_' + this.masterID + '_color=' + colors[i].ID;
+				
         		swatches.push(item);
+        			
         	}
         }
         return swatches;
@@ -423,7 +463,8 @@ function ProductWrapper(product, productVariables, promotions) {
         'rating',
         'swatches',
         'promotions',
-        'attributes'
+        'attributes',
+        'url'
     ];
 
     items.forEach(function (item) {

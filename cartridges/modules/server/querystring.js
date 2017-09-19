@@ -24,7 +24,12 @@ function parsePreferences(preferences) {
     return params;
 }
 
+var cache = {};
+
 var querystring = function (raw) {
+    if (cache[raw]) {
+        return cache[raw];
+    }
     var pair;
     var left;
     var preferences = {};
@@ -74,6 +79,9 @@ var querystring = function (raw) {
     if (Object.keys(preferences).length) {
         this.preferences = parsePreferences(preferences);
     }
+
+    cache[raw] = this;
+    return this;
 };
 
 querystring.prototype.toString = function () {

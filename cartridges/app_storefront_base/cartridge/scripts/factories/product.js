@@ -4,7 +4,7 @@ var ProductMgr = require('dw/catalog/ProductMgr');
 var ProductTile = require('*/cartridge/models/product/productBase');
 var Product = require('*/cartridge/models/product/product');
 var ProductLineItemModel = require('*/cartridge/models/productLineItem/productLineItem');
-var PromotionMgr = require('dw/campaign/PromotionMgr');
+// var PromotionMgr = require('dw/campaign/PromotionMgr');
 
 /**
  * Factory utility that returns a ProductModel instance that encapsulates a Demandware Product
@@ -30,9 +30,9 @@ ProductFactory.get = function (params) {
     } else {
         product = apiProduct;
     }
-
-    var promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(product);
-    promotions = promotions.length ? promotions : null;
+    var promotions = [];
+    // var promotions = getPromotions(product);
+    // promotions = promotions.length ? promotions : null;
     var productType = Product.getProductType(product);
 
     if (productType === 'set') {
@@ -57,9 +57,7 @@ ProductFactory.get = function (params) {
                 product = new ProductTile(product, params.variables, promotions);
                 break;
             case 'productLineItem':
-                var ProductLineItemBundleModel = require(
-                    '*/cartridge/models/productLineItem/bundleLineItem'
-                );
+                var ProductLineItemBundleModel = require('*/cartridge/models/productLineItem/bundleLineItem');
                 product = new ProductLineItemBundleModel(
                     product,
                     params.quantity,
@@ -98,8 +96,10 @@ ProductFactory.get = function (params) {
                     ? product.getPrimaryCategory()
                     : product.getMasterProduct().getPrimaryCategory();
                 sizeChartId = category.custom.sizeChartID;
-                product = new Product(product, params.variables, params.quantity, promotions,
-                    selectedOptions, sizeChartId);
+                product = new Product(
+                    product, params.variables, params.quantity, promotions,
+                    selectedOptions, sizeChartId
+                );
                 break;
         }
     }

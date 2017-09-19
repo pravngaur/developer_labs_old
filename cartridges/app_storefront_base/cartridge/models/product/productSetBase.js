@@ -62,13 +62,13 @@ function ProductWrapper(product, productVariables, promotions, productFactory) {
 
     var items = [
         'id',
-        'price',
         'productName',
+        'promotions',
         'price',
         'productType',
         'tileImage',
         'rating',
-        'promotions'
+        'url'
     ];
 
     items.forEach(function (item) {

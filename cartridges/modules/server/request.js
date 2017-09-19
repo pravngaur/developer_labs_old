@@ -158,11 +158,12 @@ function getCustomerObject(customer) {
  * @param {dw.system.Session} session - Global session object
  */
 function setCurrency(request, session) {
+    var simpleCache = new SimpleCache(session.privacy);
     var Locale = require('dw/util/Locale');
     var currency = require('dw/util/Currency');
     var countries = require('*/cartridge/config/countries');
     var currentLocale = Locale.getLocale(request.locale);
-
+    var currencyDetails;
     var currentCountry = !currentLocale
         ? countries[0]
         : countries.filter(function (country) {
@@ -174,6 +175,16 @@ function setCurrency(request, session) {
         && session.currency.currencyCode !== currentCountry.currencyCode
     ) {
         session.setCurrency(currency.getCurrency(currentCountry.currencyCode));
+    }
+
+    if (!session.privacy.currencyDetails) {
+        currencyDetails = {
+            currencyCode: session.currency.currencyCode,
+            defaultFractionDigits: session.currency.defaultFractionDigits,
+            name: session.currency.name,
+            symbol: session.currency.symbol
+        };
+        simpleCache.set('currencyDetails', JSON.stringify(currencyDetails));
     }
 }
 
@@ -210,6 +221,14 @@ function getRequestBodyAsString(request) {
 
     return result;
 }
+/**
+ * gets currency detail from session
+ * @param {dw.system.Session} session - Global session object
+ * @returns {Object} the currency details object
+ */
+function fillCurrency(session) {
+    return JSON.parse(session.privacy.currencyDetails);
+}
 
 /**
  * @constructor
@@ -221,41 +240,75 @@ function getRequestBodyAsString(request) {
  * @param {dw.system.Session} session - Global session object
  */
 function Request(request, customer, session) {
-    setCurrency(request, session);
+    if (!request.includeRequest) {
+        setCurrency(request, session);
+    }
 
     this.httpMethod = request.httpMethod;
     this.host = request.httpHost;
     this.path = request.httpPath;
     this.httpHeaders = request.httpHeaders;
-    this.querystring = new QueryString(request.httpQueryString);
-    this.form = getFormData(request.httpParameterMap, this.querystring);
     this.https = request.isHttpSecure();
-    this.body = getRequestBodyAsString(request);
-    this.locale = getCurrentLocale(request.locale, session.currency);
     this.includeRequest = request.includeRequest;
-    this.geolocation = getGeolocationObject(request);
-    this.currentCustomer = getCustomerObject(customer);
+
     this.setLocale = function (localeID) {
         return request.setLocale(localeID);
     };
 
-    this.session = {
-        privacyCache: new SimpleCache(session.privacy),
-        raw: session,
-        currency: {
-            currencyCode: session.currency.currencyCode,
-            defaultFractionDigits: session.currency.defaultFractionDigits,
-            name: session.currency.name,
-            symbol: session.currency.symbol
-        },
-        setCurrency: function (value) {
-            session.setCurrency(value);
+    Object.defineProperty(this, 'session', {
+        get: function () {
+            var result = {
+                privacyCache: new SimpleCache(session.privacy),
+                raw: session,
+                currency: fillCurrency(session),
+                setCurrency: function (value) {
+                    session.setCurrency(value);
+                }
+            };
+
+            return result;
         }
-    };
+    });
+
+    Object.defineProperty(this, 'locale', {
+        get: function () {
+            return getCurrentLocale(request.locale, session.currency);
+        }
+    });
+
+    Object.defineProperty(this, 'geolocation', {
+        get: function () {
+            return getGeolocationObject(request);
+        }
+    });
+
+    Object.defineProperty(this, 'currentCustomer', {
+        get: function () {
+            return getCustomerObject(customer);
+        }
+    });
+
+    Object.defineProperty(this, 'body', {
+        get: function () {
+            return getRequestBodyAsString(request);
+        }
+    });
 
     Object.defineProperty(this, 'remoteAddress', {
         get: function () {
             return request.getHttpRemoteAddress();
+        }
+    });
+
+    Object.defineProperty(this, 'querystring', {
+        get: function () {
+            return new QueryString(request.httpQueryString);
+        }
+    });
+
+    Object.defineProperty(this, 'form', {
+        get: function () {
+            return getFormData(request.httpParameterMap, this.querystring);
         }
     });
 

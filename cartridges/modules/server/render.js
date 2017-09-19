@@ -1,7 +1,21 @@
 'use strict';
+
 /* global XML */
 
 var isml = require('dw/template/ISML');
+
+/**
+ * converts view object to shallow data
+ * @param {Object} viewData the complex object
+ * @returns {Object} the simple object
+ */
+function getShallowCopy(viewData) {
+    var data = {};
+    Object.keys(viewData).forEach(function (key) {
+        data[key] = viewData[key];
+    });
+    return data;
+}
 
 module.exports = {
     /**
@@ -13,16 +27,9 @@ module.exports = {
      */
     template: function template(view, viewData) {
         // create a shallow copy of the data
-        var data = {};
-        Object.keys(viewData).forEach(function (key) {
-            data[key] = viewData[key];
-        });
 
-        try {
-            isml.renderTemplate(view, data);
-        } catch (e) {
-            throw new Error(e.javaMessage + '\n\r' + e.stack, e.fileName, e.lineNumber);
-        }
+        var data = getShallowCopy(viewData);
+        isml.renderTemplate(view, data);
     },
     /**
      * Render JSON as an output
