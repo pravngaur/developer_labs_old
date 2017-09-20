@@ -15,6 +15,26 @@ var rq =
     );
 var rs = new Response(typeof response !== 'undefined' ? response : {});
 
+
+
+
+/**
+ * @param {Object} req - Request object
+ * @returns {Object} object containing the querystring of the loaded page
+ */
+function getPageMetadata(req) {
+    var pageMetadata = {};
+    var action = req.path.split('/');
+
+    pageMetadata.action = action[action.length - 1];
+    pageMetadata.queryString = req.querystring.toString();
+    pageMetadata.locale = req.locale.id;
+
+    return pageMetadata;
+}
+rs.setViewData(getPageMetadata(rq));
+
+
 //--------------------------------------------------
 // Private helpers
 //--------------------------------------------------
