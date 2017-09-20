@@ -335,16 +335,22 @@ ProductBase.prototype = {
     },
     
     initPromotions: function() {
-    	var customerPromotionIDs = require('customerpromotions').get();
-    	var productPromotionIDs = getBaseSearch(this.product).discountedPromotionIDs;
+    	var promotions;
     	
-    	var overlap = customerPromotionIDs.some(function(element){productPromotionIDs.indexOf(element) > -1});
-    	var promotions = new dw.util.ArrayList();
-    	if (overlap && overlap.length) {
-    		promotions.add(dw.campaign.PromotionMgr.getPromotion(overlap.pop()));
+    	if (this.useSimplePrice) {
+    		var customerPromotionIDs = require('customerpromotions').get();
+    		var productPromotionIDs = getBaseSearch(this.product).discountedPromotionIDs;
+    		
+    		var overlap = customerPromotionIDs.some(function(element){productPromotionIDs.indexOf(element) > -1});
+    		promotions = new dw.util.ArrayList();
+    		if (overlap && overlap.length) {
+    			promotions.add(dw.campaign.PromotionMgr.getPromotion(overlap.pop()));
+    		}
+    	} else {
+    		promotions = dw.campaign.PromotionMgr.activeCustomerPromotions.getProductPromotions(this.product)
     	}
     	
-    	return promotions;
+    	return getPromotions(promotions);
     },
 
     initAvailability: function initAvailability() {
