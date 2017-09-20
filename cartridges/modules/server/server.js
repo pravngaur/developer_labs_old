@@ -14,9 +14,7 @@ var rq =
     typeof session !== 'undefined' ? session : {}
     );
 var rs = new Response(typeof response !== 'undefined' ? response : {});
-
-
-
+var actualEndpoint = request.httpURL.toString().split('?')[0].split('-').pop();
 
 /**
  * @param {Object} req - Request object
@@ -34,28 +32,41 @@ function getPageMetadata(req) {
 }
 rs.setViewData(getPageMetadata(rq));
 
-
-//--------------------------------------------------
-// Private helpers
-//--------------------------------------------------
-
-/**
- * Validate that first item is a string and all of the following items are functions
- * @param {Array} args - Arguments that were passed into function
- * @returns {void}
- */
-function checkParams(args) {
-    var middlewareChain = args.slice(1);
-    var name = args[0];
-
-    if (typeof name !== 'string') {
-        throw new Error('First argument should be a string');
+function onRouteCompleteHandler(req, res) {
+    // compute cache value and set on response when we have a non-zero number
+    if (res.cachePeriod && typeof res.cachePeriod === 'number') {
+        var currentTime = new Date(Date.now());
+        if (res.cachePeriodUnit && res.cachePeriodUnit === 'minutes') {
+            currentTime.setMinutes(currentTime.getMinutes() + res.cachePeriod);
+        } else {
+            // default to hours
+            currentTime.setHours(currentTime.getHours() + res.cachePeriod);
+        }
+        res.base.setExpires(currentTime);
+    }
+    // add vary by
+    if (res.personalized) {
+        res.base.setVaryBy('price_promotion');
     }
 
-    if (!middlewareChain.every(function (item) { return typeof item === 'function'; })) {
-        throw new Error('Middleware chain can only contain functions');
+    if (res.redirectUrl) {
+        // if there's a pending redirect, break the chain
+        route.emit('route:Redirect', req, res);
+        res.base.redirect(res.redirectUrl);
+        return;
+    }
+
+    if (res.view && res.viewData) {
+        render.template(res.view, res.viewData, res);
+    } else if (res.isJson) {
+        render.json(res.viewData, res);
+    } else if (res.isXml) {
+        render.xml(res.viewData, res);
+    } else {
+        throw new Error('Cannot render template without name or data');
     }
 }
+
 
 //--------------------------------------------------
 // Public Interface
@@ -77,10 +88,8 @@ Server.prototype = {
      * @returns {void}
      */
     use: function use(name) {
-        var args = Array.isArray(arguments) ? arguments : Array.prototype.slice.call(arguments);
+        var args = Array.prototype.slice.call(arguments);
         var middlewareChain = args.slice(1);
-
-        checkParams(args);
 
         if (this.routes[name]) {
             throw new Error('Route with this name already exists');
@@ -88,40 +97,7 @@ Server.prototype = {
 
         var route = new Route(name, middlewareChain, rq, rs);
         // Add event handler for rendering out view on completion of the request chain
-        route.on('route:Complete', function onRouteCompleteHandler(req, res) {
-            // compute cache value and set on response when we have a non-zero number
-            if (res.cachePeriod && typeof res.cachePeriod === 'number') {
-                var currentTime = new Date(Date.now());
-                if (res.cachePeriodUnit && res.cachePeriodUnit === 'minutes') {
-                    currentTime.setMinutes(currentTime.getMinutes() + res.cachePeriod);
-                } else {
-                    // default to hours
-                    currentTime.setHours(currentTime.getHours() + res.cachePeriod);
-                }
-                res.base.setExpires(currentTime);
-            }
-            // add vary by
-            if (res.personalized) {
-                res.base.setVaryBy('price_promotion');
-            }
-
-            if (res.redirectUrl) {
-                // if there's a pending redirect, break the chain
-                route.emit('route:Redirect', req, res);
-                res.base.redirect(res.redirectUrl);
-                return;
-            }
-
-            if (res.view && res.viewData) {
-                render.template(res.view, res.viewData, res);
-            } else if (res.isJson) {
-                render.json(res.viewData, res);
-            } else if (res.isXml) {
-                render.xml(res.viewData, res);
-            } else {
-                throw new Error('Cannot render template without name or data');
-            }
-        });
+        route.on('route:Complete', onRouteCompleteHandler);
 
         this.routes[name] = route;
 
@@ -134,8 +110,13 @@ Server.prototype = {
      * @returns {void}
      */
     get: function get() {
+        if (actualEndpoint !== arguments[0]) {
+            return;
+        }
+
         var args = Array.prototype.slice.call(arguments);
         args.splice(1, 0, middleware.get);
+
         return this.use.apply(this, args);
     },
     /**
@@ -145,6 +126,10 @@ Server.prototype = {
      * @returns {void}
      */
     post: function post() {
+        if (actualEndpoint !== arguments[0]) {
+            return;
+        }
+
         var args = Array.prototype.slice.call(arguments);
         args.splice(1, 0, middleware.post);
         return this.use.apply(this, args);
