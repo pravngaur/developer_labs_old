@@ -304,9 +304,6 @@ ProductBase.prototype = {
         this.productType = getProductType(this.product);
 
         this.rating = getRating(this.id);
-
-        //this.promotions = this.apiPromotions ? getPromotions(this.apiPromotions) : null;
-        this.attributes = getAttributes(this.product);
     },
 
     /**
@@ -334,6 +331,10 @@ ProductBase.prototype = {
         return result;
     },
     
+    initAttributes: function initAttributes() {
+        return getAttributes(this.product);
+    },
+
     initPromotions: function() {
     	var promotions;
     	
@@ -469,7 +470,6 @@ function ProductWrapper(product, productVariables, promotions) {
         'rating',
         'swatches',
         'promotions',
-        'attributes',
         'url'
     ];
 

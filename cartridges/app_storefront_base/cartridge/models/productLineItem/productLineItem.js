@@ -240,7 +240,8 @@ function ProductWrapper(product, productVariables, quantity, lineItem, promotion
         'attributes', 'availability', 'isAvailableForInStorePickup', 'options'];
 
     items.forEach(function (item) {
-        this[item] = productLineItem[item];
+        var initFunction = 'init' + item.charAt(0).toUpperCase() + item.slice(1);
+        this[item] = (initFunction in productLineItem) ? productLineItem[initFunction]() : productLineItem[item];
     }, this);
 }
 
