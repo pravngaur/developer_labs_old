@@ -25,12 +25,14 @@ server.post('AddProduct', function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
     var HookMgr = require('dw/system/HookMgr');
     var Resource = require('dw/web/Resource');
+    var URLUtils = require('dw/web/URLUtils');
     var Transaction = require('dw/system/Transaction');
     var CartModel = require('*/cartridge/models/cart');
     var ProductLineItemsModel = require('*/cartridge/models/productLineItems');
     var cartHelper = require('*/cartridge/scripts/cart/cartHelpers');
 
     var currentBasket = BasketMgr.getCurrentOrNewBasket();
+    var previousBonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
     var productId = req.form.pid;
     var childProducts = Object.hasOwnProperty.call(req.form, 'childProducts')
         ? JSON.parse(req.form.childProducts)
@@ -85,10 +87,20 @@ server.post('AddProduct', function (req, res, next) {
     var quantityTotal = ProductLineItemsModel.getTotalQuantity(currentBasket.productLineItems);
     var cartModel = new CartModel(currentBasket);
 
+    var newBonusDiscountLineItem =
+        cartHelper.getNewBonusDiscountLineItem(
+            currentBasket,
+            previousBonusDiscountLineItems,
+            URLUtils.url('Cart-ChooseBonusProducts').toString(),
+            URLUtils.url('Product-ShowBonusProducts').toString(),
+            URLUtils.url('Cart-AddBonusProducts').toString()
+        );
+
     res.json({
         quantityTotal: quantityTotal,
         message: result.message,
         cart: cartModel,
+        newBonusDiscountLineItem: newBonusDiscountLineItem,
         error: result.error
     });
 
@@ -508,6 +520,41 @@ server.get('RemoveCouponLineItem', function (req, res, next) {
     res.setStatusCode(500);
     res.json({ errorMessage: Resource.msg('error.cannot.remove.coupon', 'cart', null) });
     return next();
+});
+
+server.get('ChooseBonusProducts', function (req, res, next) {
+    var URLUtils = require('dw/web/URLUtils');
+    var ProductFactory = require('*/cartridge/scripts/factories/product');
+    var pids = req.querystring.pids.split(',');
+    var potentialProducts = [];
+
+    for (var i = 0; i < pids.length; i++) {
+        var params = {
+            pid: pids[i],
+            pview: 'tile'
+        };
+        var product = ProductFactory.get(params);
+        potentialProducts.push(product);
+    }
+
+    var addToCartUrl = URLUtils.url('Cart-AddProduct');
+    var template = 'cart/chooseBonusProduct.isml';
+
+    res.render(template, {
+        potentialProducts: potentialProducts,
+        addToCartUrl: addToCartUrl
+    });
+
+    next();
+});
+
+server.get('AddBonusProducts', function (req, res, next) {
+    // var URLUtils = require('dw/web/URLUtils');
+    res.json({
+        fu: 'bar'
+    });
+
+    next();
 });
 
 module.exports = server.exports();

@@ -47,6 +47,46 @@ function updateBundleProducts(apiLineItem, childProducts) {
     });
 }
 
+function getNewBonusDiscountLineItem(
+    currentBasket,
+    previousBonusDiscountLineItems,
+    url,
+    configureProductstUrl,
+    addToCartUrl) {
+    var newBonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
+    var newBonusDiscountLineItem;
+    var result = {};
+
+    var iter = newBonusDiscountLineItems.iterator();
+    while (iter.hasNext()) {
+        var newItem = iter.next();
+        // if there is a new discount line item, return it
+        if (!previousBonusDiscountLineItems.contains(newItem)) {
+            newBonusDiscountLineItem = newItem;
+            result.bonuspids = [];
+            var iterBonusProducts = newBonusDiscountLineItem.bonusProducts.iterator();
+            while (iterBonusProducts.hasNext()) {
+                var newBProduct = iterBonusProducts.next();
+                result.bonuspids.push(newBProduct.ID);
+            }
+
+            result.uuid = newItem.UUID;
+
+            result.maxBonusItems = newItem.maxBonusItems;
+            result.addToCartUrl = addToCartUrl;
+            result.configureProductstUrl = configureProductstUrl;
+            result.url = url + '?pids=' + result.bonuspids.toString();
+            result.callOutMsg = newItem.promotion.calloutMsg.source;// might need to use mark up
+            result.description =
+                newItem.promotion.conditionalDescription.source;// might need to use mark up
+
+            break;
+        }
+    }
+
+    return newBonusDiscountLineItem ? result : undefined;
+}
+
 /**
  * @typedef SelectedOption
  * @type Object
@@ -293,5 +333,6 @@ function ensureAllShipmentsHaveMethods(basket) {
 module.exports = {
     addProductToCart: addProductToCart,
     ensureAllShipmentsHaveMethods: ensureAllShipmentsHaveMethods,
-    getQtyAlreadyInCart: getQtyAlreadyInCart
+    getQtyAlreadyInCart: getQtyAlreadyInCart,
+    getNewBonusDiscountLineItem: getNewBonusDiscountLineItem
 };

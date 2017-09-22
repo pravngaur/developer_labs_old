@@ -1,0 +1,42 @@
+<div class="choice-of-bonus-product col product-wrapper">
+    <div class="row bonus-products-step1 ">
+        <!-- Product Item -->
+        <isloop items="${pdict.potentialProducts}" var="potentialProduct">
+            <div class="col-1">
+                <input type="checkbox" class="select-bonus-product-cb" data-pid=${potentialProduct.id}>
+            </div>
+            <div class="col-4">
+                <img class="product-image" src="${potentialProduct.images.medium[0].url}" alt="${potentialProduct.images.medium[0].alt}" title="${potentialProduct.images.medium[0].title}">           
+            </div>
+            <div class="col-7"    
+                <span class="product-name">${potentialProduct.productName}</span>
+            </div>         
+        </isloop>
+    </div>
+    <div class="row bonus-products-step2 configure-bonus-product-attributes hidden-xl-down">
+        <!-- product attribute selections -->                
+    </div>
+</div>
+
+<div class="modal-footer row align-items-end">
+    <div class="col-6">
+        <div class="row">
+                <button class="add-to-cart-global btn btn-primary bonus-products-step1">
+                    Cancel
+                </button>
+                <button class="bonus-products-back btn btn-primary bonus-products-step2 hidden-xl-down">
+                    Back
+                </button>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <button class="next-bonus-products btn btn-primary bonus-products-step1" data-selected-pids="" disabled="true">
+                    Next
+            </button>
+            <button class="select-bonus-products btn btn-primary bonus-products-step2 hidden-xl-down">
+                    Select
+            </button>
+        </div>
+    </div>
+</div>

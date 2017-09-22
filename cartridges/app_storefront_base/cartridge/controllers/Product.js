@@ -230,4 +230,25 @@ server.get('SizeChart', function (req, res, next) {
     next();
 });
 
+server.get('ShowBonusProducts', function (req, res, next) {
+    // var URLUtils = require('dw/web/URLUtils');
+    var ProductFactory = require('*/cartridge/scripts/factories/product');
+
+    var params = req.querystring.pids.split(' '); // TODO: figure out what happene to the '+'
+    var products = [];
+    var product;
+    params.forEach(function (param) {
+        product = ProductFactory.get({ pid: param });
+        products.push(product);
+    });
+
+    var template = 'product/bonusProducts.isml';
+
+    res.render(template, {
+        products: products
+    });
+
+    next();
+});
+
 module.exports = server.exports();
