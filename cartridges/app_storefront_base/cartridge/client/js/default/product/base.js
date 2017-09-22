@@ -339,6 +339,63 @@ function getAddToCartUrl() {
     return $('.add-to-cart-url').val();
 }
 
+function parseHtml(html) {
+    var $html = $('<div>').append($.parseHTML(html));
+
+    var body = $html.find('.choice-of-bonus-product');
+    var footer = $html.find('.modal-footer').children();
+
+    return { body: body, footer: footer };
+}
+
+function chooseBonusProducts(data) {
+    $('.modal-body').spinner().start();
+
+    if ($('#chooseBonusProductModal').length !== 0) {
+        $('#chooseBonusProductModal').remove();
+    }
+
+    var htmlString = '<!-- Modal -->'
+        + '<div class="modal fade" id="chooseBonusProductModal" role="dialog">'
+        + '<div class="modal-dialog choose-bonus-product-dialog" '
+        + 'data-total-qty="' + data.maxBonusItems + '"'
+        + 'data-configureUrl="' + data.configureProductstUrl + '"'
+        + 'data-addToCartUrl="' + data.addToCartUrl + '">'
+        + '<!-- Modal content-->'
+        + '<div class="modal-content">'
+        + '<div class="modal-header">'
+        + '    <span class="bonus-products-step1">Select '
+        + data.maxBonusItems + ' Bonus Proucts</span>'
+        + '    <span class="bonus-products-step2 hidden-xl-down">Select Prouct Attributes</span>'
+        + '    <button type="button" class="close pull-right" data-dismiss="modal">'
+        + '        <span>Close</span>&times;'
+        + '    </button>'
+        + '</div>'
+        + '<div class="modal-body"></div>'
+        + '<div class="modal-footer"></div>'
+        + '</div>'
+        + '</div>'
+        + '</div>';
+    $('body').append(htmlString);
+    $('.modal-body').spinner().start();
+    $.ajax({
+        url: data.url,
+        method: 'GET',
+        dataType: 'html',
+        success: function (html) {
+            var parsedHtml = parseHtml(html);
+            $('.modal-body').empty();
+            $('.modal-body').html(parsedHtml.body);
+            $('.modal-footer').html(parsedHtml.footer);
+            $('#chooseBonusProductModal').modal('show');
+            $.spinner().stop();
+        },
+        error: function () {
+            $.spinner().stop();
+        }
+    });
+}
+
 /**
  * Updates the Mini-Cart quantity value after the customer has pressed the "Add to Cart" button
  * @param {string} response - ajax response from clicking the add to cart button
@@ -361,6 +418,7 @@ function handlePostCartAdd(response) {
 
     setTimeout(function () {
         $('.add-to-basket-alert').remove();
+        chooseBonusProducts(response.newBonusDiscountLineItem);// TODO: conditionally call this
     }, 5000);
 }
 
@@ -513,6 +571,90 @@ module.exports = {
                     }
                 });
             }
+        });
+    },
+    bonusProductSelection: function () {
+        $('body').on('change', '.select-bonus-product-cb', function (e) {
+            e.preventDefault();
+            var $bonusModal = $(this).parents('.choose-bonus-product-dialog');
+            var $checkBoxesSelected = $bonusModal.find('.select-bonus-product-cb:checked');
+            var allowedqty = $bonusModal.data('total-qty');
+
+            var selectionFull = $checkBoxesSelected.length >= allowedqty;
+            if (selectionFull) {
+                $('.select-bonus-product-cb:checkbox:not(:checked)').attr('disabled', true);
+                $('.next-bonus-products').attr('disabled', false);
+            } else {
+                $('.select-bonus-product-cb:checkbox:not(:checked)').attr('disabled', false);
+                $('.next-bonus-products').attr('disabled', true);
+            }
+        });
+    },
+    bonusProductAttributes: function () {
+        $(document).on('click', '.next-bonus-products', function () {
+            $('.configure-bonus-product-attributes').html('');
+            $('.bonus-products-step1').addClass('hidden-xl-down');
+            var url = $('.choose-bonus-product-dialog').data('configureurl');
+            // var $selectedProducts = $('.select-bonus-product-cb:checked');
+            var queryString = '?pids=';
+            $('.select-bonus-product-cb:checked').each(function () {
+                queryString = queryString + $(this).data('pid') + '+';
+            });
+            queryString = queryString.slice(0, -1);
+
+            $.ajax({
+                url: url + queryString,
+                method: 'GET',
+                success: function (data) {
+                    $('.configure-bonus-product-attributes').html(data);
+                    $('.bonus-products-step2').removeClass('hidden-xl-down');
+//                    handleVariantResponse(data, $productContainer);
+//                    updateOptions(data.product.options, $productContainer);
+//                    updateQuantities(data.product.quantities, $productContainer);
+//                    $('body').trigger('product:afterAttributeSelect',
+//                        { data: data, container: $productContainer });
+//                    $.spinner().stop();
+                },
+                error: function () {
+                    $.spinner().stop();
+                }
+            });
+            $('.bonus-products-step2').removeClass('hidden-xl-down');
+        });
+
+        $(document).on('click', '.bonus-products-back', function () {
+            $('.bonus-products-step2').addClass('hidden-xl-down');
+            $('.bonus-products-step1').removeClass('hidden-xl-down');
+        });
+
+        $(document).on('click', '.select-bonus-products', function () {
+            var $readyToOrderBonusProducts = $('.ready-to-order');
+            var pidsToAddToCart = [];
+            var queryString = '?pids=';
+            var url = $('.choose-bonus-product-dialog').data('addtocarturl');
+            $.each($readyToOrderBonusProducts, function () {
+                pidsToAddToCart.push($(this).data('pid'));
+                queryString = queryString + $(this).data('pid') + '+';
+            });
+            queryString = queryString.slice(0, -1);
+            // console.log(url+queryString);
+            $.ajax({
+                url: url + queryString,
+                method: 'GET',
+                success: function (data) {
+                    $('.configure-bonus-product-attributes').html(data);
+                    $('.bonus-products-step2').removeClass('hidden-xl-down');
+//                    handleVariantResponse(data, $productContainer);
+//                    updateOptions(data.product.options, $productContainer);
+//                    updateQuantities(data.product.quantities, $productContainer);
+//                    $('body').trigger('product:afterAttributeSelect',
+//                        { data: data, container: $productContainer });
+//                    $.spinner().stop();
+                },
+                error: function () {
+                    $.spinner().stop();
+                }
+            });
         });
     }
 };

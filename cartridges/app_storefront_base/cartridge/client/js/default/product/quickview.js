@@ -90,6 +90,8 @@ module.exports = {
         });
     },
     colorAttribute: base.colorAttribute,
+    bonusProductSelection: base.bonusProductSelection,
+    bonusProductAttributes: base.bonusProductAttributes,
     selectAttribute: base.selectAttribute,
     availability: base.availability,
     addToCart: base.addToCart,

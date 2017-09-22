@@ -1,0 +1,6 @@
+
+<isloop items="${pdict.products}" var="product">
+<div class="col-12 bonus-product-item ready-to-order" data-pid="${product.id}" data-optionID="">
+${product.id}
+</div>
+</isloop>
