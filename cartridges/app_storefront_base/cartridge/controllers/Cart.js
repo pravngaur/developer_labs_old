@@ -93,9 +93,9 @@ server.post('AddProduct', function (req, res, next) {
             previousBonusDiscountLineItems,
             URLUtils.url('Cart-ChooseBonusProducts').toString(),
             URLUtils.url('Product-ShowBonusProducts').toString(),
-            URLUtils.url('Cart-AddBonusProducts').toString()
-        );
-
+            URLUtils.url('Cart-AddBonusProducts').toString(),
+            result.uuid
+    );
     res.json({
         quantityTotal: quantityTotal,
         message: result.message,
@@ -548,8 +548,38 @@ server.get('ChooseBonusProducts', function (req, res, next) {
     next();
 });
 
-server.get('AddBonusProducts', function (req, res, next) {
+server.post('AddBonusProducts', function (req, res, next) { // TODO: will need https and others
     // var URLUtils = require('dw/web/URLUtils');
+    var BasketMgr = require('dw/order/BasketMgr');
+    var ProductMgr = require('dw/catalog/ProductMgr');
+    var Transaction = require('dw/system/Transaction');
+    var currentBasket = BasketMgr.getCurrentOrNewBasket();
+    var previousBonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
+    var data = JSON.parse(req.querystring.pids);
+    var newBonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
+    var iter = newBonusDiscountLineItems.iterator();
+    var bonusDiscountLineItem;
+    while (iter.hasNext()) {
+        var Item = iter.next();
+        if (previousBonusDiscountLineItems.contains(Item)) {
+            bonusDiscountLineItem = Item;
+            break;
+        }
+    }
+
+    if (currentBasket) {
+        Transaction.wrap(function () {
+            for (var i = 0; i < data.bonusProducts.length; i += 1) {
+                var product = ProductMgr.getProduct(data.bonusProducts[i].pid);
+                currentBasket.createBonusProductLineItem(
+                        bonusDiscountLineItem,
+                        product,
+                        null,
+                        null);
+            }
+        });
+    }
+
     res.json({
         fu: 'bar'
     });

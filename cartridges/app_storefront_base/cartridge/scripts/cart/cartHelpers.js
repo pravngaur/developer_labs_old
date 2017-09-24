@@ -52,7 +52,8 @@ function getNewBonusDiscountLineItem(
     previousBonusDiscountLineItems,
     url,
     configureProductstUrl,
-    addToCartUrl) {
+    addToCartUrl,
+    uuid) {
     var newBonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
     var newBonusDiscountLineItem;
     var result = {};
@@ -70,7 +71,7 @@ function getNewBonusDiscountLineItem(
                 result.bonuspids.push(newBProduct.ID);
             }
 
-            result.uuid = newItem.UUID;
+            result.uuid = uuid;
 
             result.maxBonusItems = newItem.maxBonusItems;
             result.addToCartUrl = addToCartUrl;
@@ -79,7 +80,7 @@ function getNewBonusDiscountLineItem(
             result.callOutMsg = newItem.promotion.calloutMsg.source;// might need to use mark up
             result.description =
                 newItem.promotion.conditionalDescription.source;// might need to use mark up
-
+            result.newBonusDiscountLineItem = newBonusDiscountLineItem;
             break;
         }
     }
@@ -305,7 +306,8 @@ function addProductToCart(currentBasket, productId, quantity, childProducts, opt
                 : Resource.msg('error.alert.selected.quantity.cannot.be.added', 'product', null);
         }
     } else {
-        addLineItem(
+        var productLineItem;
+        productLineItem = addLineItem(
             currentBasket,
             product,
             quantity,
@@ -313,6 +315,7 @@ function addProductToCart(currentBasket, productId, quantity, childProducts, opt
             optionModel,
             defaultShipment
         );
+        result.uuid = productLineItem.UUID;
     }
 
     return result;

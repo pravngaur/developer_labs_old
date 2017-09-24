@@ -360,6 +360,7 @@ function chooseBonusProducts(data) {
         + '<div class="modal-dialog choose-bonus-product-dialog" '
         + 'data-total-qty="' + data.maxBonusItems + '"'
         + 'data-configureUrl="' + data.configureProductstUrl + '"'
+        + 'data-UUID="' + data.uuid + '"'
         + 'data-addToCartUrl="' + data.addToCartUrl + '">'
         + '<!-- Modal content-->'
         + '<div class="modal-content">'
@@ -632,15 +633,24 @@ module.exports = {
             var pidsToAddToCart = [];
             var queryString = '?pids=';
             var url = $('.choose-bonus-product-dialog').data('addtocarturl');
+            var pidsObject = {
+                bonusProducts: []
+            };
             $.each($readyToOrderBonusProducts, function () {
                 pidsToAddToCart.push($(this).data('pid'));
-                queryString = queryString + $(this).data('pid') + '+';
+                // queryString = queryString + $(this).data('pid') + '+';
+                pidsObject.bonusProducts.push({
+                    pid: $(this).data('pid'),
+                    qty: '1',
+                    options: null
+                });
             });
-            queryString = queryString.slice(0, -1);
-            // console.log(url+queryString);
+            // queryString = queryString.slice(0, -1);
+            queryString += JSON.stringify(pidsObject);
+            queryString = queryString + '&uuid=' + $('.choose-bonus-product-dialog').data('uuid');
             $.ajax({
                 url: url + queryString,
-                method: 'GET',
+                method: 'POST',
                 success: function (data) {
                     $('.configure-bonus-product-attributes').html(data);
                     $('.bonus-products-step2').removeClass('hidden-xl-down');
