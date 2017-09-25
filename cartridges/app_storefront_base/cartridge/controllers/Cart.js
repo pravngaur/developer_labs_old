@@ -581,7 +581,7 @@ server.post('AddBonusProducts', function (req, res, next) { // TODO: will need h
     }
 
     res.json({
-        fu: 'bar'
+        totalQty: currentBasket.productQuantityTotal
     });
 
     next();

@@ -405,22 +405,25 @@ function handlePostCartAdd(response) {
     $('.mini-cart').trigger('count:update', response);
     var messageType = response.error ? 'alert-danger' : 'alert-success';
     // show add to cart toast
-    if ($('.add-to-cart-messages').length === 0) {
-        $('body').append(
-        '<div class="add-to-cart-messages"></div>'
-     );
+    if (response.newBonusDiscountLineItem) {
+        chooseBonusProducts(response.newBonusDiscountLineItem);
+    } else {
+        if ($('.add-to-cart-messages').length === 0) {
+            $('body').append(
+            '<div class="add-to-cart-messages"></div>'
+            );
+        }
+
+        $('.add-to-cart-messages').append(
+            '<div class="alert ' + messageType + ' add-to-basket-alert text-center" role="alert">'
+            + response.message
+            + '</div>'
+        );
+
+        setTimeout(function () {
+            $('.add-to-basket-alert').remove();
+        }, 5000);
     }
-
-    $('.add-to-cart-messages').append(
-        '<div class="alert ' + messageType + ' add-to-basket-alert text-center" role="alert">'
-        + response.message
-        + '</div>'
-    );
-
-    setTimeout(function () {
-        $('.add-to-basket-alert').remove();
-        chooseBonusProducts(response.newBonusDiscountLineItem);// TODO: conditionally call this
-    }, 5000);
 }
 
 /**
@@ -648,18 +651,30 @@ module.exports = {
             // queryString = queryString.slice(0, -1);
             queryString += JSON.stringify(pidsObject);
             queryString = queryString + '&uuid=' + $('.choose-bonus-product-dialog').data('uuid');
+            $.spinner().start();
             $.ajax({
                 url: url + queryString,
                 method: 'POST',
                 success: function (data) {
+                    $.spinner().stop();
                     $('.configure-bonus-product-attributes').html(data);
                     $('.bonus-products-step2').removeClass('hidden-xl-down');
-//                    handleVariantResponse(data, $productContainer);
-//                    updateOptions(data.product.options, $productContainer);
-//                    updateQuantities(data.product.quantities, $productContainer);
-//                    $('body').trigger('product:afterAttributeSelect',
-//                        { data: data, container: $productContainer });
-//                    $.spinner().stop();
+                    $('#chooseBonusProductModal').modal('hide');
+
+                    if ($('.add-to-cart-messages').length === 0) {
+                        $('body').append(
+                        '<div class="add-to-cart-messages"></div>'
+                     );
+                    }
+                    $('.minicart-quantity').html(data.totalQty);
+                    $('.add-to-cart-messages').append(
+                        '<div class="alert alert-success add-to-basket-alert text-center"'
+                        + ' role="alert">'
+                        + 'Bonus Products added to your cart' + '</div>'
+                    );
+                    setTimeout(function () {
+                        $('.add-to-basket-alert').remove();
+                    }, 5000);
                 },
                 error: function () {
                     $.spinner().stop();
