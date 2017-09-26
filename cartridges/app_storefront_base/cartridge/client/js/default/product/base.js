@@ -339,6 +339,12 @@ function getAddToCartUrl() {
     return $('.add-to-cart-url').val();
 }
 
+/**
+ * Parses the html for a modal window
+ * @param {string} html - representing the body and footer of the modal window
+ *
+ * @return {Object} - Object with properties body and footer.
+ */
 function parseHtml(html) {
     var $html = $('<div>').append($.parseHTML(html));
 
@@ -348,6 +354,11 @@ function parseHtml(html) {
     return { body: body, footer: footer };
 }
 
+/**
+ * Retrieves url to use when adding a product to the cart
+ *
+ * @param {Object} data - data object used to fill in dynamic portions of the html
+ */
 function chooseBonusProducts(data) {
     $('.modal-body').spinner().start();
 
@@ -581,8 +592,13 @@ module.exports = {
         $('body').on('change', '.select-bonus-product-cb', function (e) {
             e.preventDefault();
             var $bonusModal = $(this).parents('.choose-bonus-product-dialog');
+            var $BonusLineItem = $(this).parents('.selectable-bonus-product-line-item');
+
+            $BonusLineItem.hasClass('beenSelected') // eslint-disable-line
+                    ? $BonusLineItem.removeClass('beenSelected')
+                    : $BonusLineItem.addClass('beenSelected');
+
             var $checkBoxesSelected = $bonusModal.find('.select-bonus-product-cb:checked');
-            var allowedqty = $bonusModal.data('total-qty');
 
             var selectionFull = $checkBoxesSelected.length > 1;
             if (selectionFull) {
@@ -599,7 +615,6 @@ module.exports = {
             $('.configure-bonus-product-attributes:last').html('');
             $('.bonus-products-step1').addClass('hidden-xl-down');
             var url = $('.choose-bonus-product-dialog').data('configureurl');
-            // var $selectedProducts = $('.select-bonus-product-cb:checked');
             var queryString = '?pids=';
             $('.select-bonus-product-cb:checked').each(function () {
                 queryString = queryString + $(this).data('pid') + '+';
@@ -627,67 +642,78 @@ module.exports = {
 
         $(document).on('click', '.select-bonus-products', function () {
             var $readyToOrderBonusProducts = $('.ready-to-order');
-            var pidsToAddToCart = [];
             var queryString = '?pids=';
             var url = $('.choose-bonus-product-dialog').data('addtocarturl');
             var pidsObject = {
                 bonusProducts: []
             };
             var totalQty = 0;
-            var itemQty;
             $.each($readyToOrderBonusProducts, function () {
-        	        var qtyOption = parseInt($(this).find('.bonus-quantity-select option:selected').val());
+                var qtyOption =
+                    parseInt($(this)
+                        .find('.bonus-quantity-select option:selected')
+                        .val(), 10);
+
                 var readyToOrder = $(this).data('ready-to-order');
                 var option = null;
-                if(qtyOption > 0 && readyToOrder){
-                		if ($(this).find('.product-option').data('option-id')) {
-                			option = {};
-                			option.id = $(this).find('.product-option').data('option-id');
-                			option.val = $(this).find('.product-option option:selected').data('value-id');
-                		}
-        		        pidsObject.bonusProducts.push({
-        			        pid: $(this).data('pid'),
-        			        qty: qtyOption,
-        			        options: null
-        		        });
-        		        totalQty += qtyOption;
-    		        }
+                if (qtyOption > 0 && readyToOrder) {
+                    if ($(this).find('.product-option').data('option-id')) {
+                        option = {};
+
+                        option.id = $(this).find('.product-option').data('option-id');
+
+                        option.val =
+                            $(this)
+                                .find('.product-option option:selected')
+                                .data('value-id');
+                    }
+                    pidsObject.bonusProducts.push({
+                        pid: $(this).data('pid'),
+                        qty: qtyOption,
+                        options: null
+                    });
+                    totalQty += qtyOption;
+                }
             });
             queryString += JSON.stringify(pidsObject);
             queryString = queryString + '&uuid=' + $('.choose-bonus-product-dialog').data('uuid');
-            if(totalQty > $('.choose-bonus-product-dialog').data('total-qty')){
-        	        $('.error-too-many-products').html('You are able to choose ' + $('.choose-bonus-product-dialog').data('total-qty') + ' products, but you have selected ' + totalQty + ' products.');
-            	
-            }else{
-            		$.spinner().start();
-	            $.ajax({
-	                url: url + queryString,
-	                method: 'POST',
-	                success: function (data) {
-	                    $.spinner().stop();
-	                    $('.configure-bonus-product-attributes').html(data);
-	                    $('.bonus-products-step2').removeClass('hidden-xl-down');
-	                    $('#chooseBonusProductModal').modal('hide');
-	
-	                    if ($('.add-to-cart-messages').length === 0) {
-	                        $('body').append(
-	                        '<div class="add-to-cart-messages"></div>'
-	                     );
-	                    }
-	                    $('.minicart-quantity').html(data.totalQty);
-	                    $('.add-to-cart-messages').append(
-	                        '<div class="alert alert-success add-to-basket-alert text-center"'
-	                        + ' role="alert">'
-	                        + 'Bonus Products added to your cart' + '</div>'
-	                    );
-	                    setTimeout(function () {
-	                        $('.add-to-basket-alert').remove();
-	                    }, 5000);
-	                },
-	                error: function () {
-	                    $.spinner().stop();
-	                }
-	            });
+            if (totalQty > $('.choose-bonus-product-dialog').data('total-qty')) {
+                $('.error-too-many-products')
+                    .html('You are able to choose ' + $('.choose-bonus-product-dialog')
+                    .data('total-qty')
+                        + ' products, but you have selected '
+                        + totalQty
+                        + ' products.');
+            } else {
+                $.spinner().start();
+                $.ajax({
+                    url: url + queryString,
+                    method: 'POST',
+                    success: function (data) {
+                        $.spinner().stop();
+                        $('.configure-bonus-product-attributes').html(data);
+                        $('.bonus-products-step2').removeClass('hidden-xl-down');
+                        $('#chooseBonusProductModal').modal('hide');
+
+                        if ($('.add-to-cart-messages').length === 0) {
+                            $('body').append(
+                            '<div class="add-to-cart-messages"></div>'
+                         );
+                        }
+                        $('.minicart-quantity').html(data.totalQty);
+                        $('.add-to-cart-messages').append(
+                            '<div class="alert alert-success add-to-basket-alert text-center"'
+                            + ' role="alert">'
+                            + 'Bonus Products added to your cart' + '</div>'
+                        );
+                        setTimeout(function () {
+                            $('.add-to-basket-alert').remove();
+                        }, 5000);
+                    },
+                    error: function () {
+                        $.spinner().stop();
+                    }
+                });
             }
         });
     }

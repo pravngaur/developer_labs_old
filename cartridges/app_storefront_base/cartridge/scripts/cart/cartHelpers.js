@@ -47,6 +47,21 @@ function updateBundleProducts(apiLineItem, childProducts) {
     });
 }
 
+/**
+ * Gets the newly added bonus discount line item
+ *
+ * @param {dw.order.ProductLineItem}
+ * @param {dw.order.ProductLineItem}
+ * @param {dw.order.ProductLineItem}
+ * @typedef ProductOption
+ * @type Object
+ * @property {string} id - Option ID
+ * @property {string} selectedValueId - Selected option value ID
+ * @param {dw.order.ProductLineItem} apiLineItem - Cart line item containing Bundle
+ * @param {string[]} childProducts - List of bundle product item ID's with chosen product variant
+ *     ID's
+ * @return {boolean} - Whether a product's current options are the same as those just selected
+ */
 function getNewBonusDiscountLineItem(
     currentBasket,
     previousBonusDiscountLineItems,

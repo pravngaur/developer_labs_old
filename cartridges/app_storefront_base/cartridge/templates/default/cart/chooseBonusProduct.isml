@@ -1,16 +1,18 @@
-<div class="choice-of-bonus-product col product-wrapper">
-    <div class="row bonus-products-step1 ">
+<div class="choice-of-bonus-product product-wrapper">
+    <div class="bonus-products-step1 ">
         <!-- Product Item -->
         <isloop items="${pdict.potentialProducts}" var="potentialProduct">
-            <div class="col-1">
-                <input type="checkbox" class="select-bonus-product-cb" data-pid=${potentialProduct.id}>
-            </div>
-            <div class="col-4">
-                <img class="product-image" src="${potentialProduct.images.medium[0].url}" alt="${potentialProduct.images.medium[0].alt}" title="${potentialProduct.images.medium[0].title}">           
-            </div>
-            <div class="col-7"    
-                <span class="product-name">${potentialProduct.productName}</span>
-            </div>         
+        		<div class="selectable-bonus-product-line-item row">
+	            <div class="col-1">
+	                <input type="checkbox" class="select-bonus-product-cb" data-pid=${potentialProduct.id}>
+	            </div>
+	            <div class="col-4">
+	                <img class="product-image" src="${potentialProduct.images.medium[0].url}" alt="${potentialProduct.images.medium[0].alt}" title="${potentialProduct.images.medium[0].title}">           
+	            </div>
+	            <div class="col-7"    
+	                <span class="product-name">${potentialProduct.productName}</span>
+	            </div>
+            </div>      
         </isloop>
     </div>
     <div class="row bonus-products-step2 configure-bonus-product-attributes hidden-xl-down">

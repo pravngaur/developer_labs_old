@@ -125,8 +125,18 @@
     }
 }
 
-.quick-view-dialog {
+.quick-view-dialog,
+.choose-bonus-product-dialog {
     max-width: 56.25em;
+
+    .selectable-bonus-product-line-item {
+        margin-top: 0.2em;
+        margin-bottom: 0.2em;
+    }
+
+    .beenSelected {
+        background-color: $grey3;
+    }
 
     .modal-header {
         background-color: $grey2;

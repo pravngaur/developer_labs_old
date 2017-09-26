@@ -572,11 +572,11 @@ server.post('AddBonusProducts', function (req, res, next) { // TODO: will need h
             for (var i = 0; i < data.bonusProducts.length; i++) {
                 var product = ProductMgr.getProduct(data.bonusProducts[i].pid);
                 var pli =
-                	    currentBasket.createBonusProductLineItem(
-                        bonusDiscountLineItem,
-                        product,
-                        null,
-                        null);
+                    currentBasket.createBonusProductLineItem(
+                    bonusDiscountLineItem,
+                    product,
+                    null,
+                    null);
                 pli.setQuantityValue(data.bonusProducts[i].qty);
             }
         });
