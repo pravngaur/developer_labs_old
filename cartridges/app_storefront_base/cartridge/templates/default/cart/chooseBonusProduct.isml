@@ -14,8 +14,9 @@
         </isloop>
     </div>
     <div class="row bonus-products-step2 configure-bonus-product-attributes hidden-xl-down">
-        <!-- product attribute selections -->                
+        <!-- product attribute selections -->            
     </div>
+    <div class="error-too-many-products alert-danger"></div>    
 </div>
 
 <div class="modal-footer row align-items-end">

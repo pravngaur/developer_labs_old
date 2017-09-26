@@ -569,13 +569,15 @@ server.post('AddBonusProducts', function (req, res, next) { // TODO: will need h
 
     if (currentBasket) {
         Transaction.wrap(function () {
-            for (var i = 0; i < data.bonusProducts.length; i += 1) {
+            for (var i = 0; i < data.bonusProducts.length; i++) {
                 var product = ProductMgr.getProduct(data.bonusProducts[i].pid);
-                currentBasket.createBonusProductLineItem(
+                var pli =
+                	    currentBasket.createBonusProductLineItem(
                         bonusDiscountLineItem,
                         product,
                         null,
                         null);
+                pli.setQuantityValue(data.bonusProducts[i].qty);
             }
         });
     }

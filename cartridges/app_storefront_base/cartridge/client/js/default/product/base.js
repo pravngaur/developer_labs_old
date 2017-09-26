@@ -584,7 +584,7 @@ module.exports = {
             var $checkBoxesSelected = $bonusModal.find('.select-bonus-product-cb:checked');
             var allowedqty = $bonusModal.data('total-qty');
 
-            var selectionFull = $checkBoxesSelected.length >= allowedqty;
+            var selectionFull = $checkBoxesSelected.length > 1;
             if (selectionFull) {
                 $('.select-bonus-product-cb:checkbox:not(:checked)').attr('disabled', true);
                 $('.next-bonus-products').attr('disabled', false);
@@ -596,7 +596,7 @@ module.exports = {
     },
     bonusProductAttributes: function () {
         $(document).on('click', '.next-bonus-products', function () {
-            $('.configure-bonus-product-attributes').html('');
+            $('.configure-bonus-product-attributes:last').html('');
             $('.bonus-products-step1').addClass('hidden-xl-down');
             var url = $('.choose-bonus-product-dialog').data('configureurl');
             // var $selectedProducts = $('.select-bonus-product-cb:checked');
@@ -604,20 +604,14 @@ module.exports = {
             $('.select-bonus-product-cb:checked').each(function () {
                 queryString = queryString + $(this).data('pid') + '+';
             });
-            queryString = queryString.slice(0, -1);
+            queryString = queryString.slice(0, -1); // TODO change to use stringify
 
             $.ajax({
                 url: url + queryString,
                 method: 'GET',
                 success: function (data) {
-                    $('.configure-bonus-product-attributes').html(data);
+                    $('.configure-bonus-product-attributes:last').html(data);
                     $('.bonus-products-step2').removeClass('hidden-xl-down');
-//                    handleVariantResponse(data, $productContainer);
-//                    updateOptions(data.product.options, $productContainer);
-//                    updateQuantities(data.product.quantities, $productContainer);
-//                    $('body').trigger('product:afterAttributeSelect',
-//                        { data: data, container: $productContainer });
-//                    $.spinner().stop();
                 },
                 error: function () {
                     $.spinner().stop();
@@ -639,47 +633,62 @@ module.exports = {
             var pidsObject = {
                 bonusProducts: []
             };
+            var totalQty = 0;
+            var itemQty;
             $.each($readyToOrderBonusProducts, function () {
-                pidsToAddToCart.push($(this).data('pid'));
-                // queryString = queryString + $(this).data('pid') + '+';
-                pidsObject.bonusProducts.push({
-                    pid: $(this).data('pid'),
-                    qty: '1',
-                    options: null
-                });
+        	        var qtyOption = parseInt($(this).find('.bonus-quantity-select option:selected').val());
+                var readyToOrder = $(this).data('ready-to-order');
+                var option = null;
+                if(qtyOption > 0 && readyToOrder){
+                		if ($(this).find('.product-option').data('option-id')) {
+                			option = {};
+                			option.id = $(this).find('.product-option').data('option-id');
+                			option.val = $(this).find('.product-option option:selected').data('value-id');
+                		}
+        		        pidsObject.bonusProducts.push({
+        			        pid: $(this).data('pid'),
+        			        qty: qtyOption,
+        			        options: null
+        		        });
+        		        totalQty += qtyOption;
+    		        }
             });
-            // queryString = queryString.slice(0, -1);
             queryString += JSON.stringify(pidsObject);
             queryString = queryString + '&uuid=' + $('.choose-bonus-product-dialog').data('uuid');
-            $.spinner().start();
-            $.ajax({
-                url: url + queryString,
-                method: 'POST',
-                success: function (data) {
-                    $.spinner().stop();
-                    $('.configure-bonus-product-attributes').html(data);
-                    $('.bonus-products-step2').removeClass('hidden-xl-down');
-                    $('#chooseBonusProductModal').modal('hide');
-
-                    if ($('.add-to-cart-messages').length === 0) {
-                        $('body').append(
-                        '<div class="add-to-cart-messages"></div>'
-                     );
-                    }
-                    $('.minicart-quantity').html(data.totalQty);
-                    $('.add-to-cart-messages').append(
-                        '<div class="alert alert-success add-to-basket-alert text-center"'
-                        + ' role="alert">'
-                        + 'Bonus Products added to your cart' + '</div>'
-                    );
-                    setTimeout(function () {
-                        $('.add-to-basket-alert').remove();
-                    }, 5000);
-                },
-                error: function () {
-                    $.spinner().stop();
-                }
-            });
+            if(totalQty > $('.choose-bonus-product-dialog').data('total-qty')){
+        	        $('.error-too-many-products').html('You are able to choose ' + $('.choose-bonus-product-dialog').data('total-qty') + ' products, but you have selected ' + totalQty + ' products.');
+            	
+            }else{
+            		$.spinner().start();
+	            $.ajax({
+	                url: url + queryString,
+	                method: 'POST',
+	                success: function (data) {
+	                    $.spinner().stop();
+	                    $('.configure-bonus-product-attributes').html(data);
+	                    $('.bonus-products-step2').removeClass('hidden-xl-down');
+	                    $('#chooseBonusProductModal').modal('hide');
+	
+	                    if ($('.add-to-cart-messages').length === 0) {
+	                        $('body').append(
+	                        '<div class="add-to-cart-messages"></div>'
+	                     );
+	                    }
+	                    $('.minicart-quantity').html(data.totalQty);
+	                    $('.add-to-cart-messages').append(
+	                        '<div class="alert alert-success add-to-basket-alert text-center"'
+	                        + ' role="alert">'
+	                        + 'Bonus Products added to your cart' + '</div>'
+	                    );
+	                    setTimeout(function () {
+	                        $('.add-to-basket-alert').remove();
+	                    }, 5000);
+	                },
+	                error: function () {
+	                    $.spinner().stop();
+	                }
+	            });
+            }
         });
     }
 };
