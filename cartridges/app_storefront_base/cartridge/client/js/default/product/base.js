@@ -246,8 +246,21 @@ function updateOptions(options, $productContainer) {
  * @param {jQuery} $productContainer - DOM element for a given product.
  */
 function handleVariantResponse(response, $productContainer) {
+    var isChoiceOfBonusProducts;
+    var isVaraint;
     if (response.product.variationAttributes) {
         updateAttrs(response.product.variationAttributes, $productContainer);
+
+        isChoiceOfBonusProducts =
+                $productContainer.parents('.choose-bonus-product-dialog').length > 0;
+        isVaraint = response.product.productType === 'variant';
+        if (isChoiceOfBonusProducts && isVaraint) {
+            $productContainer.parent('.bonus-product-item')
+                .data('pid', response.product.id);
+
+            $productContainer.parent('.bonus-product-item')
+                .data('ready-to-order', response.product.readyToOrder);
+        }
     }
 
     // Update primary images
@@ -258,11 +271,12 @@ function handleVariantResponse(response, $productContainer) {
     });
 
     // Update pricing
-    var $priceSelector = $('.prices .price', $productContainer).length
-        ? $('.prices .price', $productContainer)
-        : $('.prices .price');
-    $priceSelector.replaceWith(response.product.price.html);
-
+    if (!isChoiceOfBonusProducts) {
+        var $priceSelector = $('.prices .price', $productContainer).length
+            ? $('.prices .price', $productContainer)
+            : $('.prices .price');
+        $priceSelector.replaceWith(response.product.price.html);
+    }
     // Update promotions
     $('.promotions').empty().html(getPromotionsHtml(response.product.promotions));
 
