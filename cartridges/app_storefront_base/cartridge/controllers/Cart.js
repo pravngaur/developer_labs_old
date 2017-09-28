@@ -552,6 +552,7 @@ server.post('AddBonusProducts', function (req, res, next) { // TODO: will need h
     // var URLUtils = require('dw/web/URLUtils');
     var BasketMgr = require('dw/order/BasketMgr');
     var ProductMgr = require('dw/catalog/ProductMgr');
+    var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
     var Transaction = require('dw/system/Transaction');
     var currentBasket = BasketMgr.getCurrentOrNewBasket();
     var previousBonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
@@ -571,11 +572,16 @@ server.post('AddBonusProducts', function (req, res, next) { // TODO: will need h
         Transaction.wrap(function () {
             for (var i = 0; i < data.bonusProducts.length; i++) {
                 var product = ProductMgr.getProduct(data.bonusProducts[i].pid);
+                var selectedOptions = data.bonusProducts[i].options;
+                var optionModel =
+                    productHelper.getCurrentOptionModel(
+                        product.optionModel,
+                        selectedOptions);
                 var pli =
                     currentBasket.createBonusProductLineItem(
                     bonusDiscountLineItem,
                     product,
-                    null,
+                    optionModel,
                     null);
                 pli.setQuantityValue(data.bonusProducts[i].qty);
             }

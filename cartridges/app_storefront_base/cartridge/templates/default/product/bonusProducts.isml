@@ -1,60 +1,97 @@
 <isloop items="${pdict.products}" var="product">
-<div class="col-12 bonus-product-item ready-to-order" data-pid="${product.id}" data-ready-to-order="${product.readyToOrder}" data-optionID="">
+    <div class="col-12 bonus-product-item ready-to-order" data-pid="${product.id}" data-ready-to-order="${product.readyToOrder}" data-optionID="">
+        <div class="product-quickview product-${product.productType} col product-wrapper product-detail" data-pid="${product.id}">
+            <div class="row">
+                <!-- Product Images Carousel -->
+                <isinclude template="product/components/image_carousel" />
 
-<div class="product-quickview product-${product.productType} col product-wrapper product-detail" data-pid="${product.id}">
-    <div class="row">
-        <!-- Product Images Carousel -->
-        <isinclude template="product/components/image_carousel" />
+                <!-- Product Name and Number -->
+                <div class="col-sm-6">
+                    <section>
+                        <h4 class="product-name">${product.productName}</h4>
+                    </section>
 
-        <!-- Product Name and Number -->
-        <div class="col-sm-6">
-            <section>
-                <h4 class="product-name">${product.productName}</h4>
-            </section>
+                    <div class="detail-panel">
+                        <!-- Attributes -->
+                        <section class="attributes">
+                            <div class="col-12">
 
-            <div class="detail-panel">
-                <!-- Attributes -->
-                <section class="attributes">
-                    <div class="col-12">
-
-                        <isloop items="${product.variationAttributes}" var="attr" status="attributeStatus">
-                            <div data-attr="${attr.id}" class="swatch">
-                                <isif condition="${attributeStatus.last}">
-                                    <!-- Quantity Drop Down Menu -->
-                                    <div class="bonus-quantity col-sm-6">
-										<label>${Resource.msg('label.quantity', 'common', null)}</label>
-										<select class="bonus-quantity-select custom-select form-control">
-											<option value="0">
-									    			0
-											</option>
-										    <isloop items="${product.quantities}" var="quantity">
-										        <option value="${quantity.value}"
-										                <isif condition="${product.productType !== 'bundle'}">data-url="${quantity.url}"</isif>
-										                ${quantity.selected ? 'selected' : ''}
-										        >
-										            ${quantity.value}
-										        </option>
-										    </isloop>
-										</select>
+                                <isloop items="${product.variationAttributes}" var="attr" status="attributeStatus">
+                                    <div data-attr="${attr.id}" class="swatch">
+                                        <isif condition="${attributeStatus.last}">
+                                            <!-- Quantity Drop Down Menu -->
+                                            <div class="bonus-quantity col-sm-6">
+                                                <label>${Resource.msg('label.quantity', 'common', null)}</label>
+                                                <select class="bonus-quantity-select custom-select form-control">
+                                                    <option value="0">
+                                                            0
+                                                    </option>
+                                                    <isloop items="${product.quantities}" var="quantity">
+                                                        <option value="${quantity.value}"
+                                                                <isif condition="${product.productType !== 'bundle'}">data-url="${quantity.url}"</isif>
+                                                                ${quantity.selected ? 'selected' : ''}
+                                                        >
+                                                            ${quantity.value}
+                                                        </option>
+                                                    </isloop>
+                                                </select>
+                                            </div>
+                                        </isif>
+                                        <isinclude template="product/components/variationAttributeBonusProducts" />
                                     </div>
-                                </isif>
-                                <isinclude template="product/components/variationAttributeBonusProducts" />
+                                </isloop>
                             </div>
-                        </isloop>
-                    </div>
-                </section>
+                        </section>
 
-                <isif condition="${product.productType !== 'bundle'}">
-                    <!-- Options -->
-                    <isif condition="${product.options && product.options.length > 0}">
-                        <isinclude template="product/components/options" />
-                    </isif>
-                </isif>
+                        <isif condition="${product.productType !== 'bundle'}">
+                            <!-- Options -->
+                            <isif condition="${product.options && product.options.length > 0}">
+                                <isset name="isQuickView" value="${false}" scope="page"/>
+                                <div class="col-md-10 col-12 product-options">
+                                    <isloop items="${product.options}" var="option" status="loopStatus">
+                                        <div class="row product-option" data-option-id="${option.id}">
+                                            <div class="
+                                                <isif condition="${loopStatus.last && !isQuickView || isProductSet}">
+                                                    col-8
+                                                <iselse>
+                                                    col-12
+                                                </isif>">
+                                                <isinclude template="product/components/option" />
+                                            </div>
+
+                                            <!-- Quantity Drop Down Menu -->
+                                            <isif condition="${loopStatus.last && (!isQuickView || isProductSet)}">
+                                                <div class="col-4 quantity">
+                                                    <!-- Quantity Drop Down Menu -->
+                                                    <div class="bonus-quantity col-sm-6">
+                                                        <label>${Resource.msg('label.quantity', 'common', null)}</label>
+                                                        <select class="bonus-quantity-select custom-select form-control">
+                                                            <option value="0">0</option>
+                                                            <isloop items="${product.quantities}" var="quantity">
+                                                                <option value="${quantity.value}"
+                                                                    <isif condition="${product.productType !== 'bundle'}">
+                                                                        data-url="${quantity.url}"
+                                                                    </isif>
+                                                                    ${quantity.selected ? 'selected' : ''}
+                                                                >
+                                                                    ${quantity.value}
+                                                                </option>
+                                                            </isloop>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </isif>
+                                        </div>
+                                    </isloop>
+                                </div>
+                                <isset name="isQuickView" value="${true}" scope="page"/>
+                            </isif>
+                        </isif>
+                    </div>
+                </div>
             </div>
         </div>
+        <hr />
     </div>
-</div>
-<hr />
-</div>
 
 </isloop>

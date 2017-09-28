@@ -674,9 +674,9 @@ module.exports = {
                     if ($(this).find('.product-option').data('option-id')) {
                         option = {};
 
-                        option.id = $(this).find('.product-option').data('option-id');
-
-                        option.val =
+                        option.optionId = $(this).find('.product-option').data('option-id');
+                        option.productId = $(this).data('pid');
+                        option.selectedValueId =
                             $(this)
                                 .find('.product-option option:selected')
                                 .data('value-id');
@@ -684,7 +684,7 @@ module.exports = {
                     pidsObject.bonusProducts.push({
                         pid: $(this).data('pid'),
                         qty: qtyOption,
-                        options: null
+                        options: [option]
                     });
                     totalQty += qtyOption;
                 }
