@@ -231,10 +231,9 @@ server.get('SizeChart', function (req, res, next) {
 });
 
 server.get('ShowBonusProducts', function (req, res, next) {
-    // var URLUtils = require('dw/web/URLUtils');
     var ProductFactory = require('*/cartridge/scripts/factories/product');
 
-    var params = req.querystring.pids.split(' '); // TODO: figure out what happene to the '+'
+    var params = JSON.parse(req.querystring.pids);
     var products = [];
     var product;
     params.forEach(function (param) {

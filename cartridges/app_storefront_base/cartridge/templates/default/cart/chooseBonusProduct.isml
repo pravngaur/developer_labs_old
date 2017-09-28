@@ -24,7 +24,7 @@
 <div class="modal-footer row align-items-end">
     <div class="col-6">
         <div class="row">
-                <button class="add-to-cart-global btn btn-primary bonus-products-step1">
+                <button class="btn btn-primary bonus-products-step1 cancel-bonus-products">
                     Cancel
                 </button>
                 <button class="bonus-products-back btn btn-primary bonus-products-step2 hidden-xl-down">

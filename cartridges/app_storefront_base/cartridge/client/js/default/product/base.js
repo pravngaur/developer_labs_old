@@ -623,6 +623,10 @@ module.exports = {
                 $('.next-bonus-products').attr('disabled', true);
             }
         });
+        $('body').on('click', '.cancel-bonus-products', function (e) {
+            e.preventDefault();
+            $('#chooseBonusProductModal').modal('hide');
+        });
     },
     bonusProductAttributes: function () {
         $(document).on('click', '.next-bonus-products', function () {
@@ -630,13 +634,14 @@ module.exports = {
             $('.bonus-products-step1').addClass('hidden-xl-down');
             var url = $('.choose-bonus-product-dialog').data('configureurl');
             var queryString = '?pids=';
+            var pids = [];
             $('.select-bonus-product-cb:checked').each(function () {
-                queryString = queryString + $(this).data('pid') + '+';
+                pids.push($(this).data('pid'));
             });
-            queryString = queryString.slice(0, -1); // TODO change to use stringify
-
+            queryString += JSON.stringify(pids);
+            url += queryString;
             $.ajax({
-                url: url + queryString,
+                url: url,
                 method: 'GET',
                 success: function (data) {
                     $('.configure-bonus-product-attributes:last').html(data);
