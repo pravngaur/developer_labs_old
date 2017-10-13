@@ -1,7 +1,6 @@
 'use strict';
 
-var countries = require('countries');
-
+var countries = require('*/cartridge/config/countries');
 var ApiLocale = require('dw/util/Locale');
 
 /**
@@ -24,7 +23,10 @@ function getLocaleLinks(allowedLocales, siteId, currentLocaleID) {
                 localID: locale.id,
                 country: apiLocale.country,
                 displayCountry: apiLocale.displayCountry,
-                currencyCode: locale.currencyCode
+                currencyCode: locale.currencyCode,
+                displayName: apiLocale.displayName,
+                language: apiLocale.language,
+                displayLanguage: apiLocale.displayLanguage
             };
             localeOptions.push(localeOption);
         }
@@ -49,7 +51,10 @@ function Locale(currentLocale, allowedLocales, siteId) {
         countryCode: currentLocale.country,
         name: currentLocale.displayCountry,
         localLinks: getLocaleLinks(allowedLocales, siteId, currentLocale.ID),
-        currencyCode: currentCountry.currencyCode
+        currencyCode: currentCountry.currencyCode,
+        displayName: currentLocale.displayName,
+        language: currentLocale.language,
+        displayLanguage: currentLocale.displayLanguage
     };
 }
 

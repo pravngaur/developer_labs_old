@@ -72,7 +72,7 @@
                         </isif>
 
                         <!-- Size Chart -->
-                        <isif condition="${product.variationAttributes}">
+                        <isif condition="${product.variationAttributes && product.sizeChartId}">
                             <div class="size-chart col-md-10 col-12">
                                 <isinclude template="product/components/sizeChart" />
                             </div>
@@ -81,6 +81,11 @@
                         <!-- Availability -->
                         <div class="availability col-md-10 col-12 product-availability" data-ready-to-order="${product.readyToOrder}" data-available="${product.available}">
                             <isinclude template="product/components/availability" />
+                        </div>
+
+                        <!-- In store inventory -->
+                        <div class="col-md-10 col-12 pdp-in-store-inventory">
+                            <isinclude template="product/components/pdpInStoreInventory" />
                         </div>
 
                         <!-- Applicable Promotions -->

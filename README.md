@@ -17,7 +17,7 @@ Your feedback on the ease-of-use and limitations of this new architecture is inv
 
 dwupload --hostname sbox01-realm1-mycompany.demandware.net --username admin --password "MyPassword" --cartridge modules
 
-5 Use https://bitbucket.org/demandware/sitegenesisdata to zip and import site date on your sandbox.
+5 Use https://bitbucket.org/demandware/mobilefirstdata to zip and import site date on your sandbox.
 
 6 Add the `app_storefront_base` cartridge to your cartridge path.
 

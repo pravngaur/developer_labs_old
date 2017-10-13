@@ -27,13 +27,18 @@ function getAllBreadcrumbs(cgid, pid, breadcrumbs) {
     var category = cgid && cgid !== 'root'
         ? CatalogMgr.getCategory(cgid)
         : primaryCategory;
-    breadcrumbs.push({
-        htmlValue: category.displayName,
-        url: URLUtils.url('Search-Show', 'cgid', category.ID)
-    });
-    if (category.parent && category.parent.ID !== 'root') {
-        return getAllBreadcrumbs(category.parent.ID, null, breadcrumbs);
+
+    if (category) {
+        breadcrumbs.push({
+            htmlValue: category.displayName,
+            url: URLUtils.url('Search-Show', 'cgid', category.ID)
+        });
+
+        if (category.parent && category.parent.ID !== 'root') {
+            return getAllBreadcrumbs(category.parent.ID, null, breadcrumbs);
+        }
     }
+
     return breadcrumbs;
 }
 
@@ -68,6 +73,8 @@ function getResources() {
  */
 function showProductPage(querystring, res) {
     var URLUtils = require('dw/web/URLUtils');
+    var Site = require('dw/system/Site');
+
     var ProductFactory = require('*/cartridge/scripts/factories/product');
 
     var params = querystring;
@@ -89,7 +96,11 @@ function showProductPage(querystring, res) {
         product: product,
         addToCartUrl: addToCartUrl,
         resources: getResources(),
-        breadcrumbs: breadcrumbs
+        breadcrumbs: breadcrumbs,
+        pickUpInStore: {
+            actionUrl: URLUtils.url('Product-GetStores').toString(),
+            enabled: Site.getCurrent().getCustomPreferenceValue('enableStorePickUp')
+        }
     });
 }
 
@@ -204,6 +215,67 @@ server.get('ShowQuickView', cache.applyPromotionSensitiveCache, function (req, r
         product: product,
         addToCartUrl: addToCartUrl,
         resources: getResources()
+    });
+
+    next();
+});
+
+server.get('SizeChart', function (req, res, next) {
+    var ContentMgr = require('dw/content/ContentMgr');
+
+    var apiContent = ContentMgr.getContent(req.querystring.cid);
+
+    if (apiContent) {
+        res.json({
+            success: true,
+            content: apiContent.custom.body.markup
+        });
+    } else {
+        res.json({});
+    }
+    next();
+});
+
+server.get('GetStores', function (req, res, next) {
+    var URLUtils = require('dw/web/URLUtils');
+    var StoreHelpers = require('*/cartridge/scripts/helpers/storeHelpers');
+    var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
+
+    var actionUrl = URLUtils.url('Product-GetStores').toString();
+    var storesModel = StoreHelpers.getModel(req, actionUrl);
+    var product = [{
+        productID: req.querystring.pid,
+        quantityValue: req.querystring.qty
+    }];
+
+    storesModel.stores = StoreHelpers.getFilteredStores(storesModel, product);
+
+    var context = storesModel;
+    var storeTemplate = 'product/components/inStoreInventoryFind';
+
+    storesModel.storesResultsHtml = storesModel.stores
+        ? renderTemplateHelper.getRenderedHtml(context, storeTemplate)
+        : null;
+
+    res.json(storesModel);
+    next();
+});
+
+server.get('ShowBonusProducts', function (req, res, next) {
+    var ProductFactory = require('*/cartridge/scripts/factories/product');
+
+    var params = JSON.parse(req.querystring.pids);
+    var products = [];
+    var product;
+    params.forEach(function (param) {
+        product = ProductFactory.get({ pid: param });
+        products.push(product);
+    });
+
+    var template = 'product/components/choiceofbonusproducts/bonusProducts.isml';
+
+    res.render(template, {
+        products: products
     });
 
     next();

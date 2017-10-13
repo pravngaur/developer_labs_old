@@ -4,6 +4,55 @@ var QueryString = require('./querystring');
 var SimpleCache = require('./simpleCache');
 
 /**
+ * Translates global session object into local object
+ * @param {dw.session} session - Global customer object
+ * @returns {Object} local instance of session object
+ */
+function getSessionObject(session) {
+    var sessionObject = {
+        privacyCache: new SimpleCache(session.privacy),
+        raw: session,
+        currency: {
+            currencyCode: session.currency.currencyCode,
+            defaultFractionDigits: session.currency.defaultFractionDigits,
+            name: session.currency.name,
+            symbol: session.currency.symbol
+        },
+        setCurrency: function (value) {
+            session.setCurrency(value);
+        }
+    };
+
+    Object.defineProperty(sessionObject, 'clickStream', {
+        get: function () {
+            var clickStreamEntries = session.clickStream.clicks.toArray();
+            var clicks = clickStreamEntries.map(function (clickObj) {
+                return {
+                    host: clickObj.host,
+                    locale: clickObj.locale,
+                    path: clickObj.path,
+                    pipelineName: clickObj.pipelineName,
+                    queryString: clickObj.queryString,
+                    referer: clickObj.referer,
+                    remoteAddress: clickObj.remoteAddress,
+                    timestamp: clickObj.timestamp,
+                    url: clickObj.url,
+                    userAgent: clickObj.userAgent
+                };
+            });
+            return {
+                clicks: clicks,
+                first: clicks[0],
+                last: clicks[clicks.length - 1],
+                partial: session.clickStream.partial
+            };
+        }
+    });
+
+    return sessionObject;
+}
+
+/**
  *
  * Retrieves and normalizes form data from httpParameterMap
  * @param {dw.web.httpParameterMap} items - original parameters
@@ -160,7 +209,7 @@ function getCustomerObject(customer) {
 function setCurrency(request, session) {
     var Locale = require('dw/util/Locale');
     var currency = require('dw/util/Currency');
-    var countries = require('../countries');
+    var countries = require('*/cartridge/config/countries');
     var currentLocale = Locale.getLocale(request.locale);
 
     var currentCountry = !currentLocale
@@ -169,9 +218,46 @@ function setCurrency(request, session) {
             return country.id === currentLocale.ID;
         })[0];
 
-    if (session.currency.currencyCode !== currentCountry.currencyCode) {
+    if (session.currency
+        && currentCountry
+        && session.currency.currencyCode !== currentCountry.currencyCode
+    ) {
         session.setCurrency(currency.getCurrency(currentCountry.currencyCode));
     }
+}
+
+/**
+ * get a local instance of the geo location object
+ * @param {Object} request - Global request object
+ * @returns {Object} object containing geo location information
+ */
+function getGeolocationObject(request) {
+    var Locale = require('dw/util/Locale');
+    var currentLocale = Locale.getLocale(request.locale);
+
+    return {
+        countryCode: request.geolocation ? request.geolocation.countryCode : currentLocale.country,
+        latitude: request.geolocation ? request.geolocation.latitude : 90.0000,
+        longitude: request.geolocation ? request.geolocation.longitude : 0.0000
+    };
+}
+
+/**
+ * Get request body as string if it is a POST or PUT
+ * @param {Object} request - Global request object
+ * @returns {string|Null} the request body as string
+ */
+function getRequestBodyAsString(request) {
+    var result = null;
+
+    if (request
+        && (request.httpMethod === 'POST' || request.httpMethod === 'PUT')
+        && request.httpParameterMap
+    ) {
+        result = request.httpParameterMap.requestBodyAsString;
+    }
+
+    return result;
 }
 
 /**
@@ -184,64 +270,73 @@ function setCurrency(request, session) {
  * @param {dw.system.Session} session - Global session object
  */
 function Request(request, customer, session) {
-    setCurrency(request, session);
+    // Avoid currency check for remote includes
+    if (!request.includeRequest) {
+        setCurrency(request, session);
+    }
 
     this.httpMethod = request.httpMethod;
     this.host = request.httpHost;
     this.path = request.httpPath;
     this.httpHeaders = request.httpHeaders;
-    this.querystring = new QueryString(request.httpQueryString);
-    this.form = getFormData(request.httpParameterMap, this.querystring);
     this.https = request.isHttpSecure();
-    this.body = request.httpParameterMap.requestBodyAsString;
-    this.locale = getCurrentLocale(request.locale, session.currency);
     this.includeRequest = request.includeRequest;
-    if (request.geolocation) {
-        this.geolocation = {
-            countryCode: request.geolocation.countryCode,
-            latitude: request.geolocation.latitude,
-            longitude: request.geolocation.longitude
-        };
-    }
-    this.currentCustomer = getCustomerObject(customer);
     this.setLocale = function (localeID) {
         return request.setLocale(localeID);
     };
 
-    var clickStreamEntries = session.clickStream.clicks.toArray();
-    var clicks = clickStreamEntries.map(function (clickObj) {
-        return {
-            host: clickObj.host,
-            locale: clickObj.locale,
-            path: clickObj.path,
-            pipelineName: clickObj.pipelineName,
-            queryString: clickObj.queryString,
-            referer: clickObj.referer,
-            remoteAddress: clickObj.remoteAddress,
-            timestamp: clickObj.timestamp,
-            url: clickObj.url,
-            userAgent: clickObj.userAgent
-        };
+    Object.defineProperty(this, 'session', {
+        get: function () {
+            return getSessionObject(session);
+        }
     });
 
-    this.session = {
-        privacyCache: new SimpleCache(session.privacy),
-        raw: session,
-        clickStream: {
-            clicks: clicks,
-            first: clicks[0],
-            last: clicks[clicks.length - 1],
-            partial: session.clickStream.partial
-        },
-        currency: {
-            currencyCode: session.currency.currencyCode,
-            defaultFractionDigits: session.currency.defaultFractionDigits,
-            name: session.currency.name,
-            symbol: session.currency.symbol
-        },
-        setCurrency: function (value) {
-            session.setCurrency(value);
+    Object.defineProperty(this, 'querystring', {
+        get: function () {
+            return new QueryString(request.httpQueryString);
         }
-    };
+    });
+
+    Object.defineProperty(this, 'form', {
+        get: function () {
+            return getFormData(request.httpParameterMap, this.querystring);
+        }
+    });
+
+    Object.defineProperty(this, 'body', {
+        get: function () {
+            return getRequestBodyAsString(request);
+        }
+    });
+
+    Object.defineProperty(this, 'geolocation', {
+        get: function () {
+            return getGeolocationObject(request);
+        }
+    });
+
+    Object.defineProperty(this, 'currentCustomer', {
+        get: function () {
+            return getCustomerObject(customer);
+        }
+    });
+
+    Object.defineProperty(this, 'locale', {
+        get: function () {
+            return getCurrentLocale(request.locale, session.currency);
+        }
+    });
+
+    Object.defineProperty(this, 'remoteAddress', {
+        get: function () {
+            return request.getHttpRemoteAddress();
+        }
+    });
+
+    Object.defineProperty(this, 'referer', {
+        get: function () {
+            return request.getHttpReferer();
+        }
+    });
 }
 module.exports = Request;

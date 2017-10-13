@@ -25,12 +25,14 @@ server.post('AddProduct', function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
     var HookMgr = require('dw/system/HookMgr');
     var Resource = require('dw/web/Resource');
+    var URLUtils = require('dw/web/URLUtils');
     var Transaction = require('dw/system/Transaction');
     var CartModel = require('*/cartridge/models/cart');
     var ProductLineItemsModel = require('*/cartridge/models/productLineItems');
     var cartHelper = require('*/cartridge/scripts/cart/cartHelpers');
 
     var currentBasket = BasketMgr.getCurrentOrNewBasket();
+    var previousBonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
     var productId = req.form.pid;
     var childProducts = Object.hasOwnProperty.call(req.form, 'childProducts')
         ? JSON.parse(req.form.childProducts)
@@ -77,7 +79,7 @@ server.post('AddProduct', function (req, res, next) {
             }
             if (!result.error) {
                 cartHelper.ensureAllShipmentsHaveMethods(currentBasket);
-                HookMgr.callHook('dw.ocapi.shop.basket.calculate', 'calculate', currentBasket);
+                HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
             }
         });
     }
@@ -85,10 +87,25 @@ server.post('AddProduct', function (req, res, next) {
     var quantityTotal = ProductLineItemsModel.getTotalQuantity(currentBasket.productLineItems);
     var cartModel = new CartModel(currentBasket);
 
+    var urlObject = {
+        url: URLUtils.url('Cart-ChooseBonusProducts').toString(),
+        configureProductstUrl: URLUtils.url('Product-ShowBonusProducts').toString(),
+        addToCartUrl: URLUtils.url('Cart-AddBonusProducts').toString()
+    };
+
+    var newBonusDiscountLineItem =
+        cartHelper.getNewBonusDiscountLineItem(
+            currentBasket,
+            previousBonusDiscountLineItems,
+            urlObject,
+            result.uuid
+    );
+
     res.json({
         quantityTotal: quantityTotal,
         message: result.message,
         cart: cartModel,
+        newBonusDiscountLineItem: newBonusDiscountLineItem || {},
         error: result.error
     });
 
@@ -117,7 +134,7 @@ server.get(
                 }
                 cartHelper.ensureAllShipmentsHaveMethods(currentBasket);
 
-                HookMgr.callHook('dw.ocapi.shop.basket.calculate', 'calculate', currentBasket);
+                HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
             });
         }
 
@@ -147,7 +164,7 @@ server.get('Get', function (req, res, next) {
         Transaction.wrap(function () {
             cartHelper.ensureAllShipmentsHaveMethods(currentBasket);
 
-            HookMgr.callHook('dw.ocapi.shop.basket.calculate', 'calculate', currentBasket);
+            HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
         });
     }
 
@@ -178,25 +195,42 @@ server.get('RemoveProductLineItem', function (req, res, next) {
     }
 
     var isProductLineItemFound = false;
+    var bonusProductsUUIDs = [];
 
     Transaction.wrap(function () {
         if (req.querystring.pid && req.querystring.uuid) {
             var productLineItems = currentBasket.getAllProductLineItems(req.querystring.pid);
+            var bonusProductLineItems = currentBasket.bonusLineItems;
+            var mainProdItem;
             for (var i = 0; i < productLineItems.length; i++) {
                 var item = productLineItems[i];
                 if ((item.UUID === req.querystring.uuid)) {
+                    if (bonusProductLineItems && bonusProductLineItems.length > 0) {
+                        for (var j = 0; j < bonusProductLineItems.length; j++) {
+                            var bonusItem = bonusProductLineItems[j];
+                            mainProdItem = bonusItem.getQualifyingProductLineItemForBonusProduct();
+                            if (mainProdItem !== null
+                                && (mainProdItem.productID === item.productID)) {
+                                bonusProductsUUIDs.push(bonusItem.UUID);
+                            }
+                        }
+                    }
                     currentBasket.removeProductLineItem(item);
                     isProductLineItemFound = true;
                     break;
                 }
             }
         }
-        HookMgr.callHook('dw.ocapi.shop.basket.calculate', 'calculate', currentBasket);
+        HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
     });
 
     if (isProductLineItemFound) {
         var basketModel = new CartModel(currentBasket);
-        res.json(basketModel);
+        var basketModelPlus = {
+            basket: basketModel,
+            toBeDeletedUUIDs: bonusProductsUUIDs
+        };
+        res.json(basketModelPlus);
     } else {
         res.setStatusCode(500);
         res.json({ errorMessage: Resource.msg('error.cannot.remove.product', 'cart', null) });
@@ -276,7 +310,7 @@ server.get('UpdateQuantity', function (req, res, next) {
     if (canBeUpdated) {
         Transaction.wrap(function () {
             matchingLineItem.setQuantityValue(updateQuantity);
-            HookMgr.callHook('dw.ocapi.shop.basket.calculate', 'calculate', currentBasket);
+            HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
         });
     }
 
@@ -333,7 +367,7 @@ server.post('SelectShippingMethod', server.middleware.https, function (req, res,
             return;
         }
 
-        HookMgr.callHook('dw.ocapi.shop.basket.calculate', 'calculate', currentBasket);
+        HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
     });
 
     if (!error) {
@@ -366,7 +400,7 @@ server.get('MiniCartShow', function (req, res, next) {
                 currentBasket.updateCurrency();
             }
             cartHelper.ensureAllShipmentsHaveMethods(currentBasket);
-            HookMgr.callHook('dw.ocapi.shop.basket.calculate', 'calculate', currentBasket);
+            HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
         });
     }
 
@@ -453,7 +487,7 @@ server.get(
         }
 
         Transaction.wrap(function () {
-            HookMgr.callHook('dw.ocapi.shop.basket.calculate', 'calculate', currentBasket);
+            HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
         });
 
         var basketModel = new CartModel(currentBasket);
@@ -495,7 +529,7 @@ server.get('RemoveCouponLineItem', function (req, res, next) {
         if (couponLineItem) {
             Transaction.wrap(function () {
                 currentBasket.removeCouponLineItem(couponLineItem);
-                HookMgr.callHook('dw.ocapi.shop.basket.calculate', 'calculate', currentBasket);
+                HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
             });
 
             var basketModel = new CartModel(currentBasket);
@@ -508,6 +542,95 @@ server.get('RemoveCouponLineItem', function (req, res, next) {
     res.setStatusCode(500);
     res.json({ errorMessage: Resource.msg('error.cannot.remove.coupon', 'cart', null) });
     return next();
+});
+
+server.get('ChooseBonusProducts', function (req, res, next) {
+    var URLUtils = require('dw/web/URLUtils');
+    var ProductFactory = require('*/cartridge/scripts/factories/product');
+    var pids = req.querystring.pids.split(',');
+    var potentialProducts = [];
+
+    for (var i = 0; i < pids.length; i++) {
+        var params = {
+            pid: pids[i],
+            pview: 'tile'
+        };
+        var product = ProductFactory.get(params);
+        potentialProducts.push(product);
+    }
+
+    var addToCartUrl = URLUtils.url('Cart-AddProduct');
+    var template = 'product/components/choiceofbonusproducts/chooseBonusProduct.isml';
+
+    res.render(template, {
+        potentialProducts: potentialProducts,
+        addToCartUrl: addToCartUrl
+    });
+
+    next();
+});
+
+server.post('AddBonusProducts', function (req, res, next) {
+    var BasketMgr = require('dw/order/BasketMgr');
+    var ProductMgr = require('dw/catalog/ProductMgr');
+    var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
+    var Transaction = require('dw/system/Transaction');
+    var collections = require('*/cartridge/scripts/util/collections');
+    var Resource = require('dw/web/Resource');
+    var currentBasket = BasketMgr.getCurrentOrNewBasket();
+    var previousBonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
+    var data = JSON.parse(req.querystring.pids);
+    var newBonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
+    var qtyAllowed = data.totalQty;
+    var totalQty = 0;
+
+    for (var i = 0; i < data.bonusProducts.length; i++) {
+        totalQty += data.bonusProducts[i].qty;
+    }
+    if (totalQty > qtyAllowed) {
+        res.json({
+            errorMessage: Resource.msgf(
+                'error.alert.choiceofbonus.max.quantity',
+                'product',
+                null,
+                qtyAllowed,
+                totalQty),
+            error: true,
+            success: false
+        });
+    } else {
+        var bonusDiscountLineItem = collections.find(newBonusDiscountLineItems, function (item) {
+            return previousBonusDiscountLineItems.contains(item);
+        });
+
+        if (currentBasket) {
+            Transaction.wrap(function () {
+                for (var l = 0; l < data.bonusProducts.length; l++) {
+                    var product = ProductMgr.getProduct(data.bonusProducts[l].pid);
+                    var selectedOptions = data.bonusProducts[l].options;
+                    var optionModel =
+                        productHelper.getCurrentOptionModel(
+                            product.optionModel,
+                            selectedOptions);
+                    var pli =
+                        currentBasket.createBonusProductLineItem(
+                        bonusDiscountLineItem,
+                        product,
+                        optionModel,
+                        null);
+                    pli.setQuantityValue(data.bonusProducts[l].qty);
+                }
+            });
+        }
+
+        res.json({
+            totalQty: currentBasket.productQuantityTotal,
+            msgSuccess: Resource.msg('text.alert.choiceofbonus.addedtobasket', 'product', null),
+            success: true,
+            error: false
+        });
+    }
+    next();
 });
 
 module.exports = server.exports();
