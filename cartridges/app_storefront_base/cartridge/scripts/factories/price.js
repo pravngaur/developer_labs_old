@@ -6,6 +6,7 @@ var priceHelper = require('*/cartridge/scripts/helpers/pricing');
 var DefaultPrice = require('*/cartridge/models/price/default');
 var RangePrice = require('*/cartridge/models/price/range');
 var TieredPrice = require('*/cartridge/models/price/tiered');
+var SearchHit = require('dw/catalog/ProductSearchHit');
 var PROMOTION_CLASS_PRODUCT = require('dw/campaign/Promotion').PROMOTION_CLASS_PRODUCT;
 
 
@@ -61,18 +62,62 @@ function getPromotionPrice(product, promotions, currentOptionModel) {
 }
 
 /**
+ * Retrieve Price from the search hit
+ *
+ * @param {dw.catalog.productSearchHit} hit - API object for a search hit
+ * @param {dw.util.Collection<dw.compaign.Promotion>} promotions - Promotions that apply to this product
+ * @return {TieredPrice|RangePrice|DefaultPrice} - The product's price
+ */
+function getSearchPrice(hit, promotions) {
+    var product = hit.representedProducts.get(0);
+    var priceModel = product.getPriceModel();
+    var priceTable = priceModel.getPriceTable();
+
+    // Tiered
+    if (priceTable.quantities.length > 1) {
+        return new TieredPrice(priceTable, true);
+    }
+
+    // Range
+    if ((product.master || product.variationGroup) && hit.maxPrice !== hit.minPrice) {
+        var rangePrice = new RangePrice(hit.minPrice, hit.maxPrice);
+
+        if (rangePrice && rangePrice.min.sales.value !== rangePrice.max.sales.value) {
+            return rangePrice;
+        }
+    }
+
+    var promotionPrice = getPromotionPrice(product, promotions, null);
+    var listPrice = getListPrice(priceModel);
+    var salesPrice = hit.minPrice;
+
+    if (promotionPrice && promotionPrice.available && salesPrice.compareTo(promotionPrice)) {
+        salesPrice = promotionPrice;
+    }
+
+    if (salesPrice && listPrice && salesPrice.value === listPrice.value && !(product.productSet || product.bundle)) {
+        listPrice = null;
+    }
+
+    return new DefaultPrice(salesPrice, listPrice);
+}
+
+/**
  * Retrieves Price instance
  *
- * @param {dw.catalog.Product} inputProduct - API object for a product
+ * @param {dw.catalog.Product|dw.catalog.productSearchHit} inputProduct - API object for a product
  * @param {string} currency - Current session currencyCode
  * @param {boolean} useSimplePrice - Flag as to whether a simple price should be used, used for
  *     product tiles and cart line items.
- * @param {dw.util.Collection.<dw.campaign.Promotion>} promotions - Promotions that apply to this
+ * @param {dw.util.Collection<dw.campaign.Promotion>} promotions - Promotions that apply to this
  *                                                                 product
  * @param {dw.catalog.ProductOptionModel} currentOptionModel - The product's option model
  * @return {TieredPrice|RangePrice|DefaultPrice} - The product's price
  */
 function getPrice(inputProduct, currency, useSimplePrice, promotions, currentOptionModel) {
+    if (inputProduct instanceof SearchHit) {
+        return getSearchPrice(inputProduct, promotions);
+    }
     var rangePrice;
     var salesPrice;
     var listPrice;
