@@ -163,67 +163,6 @@ server.get('Show', cache.applyShortPromotionSensitiveCache, function (req, res, 
     return next();
 });
 
-server.get('ShowNew', cache.applyPromotionSensitiveCache, function (req, res, next) {
-    var ProductSearchModel = require('dw/catalog/ProductSearchModel');
-    var ProductSearch = require('*/cartridge/models/search/productSearch');
-    var reportingUrls = require('*/cartridge/scripts/reportingUrls');
-
-    var categoryTemplate = '';
-    var productSearch;
-    var isAjax = Object.hasOwnProperty.call(req.httpHeaders, 'x-requested-with')
-        && req.httpHeaders['x-requested-with'] === 'XMLHttpRequest';
-    var resultsTemplate = isAjax ? 'search/searchresults_nodecoratornew' : 'search/searchresultsnew';
-    var apiProductSearch = new ProductSearchModel();
-    var maxSlots = 4;
-    var reportingURLs;
-
-    apiProductSearch = setupSearch(apiProductSearch, req.querystring);
-    apiProductSearch.search();
-
-    categoryTemplate = getCategoryTemplate(apiProductSearch);
-    productSearch = new ProductSearch(
-        apiProductSearch,
-        req.querystring,
-        req.querystring.srule,
-        CatalogMgr.getSortingOptions(),
-        CatalogMgr.getSiteCatalog().getRoot()
-    );
-
-    if (productSearch.searchKeywords !== null && !productSearch.selectedFilters.length) {
-        reportingURLs = reportingUrls.getProductSearchReportingURLs(productSearch);
-    }
-
-    if (
-        productSearch.isCategorySearch
-        && !productSearch.isRefinedCategorySearch
-        && categoryTemplate
-        && apiProductSearch.category.parent.ID === 'root'
-    ) {
-        if (isAjax) {
-            res.render(resultsTemplate, {
-                productSearch: productSearch,
-                maxSlots: maxSlots,
-                reportingURLs: reportingURLs
-            });
-        } else {
-            res.render(categoryTemplate, {
-                productSearch: productSearch,
-                maxSlots: maxSlots,
-                category: apiProductSearch.category,
-                reportingURLs: reportingURLs
-            });
-        }
-    } else {
-        res.render(resultsTemplate, {
-            productSearch: productSearch,
-            maxSlots: maxSlots,
-            reportingURLs: reportingURLs
-        });
-    }
-
-    next();
-});
-
 server.get('Content', cache.applyDefaultCache, function (req, res, next) {
     var ContentSearchModel = require('dw/content/ContentSearchModel');
     var ContentSearch = require('*/cartridge/models/search/contentSearch');
