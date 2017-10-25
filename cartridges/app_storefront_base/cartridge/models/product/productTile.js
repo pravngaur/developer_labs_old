@@ -14,6 +14,11 @@ function getProductSearchHit(apiProduct) {
     searchModel.setSearchPhrase(apiProduct.ID);
     searchModel.search();
 
+    if (searchModel.count === 0) {
+        searchModel.setSearchPhrase(apiProduct.ID.replace(/-/g, ' '));
+        searchModel.search();
+    }
+
     var hit = searchModel.getProductSearchHit(apiProduct);
     if (!hit) {
         var tempHit = searchModel.getProductSearchHits().next();
