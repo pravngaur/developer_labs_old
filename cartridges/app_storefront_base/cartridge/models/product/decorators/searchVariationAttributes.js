@@ -15,6 +15,9 @@ module.exports = function (object, hit) {
                 swatchable: true,
                 values: collections.map(colors, function (color) {
                     var apiImage = color.getImage('swatch', 0);
+                    if (!apiImage) {
+                        return {};
+                    }
                     return {
                         id: color.ID,
                         description: color.description,

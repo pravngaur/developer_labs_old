@@ -15,5 +15,6 @@ module.exports = {
     searchVariationAttributes: require('*/cartridge/models/product/decorators/searchVariationAttributes'),
     attributes: require('*/cartridge/models/product/decorators/attributes'),
     options: require('*/cartridge/models/product/decorators/options'),
-    currentUrl: require('*/cartridge/models/product/decorators/currentUrl')
+    currentUrl: require('*/cartridge/models/product/decorators/currentUrl'),
+    setIndividualProducts: require('*/cartridge/models/product/decorators/setIndividualProducts')
 };

@@ -2,32 +2,12 @@
 
 var ProductMgr = require('dw/catalog/ProductMgr');
 var PromotionMgr = require('dw/campaign/PromotionMgr');
-var ProductSearchModel = require('dw/catalog/ProductSearchModel');
-var Product = require('*/cartridge/models/product/newProduct');
-var decorators = require('*/cartridge/models/product/decorators/index');
+var Product = require('*/cartridge/models/product/product');
 var collections = require('*/cartridge/scripts/util/collections');
 var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
-var promotionCache = require('*/cartridge/scripts/util/promotionCache');
-
-/**
- * Get product search hit for a given product
- * @param {dw.catalog.Product} product - Product instance returned from the API
- * @returns {dw.catalog.ProductSearchHit} - product search hit for a given product
- */
-function getProductSearchHit(product) {
-    var searchModel = new ProductSearchModel();
-    searchModel.setSearchPhrase(product.ID.replace(/-/g, ' '));
-    searchModel.search();
-
-    var hit = searchModel.getProductSearchHit(product);
-    if (!hit) {
-        var tempHit = searchModel.getProductSearchHits().next();
-        if (tempHit.firstRepresentedProductID === product.ID) {
-            hit = tempHit;
-        }
-    }
-    return hit;
-}
+var productTile = require('*/cartridge/models/product/productTile');
+var fullProduct = require('*/cartridge/models/product/fullProduct');
+var decorators = require('*/cartridge/models/product/decorators/index');
 
 /**
  * Return type of the current product
@@ -83,62 +63,60 @@ function getVariationModel(product, productVariables) {
     return variationModel;
 }
 
+/**
+ * Get full product model
+ * @param {Object} product - Product Model
+ * @param {dw.catalog.Product} apiProduct - Product from the API
+ * @param {Object} params - Parameters passed by querystring
+ *
+ * @returns {Object} - Full product model
+ */
+function getFullProduct(product, apiProduct, params) {
+    var promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
+    if (params.variables) {
+        var variations = Product.getVariationModel(apiProduct, params.variables);
+        if (variations) {
+            apiProduct = variations.getSelectedVariant() || apiProduct; // eslint-disable-line
+        }
+    }
+    var variationModel = getVariationModel(apiProduct, params.variables);
+    var optionsModel = productHelper.getCurrentOptionModel(apiProduct.optionModel, params.options);
+    var options = {
+        variationModel: variationModel,
+        options: params.options,
+        optionModel: optionsModel,
+        promotions: promotions,
+        quantity: params.quantity,
+        variables: params.variables
+    };
+    return fullProduct(product, apiProduct, options);
+}
+
 module.exports = {
     get: function (params) {
         var productId = params.pid;
         var apiProduct = ProductMgr.getProduct(productId);
-        var productSearchHit = getProductSearchHit(apiProduct);
         var productType = getProductType(apiProduct);
         var product = new Product(apiProduct, productType);
 
         switch (productType) {
             case 'set':
+                if (params.pview === 'tile') {
+                    product = productTile(product, apiProduct);
+                } else {
+                    product = getFullProduct(product, apiProduct, params);
+                    decorators.setIndividualProducts(product, apiProduct, this);
+                }
+                break;
             case 'bundle':
             default:
                 switch (params.pview) {
                     case 'tile':
-                        decorators.searchPrice(product, productSearchHit, promotionCache.promotions, true);
-                        decorators.images(product, apiProduct, { types: ['medium'], quantity: 'single' });
-                        decorators.ratings(product);
-                        if (productType === 'variant') {
-                            decorators.searchVariationAttributes(product, productSearchHit);
-                        } else {
-                            decorators.variationAttributes(product, getVariationModel(apiProduct, params.variables), {
-                                attributes: ['color'],
-                                endPoint: 'Show'
-                            });
-                        }
+                        product = productTile(product, apiProduct);
                         break;
                     case 'productLineItem':
                     default:
-                        var promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
-                        if (params.variables) {
-                            var variations = Product.getVariationModel(apiProduct, params.variables);
-                            if (variations) {
-                                apiProduct = variations.getSelectedVariant() || apiProduct;
-                            }
-                        }
-                        var variationModel = getVariationModel(apiProduct, params.variables);
-                        var optionsModel = productHelper.getCurrentOptionModel(apiProduct.optionModel, params.options);
-                        decorators.price(product, apiProduct, promotions, false, params.options);
-                        decorators.images(product, apiProduct, { types: ['large', 'small'], quantity: 'all' });
-                        decorators.quantity(product, apiProduct, params.quantity);
-                        decorators.variationAttributes(product, variationModel, {
-                            attributes: '*',
-                            endPoint: 'Variation'
-                        });
-                        decorators.description(product, apiProduct);
-                        decorators.ratings(product);
-                        decorators.promotions(product, promotions);
-                        decorators.attributes(product, apiProduct.attributeModel);
-                        decorators.availability(product, params.quantity, apiProduct.minOrderQuantity.value, apiProduct.availabilityModel);
-                        decorators.options(product, optionsModel, params.variables, params.quantity, params.options);
-                        decorators.quantitySelector(product, apiProduct.stepQuantity.value, params.variables, params.options);
-                        var category = apiProduct.getPrimaryCategory()
-                            ? apiProduct.getPrimaryCategory()
-                            : apiProduct.getMasterProduct().getPrimaryCategory();
-                        decorators.sizeChart(product, category.custom.sizeChartID);
-                        decorators.currentUrl(product, variationModel, optionsModel, 'Product-Show', apiProduct.ID, params.quantity);
+                        product = getFullProduct(product, apiProduct, params);
                         break;
                 }
         }
