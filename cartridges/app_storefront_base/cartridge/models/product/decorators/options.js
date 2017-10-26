@@ -2,12 +2,9 @@
 
 var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
 
-module.exports = function (object, optionModel, variables, quantity, selectedOptions) {
+module.exports = function (object, optionModel, variables, quantity) {
     Object.defineProperty(object, 'options', {
         enumerable: true,
-        value: (function () {
-            var currentOptionModel = productHelper.getCurrentOptionModel(optionModel, selectedOptions);
-            return productHelper.getOptions(currentOptionModel, { variables: variables, quantity: quantity });
-        }())
+        value: productHelper.getOptions(optionModel, { variables: variables, quantity: quantity })
     });
 };

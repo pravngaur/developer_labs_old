@@ -29,13 +29,14 @@ module.exports = function fullProduct(product, apiProduct, options) {
     decorators.promotions(product, options.promotions);
     decorators.attributes(product, apiProduct.attributeModel);
     decorators.availability(product, options.quantity, apiProduct.minOrderQuantity.value, apiProduct.availabilityModel);
-    decorators.options(product, options.optionsModel, options.variables, options.quantity, options.options);
+    decorators.options(product, options.optionModel, options.variables, options.quantity);
     decorators.quantitySelector(product, apiProduct.stepQuantity.value, options.variables, options.options);
     var category = apiProduct.getPrimaryCategory()
         ? apiProduct.getPrimaryCategory()
         : apiProduct.getMasterProduct().getPrimaryCategory();
     decorators.sizeChart(product, category.custom.sizeChartID);
-    decorators.currentUrl(product, options.variationModel, options.optionsModel, 'Product-Show', apiProduct.ID, options.quantity);
+    decorators.currentUrl(product, options.variationModel, options.optionModel, 'Product-Show', apiProduct.ID, options.quantity);
+    decorators.readyToOrder(product, options.variationModel);
 
     return product;
 };
