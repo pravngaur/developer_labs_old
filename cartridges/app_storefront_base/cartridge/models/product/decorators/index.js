@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = {
+    base: require('*/cartridge/models/product/decorators/base'),
     availability: require('*/cartridge/models/product/decorators/availability'),
     description: require('*/cartridge/models/product/decorators/description'),
     images: require('*/cartridge/models/product/decorators/images'),

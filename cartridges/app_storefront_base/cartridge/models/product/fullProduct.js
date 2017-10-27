@@ -17,6 +17,7 @@ var decorators = require('*/cartridge/models/product/decorators/index');
  * @returns {Object} - Decorated product model
  */
 module.exports = function fullProduct(product, apiProduct, options) {
+    decorators.base(product, apiProduct, options.productType);
     decorators.price(product, apiProduct, options.promotions, false, options.options);
     decorators.images(product, apiProduct, { types: ['large', 'small'], quantity: 'all' });
     decorators.quantity(product, apiProduct, options.quantity);

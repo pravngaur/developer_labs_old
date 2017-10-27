@@ -2,7 +2,6 @@
 
 var ProductMgr = require('dw/catalog/ProductMgr');
 var PromotionMgr = require('dw/campaign/PromotionMgr');
-var Product = require('*/cartridge/models/product/product');
 var collections = require('*/cartridge/scripts/util/collections');
 var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
 var productTile = require('*/cartridge/models/product/productTile');
@@ -74,36 +73,24 @@ function getVariationModel(product, productVariables) {
  */
 function getOptions(apiProduct, params) {
     var promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
+    var variations = getVariationModel(apiProduct, params.variables);
     if (params.variables) {
-        var variations = getVariationModel(apiProduct, params.variables);
         if (variations) {
             apiProduct = variations.getSelectedVariant() || apiProduct; // eslint-disable-line
         }
     }
-    var variationModel = getVariationModel(apiProduct, params.variables);
     var optionsModel = productHelper.getCurrentOptionModel(apiProduct.optionModel, params.options);
     var options = {
-        variationModel: variationModel,
+        variationModel: variations,
         options: params.options,
         optionModel: optionsModel,
         promotions: promotions,
         quantity: params.quantity,
-        variables: params.variables
+        variables: params.variables,
+        apiProduct: apiProduct,
+        productType: getProductType(apiProduct)
     };
     return options;
-}
-
-/**
- * Get full product model
- * @param {Object} product - Product Model
- * @param {dw.catalog.Product} apiProduct - Product from the API
- * @param {Object} params - Parameters passed by querystring
- *
- * @returns {Object} - Full product model
- */
-function getFullProduct(product, apiProduct, params) {
-    var options = getOptions(apiProduct, params);
-    return fullProduct(product, apiProduct, options);
 }
 
 module.exports = {
@@ -111,34 +98,35 @@ module.exports = {
         var productId = params.pid;
         var apiProduct = ProductMgr.getProduct(productId);
         var productType = getProductType(apiProduct);
-        var product = new Product(apiProduct, productType);
+        var product = Object.create(null);
         var options = null;
 
         switch (productType) {
             case 'set':
                 if (params.pview === 'tile') {
-                    product = productTile(product, apiProduct);
+                    product = productTile(product, apiProduct, getProductType(apiProduct));
                 } else {
                     options = getOptions(apiProduct, params);
-                    product = productSet(product, apiProduct, options, this);
+                    product = productSet(product, options.apiProduct, options, this);
                 }
                 break;
             case 'bundle':
                 if (params.pview === 'tile') {
-                    product = productTile(product, apiProduct);
+                    product = productTile(product, apiProduct, getProductType(apiProduct));
                 } else {
                     options = getOptions(apiProduct, params);
-                    product = productBundle(product, apiProduct, options, this);
+                    product = productBundle(product, options.apiProduct, options, this);
                 }
                 break;
             default:
                 switch (params.pview) {
                     case 'tile':
-                        product = productTile(product, apiProduct);
+                        product = productTile(product, apiProduct, getProductType(apiProduct));
                         break;
                     case 'productLineItem':
                     default:
-                        product = getFullProduct(product, apiProduct, params);
+                        options = getOptions(apiProduct, params);
+                        product = fullProduct(product, options.apiProduct, options);
                         break;
                 }
         }

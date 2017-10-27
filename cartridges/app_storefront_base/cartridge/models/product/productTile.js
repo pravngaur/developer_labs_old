@@ -33,11 +33,13 @@ function getProductSearchHit(apiProduct) {
  * Decorate product with product tile information
  * @param {Object} product - Product Model to be decorated
  * @param {dw.catalog.Product} apiProduct - Product information returned by the script API
+ * @param {string} productType - Product type information
  *
  * @returns {Object} - Decorated product model
  */
-module.exports = function productTile(product, apiProduct) {
+module.exports = function productTile(product, apiProduct, productType) {
     var productSearchHit = getProductSearchHit(apiProduct);
+    decorators.base(product, apiProduct, productType);
     decorators.searchPrice(product, productSearchHit, promotionCache.promotions, true);
     decorators.images(product, apiProduct, { types: ['medium'], quantity: 'single' });
     decorators.ratings(product);
