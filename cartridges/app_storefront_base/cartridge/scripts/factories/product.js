@@ -8,6 +8,7 @@ var productTile = require('*/cartridge/models/product/productTile');
 var fullProduct = require('*/cartridge/models/product/fullProduct');
 var productSet = require('*/cartridge/models/product/productSet');
 var productBundle = require('*/cartridge/models/product/productBundle');
+var productLineItem = require('*/cartridge/models/productLineItem/productLineItem');
 // var decorators = require('*/cartridge/models/product/decorators/index');
 
 /**
@@ -93,6 +94,51 @@ function getOptions(apiProduct, params) {
     return options;
 }
 
+/**
+ * Retrieve product's options and default selected values from product line item
+ *
+ * @param {dw.util.Collection.<dw.order.ProductLineItem>} optionProductLineItems - Option product
+ *     line items
+ * @param {string} productId - Line item product ID
+ * @return {string []} - Product line item options
+ */
+function getLineItemOptions(optionProductLineItems, productId) {
+    return collections.map(optionProductLineItems, function (item) {
+        return {
+            productId: productId,
+            optionId: item.optionID,
+            selectedValueId: item.optionValueID
+        };
+    });
+}
+
+/**
+ * Retrieve product's options and default values
+ *
+ * @param {dw.catalog.ProductOptionModel} optionModel - A product's option model
+ * @param {dw.util.Collection.<dw.catalog.ProductOption>} options - A product's configured options
+ * @return {string []} - Product line item options
+ */
+function getDefaultOptions(optionModel, options) {
+    return collections.map(options, function (option) {
+        var selectedValue = optionModel.getSelectedOptionValue(option);
+        return option.displayName + ': ' + selectedValue.displayValue;
+    });
+}
+
+/**
+ * Retrieve product's options and default selected values from product line item
+ *
+ * @param {dw.util.Collection.<dw.order.ProductLineItem>} optionProductLineItems - Option product
+ *     line items
+ * @return {string[]} - Product line item option display values
+ */
+function getLineItemOptionNames(optionProductLineItems) {
+    return collections.map(optionProductLineItems, function (item) {
+        return item.productName;
+    });
+}
+
 module.exports = {
     get: function (params) {
         var productId = params.pid;
@@ -124,6 +170,41 @@ module.exports = {
                         product = productTile(product, apiProduct, getProductType(apiProduct));
                         break;
                     case 'productLineItem':
+                        var promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
+                        if (params.variables) {
+                            var variations = getVariationModel(apiProduct, params.variables);
+                            if (variations) {
+                                apiProduct = variations.getSelectedVariant() || apiProduct; // eslint-disable-line
+                            }
+                        }
+
+                        var variationModel = getVariationModel(apiProduct, params.variables);
+
+                        var optionModel = apiProduct.optionModel;
+                        var optionLineItems = params.lineItem.optionProductLineItems;
+                        var currentOptionModel = productHelper.getCurrentOptionModel(
+                            optionModel,
+                            getLineItemOptions(optionLineItems, productId)
+                        );
+                        var lineItemOptions = optionLineItems.length
+                            ? getLineItemOptionNames(optionLineItems)
+                            : getDefaultOptions(optionModel, optionModel.options);
+
+
+                        options = {
+                            variationModel: variationModel,
+                            lineItemOptions: lineItemOptions,
+                            promotions: promotions,
+                            quantity: params.quantity,
+                            variables: params.variables,
+                            lineItem: params.lineItem,
+                            currentOptionModel: currentOptionModel,
+                            productType: getProductType(apiProduct)
+                        };
+
+                        product = productLineItem(product, apiProduct, options);
+
+                        break;
                     default:
                         options = getOptions(apiProduct, params);
                         product = fullProduct(product, options.apiProduct, options);
