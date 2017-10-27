@@ -74,13 +74,14 @@ function getVariationModel(product, productVariables) {
  * @returns {Object} - Options object
  */
 function getOptions(apiProduct, params) {
-    var promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
     var variations = getVariationModel(apiProduct, params.variables);
     if (params.variables) {
         if (variations) {
             apiProduct = variations.getSelectedVariant() || apiProduct; // eslint-disable-line
         }
     }
+
+    var promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
     var optionsModel = productHelper.getCurrentOptionModel(apiProduct.optionModel, params.options);
     var options = {
         variationModel: variations,
@@ -92,6 +93,7 @@ function getOptions(apiProduct, params) {
         apiProduct: apiProduct,
         productType: getProductType(apiProduct)
     };
+
     return options;
 }
 
