@@ -12,5 +12,6 @@ module.exports = {
     priceTotal: require('*/cartridge/models/productLineItem/decorators/priceTotal'),
     quantityOptions: require('*/cartridge/models/productLineItem/decorators/quantityOptions'),
     options: require('*/cartridge/models/productLineItem/decorators/options'),
-    quantity: require('*/cartridge/models/productLineItem/decorators/quantity')
+    quantity: require('*/cartridge/models/productLineItem/decorators/quantity'),
+    bundledProductLineItems: require('*/cartridge/models/productLineItem/decorators/bundledProductLineItems')
 };

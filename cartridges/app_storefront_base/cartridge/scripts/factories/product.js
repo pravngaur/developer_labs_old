@@ -9,6 +9,7 @@ var fullProduct = require('*/cartridge/models/product/fullProduct');
 var productSet = require('*/cartridge/models/product/productSet');
 var productBundle = require('*/cartridge/models/product/productBundle');
 var productLineItem = require('*/cartridge/models/productLineItem/productLineItem');
+var bundleProductLineItem = require('*/cartridge/models/productLineItem/bundleLineItem');
 // var decorators = require('*/cartridge/models/product/decorators/index');
 
 /**
@@ -146,6 +147,7 @@ module.exports = {
         var productType = getProductType(apiProduct);
         var product = Object.create(null);
         var options = null;
+        var promotions;
 
         switch (productType) {
             case 'set':
@@ -157,11 +159,28 @@ module.exports = {
                 }
                 break;
             case 'bundle':
-                if (params.pview === 'tile') {
-                    product = productTile(product, apiProduct, getProductType(apiProduct));
-                } else {
-                    options = getOptions(apiProduct, params);
-                    product = productBundle(product, options.apiProduct, options, this);
+                switch (params.pview) {
+                    case 'tile':
+                        product = productTile(product, apiProduct, getProductType(apiProduct));
+                        break;
+                    case 'productLineItem':
+                        promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
+
+                        options = {
+                            promotions: promotions,
+                            quantity: params.quantity,
+                            variables: params.variables,
+                            lineItem: params.lineItem,
+                            productType: getProductType(apiProduct)
+                        };
+
+                        product = bundleProductLineItem(product, apiProduct, options, this);
+
+                        break;
+                    default:
+                        options = getOptions(apiProduct, params);
+                        product = productBundle(product, options.apiProduct, options, this);
+                        break;
                 }
                 break;
             default:
@@ -170,7 +189,7 @@ module.exports = {
                         product = productTile(product, apiProduct, getProductType(apiProduct));
                         break;
                     case 'productLineItem':
-                        var promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
+                        promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
                         if (params.variables) {
                             var variations = getVariationModel(apiProduct, params.variables);
                             if (variations) {
