@@ -22,11 +22,7 @@ module.exports = function productLineItem(product, apiProduct, options, factory)
     productDecorators.base(product, apiProduct, options.productType);
     productDecorators.price(product, apiProduct, options.promotions, false, options.currentOptionModel);
     productDecorators.images(product, apiProduct, { types: ['small'], quantity: 'single' });
-    productDecorators.variationAttributes(product, options.variationModel, {
-        attributes: 'selected'
-    });
-    productDecorators.promotions(product, options.promotions);
-    productDecorators.attributes(product, apiProduct.attributeModel);
+
     productDecorators.availability(product, options.quantity, apiProduct.minOrderQuantity.value, apiProduct.availabilityModel);
 
     productLineItemDecorators.quantity(product, options.quantity);

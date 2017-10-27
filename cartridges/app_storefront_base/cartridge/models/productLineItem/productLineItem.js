@@ -24,8 +24,6 @@ module.exports = function productLineItem(product, apiProduct, options) {
     productDecorators.variationAttributes(product, options.variationModel, {
         attributes: 'selected'
     });
-    productDecorators.promotions(product, options.promotions);
-    productDecorators.attributes(product, apiProduct.attributeModel);
     productDecorators.availability(product, options.quantity, apiProduct.minOrderQuantity.value, apiProduct.availabilityModel);
 
     productLineItemDecorators.quantity(product, options.quantity);

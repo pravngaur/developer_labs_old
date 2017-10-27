@@ -149,47 +149,27 @@ module.exports = {
         var options = null;
         var promotions;
 
-        switch (productType) {
-            case 'set':
-                if (params.pview === 'tile') {
-                    product = productTile(product, apiProduct, getProductType(apiProduct));
-                } else {
-                    options = getOptions(apiProduct, params);
-                    product = productSet(product, options.apiProduct, options, this);
-                }
+        switch (params.pview) {
+            case 'tile':
+                product = productTile(product, apiProduct, getProductType(apiProduct));
                 break;
-            case 'bundle':
-                switch (params.pview) {
-                    case 'tile':
-                        product = productTile(product, apiProduct, getProductType(apiProduct));
-                        break;
-                    case 'productLineItem':
-                        promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
+            case 'productLineItem':
+                promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
+                options = {
+                    promotions: promotions,
+                    quantity: params.quantity,
+                    variables: params.variables,
+                    lineItem: params.lineItem,
+                    productType: getProductType(apiProduct)
+                };
 
-                        options = {
-                            promotions: promotions,
-                            quantity: params.quantity,
-                            variables: params.variables,
-                            lineItem: params.lineItem,
-                            productType: getProductType(apiProduct)
-                        };
+                switch (productType) {
+                    case 'bundle':
 
                         product = bundleProductLineItem(product, apiProduct, options, this);
 
                         break;
                     default:
-                        options = getOptions(apiProduct, params);
-                        product = productBundle(product, options.apiProduct, options, this);
-                        break;
-                }
-                break;
-            default:
-                switch (params.pview) {
-                    case 'tile':
-                        product = productTile(product, apiProduct, getProductType(apiProduct));
-                        break;
-                    case 'productLineItem':
-                        promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
                         if (params.variables) {
                             var variations = getVariationModel(apiProduct, params.variables);
                             if (variations) {
@@ -210,22 +190,27 @@ module.exports = {
                             : getDefaultOptions(optionModel, optionModel.options);
 
 
-                        options = {
-                            variationModel: variationModel,
-                            lineItemOptions: lineItemOptions,
-                            promotions: promotions,
-                            quantity: params.quantity,
-                            variables: params.variables,
-                            lineItem: params.lineItem,
-                            currentOptionModel: currentOptionModel,
-                            productType: getProductType(apiProduct)
-                        };
+                        options.variationModel = variationModel;
+                        options.lineItemOptions = lineItemOptions;
+                        options.currentOptionModel = currentOptionModel;
 
                         product = productLineItem(product, apiProduct, options);
 
                         break;
+                }
+
+                break;
+            default: // PDP
+                options = getOptions(apiProduct, params);
+
+                switch (productType) {
+                    case 'set':
+                        product = productSet(product, options.apiProduct, options, this);
+                        break;
+                    case 'bundle':
+                        product = productBundle(product, options.apiProduct, options, this);
+                        break;
                     default:
-                        options = getOptions(apiProduct, params);
                         product = fullProduct(product, options.apiProduct, options);
                         break;
                 }
