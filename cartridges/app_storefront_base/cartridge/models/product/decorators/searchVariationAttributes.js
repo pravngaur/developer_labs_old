@@ -2,6 +2,7 @@
 
 var ATTRIBUTE_NAME = 'color';
 var collections = require('*/cartridge/scripts/util/collections');
+var URLUtils = require('dw/web/URLUtils');
 
 module.exports = function (object, hit) {
     Object.defineProperty(object, 'variationAttributes', {
@@ -31,7 +32,14 @@ module.exports = function (object, hit) {
                                 url: apiImage.URL.toString(),
                                 title: apiImage.title
                             }]
-                        }
+                        },
+                        url: URLUtils.url(
+                            'Product-Show',
+                            'pid',
+                            hit.productID,
+                            'dwvar_' + hit.productID + '_color',
+                            color.value
+                            ).toString()
                     };
                 })
             }];
