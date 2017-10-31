@@ -18,7 +18,7 @@ var decorators = require('*/cartridge/models/product/decorators/index');
  */
 module.exports = function fullProduct(product, apiProduct, options) {
     decorators.base(product, apiProduct, options.productType);
-    decorators.price(product, apiProduct, options.promotions, false, options.options);
+    decorators.price(product, apiProduct, options.promotions, false, options.optionModel);
     decorators.images(product, apiProduct, { types: ['large', 'small'], quantity: 'all' });
     decorators.quantity(product, apiProduct, options.quantity);
     decorators.variationAttributes(product, options.variationModel, {
