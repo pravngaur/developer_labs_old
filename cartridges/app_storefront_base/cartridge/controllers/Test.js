@@ -5,7 +5,7 @@ var server = require('server');
 
 server.get('Product', function (req, res, next) {
     var newFactory = require('*/cartridge/scripts/factories/product');
-    res.json({ product: newFactory.get({ pid: req.querystring.pid }) });
+    res.json({ product: newFactory.get({ pid: req.querystring.pid, pview: req.querystring.pview }) });
     next();
 });
 

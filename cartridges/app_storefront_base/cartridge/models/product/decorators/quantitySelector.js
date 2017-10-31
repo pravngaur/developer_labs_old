@@ -11,7 +11,6 @@ var urlHelper = require('*/cartridge/scripts/helpers/urlHelpers');
  * @param {number} stepQuantity - Quantity increment from one value to the next
  * @param {string} selectedQty - Quanity selected
  * @param {string} pid - Product ID
- * @param {number} size - Number of quantity values to include in drop-down menu
  * @param {Object} attributes - Variation attribute query params
  * @param {ProductOptions[]} options - Product options query params
  * @return {Array} - Quantity options for PDP pull-down menu
@@ -46,6 +45,6 @@ function getQuantities(minOrderQty, maxOrderQty, stepQuantity, selectedQty, pid,
 module.exports = function (object, stepQuantity, attributes, options) {
     Object.defineProperty(object, 'quantities', {
         enumerable: true,
-        value: getQuantities(object.minOrderQuantity, object.maxOrderQuantity, stepQuantity, object.quantity, object.id, attributes, options)
+        value: getQuantities(object.minOrderQuantity, object.maxOrderQuantity, stepQuantity, object.selectedQuantity, object.id, attributes, options)
     });
 };

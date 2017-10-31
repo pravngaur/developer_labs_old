@@ -1,13 +1,10 @@
 'use strict';
 
 var money = require('dw/value/Money');
-var collections = require('*/cartridge/scripts/util/collections');
 var priceHelper = require('*/cartridge/scripts/helpers/pricing');
 var DefaultPrice = require('*/cartridge/models/price/default');
 var RangePrice = require('*/cartridge/models/price/range');
 var TieredPrice = require('*/cartridge/models/price/tiered');
-var SearchHit = require('dw/catalog/ProductSearchHit');
-var PROMOTION_CLASS_PRODUCT = require('dw/campaign/Promotion').PROMOTION_CLASS_PRODUCT;
 
 
 /**
@@ -38,71 +35,6 @@ function getListPrice(priceModel) {
 }
 
 /**
- * Get a product's promotional price
- *
- * @param {dw.catalog.Product} product - Product under evaluation
- * @param {dw.util.Collection.<dw.campaign.Promotion>} promotions - Promotions that apply to this
- *     product
- * @param {dw.catalog.ProductOptionModel} currentOptionModel - The product's option model
- * @return {dw.value.Money} - Promotional price
- */
-function getPromotionPrice(product, promotions, currentOptionModel) {
-    var price = money.NOT_AVAILABLE;
-    var promotion = collections.find(promotions, function (promo) {
-        return promo.promotionClass && promo.promotionClass.equals(PROMOTION_CLASS_PRODUCT);
-    });
-
-    if (promotion) {
-        price = currentOptionModel
-            ? promotion.getPromotionalPrice(product, currentOptionModel)
-            : promotion.getPromotionalPrice(product, product.optionModel);
-    }
-
-    return price;
-}
-
-/**
- * Retrieve Price from the search hit
- *
- * @param {dw.catalog.productSearchHit} hit - API object for a search hit
- * @param {dw.util.Collection<dw.compaign.Promotion>} promotions - Promotions that apply to this product
- * @return {TieredPrice|RangePrice|DefaultPrice} - The product's price
- */
-function getSearchPrice(hit, promotions) {
-    var product = hit.representedProducts.get(0);
-    var priceModel = product.getPriceModel();
-    var priceTable = priceModel.getPriceTable();
-
-    // Tiered
-    if (priceTable.quantities.length > 1) {
-        return new TieredPrice(priceTable, true);
-    }
-
-    // Range
-    if ((product.master || product.variationGroup) && hit.maxPrice !== hit.minPrice) {
-        var rangePrice = new RangePrice(hit.minPrice, hit.maxPrice);
-
-        if (rangePrice && rangePrice.min.sales.value !== rangePrice.max.sales.value) {
-            return rangePrice;
-        }
-    }
-
-    var promotionPrice = getPromotionPrice(product, promotions, null);
-    var listPrice = getListPrice(priceModel);
-    var salesPrice = hit.minPrice;
-
-    if (promotionPrice && promotionPrice.available && salesPrice.compareTo(promotionPrice)) {
-        salesPrice = promotionPrice;
-    }
-
-    if (salesPrice && listPrice && salesPrice.value === listPrice.value && !(product.productSet || product.bundle)) {
-        listPrice = null;
-    }
-
-    return new DefaultPrice(salesPrice, listPrice);
-}
-
-/**
  * Retrieves Price instance
  *
  * @param {dw.catalog.Product|dw.catalog.productSearchHit} inputProduct - API object for a product
@@ -115,9 +47,6 @@ function getSearchPrice(hit, promotions) {
  * @return {TieredPrice|RangePrice|DefaultPrice} - The product's price
  */
 function getPrice(inputProduct, currency, useSimplePrice, promotions, currentOptionModel) {
-    if (inputProduct instanceof SearchHit) {
-        return getSearchPrice(inputProduct, promotions);
-    }
     var rangePrice;
     var salesPrice;
     var listPrice;
@@ -148,7 +77,7 @@ function getPrice(inputProduct, currency, useSimplePrice, promotions, currentOpt
         priceModel = product.priceModel;
     }
 
-    promotionPrice = getPromotionPrice(product, promotions, currentOptionModel);
+    promotionPrice = priceHelper.getPromotionPrice(product, promotions, currentOptionModel);
     listPrice = getListPrice(priceModel);
     salesPrice = priceModel.price;
 
@@ -158,6 +87,11 @@ function getPrice(inputProduct, currency, useSimplePrice, promotions, currentOpt
 
     if (salesPrice && listPrice && salesPrice.value === listPrice.value) {
         listPrice = null;
+    }
+
+    if (salesPrice.valueOrNull === null && listPrice.valueOrNull !== null) {
+        salesPrice = listPrice;
+        listPrice = {};
     }
 
     return new DefaultPrice(salesPrice, listPrice);
