@@ -76,6 +76,6 @@ module.exports = function (object, quantity, minOrderQuantity, availabilityModel
     });
     Object.defineProperty(object, 'available', {
         enumerable: true,
-        value: availabilityModel.isOrderable(parseFloat(quantity) || 1)
+        value: availabilityModel.isOrderable(parseFloat(quantity) || minOrderQuantity)
     });
 };

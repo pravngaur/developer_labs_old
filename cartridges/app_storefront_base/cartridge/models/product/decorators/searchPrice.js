@@ -40,7 +40,7 @@ function getListPrices(hit, getSearchHit) {
         return {};
     }
     var rootPriceBook = pricingHelper.getRootPriceBook(priceModel.priceInfo.priceBook);
-    if (rootPriceBook === priceModel.priceInfo.priceBook) {
+    if (rootPriceBook.ID === priceModel.priceInfo.priceBook.ID) {
         return {};
     }
     var searchHit;
@@ -67,7 +67,7 @@ module.exports = function (object, searchHit, activePromotions, getSearchHit) {
         value: (function () {
             var salePrice = { minPrice: searchHit.minPrice, maxPrice: searchHit.maxPrice };
             var promotions = getPromotions(searchHit, activePromotions);
-            if (!promotions.empty) {
+            if (promotions.getLength() > 0) {
                 var promotionalPrice = pricingHelper.getPromotionPrice(searchHit.firstRepresentedProduct, promotions);
                 salePrice = { minPrice: promotionalPrice, maxPrice: promotionalPrice };
             }

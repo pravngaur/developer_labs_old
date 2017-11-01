@@ -89,11 +89,10 @@ function getPrice(inputProduct, currency, useSimplePrice, promotions, currentOpt
         listPrice = null;
     }
 
-    if (salesPrice.valueOrNull === null && listPrice.valueOrNull !== null) {
+    if (salesPrice.valueOrNull === null && (listPrice && listPrice.valueOrNull !== null)) {
         salesPrice = listPrice;
         listPrice = {};
     }
-
     return new DefaultPrice(salesPrice, listPrice);
 }
 
