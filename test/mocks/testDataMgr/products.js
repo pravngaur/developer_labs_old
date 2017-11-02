@@ -72,6 +72,12 @@ export function getProduct(catalog, productId) {
     }
 }
 
+export function getAllProductIds(catalog) {
+    const products = catalog.products;
+    return Object.keys(products);
+}
+
+
 export function getProductType(product) {
     if (isProductSet(product)) {
         return 'set';
