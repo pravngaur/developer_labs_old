@@ -8,16 +8,22 @@ describe('check product price', function () {
     this.timeout(5000);
 
     it('Product price in PDP and Grid should be the same', function () {
-        var Pids = '25688302';
-        // Pids.forEach(function (pid) {
-        //     console.log('verifying the product ', pid);
-        //     verifyProductPrice(pid);
-        // });
-        //
+        var pids = ['25688302', '25413129', '69309284'];
+        let promises = [];
+
+        pids.forEach((pid) => promises.push(verifyPrices(pid)));
+        return Promise.all(promises)
+            .then((results) => {
+            console.log('test run ', results);
+            }).catch(error => console.log(error));
+
+    });
+
+    function verifyPrices(pid) {
         var PDP;
         var tile;
         var myRequest = {
-            url: config.baseUrl + '/Test-Product?pid=' + Pids,
+            url: config.baseUrl + '/Test-Product?pid=' + pid,
             method: 'GET',
             rejectUnauthorized: false,
             resolveWithFullResponse: true
@@ -26,7 +32,7 @@ describe('check product price', function () {
             .then(function (response) {
                 var bodyAsJsonPdp = JSON.parse(response.body);
                 assert.equal(response.statusCode, 200, 'Expected Test-Product statusCode to be 200.');
-                myRequest.url = config.baseUrl + '/Test-Product?pid=' + Pids + '&pview=tile';
+                myRequest.url = config.baseUrl + '/Test-Product?pid=' + pid + '&pview=tile';
                 PDP = bodyAsJsonPdp.product.price;
                 console.log('PDP price is ', PDP);
                 return request(myRequest);
@@ -36,8 +42,9 @@ describe('check product price', function () {
                 assert.equal(response2.statusCode, 200, 'Expected Test-Product statusCode to be 200.');
                 tile = bodyAsJsonTile.product.price;
                 console.log('Tile price is ', tile);
+                assert.deepEqual(PDP, tile);
+                return Promise.resolve();
             })
-            .then(() => assert.deepEqual(PDP, tile));
-    });
+    }
 });
 
