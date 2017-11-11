@@ -83,6 +83,72 @@ function getCartActionUrls() {
 }
 
 /**
+ * Generates an object of URLs
+ * @returns {Object}
+ */
+function getDiscountLineItems(bonsDiscountLineItems) {
+    var items = bonsDiscountLineItems.toArray();
+    var result = []; // TODO:conditional on if there are any?
+    items.forEach(function (item) {
+        var bdliObj = {};
+        bdliObj.pliuuid = item.custom.bonusProductLineItemUUID;
+        bdliObj.uuid = item.UUID;
+        bdliObj.full = countBonusProducts(item) < item.maxBonusItems;
+        bdliObj.maxpids = item.maxBonusItems;
+        bdliObj.url = URLUtils.url('Cart-EditBonusProduct').toString() + '?duuid=' + item.UUID;
+        bdliObj.msg = bdliObj.full ? Resource.msg('button.bonus.select', 'cart', null) : Resource.msg('button.bonus.change', 'cart', null);
+        result.push(bdliObj);
+    });
+
+    return result;
+}
+
+function countBonusProducts(item){
+	var bonusProductLineItems = item.bonusProductLineItems.toArray();
+	var count = 0;
+	
+	bonusProductLineItems.forEach(function(bonusDiscountLineItem){
+		count += bonusDiscountLineItem.quantityValue;
+	});
+	return count;
+}
+
+/**
+ * Generates an object of URLs
+ * @returns {Object}
+ */
+function embedBonusLineItems(productLineItemsModel, discountLineItems) {
+   // var result = [];//conditional on if there are any
+    var allBonusItems = productLineItemsModel.items.filter(function (item) {
+        if (item.bonusProductLineItemUUID && item.bonusProductLineItemUUID !== 'bonus') {
+            return true;
+        } else {
+            return false;
+        }
+    });
+    var allItems = productLineItemsModel.items.filter(function (item) {
+        if (item.bonusProductLineItemUUID && item.bonusProductLineItemUUID !== 'bonus') {
+            return false;
+        } else {
+            allBonusItems.forEach(function (bitem) {
+                if (bitem.bonusProductLineItemUUID === item.UUID) {
+                    item.embededBonusProductLineItems.push(bitem);
+                }
+            });
+            discountLineItems.forEach(function (bdlitem) {
+                if (bdlitem.pliuuid === item.UUID && item.embededBonusDiscountLineItems) {
+                    item.embededBonusDiscountLineItems.push(bdlitem);
+                }
+            });
+            return true;
+        }
+    });
+
+    return allItems;
+}
+
+
+/**
  * @constructor
  * @classdesc CartModel class that represents the current basket
  *
@@ -93,11 +159,17 @@ function CartModel(basket) {
     if (basket !== null) {
         var shippingModels = ShippingHelpers.getShippingModels(basket);
         var productLineItemsModel = new ProductLineItemsModel(basket.productLineItems);
+
         var totalsModel = new TotalsModel(basket);
+        var discountLineItems = getDiscountLineItems(basket.bonusDiscountLineItems);
+
+        var productLineItems = embedBonusLineItems(productLineItemsModel, discountLineItems);
+
         this.hasBonusProduct = Boolean(basket.bonusLineItems && basket.bonusLineItems.length);
         this.actionUrls = getCartActionUrls();
         this.numOfShipments = basket.shipments.length;
         this.totals = totalsModel;
+        this.allBonusItems = productLineItems;
 
         if (shippingModels) {
             this.shipments = shippingModels.map(function (shippingModel) {
@@ -114,7 +186,7 @@ function CartModel(basket) {
         if (discountPlan) {
             this.approachingDiscounts = getApproachingDiscounts(basket, discountPlan);
         }
-        this.items = productLineItemsModel.items;
+        this.items = productLineItems;
         this.numItems = productLineItemsModel.totalQuantity;
         this.valid = HookMgr.callHook(
             'app.validate.basket',

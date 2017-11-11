@@ -146,6 +146,30 @@
     .bonus-quantity-select {
         min-width: 4em;
     }
+
+    .select-bonus-product {
+        margin-top: 1em;
+    }
+
+    .selected-pid {
+        border: 1px solid $grey3;
+    		white-space: nowrap; 
+    		overflow: hidden;
+    		text-overflow: ellipsis;
+
+    		p {
+    			display: inline;
+    		}
+    		
+        i {
+            float: right;
+        }
+    }
+    
+    .bonus-product-price {
+    		text-align: center;
+    		margin-top: 1em;
+    }
 }
 
 .quick-view-dialog,

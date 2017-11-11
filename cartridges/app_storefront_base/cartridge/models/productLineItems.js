@@ -11,9 +11,16 @@ var ProductFactory = require('*/cartridge/scripts/factories/product');
  */
 function createProductLineItemsObject(allLineItems) {
     var lineItems = [];
+    var bonusQulifiers = [];
+    collections.forEach(allLineItems, function (item) {
+    		if(item.custom.bonusProductLineItemUUID === 'bonus'){
+    			bonusQulifiers.push(item.UUID);
+    		}
+    });
+    
     collections.forEach(allLineItems, function (item) {
         if (!item.product) { return; }
-
+        var test = (bonusQulifiers.indexOf(item.custom.bonusProductLineItemUUID) > -1);
         var options = collections.map(item.optionProductLineItems, function (optionItem) {
             return {
                 optionId: optionItem.optionID,
@@ -21,16 +28,30 @@ function createProductLineItemsObject(allLineItems) {
             };
         });
 
+        var pview = 'productLineItem';
+
+        if (!item.bonusProductLineItem && item.custom.bonusProductLineItemUUID) {
+            pview = 'bonusProductLineItem';
+
+        }
+
+        if(item.bonusProductLineItem && bonusQulifiers.indexOf(item.custom.bonusProductLineItemUUID) > -1){
+    	    		pview = 'embeddedProductLineItem';
+        }
+
+        
         var params = {
             pid: item.product.ID,
             quantity: item.quantity.value,
             variables: null,
-            pview: 'productLineItem',
+            pview: pview,
             lineItem: item,
             options: options
         };
 
         lineItems.push(ProductFactory.get(params));
+        // reconstruct the model based on the needed nesting
+        //TODO add the price to the product if it is of type embdedproductlineitem
     });
 
     return lineItems;

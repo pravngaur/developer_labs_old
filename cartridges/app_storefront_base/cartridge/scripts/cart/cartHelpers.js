@@ -2,6 +2,7 @@
 
 var ProductMgr = require('dw/catalog/ProductMgr');
 var Resource = require('dw/web/Resource');
+var Transaction = require('dw/system/Transaction');
 
 var collections = require('*/cartridge/scripts/util/collections');
 var ShippingHelpers = require('*/cartridge/scripts/checkout/shippingHelpers');
@@ -56,6 +57,11 @@ function updateBundleProducts(apiLineItem, childProducts) {
  * @property {string} adToCartUrl - url to use to add products to the cart
  */
 
+
+function getPageSize(){
+	
+	return 6;
+}
 /**
  * Gets the newly added bonus discount line item
  * @param {dw.order.Basket} currentBasket -
@@ -68,28 +74,64 @@ function updateBundleProducts(apiLineItem, childProducts) {
 function getNewBonusDiscountLineItem(
     currentBasket,
     previousBonusDiscountLineItems,
-    urlObject) {
-    var newBonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
+    urlObject,
+    pliUUID) {
+    var bonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
+    var newBonusDiscountLineItems;// = [];
     var newBonusDiscountLineItem;
     var result = {};
 
-    newBonusDiscountLineItem = collections.find(newBonusDiscountLineItems, function (item) {
+//    newBonusDiscountLineItems = collections.filter(function(bdli){
+//    		//bdli
+//    });
+    
+    //TODO: add custuom attribute here to tie the discount line items to the PLI
+    newBonusDiscountLineItem = collections.find(bonusDiscountLineItems, function (item) {
         return !previousBonusDiscountLineItems.contains(item);
     });
+
+    collections.forEach(bonusDiscountLineItems, function (item) {
+        if (!previousBonusDiscountLineItems.contains(item)) {
+            Transaction.wrap(function () {
+                item.custom.bonusProductLineItemUUID = pliUUID;
+            });
+        }
+    });
+
     if (newBonusDiscountLineItem) {
+        result.bonusChoiceRuleBased = newBonusDiscountLineItem.bonusChoiceRuleBased;
         result.bonuspids = [];
         var iterBonusProducts = newBonusDiscountLineItem.bonusProducts.iterator();
+        var pageSize = getPageSize();
         while (iterBonusProducts.hasNext()) {
             var newBProduct = iterBonusProducts.next();
             result.bonuspids.push(newBProduct.ID);
         }
-
         result.uuid = newBonusDiscountLineItem.UUID;
+        result.pliUUID = pliUUID;
         result.maxBonusItems = newBonusDiscountLineItem.maxBonusItems;
         result.addToCartUrl = urlObject.addToCartUrl;
-        result.configureProductstUrl = urlObject.configureProductstUrl;
-        result.url = urlObject.url + '?pids=' + result.bonuspids.toString();
-        result.newBonusDiscountLineItem = newBonusDiscountLineItem; // todo see if we need this
+        result.showProductsUrl = urlObject.configureProductstUrl;
+        result.queryString1 = '?DUUID=' + newBonusDiscountLineItem.UUID
+            + '&pids=' + result.bonuspids.toString()
+            + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
+
+        result.queryString2 = '?DUUID='
+            + newBonusDiscountLineItem.UUID
+            + '&pagesize=' + pageSize
+            + '&pagestart=0'
+            + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
+
+        result.pageSize = pageSize;
+
+        result.configureProductstUrl = urlObject.configureProductstUrl
+                + '?pids=' + result.bonuspids.toString()
+                + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
+
+        result.url = urlObject.url
+            + '?pids=' + result.bonuspids.toString()
+            + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
+        result.newBonusDiscountLineItem = newBonusDiscountLineItem; // todo: see if we need this
 
         result.labels = {};
         result.labels.selectbonus =
@@ -99,6 +141,11 @@ function getNewBonusDiscountLineItem(
         result.labels.selectattrs =
             Resource.msg('label.choiceofbonus.selectattrs', 'product', null);
         result.labels.selectprods =
+            Resource.msgf('modal.header.selectproducts',
+                'product',
+                null,
+                null);
+        result.labels.maxprods =
             Resource.msgf('label.choiceofbonus.selectproducts',
                 'product',
                 null,
@@ -348,6 +395,8 @@ function addProductToCart(currentBasket, productId, quantity, childProducts, opt
             optionModel,
             defaultShipment
         );
+        
+        //if this is a bonus product add to the custom attribute
 
         result.uuid = productLineItem.UUID;
     }
@@ -371,5 +420,6 @@ module.exports = {
     addProductToCart: addProductToCart,
     ensureAllShipmentsHaveMethods: ensureAllShipmentsHaveMethods,
     getQtyAlreadyInCart: getQtyAlreadyInCart,
-    getNewBonusDiscountLineItem: getNewBonusDiscountLineItem
+    getNewBonusDiscountLineItem: getNewBonusDiscountLineItem,
+    getPageSize: getPageSize
 };

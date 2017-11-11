@@ -1,5 +1,8 @@
 'use strict';
 
+var base = require('../product/base');
+var quickview = require('../product/base');
+
 /**
  * appends params to a url
  * @param {string} url - Original url
@@ -149,6 +152,15 @@ function updateAvailability(data, uuid) {
 }
 
 module.exports = function () {
+//    $('body').on('click', '.swatch-circle', function (e) {
+//    		e.preventDefault();
+//    	    base.colorAttribute();
+//    });
+//    $('body').on('click', '.swatch-circle', function (e) {
+//		e.preventDefault();
+//	    base.selectAttribute();
+//    });
+
     $('body').on('click', '.remove-product', function (e) {
         e.preventDefault();
 
@@ -408,4 +420,24 @@ module.exports = function () {
             }
         });
     });
+     $('body').on('click', '.cart-page .bonus-product-button', function () {
+		 // call end point to fill in data object
+		    $.ajax({
+		        url: $(this).data('url'),
+		        method: 'GET',
+		        dataType: 'json',
+		        success: function (data) {
+		        		base.editBonusProducts(data);
+		        		base.selectAttribute();
+		        		base.colorAttribute();
+		        		base.bonusProductSelection();
+		        		base.bonusProductAttributes();
+		        		
+		            //$.spinner().stop();
+		        },
+		        error: function () {
+		            //$.spinner().stop();
+		        }
+		    });		 
+     });
 };

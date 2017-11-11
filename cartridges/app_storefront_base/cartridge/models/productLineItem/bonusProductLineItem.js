@@ -17,7 +17,7 @@ var productLineItemDecorators = require('*/cartridge/models/productLineItem/deco
  *
  * @returns {Object} - Decorated product model
  */
-module.exports = function productLineItem(product, apiProduct, options) {
+module.exports = function bonusProductLineItem(product, apiProduct, options) {
     productDecorators.base(product, apiProduct, options.productType);
     productDecorators.price(product, apiProduct, options.promotions, false, options.currentOptionModel);
     productDecorators.images(product, apiProduct, { types: ['small'], quantity: 'single' });
@@ -27,6 +27,7 @@ module.exports = function productLineItem(product, apiProduct, options) {
     productDecorators.availability(product, options.quantity, apiProduct.minOrderQuantity.value, apiProduct.availabilityModel);
 
     productLineItemDecorators.quantity(product, options.quantity);
+    productLineItemDecorators.inStorePickUp(product, apiProduct, options.lineItem);
     productLineItemDecorators.gift(product, options.lineItem);
     productLineItemDecorators.appliedPromotions(product, options.lineItem);
     productLineItemDecorators.renderedPromotions(product); // must get applied promotions first
@@ -38,6 +39,7 @@ module.exports = function productLineItem(product, apiProduct, options) {
     productLineItemDecorators.quantityOptions(product, apiProduct, options.quantity);
     productLineItemDecorators.options(product, options.lineItemOptions);
     productLineItemDecorators.bonusProductLineItemUUID(product, options.lineItem);
-
+    productLineItemDecorators.embededBonusProductLineItems(product, options.lineItem);
+    productLineItemDecorators.embededDiscountBonusLineItems(product, options.lineItem);
     return product;
 };

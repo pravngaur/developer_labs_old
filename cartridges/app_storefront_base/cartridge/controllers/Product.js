@@ -176,19 +176,113 @@ server.get('SizeChart', function (req, res, next) {
 
 server.get('ShowBonusProducts', function (req, res, next) {
     var ProductFactory = require('*/cartridge/scripts/factories/product');
-
-    var params = JSON.parse(req.querystring.pids);
+    var moreUrl = null;
+    var pagingModel;
     var products = [];
     var product;
-    params.forEach(function (param) {
-        product = ProductFactory.get({ pid: param });
-        products.push(product);
-    });
+    var duuid = req.querystring.DUUID;
+    var collections = require('*/cartridge/scripts/util/collections');
+    var BasketMgr = require('dw/order/BasketMgr');
+    var currentBasket = BasketMgr.getCurrentOrNewBasket();
+    
+    if (duuid) {
+        var discountLineItems = currentBasket.bonusDiscountLineItems.toArray();
+        var discountLineItem;
 
+        var bonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
+        var bonusDiscountLineItem = collections.find(currentBasket.getBonusDiscountLineItems(), function (item) {
+            return item.UUID === duuid
+        });        
+        
+        discountLineItems.forEach(function (dli) {
+            if (dli.UUID === duuid) {
+                discountLineItem = dli;
+            }
+        });
+        var selectedBonusProducts = [];// need to add this to other end point when adding a bonus product
+        if(bonusDiscountLineItem && bonusDiscountLineItem.bonusProductLineItems.length){
+      	  bonusDiscountLineItem.bonusProductLineItems.toArray().forEach(function(bonusProductLineItem){
+      		  var option = {
+	      			optionid: '',
+	      			selectedvalue: ''
+	          };
+      		  var optionValue = null;
+	      		if(!bonusProductLineItem.optionProductLineItems.empty){
+	      			option.optionid = bonusProductLineItem.optionProductLineItems[0].optionID;
+	      			option.optionid = bonusProductLineItem.optionProductLineItems[0].optionValueID;
+	      		}
+      		  
+      		  
+      		    	selectedBonusProducts.push({ 
+      		    		pid : bonusProductLineItem.productID,
+      		    		name : bonusProductLineItem.productName,
+      		    		submittedQty : (bonusProductLineItem.quantityValue),
+      		    		option: option
+      		    		
+      		    	});
+      	  });
+        }
+        
+        var test = JSON.stringify(selectedBonusProducts);
+        
+    		if(	req.querystring.pids){
+    	        var params = req.querystring.pids.split(',');
+    	        params.forEach(function (param) {
+    	            product = ProductFactory.get({ 
+    	            		pid: param, 
+    	            		pview: 'bonus', 
+    	            		duuid: duuid}); // need to attach uuid here
+    	            products.push(product);
+    	        });
+    		} else {
+    			
+    	        var URLUtils = require('dw/web/URLUtils');
+    	        var PagingModel = require('dw/web/PagingModel');
+    	        // get basket
+
+    	        var pageStart = parseInt(req.querystring.pagestart, 10);
+    	        var pageSize = parseInt(req.querystring.pagesize, 10);
+    	        var showMoreButton = true;
+
+    	        // get the discount line item based off of the uuid
+    	        var ProductSearchModel = require('dw/catalog/ProductSearchModel');
+    	        var apiProductSearch = new ProductSearchModel();
+    	        var productSearchHit;
+    	        apiProductSearch.setPromotionID(discountLineItem.promotionID);
+    	        apiProductSearch.setPromotionProductType('bonus');
+    	        apiProductSearch.search();
+    	        pagingModel = new PagingModel(apiProductSearch.getProductSearchHits(), apiProductSearch.count);
+    	        pagingModel.setStart(pageStart);
+    	        pagingModel.setPageSize(pageSize);
+
+    	        var totalProductCount = pagingModel.count;
+
+    	        if (pageStart + pageSize > totalProductCount) {
+    	            showMoreButton = false;
+    	        }
+
+    	        moreUrl = URLUtils.url('Product-ShowBonusProducts').toString();
+    	        var iter = pagingModel.pageElements;
+    	        while (iter !== null && iter.hasNext()) {
+    	            productSearchHit = iter.next();
+    	            product = ProductFactory.get({ pid: productSearchHit.getProduct().ID, pview: 'bonus', duuid: duuid });
+    	            products.push(product);
+    	        }
+
+    	        // TODO: will need to build the list of selected bonus products for editing    			
+    			
+    			
+    		}
+    }
+  
     var template = 'product/components/choiceofbonusproducts/bonusProducts.isml';
-
+    
     res.render(template, {
-        products: products
+        products: products,
+        selectedBonusProducts: selectedBonusProducts,
+        maxPids: req.querystring.maxpids,
+        moreUrl: moreUrl,
+        showMoreButton: showMoreButton
     });
 
     next();

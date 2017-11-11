@@ -5,10 +5,13 @@ var PromotionMgr = require('dw/campaign/PromotionMgr');
 var collections = require('*/cartridge/scripts/util/collections');
 var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
 var productTile = require('*/cartridge/models/product/productTile');
+var bonusProduct = require('*/cartridge/models/product/bonusProduct');
 var fullProduct = require('*/cartridge/models/product/fullProduct');
 var productSet = require('*/cartridge/models/product/productSet');
 var productBundle = require('*/cartridge/models/product/productBundle');
 var productLineItem = require('*/cartridge/models/productLineItem/productLineItem');
+var bonusProductLineItem = require('*/cartridge/models/productLineItem/bonusProductLineItem');
+var embeddedProductLineItem = require('*/cartridge/models/productLineItem/embeddedProductLineItem');
 var bundleProductLineItem = require('*/cartridge/models/productLineItem/bundleLineItem');
 
 /**
@@ -145,11 +148,100 @@ module.exports = {
         var productType = getProductType(apiProduct);
         var product = Object.create(null);
         var options = null;
+        var duuid = params.duuid || null;
         var promotions;
 
         switch (params.pview) {
             case 'tile':
                 product = productTile(product, apiProduct, getProductType(apiProduct));
+                break;
+
+            case 'embeddedProductLineItem':
+                promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
+                options = {
+                    promotions: promotions,
+                    quantity: params.quantity,
+                    variables: params.variables,
+                    lineItem: params.lineItem,
+                    productType: getProductType(apiProduct)
+                };
+
+                switch (productType) {
+                    case 'bundle':
+
+                        product = bundleProductLineItem(product, apiProduct, options, this);
+
+                        break;
+                    default:
+                        var variations = getVariationModel(apiProduct, params.variables);
+                        if (variations) {
+                            apiProduct = variations.getSelectedVariant() || apiProduct; // eslint-disable-line
+                        }
+
+                        var optionModel = apiProduct.optionModel;
+                        var optionLineItems = params.lineItem.optionProductLineItems;
+                        var currentOptionModel = productHelper.getCurrentOptionModel(
+                            optionModel,
+                            getLineItemOptions(optionLineItems, productId)
+                        );
+                        var lineItemOptions = optionLineItems.length
+                            ? getLineItemOptionNames(optionLineItems)
+                            : getDefaultOptions(optionModel, optionModel.options);
+
+
+                        options.variationModel = variations;
+                        options.lineItemOptions = lineItemOptions;
+                        options.currentOptionModel = currentOptionModel;
+
+                        product = embeddedProductLineItem(product, apiProduct, options);
+
+                        break;
+                }
+
+                break;                
+                
+            case 'bonusProductLineItem':
+                promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
+                options = {
+                    promotions: promotions,
+                    quantity: params.quantity,
+                    variables: params.variables,
+                    lineItem: params.lineItem,
+                    productType: getProductType(apiProduct)
+                };
+
+                switch (productType) {
+                    case 'bundle':
+
+                        product = bundleProductLineItem(product, apiProduct, options, this);
+
+                        break;
+                    default:
+                        var variations = getVariationModel(apiProduct, params.variables);
+                        if (variations) {
+                            apiProduct = variations.getSelectedVariant() || apiProduct; // eslint-disable-line
+                        }
+
+                        var optionModel = apiProduct.optionModel;
+                        var optionLineItems = params.lineItem.optionProductLineItems;
+                        var currentOptionModel = productHelper.getCurrentOptionModel(
+                            optionModel,
+                            getLineItemOptions(optionLineItems, productId)
+                        );
+                        var lineItemOptions = optionLineItems.length
+                            ? getLineItemOptionNames(optionLineItems)
+                            : getDefaultOptions(optionModel, optionModel.options);
+
+
+                        options.variationModel = variations;
+                        options.lineItemOptions = lineItemOptions;
+                        options.currentOptionModel = currentOptionModel;
+
+                        product = bonusProductLineItem(product, apiProduct, options);
+
+                        break;
+                }
+
                 break;
             case 'productLineItem':
                 promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
@@ -190,6 +282,22 @@ module.exports = {
 
                         product = productLineItem(product, apiProduct, options);
 
+                        break;
+                }
+
+                break;
+            case 'bonus':
+                options = getConfig(apiProduct, params);
+
+                switch (productType) {
+                    case 'set':
+                        // product = productSet(product, options.apiProduct, options, this);
+                        break;
+                    case 'bundle':
+                        // product = productBundle(product, options.apiProduct, options, this);
+                        break;
+                    default:
+                        product = bonusProduct(product, options.apiProduct, options, params.duuid);
                         break;
                 }
 

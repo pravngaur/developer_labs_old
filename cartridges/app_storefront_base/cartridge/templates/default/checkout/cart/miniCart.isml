@@ -30,7 +30,11 @@
                     <div class="col-12">
                         <div class="card uuid-${lineItem.UUID}">
                             <div class="card-body">
-                                <isinclude template="checkout/productCard/productCard" />
+                                <isif condition="${lineItem.bonusProductLineItemUUID === 'bonus'}">
+                                    <isinclude template="checkout/productCard/bonusProductCard" />
+                                <iselse/>
+                                    <isinclude template="checkout/productCard/productCard" />
+                                </isif>
                             </div>
                         </div>
                     </div>
@@ -38,7 +42,6 @@
             </isloop>
         </div>
     </div>
-    <isinclude template="cart/changeBonusProductButton" />
     <div class="mini-cart-footer">
         <div class="row estimated-total">
             <div class="col-8">
