@@ -87,6 +87,7 @@ server.get('Show', cache.applyShortPromotionSensitiveCache, function (req, res, 
     var ProductSearchModel = require('dw/catalog/ProductSearchModel');
     var ProductSearch = require('*/cartridge/models/search/productSearch');
     var reportingUrls = require('*/cartridge/scripts/reportingUrls');
+    var urlHelper = require('*/cartridge/scripts/helpers/urlHelpers');
     var URLUtils = require('dw/web/URLUtils');
 
     var categoryTemplate = '';
@@ -118,21 +119,7 @@ server.get('Show', cache.applyShortPromotionSensitiveCache, function (req, res, 
         CatalogMgr.getSiteCatalog().getRoot()
     );
 
-    var refineurl = URLUtils.url('Search-Refinebar');
-    var whitelistedParams = ['q', 'cgid', 'pmin', 'pmax'];
-    Object.keys(req.querystring).forEach(function (element) {
-        if (whitelistedParams.indexOf(element) > -1) {
-            refineurl.append(element, req.querystring[element]);
-        }
-        if (element === 'preferences') {
-            var i = 1;
-            Object.keys(req.querystring[element]).forEach(function (preference) {
-                refineurl.append('prefn' + i, preference);
-                refineurl.append('prefv' + i, req.querystring[element][preference]);
-                i++;
-            });
-        }
-    });
+    var refineurl = urlHelper.appendQueryParams(URLUtils.url('Search-Refinebar').relative().toString(), req.querystring);
 
     if (productSearch.searchKeywords !== null && !productSearch.selectedFilters.length) {
         reportingURLs = reportingUrls.getProductSearchReportingURLs(productSearch);
