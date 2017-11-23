@@ -153,22 +153,22 @@
 
     .selected-pid {
         border: 1px solid $grey3;
-    		white-space: nowrap; 
-    		overflow: hidden;
-    		text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
-    		p {
-    			display: inline;
-    		}
-    		
+        p {
+            display: inline;
+        }
+
         i {
             float: right;
         }
     }
-    
+
     .bonus-product-price {
-    		text-align: center;
-    		margin-top: 1em;
+        text-align: center;
+        margin-top: 1em;
     }
 }
 
