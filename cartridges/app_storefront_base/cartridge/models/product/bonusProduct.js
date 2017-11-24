@@ -13,10 +13,11 @@ var decorators = require('*/cartridge/models/product/decorators/index');
  * @property {dw.util.Collection} options.promotions - Active promotions for a given product
  * @property {number} options.quantity - Current selected quantity
  * @property {Object} options.variables - Variables passed in on the query string
+ * @param {string} duuid - the UUID of the discount line item
  *
  * @returns {Object} - Decorated product model
  */
-module.exports = function bonusProduct(product, apiProduct, options, duuid, productAPI) {
+module.exports = function bonusProduct(product, apiProduct, options, duuid) {
     decorators.base(product, apiProduct, options.productType);
     decorators.price(product, apiProduct, options.promotions, false, options.optionModel);
     decorators.images(product, apiProduct, { types: ['large', 'small'], quantity: 'all' });
@@ -38,7 +39,7 @@ module.exports = function bonusProduct(product, apiProduct, options, duuid, prod
     decorators.sizeChart(product, category.custom.sizeChartID);
     decorators.currentUrl(product, options.variationModel, options.optionModel, 'Product-Show', apiProduct.ID, options.quantity);
     decorators.readyToOrder(product, options.variationModel);
-    decorators.bonusUnitPrice(product, options.variationModel, duuid, productAPI);// need to pass in the uuid
+    decorators.bonusUnitPrice(product, duuid);// need to pass in the uuid
 
     return product;
 };

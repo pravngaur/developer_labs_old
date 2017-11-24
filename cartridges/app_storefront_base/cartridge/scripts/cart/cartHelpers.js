@@ -57,9 +57,11 @@ function updateBundleProducts(apiLineItem, childProducts) {
  * @property {string} adToCartUrl - url to use to add products to the cart
  */
 
-
-function getPageSize(){
-    
+/**
+ * Gets the number value for the page size parameter when getting bonus products
+ * @return {number} - number of bonus products to page in when the more button is clicked
+ */
+function getPageSize() {
     return 6;
 }
 /**
@@ -68,6 +70,7 @@ function getPageSize(){
  * @param {dw.util.Collection} previousBonusDiscountLineItems - contains BonusDiscountLineItems
  *                                                              already processed
  * @param {Object} urlObject - Object with data to be used in the choice of bonus products modal
+ * @param {string} pliUUID - the uuid of the qualifying product line item.
  * @return {Object} - either the object that represents data needed for the choice of
  *                    bonus products modal window or undefined
  */
@@ -77,15 +80,15 @@ function getNewBonusDiscountLineItem(
     urlObject,
     pliUUID) {
     var bonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
-    var newBonusDiscountLineItems;// = [];
+//    var newBonusDiscountLineItems;// = [];
     var newBonusDiscountLineItem;
     var result = {};
 
 //    newBonusDiscountLineItems = collections.filter(function(bdli){
-//            //bdli
+//            // bdli
 //    });
-    
-    //TODO: add custuom attribute here to tie the discount line items to the PLI
+
+    // TODO: add custuom attribute here to tie the discount line items to the PLI
     newBonusDiscountLineItem = collections.find(bonusDiscountLineItems, function (item) {
         return !previousBonusDiscountLineItems.contains(item);
     });
@@ -93,7 +96,7 @@ function getNewBonusDiscountLineItem(
     collections.forEach(bonusDiscountLineItems, function (item) {
         if (!previousBonusDiscountLineItems.contains(item)) {
             Transaction.wrap(function () {
-                item.custom.bonusProductLineItemUUID = pliUUID;
+                item.custom.bonusProductLineItemUUID = pliUUID; // eslint-disable-line no-param-reassign
             });
         }
     });
@@ -395,8 +398,7 @@ function addProductToCart(currentBasket, productId, quantity, childProducts, opt
             optionModel,
             defaultShipment
         );
-        
-        //if this is a bonus product add to the custom attribute
+        // if this is a bonus product add to the custom attribute
 
         result.uuid = productLineItem.UUID;
     }

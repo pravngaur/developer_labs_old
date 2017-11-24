@@ -38,8 +38,8 @@ module.exports = function embeddedProductLineItem(product, apiProduct, options) 
     productLineItemDecorators.quantityOptions(product, apiProduct, options.quantity);
     productLineItemDecorators.options(product, options.lineItemOptions);
     productLineItemDecorators.bonusProductLineItemUUID(product, options.lineItem);
-    productLineItemDecorators.embededBonusProductLineItems(product, options.lineItem);
-    productLineItemDecorators.embededDiscountBonusLineItems(product, options.lineItem);
-    productLineItemDecorators.bonusUnitPrice(product, options.lineItem, apiProduct, BasketMgr.getCurrentBasket().getBonusDiscountLineItems().toArray())
+    productLineItemDecorators.embededBonusProductLineItems(product);
+    productLineItemDecorators.embededDiscountBonusLineItems(product);
+    productLineItemDecorators.bonusUnitPrice(product, options.lineItem, apiProduct, BasketMgr.getCurrentBasket().getBonusDiscountLineItems().toArray());
     return product;
 };

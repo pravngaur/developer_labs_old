@@ -148,7 +148,6 @@ module.exports = {
         var productType = getProductType(apiProduct);
         var product = Object.create(null);
         var options = null;
-        var duuid = params.duuid || null;
         var promotions;
 
         switch (params.pview) {
@@ -197,9 +196,7 @@ module.exports = {
 
                         break;
                 }
-
-                break;                
-                
+                break;
             case 'bonusProductLineItem':
                 promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(apiProduct);
                 options = {
@@ -217,25 +214,25 @@ module.exports = {
 
                         break;
                     default:
-                        var variations = getVariationModel(apiProduct, params.variables);
-                        if (variations) {
-                            apiProduct = variations.getSelectedVariant() || apiProduct; // eslint-disable-line
+                        var variationsBundle = getVariationModel(apiProduct, params.variables);
+                        if (variationsBundle) {
+                            apiProduct = variationsBundle.getSelectedVariant() || apiProduct; // eslint-disable-line
                         }
 
-                        var optionModel = apiProduct.optionModel;
-                        var optionLineItems = params.lineItem.optionProductLineItems;
-                        var currentOptionModel = productHelper.getCurrentOptionModel(
-                            optionModel,
-                            getLineItemOptions(optionLineItems, productId)
+                        var optionModelBundle = apiProduct.optionModel;
+                        var optionLineItemsBundle = params.lineItem.optionProductLineItems;
+                        var currentOptionModelBundle = productHelper.getCurrentOptionModel(
+                            optionModelBundle,
+                            getLineItemOptions(optionLineItemsBundle, productId)
                         );
-                        var lineItemOptions = optionLineItems.length
-                            ? getLineItemOptionNames(optionLineItems)
-                            : getDefaultOptions(optionModel, optionModel.options);
+                        var lineItemOptionsBundle = optionLineItemsBundle.length
+                            ? getLineItemOptionNames(optionLineItemsBundle)
+                            : getDefaultOptions(optionModelBundle, optionModelBundle.options);
 
 
-                        options.variationModel = variations;
-                        options.lineItemOptions = lineItemOptions;
-                        options.currentOptionModel = currentOptionModel;
+                        options.variationModel = variationsBundle;
+                        options.lineItemOptions = lineItemOptionsBundle;
+                        options.currentOptionModel = currentOptionModelBundle;
 
                         product = bonusProductLineItem(product, apiProduct, options);
 
@@ -260,26 +257,25 @@ module.exports = {
 
                         break;
                     default:
-                        var variations = getVariationModel(apiProduct, params.variables);
-                        if (variations) {
-                            apiProduct = variations.getSelectedVariant() || apiProduct; // eslint-disable-line
+                        var variationsPLI = getVariationModel(apiProduct, params.variables);
+                        if (variationsPLI) {
+                            apiProduct = variationsPLI.getSelectedVariant() || apiProduct; // eslint-disable-line
                         }
 
-                        var optionModel = apiProduct.optionModel;
-                        var optionLineItems = params.lineItem.optionProductLineItems;
-                        var currentOptionModel = productHelper.getCurrentOptionModel(
-                            optionModel,
-                            getLineItemOptions(optionLineItems, productId)
+                        var optionModelPLI = apiProduct.optionModel;
+                        var optionLineItemsPLI = params.lineItem.optionProductLineItems;
+                        var currentOptionModelPLI = productHelper.getCurrentOptionModel(
+                            optionModelPLI,
+                            getLineItemOptions(optionLineItemsPLI, productId)
                         );
-                        var lineItemOptions = optionLineItems.length
-                            ? getLineItemOptionNames(optionLineItems)
-                            : getDefaultOptions(optionModel, optionModel.options);
+                        var lineItemOptionsPLI = optionLineItemsPLI.length
+                            ? getLineItemOptionNames(optionLineItemsPLI)
+                            : getDefaultOptions(optionModelPLI, optionModelPLI.options);
 
 
-                        options.variationModel = variations;
-                        options.lineItemOptions = lineItemOptions;
-                        options.currentOptionModel = currentOptionModel;
-
+                        options.variationModel = variationsPLI;
+                        options.lineItemOptions = lineItemOptionsPLI;
+                        options.currentOptionModel = currentOptionModelPLI;
                         product = productLineItem(product, apiProduct, options);
 
                         break;

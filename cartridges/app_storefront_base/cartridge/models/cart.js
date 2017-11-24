@@ -84,7 +84,23 @@ function getCartActionUrls() {
 
 /**
  * Generates an object of URLs
- * @returns {Object}
+ * @param {dw.order.BonusDiscountLineItem} item - a product line item
+ * @returns {number} the total number of bonus products from within one bonus discount line item
+ */
+function countBonusProducts(item) {
+    var bonusProductLineItems = item.bonusProductLineItems.toArray();
+    var count = 0;
+
+    bonusProductLineItems.forEach(function (bonusDiscountLineItem) {
+        count += bonusDiscountLineItem.quantityValue;
+    });
+    return count;
+}
+
+/**
+ * Generates an object of URLs
+ * @param {dw.util.Collection} bonsDiscountLineItems - collection of bonus discount line items associated with the basket
+ * @returns {Object} json object used to represnt the view's data for displaying bonus products button on the cart page
  */
 function getDiscountLineItems(bonsDiscountLineItems) {
     var items = bonsDiscountLineItems.toArray();
@@ -103,32 +119,26 @@ function getDiscountLineItems(bonsDiscountLineItems) {
     return result;
 }
 
-function countBonusProducts(item){
-    var bonusProductLineItems = item.bonusProductLineItems.toArray();
-    var count = 0;
-    
-    bonusProductLineItems.forEach(function(bonusDiscountLineItem){
-        count += bonusDiscountLineItem.quantityValue;
-    });
-    return count;
-}
-
 /**
- * Generates an object of URLs
- * @returns {Object}
+ * Embbeds the bonus products within a qualifying product line item
+ * @param {Object} productLineItemsModel - json representation of the products line items model
+ * @param {Array} discountLineItems - array of discount line items associated with the basket
+ * @returns {Array} of all the items with bonus products nested within the qualifying product line item
  */
 function embedBonusLineItems(productLineItemsModel, discountLineItems) {
-   // var result = [];//conditional on if there are any
     var allBonusItems = productLineItemsModel.items.filter(function (item) {
+        var returnBool;
         if (item.bonusProductLineItemUUID && item.bonusProductLineItemUUID !== 'bonus') {
-            return true;
+            returnBool = true;
         } else {
-            return false;
+            returnBool = false;
         }
+        return returnBool;
     });
     var allItems = productLineItemsModel.items.filter(function (item) {
+        var returnBool;
         if (item.bonusProductLineItemUUID && item.bonusProductLineItemUUID !== 'bonus') {
-            return false;
+            returnBool = false;
         } else {
             allBonusItems.forEach(function (bitem) {
                 if (bitem.bonusProductLineItemUUID === item.UUID) {
@@ -140,8 +150,9 @@ function embedBonusLineItems(productLineItemsModel, discountLineItems) {
                     item.embededBonusDiscountLineItems.push(bdlitem);
                 }
             });
-            return true;
+            returnBool = true;
         }
+        return returnBool;
     });
 
     return allItems;

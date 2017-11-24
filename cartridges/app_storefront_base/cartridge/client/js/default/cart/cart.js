@@ -1,7 +1,6 @@
 'use strict';
 
 var base = require('../product/base');
-var quickview = require('../product/base');
 
 /**
  * appends params to a url
@@ -420,24 +419,23 @@ module.exports = function () {
             }
         });
     });
-     $('body').on('click', '.cart-page .bonus-product-button', function () {
+    $('body').on('click', '.cart-page .bonus-product-button', function () {
          // call end point to fill in data object
-            $.ajax({
-                url: $(this).data('url'),
-                method: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                        base.editBonusProducts(data);
-                        base.selectAttribute();
-                        base.colorAttribute();
-                        base.bonusProductSelection();
-                        base.bonusProductAttributes();
-                        
-                    //$.spinner().stop();
-                },
-                error: function () {
-                    //$.spinner().stop();
-                }
-            });         
-     });
+        $.ajax({
+            url: $(this).data('url'),
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                base.editBonusProducts(data);
+                base.selectAttribute();
+                base.colorAttribute();
+                base.bonusProductSelection();
+                base.bonusProductAttributes();
+                // $.spinner().stop();
+            },
+            error: function () {
+                // $.spinner().stop();
+            }
+        });
+    });
 };

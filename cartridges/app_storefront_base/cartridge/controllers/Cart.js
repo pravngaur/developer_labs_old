@@ -103,18 +103,15 @@ server.post('AddProduct', function (req, res, next) {
     if (newBonusDiscountLineItem) {
     //     OriginalPLI.custom.bonusProductLineItemUUID = 'bonus';
         var allLineItems = currentBasket.allProductLineItems.toArray();
-        var opli;
-        allLineItems.forEach(function(pli){
-            if(pli.UUID === result.uuid){
+//        var opli;
+        allLineItems.forEach(function (pli) {
+            if (pli.UUID === result.uuid) {
                 Transaction.wrap(function () {
-                    pli.custom.bonusProductLineItemUUID = 'bonus';
+                    pli.custom.bonusProductLineItemUUID = 'bonus'; // eslint-disable-line no-param-reassign
                 });
             }
         });
-        
-        //
     }
-    
 
     res.json({
         quantityTotal: quantityTotal,
@@ -281,7 +278,7 @@ server.get('UpdateQuantity', function (req, res, next) {
     var updateQuantity = parseInt(req.querystring.quantity, 10);
     var uuid = req.querystring.uuid;
     var productLineItems = currentBasket.productLineItems;
-    var previousBonusDiscountLineItems = [];
+//    var previousBonusDiscountLineItems = [];
     var matchingLineItem = collections.find(productLineItems, function (item) {
         return item.productID === productId && item.UUID === uuid;
     });
@@ -322,8 +319,6 @@ server.get('UpdateQuantity', function (req, res, next) {
             minOrderQuantity = matchingLineItem.product.minOrderQuantity.value;
             canBeUpdated = (totalQtyRequested <= availableToSell) &&
                 (updateQuantity >= minOrderQuantity);
-            
-            
         }
     }
 
@@ -331,31 +326,29 @@ server.get('UpdateQuantity', function (req, res, next) {
         Transaction.wrap(function () {
             matchingLineItem.setQuantityValue(updateQuantity);
             var previousBounsDiscountLineItems = [];
-            currentBasket.bonusDiscountLineItems.toArray().forEach(function(prevItem) {
-                    previousBounsDiscountLineItems.push(prevItem.UUID);
-                });
-            
+            currentBasket.bonusDiscountLineItems.toArray().forEach(function (prevItem) {
+                previousBounsDiscountLineItems.push(prevItem.UUID);
+            });
+
             HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
-            if ( currentBasket.bonusDiscountLineItems.length > bonusDiscountLineItemCount) {
+            if (currentBasket.bonusDiscountLineItems.length > bonusDiscountLineItemCount) {
                 var prevItems = JSON.stringify(previousBounsDiscountLineItems);
-                 var bonusDiscountLineItems = currentBasket.bonusDiscountLineItems.toArray();
-                 var newbonusDiscountLineItems = [];
-                 bonusDiscountLineItems.forEach( function (item) {
-                     var test = prevItems.indexOf(item.UUID);
-                     if(test < 0){
-                         item.custom.bonusProductLineItemUUID = matchingLineItem.UUID;
-                         matchingLineItem.custom.bonusProductLineItemUUID = 'bonus';
-                     }
-                 });
+                var bonusDiscountLineItems = currentBasket.bonusDiscountLineItems.toArray();
+//                var newbonusDiscountLineItems = [];
+                bonusDiscountLineItems.forEach(function (item) {
+                    var test = prevItems.indexOf(item.UUID); // TODO
+                    if (test < 0) {
+                        item.custom.bonusProductLineItemUUID = matchingLineItem.UUID; // eslint-disable-line no-param-reassign
+                        matchingLineItem.custom.bonusProductLineItemUUID = 'bonus';
+                    }
+                });
             }
         });
     }
 
     if (matchingLineItem && canBeUpdated) {
         // check to see if the the number of bonus line items was updated and add the cusom attribute to it.
-        
-            var basketModel = new CartModel(currentBasket);
-        
+        var basketModel = new CartModel(currentBasket);
         res.json(basketModel);
     } else {
         res.setStatusCode(500);
@@ -643,23 +636,17 @@ server.post('AddBonusProducts', function (req, res, next) {
             return item.UUID === req.querystring.uuid;
         });
 
-        // erase all of the discount lineItems
-        var stop = false;
-        stop = true
-
-        
-        
         if (currentBasket) {
             Transaction.wrap(function () {
                 var plistoDelete = bonusDiscountLineItem.getBonusProductLineItems();
 
-                for (var i = 0; i < plistoDelete.length; i++) {
-                    var pliToDelete = plistoDelete[i];
+                for (var n = 0; n < plistoDelete.length; n++) {
+                    var pliToDelete = plistoDelete[n];
                     if (pliToDelete.product) {
                         currentBasket.removeProductLineItem(pliToDelete);
                     }
                 }
-                
+
                 var pli;
                 var plis = [];
                 for (var l = 0; l < data.bonusProducts.length; l++) {
@@ -707,65 +694,59 @@ server.post('AddBonusProducts', function (req, res, next) {
 
 server.get('EditBonusProduct', function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
-    var ProductMgr = require('dw/catalog/ProductMgr');
-    var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
-    var Transaction = require('dw/system/Transaction');
     var collections = require('*/cartridge/scripts/util/collections');
     var Resource = require('dw/web/Resource');
     var URLUtils = require('dw/web/URLUtils');
     var currentBasket = BasketMgr.getCurrentOrNewBasket();
     var duuid = req.querystring.duuid;
 //    var pliUUID = req.querystring.pliuuid;
-    var bonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
+//    var bonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
     var bonusDiscountLineItem = collections.find(currentBasket.getBonusDiscountLineItems(), function (item) {
-        return item.UUID === duuid
+        return item.UUID === duuid;
     });
     var cartHelper = require('*/cartridge/scripts/cart/cartHelpers');
     var selectedBonusProducts = [];// need to add this to other end point when adding a bonus product
-    //bonusDiscountLineItem:bonusProducts
-    bonusDiscountLineItem.bonusProductLineItems.toArray().forEach(function(bonusProductLineItem){
-            selectedBonusProducts.push({ 
-                pid : bonusProductLineItem.productID,
-                name : bonusProductLineItem.productName,
-                submittedQty : bonusProductLineItem.quantityValue
-            });
+    // bonusDiscountLineItem:bonusProducts
+    bonusDiscountLineItem.bonusProductLineItems.toArray().forEach(function (bonusProductLineItem) {
+        selectedBonusProducts.push({
+            pid: bonusProductLineItem.productID,
+            name: bonusProductLineItem.productName,
+            submittedQty: bonusProductLineItem.quantityValue
+        });
     });
-    
+
     // loop through the bonus products
-    //bonusDiscountLineItem:bonusProducts
+    // bonusDiscountLineItem:bonusProducts
     var pids = '';
     var count = 0;
-    bonusDiscountLineItem.bonusProducts.toArray().forEach(function(bonusProduct){
-        if(count){
+    bonusDiscountLineItem.bonusProducts.toArray().forEach(function (bonusProduct) {
+        if (count) {
             pids += ',';
         }
         pids += bonusProduct.ID;
         count++;
-    })
-    
-    var queryString1 = '?DUUID='+bonusDiscountLineItem.UUID+'&pids=' + pids + '&maxpids=' + bonusDiscountLineItem.maxBonusItems+'';
-    
-    
-    
-    
+    });
+
+    var queryString1 = '?DUUID=' + bonusDiscountLineItem.UUID + '&pids=' + pids + '&maxpids=' + bonusDiscountLineItem.maxBonusItems + '';
+
     res.json({
-            selectedBonusProducts: selectedBonusProducts,
-            addToCartUrl: URLUtils.url('Cart-AddBonusProducts').toString(),
-            showProductsUrl: URLUtils.url('Product-ShowBonusProducts').toString(),
-            maxBonusItems: bonusDiscountLineItem.maxBonusItems,
+        selectedBonusProducts: selectedBonusProducts,
+        addToCartUrl: URLUtils.url('Cart-AddBonusProducts').toString(),
+        showProductsUrl: URLUtils.url('Product-ShowBonusProducts').toString(),
+        maxBonusItems: bonusDiscountLineItem.maxBonusItems,
         pageSize: cartHelper.getPageSize(),
         pliUUID: bonusDiscountLineItem.custom.bonusProductLineItemUUID,
         uuid: bonusDiscountLineItem.UUID,
         bonusChoiceRuleBased: bonusDiscountLineItem.bonusChoiceRuleBased,
-        selectprods:[],
-        labels:{
-                selectprods: Resource.msg('modal.header.selectproducts', 'product', null),
-                selectattrs: Resource.msg('label.choiceofbonus.selectattrs', 'product', null),
-                close: Resource.msg('link.choiceofbonus.close', 'product', null)
+        selectprods: [],
+        labels: {
+            selectprods: Resource.msg('modal.header.selectproducts', 'product', null),
+            selectattrs: Resource.msg('label.choiceofbonus.selectattrs', 'product', null),
+            close: Resource.msg('link.choiceofbonus.close', 'product', null)
         },
         queryString1: queryString1,
-        queryString2:'?DUUID='+bonusDiscountLineItem.UUID+'&pagesize='+cartHelper.getPageSize()+'&pagestart=0&maxpids='+bonusDiscountLineItem.maxBonusItems+'',
-        
+        queryString2: '?DUUID=' + bonusDiscountLineItem.UUID + '&pagesize=' + cartHelper.getPageSize() + '&pagestart=0&maxpids=' + bonusDiscountLineItem.maxBonusItems + ''
+
     });
     next();
 });

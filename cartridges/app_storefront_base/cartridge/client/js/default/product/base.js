@@ -524,8 +524,7 @@ function getOptions($productContainer) {
 module.exports = {
     attributeSelect: attributeSelect,
     editBonusProducts: function (data) {
-            console.log('from editBonusProducts:base');
-            chooseBonusProducts(data);
+        chooseBonusProducts(data);
 //            $('.bonus-product-button').on('edit:bonusProducts', function (e, data) {
 //                    console.log('from base');
 //            });
@@ -703,7 +702,7 @@ module.exports = {
             var maxPids = $('.choose-bonus-product-dialog').data('total-qty');
             var submittedQty = parseInt($(this).parents('.choice-of-bonus-product').find('.bonus-quantity-select').val(), 10);
             var totalQty = 0;
-            $.each($('#chooseBonusProductModal .selected-bonus-products .selected-pid'), function (val) {
+            $.each($('#chooseBonusProductModal .selected-bonus-products .selected-pid'), function () {
                 totalQty += $(this).data('qty');
             });
             totalQty += submittedQty;
@@ -716,10 +715,10 @@ module.exports = {
                 + 'data-qty="' + submittedQty + '"'
                 + 'data-optionID="' + (optionID || '') + '"'
                 + 'data-option-selected-value="' + (valueId || '') + '"'
-                +'>'
-                    + '<p class="" >'
+                + '>'
+                + '<p class="" >'
                 + $choiceOfBonusProduct.find('.product-name').html()
-                +'</p>'
+                + '</p>'
                 + '<i class="fa fa-times" aria-hidden="true"></i>'
                 + '</div>'
                 ;
@@ -727,7 +726,7 @@ module.exports = {
                 $('.pre-cart-products').html(totalQty);
                 $('.selected-bonus-products .bonus-summary').removeClass('alert-danger');
             } else {
-                    $('.selected-bonus-products .bonus-summary').addClass('alert-danger');
+                $('.selected-bonus-products .bonus-summary').addClass('alert-danger');
             }
         });
 
@@ -756,9 +755,8 @@ module.exports = {
                 var qtyOption =
                     parseInt($(this)
                         .data('qty'), 10);
-                console.log('qtyOption='+qtyOption);
-                
-                
+                // console.log('qtyOption='+qtyOption);
+
                 var option = null;
                 if (qtyOption > 0) {
                     if ($(this).data('optionid') && $(this).data('option-selected-value')) {
