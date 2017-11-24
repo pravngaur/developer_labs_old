@@ -13,9 +13,9 @@ function createProductLineItemsObject(allLineItems) {
     var lineItems = [];
     var bonusQulifiers = [];
     collections.forEach(allLineItems, function (item) {
-    		if(item.custom.bonusProductLineItemUUID === 'bonus'){
-    			bonusQulifiers.push(item.UUID);
-    		}
+            if(item.custom.bonusProductLineItemUUID === 'bonus'){
+                bonusQulifiers.push(item.UUID);
+            }
     });
     
     collections.forEach(allLineItems, function (item) {
@@ -36,7 +36,7 @@ function createProductLineItemsObject(allLineItems) {
         }
 
         if(item.bonusProductLineItem && bonusQulifiers.indexOf(item.custom.bonusProductLineItemUUID) > -1){
-    	    		pview = 'embeddedProductLineItem';
+                    pview = 'embeddedProductLineItem';
         }
 
         

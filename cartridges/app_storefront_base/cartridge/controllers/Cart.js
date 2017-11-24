@@ -101,18 +101,18 @@ server.post('AddProduct', function (req, res, next) {
             result.uuid
     );
     if (newBonusDiscountLineItem) {
-    // 	OriginalPLI.custom.bonusProductLineItemUUID = 'bonus';
-    	var allLineItems = currentBasket.allProductLineItems.toArray();
-    	var opli;
-    	allLineItems.forEach(function(pli){
-    		if(pli.UUID === result.uuid){
-    			Transaction.wrap(function () {
-    				pli.custom.bonusProductLineItemUUID = 'bonus';
-    			});
-    		}
-    	});
-    	
-    	//
+    //     OriginalPLI.custom.bonusProductLineItemUUID = 'bonus';
+        var allLineItems = currentBasket.allProductLineItems.toArray();
+        var opli;
+        allLineItems.forEach(function(pli){
+            if(pli.UUID === result.uuid){
+                Transaction.wrap(function () {
+                    pli.custom.bonusProductLineItemUUID = 'bonus';
+                });
+            }
+        });
+        
+        //
     }
     
 
@@ -332,29 +332,29 @@ server.get('UpdateQuantity', function (req, res, next) {
             matchingLineItem.setQuantityValue(updateQuantity);
             var previousBounsDiscountLineItems = [];
             currentBasket.bonusDiscountLineItems.toArray().forEach(function(prevItem) {
-        			previousBounsDiscountLineItems.push(prevItem.UUID);
-        		});
+                    previousBounsDiscountLineItems.push(prevItem.UUID);
+                });
             
             HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
             if ( currentBasket.bonusDiscountLineItems.length > bonusDiscountLineItemCount) {
                 var prevItems = JSON.stringify(previousBounsDiscountLineItems);
-             	var bonusDiscountLineItems = currentBasket.bonusDiscountLineItems.toArray();
-             	var newbonusDiscountLineItems = [];
-             	bonusDiscountLineItems.forEach( function (item) {
-             		var test = prevItems.indexOf(item.UUID);
-             		if(test < 0){
-             			item.custom.bonusProductLineItemUUID = matchingLineItem.UUID;
-             			matchingLineItem.custom.bonusProductLineItemUUID = 'bonus';
-             		}
-             	});
+                 var bonusDiscountLineItems = currentBasket.bonusDiscountLineItems.toArray();
+                 var newbonusDiscountLineItems = [];
+                 bonusDiscountLineItems.forEach( function (item) {
+                     var test = prevItems.indexOf(item.UUID);
+                     if(test < 0){
+                         item.custom.bonusProductLineItemUUID = matchingLineItem.UUID;
+                         matchingLineItem.custom.bonusProductLineItemUUID = 'bonus';
+                     }
+                 });
             }
         });
     }
 
     if (matchingLineItem && canBeUpdated) {
         // check to see if the the number of bonus line items was updated and add the cusom attribute to it.
-    	
-    		var basketModel = new CartModel(currentBasket);
+        
+            var basketModel = new CartModel(currentBasket);
         
         res.json(basketModel);
     } else {
@@ -656,7 +656,7 @@ server.post('AddBonusProducts', function (req, res, next) {
                 for (var i = 0; i < plistoDelete.length; i++) {
                     var pliToDelete = plistoDelete[i];
                     if (pliToDelete.product) {
-                    	currentBasket.removeProductLineItem(pliToDelete);
+                        currentBasket.removeProductLineItem(pliToDelete);
                     }
                 }
                 
@@ -724,11 +724,11 @@ server.get('EditBonusProduct', function (req, res, next) {
     var selectedBonusProducts = [];// need to add this to other end point when adding a bonus product
     //bonusDiscountLineItem:bonusProducts
     bonusDiscountLineItem.bonusProductLineItems.toArray().forEach(function(bonusProductLineItem){
-	    	selectedBonusProducts.push({ 
-	    		pid : bonusProductLineItem.productID,
-	    		name : bonusProductLineItem.productName,
-	    		submittedQty : bonusProductLineItem.quantityValue
-	    	});
+            selectedBonusProducts.push({ 
+                pid : bonusProductLineItem.productID,
+                name : bonusProductLineItem.productName,
+                submittedQty : bonusProductLineItem.quantityValue
+            });
     });
     
     // loop through the bonus products
@@ -736,11 +736,11 @@ server.get('EditBonusProduct', function (req, res, next) {
     var pids = '';
     var count = 0;
     bonusDiscountLineItem.bonusProducts.toArray().forEach(function(bonusProduct){
-    	if(count){
-    		pids += ',';
-    	}
-    	pids += bonusProduct.ID;
-    	count++;
+        if(count){
+            pids += ',';
+        }
+        pids += bonusProduct.ID;
+        count++;
     })
     
     var queryString1 = '?DUUID='+bonusDiscountLineItem.UUID+'&pids=' + pids + '&maxpids=' + bonusDiscountLineItem.maxBonusItems+'';
@@ -749,19 +749,19 @@ server.get('EditBonusProduct', function (req, res, next) {
     
     
     res.json({
-    		selectedBonusProducts: selectedBonusProducts,
-    		addToCartUrl: URLUtils.url('Cart-AddBonusProducts').toString(),
-    		showProductsUrl: URLUtils.url('Product-ShowBonusProducts').toString(),
-    		maxBonusItems: bonusDiscountLineItem.maxBonusItems,
+            selectedBonusProducts: selectedBonusProducts,
+            addToCartUrl: URLUtils.url('Cart-AddBonusProducts').toString(),
+            showProductsUrl: URLUtils.url('Product-ShowBonusProducts').toString(),
+            maxBonusItems: bonusDiscountLineItem.maxBonusItems,
         pageSize: cartHelper.getPageSize(),
         pliUUID: bonusDiscountLineItem.custom.bonusProductLineItemUUID,
         uuid: bonusDiscountLineItem.UUID,
         bonusChoiceRuleBased: bonusDiscountLineItem.bonusChoiceRuleBased,
         selectprods:[],
         labels:{
-        		selectprods: Resource.msg('modal.header.selectproducts', 'product', null),
-        		selectattrs: Resource.msg('label.choiceofbonus.selectattrs', 'product', null),
-        		close: Resource.msg('link.choiceofbonus.close', 'product', null)
+                selectprods: Resource.msg('modal.header.selectproducts', 'product', null),
+                selectattrs: Resource.msg('label.choiceofbonus.selectattrs', 'product', null),
+                close: Resource.msg('link.choiceofbonus.close', 'product', null)
         },
         queryString1: queryString1,
         queryString2:'?DUUID='+bonusDiscountLineItem.UUID+'&pagesize='+cartHelper.getPageSize()+'&pagestart=0&maxpids='+bonusDiscountLineItem.maxBonusItems+'',

@@ -44,7 +44,7 @@ describe('Test Choice of bonus Products promotion Mini cart response.', function
             });
     });
 
-    it('should return the bonus products, if qty is sufficient.', function () {
+    it.skip('should return the bonus products, if qty is sufficient.', function () {
         // ----- adding product item #1:
         myRequest.url = config.baseUrl + '/Cart-AddProduct';
         myRequest.form = {
@@ -104,7 +104,7 @@ describe('Test Choice of bonus Products promotion Mini cart response.', function
         });
     });
 
-    it('should return successful result if the number bonus products are allowed by the promotion', function () {
+    it.skip('should return successful result if the number bonus products are allowed by the promotion', function () {
         // ----- adding product item #1:
         var urlQuerystring = '?pids=' +
             JSON.stringify({

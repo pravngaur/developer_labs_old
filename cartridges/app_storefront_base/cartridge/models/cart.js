@@ -104,13 +104,13 @@ function getDiscountLineItems(bonsDiscountLineItems) {
 }
 
 function countBonusProducts(item){
-	var bonusProductLineItems = item.bonusProductLineItems.toArray();
-	var count = 0;
-	
-	bonusProductLineItems.forEach(function(bonusDiscountLineItem){
-		count += bonusDiscountLineItem.quantityValue;
-	});
-	return count;
+    var bonusProductLineItems = item.bonusProductLineItems.toArray();
+    var count = 0;
+    
+    bonusProductLineItems.forEach(function(bonusDiscountLineItem){
+        count += bonusDiscountLineItem.quantityValue;
+    });
+    return count;
 }
 
 /**

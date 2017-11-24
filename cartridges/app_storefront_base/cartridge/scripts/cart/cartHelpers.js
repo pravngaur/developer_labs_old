@@ -59,8 +59,8 @@ function updateBundleProducts(apiLineItem, childProducts) {
 
 
 function getPageSize(){
-	
-	return 6;
+    
+    return 6;
 }
 /**
  * Gets the newly added bonus discount line item
@@ -82,7 +82,7 @@ function getNewBonusDiscountLineItem(
     var result = {};
 
 //    newBonusDiscountLineItems = collections.filter(function(bdli){
-//    		//bdli
+//            //bdli
 //    });
     
     //TODO: add custuom attribute here to tie the discount line items to the PLI

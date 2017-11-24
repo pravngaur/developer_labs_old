@@ -524,11 +524,11 @@ function getOptions($productContainer) {
 module.exports = {
     attributeSelect: attributeSelect,
     editBonusProducts: function (data) {
-    		console.log('from editBonusProducts:base');
-    		chooseBonusProducts(data);
-//    		$('.bonus-product-button').on('edit:bonusProducts', function (e, data) {
-//    		    	console.log('from base');
-//    		});
+            console.log('from editBonusProducts:base');
+            chooseBonusProducts(data);
+//            $('.bonus-product-button').on('edit:bonusProducts', function (e, data) {
+//                    console.log('from base');
+//            });
     },
     colorAttribute: function () {
         $(document).on('click', '[data-attr="color"] a', function (e) {
@@ -717,7 +717,7 @@ module.exports = {
                 + 'data-optionID="' + (optionID || '') + '"'
                 + 'data-option-selected-value="' + (valueId || '') + '"'
                 +'>'
-                	+ '<p class="" >'
+                    + '<p class="" >'
                 + $choiceOfBonusProduct.find('.product-name').html()
                 +'</p>'
                 + '<i class="fa fa-times" aria-hidden="true"></i>'
@@ -727,7 +727,7 @@ module.exports = {
                 $('.pre-cart-products').html(totalQty);
                 $('.selected-bonus-products .bonus-summary').removeClass('alert-danger');
             } else {
-            		$('.selected-bonus-products .bonus-summary').addClass('alert-danger');
+                    $('.selected-bonus-products .bonus-summary').addClass('alert-danger');
             }
         });
 

@@ -20,17 +20,17 @@ function getBonusUnitPrice(product, duuid) {
     var bonusDisconutLineItem;
     var bonusDisconutLineItems = currentBasket.getBonusDiscountLineItems().toArray();
     
-	// ${pdict.BonusDiscountLineItem.getBonusProductPrice(productFull)}
+    // ${pdict.BonusDiscountLineItem.getBonusProductPrice(productFull)}
     
     bonusDisconutLineItems.forEach(function (dli) {
         if (dli.UUID === duuid) {
-        		bonusDisconutLineItem = dli;
+                bonusDisconutLineItem = dli;
         }
     });
     
     
     // 
-	return bonusDisconutLineItem.getBonusProductPrice(productFull).toFormattedString();//bonusDisconutLineItem.getBonusProductPrice(productFull)
+    return bonusDisconutLineItem.getBonusProductPrice(productFull).toFormattedString();//bonusDisconutLineItem.getBonusProductPrice(productFull)
 }
 
 module.exports = function (object, apiProduct, duuid) {
