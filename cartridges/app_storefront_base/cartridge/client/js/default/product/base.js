@@ -803,7 +803,10 @@ module.exports = {
                         );
                         setTimeout(function () {
                             $('.add-to-basket-alert').remove();
-                        }, 5000);
+                            if ($('.cart-page').length) {
+                                location.reload();
+                            }
+                        }, 3000);
                     }
                 },
                 error: function () {
