@@ -275,7 +275,7 @@ module.exports = function () {
                 validateBasket(data);
                 $(this).data('pre-select-qty', quantity);
                 $.spinner().stop();
-                if($(this).parents('.product-info').hasClass('bonus-product-line-item')  && $('.cart-page').length){
+                if ($(this).parents('.product-info').hasClass('bonus-product-line-item') && $('.cart-page').length) {
                     location.reload();
                 }
             },

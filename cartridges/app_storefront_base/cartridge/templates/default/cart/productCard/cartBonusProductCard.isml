@@ -2,7 +2,7 @@
     <!--- name and remove buttons --->
     <isinclude template="cart/productCard/cartProductCardHeader" />
 
-    <div class="row">
+    <div class="row bonus-line-item-row">
         <div class="col-lg-5">
             <div class="row">
                 <div class="col-lg-12 d-flex flex-row">
@@ -27,13 +27,14 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 hidden-lg-up"><hr class="line-item-divider"></div>
+        <div class="col-12 d-lg-none"><hr class="line-item-divider"></div>
         <isinclude template="cart/productCard/cartProductCardProductPrice" />
+    <div class="buonus-line-item clearfix"></div> 
     </div>
-    <div class="bundled-line-item clearfix"></div>
-    Bonus Products:
-    
+       
+    <div class="bonus-line-item-msg">${Resource.msg('text.lineitem.bonus.msg','cart',null)}:</div>
     <isloop items="${lineItem.embededBonusProductLineItems}" var="productLineItem">
+	    
         <isinclude template="cart/productCard/cartNestedBonusProductCard" />
     </isloop>
     <div class="bundled-line-item clearfix"></div>
