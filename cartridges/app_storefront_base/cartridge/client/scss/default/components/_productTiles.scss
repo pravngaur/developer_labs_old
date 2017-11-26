@@ -153,12 +153,11 @@
 
     .selected-pid {
         border: 1px solid $grey3;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
 
-        p {
-            display: inline;
+        .bonus-product-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         i {

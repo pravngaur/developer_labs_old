@@ -99,14 +99,14 @@
         <!--<div class="col-sm-3 hidden-xs-down"></div>-->
         <div class="col-6 selected-bonus-products">
         
-                <div class="bonus-summary"><span class="pre-cart-products">${pdict.selectedBonusProducts.length}</span> ${Resource.msgf('label.choiceofbonus.selectproducts', 'product', null, pdict.maxPids)}</div>
+                <div class="bonus-summary row"><span class="pre-cart-products">${pdict.selectedBonusProducts.length}</span> ${Resource.msgf('label.choiceofbonus.selectproducts', 'product', null, pdict.maxPids)}</div>
                	<isloop items="${pdict.selectedBonusProducts}" var="selectedProduct" status="productLoopStatus">
-					<div class="selected-pid" 
+					<div class="selected-pid row" 
 						data-pid="${selectedProduct.pid}" 
 						data-qty='<isprint value="${selectedProduct.submittedQty}" encoding="off" formatter="#"/>'
 						data-optionid="${selectedProduct.option.optionid}" 
 						data-option-selected-value="${selectedProduct.option.selectedvalue}" >
-						<p class="">${selectedProduct.name}</p><i class="fa fa-times" aria-hidden="true"></i>
+						<div class="col-11 bonus-product-name">${selectedProduct.name}</div><div class="col-1"><i class="fa fa-times" aria-hidden="true"></i></div>
 					</div>
                	</isloop>
         </div>
