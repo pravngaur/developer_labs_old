@@ -710,16 +710,16 @@ module.exports = {
             var valueId = $(this).parents('.choice-of-bonus-product').find('.options-select option:selected').data('valueId');
             if (totalQty <= maxPids) {
                 var selectedBonusProductHtml = ''
-                + '<div class="selected-pid" '
+                + '<div class="selected-pid row" '
                 + 'data-pid="' + pid + '"'
                 + 'data-qty="' + submittedQty + '"'
                 + 'data-optionID="' + (optionID || '') + '"'
                 + 'data-option-selected-value="' + (valueId || '') + '"'
                 + '>'
-                + '<p class="" >'
+                + '<div class="col-11 bonus-product-name" >'
                 + $choiceOfBonusProduct.find('.product-name').html()
-                + '</p>'
-                + '<i class="fa fa-times" aria-hidden="true"></i>'
+                + '</div>'
+                + '<div class="col-1"><i class="fa fa-times" aria-hidden="true"></i></div>'
                 + '</div>'
                 ;
                 $('#chooseBonusProductModal .selected-bonus-products').append(selectedBonusProductHtml);
