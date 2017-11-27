@@ -699,14 +699,11 @@ server.get('EditBonusProduct', function (req, res, next) {
     var URLUtils = require('dw/web/URLUtils');
     var currentBasket = BasketMgr.getCurrentOrNewBasket();
     var duuid = req.querystring.duuid;
-//    var pliUUID = req.querystring.pliuuid;
-//    var bonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
     var bonusDiscountLineItem = collections.find(currentBasket.getBonusDiscountLineItems(), function (item) {
         return item.UUID === duuid;
     });
     var cartHelper = require('*/cartridge/scripts/cart/cartHelpers');
-    var selectedBonusProducts = [];// need to add this to other end point when adding a bonus product
-    // bonusDiscountLineItem:bonusProducts
+    var selectedBonusProducts = [];
     bonusDiscountLineItem.bonusProductLineItems.toArray().forEach(function (bonusProductLineItem) {
         selectedBonusProducts.push({
             pid: bonusProductLineItem.productID,
@@ -715,8 +712,6 @@ server.get('EditBonusProduct', function (req, res, next) {
         });
     });
 
-    // loop through the bonus products
-    // bonusDiscountLineItem:bonusProducts
     var pids = '';
     var count = 0;
     bonusDiscountLineItem.bonusProducts.toArray().forEach(function (bonusProduct) {

@@ -39,7 +39,7 @@ module.exports = function bonusProduct(product, apiProduct, options, duuid) {
     decorators.sizeChart(product, category.custom.sizeChartID);
     decorators.currentUrl(product, options.variationModel, options.optionModel, 'Product-Show', apiProduct.ID, options.quantity);
     decorators.readyToOrder(product, options.variationModel);
-    decorators.bonusUnitPrice(product, duuid);// need to pass in the uuid
+    decorators.bonusUnitPrice(product, duuid);
 
     return product;
 };

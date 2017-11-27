@@ -191,7 +191,6 @@ server.get('ShowBonusProducts', function (req, res, next) {
         var discountLineItems = currentBasket.bonusDiscountLineItems.toArray();
         var discountLineItem;
 
-//        var bonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
         var bonusDiscountLineItem = collections.find(currentBasket.getBonusDiscountLineItems(), function (item) {
             return item.UUID === duuid;
         });
@@ -208,7 +207,6 @@ server.get('ShowBonusProducts', function (req, res, next) {
                     optionid: '',
                     selectedvalue: ''
                 };
-//                var optionValue = null;
                 if (!bonusProductLineItem.optionProductLineItems.empty) {
                     option.optionid = bonusProductLineItem.optionProductLineItems[0].optionID;
                     option.optionid = bonusProductLineItem.optionProductLineItems[0].optionValueID;
@@ -235,12 +233,10 @@ server.get('ShowBonusProducts', function (req, res, next) {
         } else {
             var URLUtils = require('dw/web/URLUtils');
             var PagingModel = require('dw/web/PagingModel');
-            // get basket
             var pageStart = parseInt(req.querystring.pagestart, 10);
             var pageSize = parseInt(req.querystring.pagesize, 10);
             showMoreButton = true;
 
-            // get the discount line item based off of the uuid
             var ProductSearchModel = require('dw/catalog/ProductSearchModel');
             var apiProductSearch = new ProductSearchModel();
             var productSearchHit;
@@ -264,8 +260,6 @@ server.get('ShowBonusProducts', function (req, res, next) {
                 product = ProductFactory.get({ pid: productSearchHit.getProduct().ID, pview: 'bonus', duuid: duuid });
                 products.push(product);
             }
-
-            // TODO: will need to build the list of selected bonus products for editing
         }
     }
 
