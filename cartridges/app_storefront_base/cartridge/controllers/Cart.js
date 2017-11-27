@@ -45,7 +45,7 @@ server.post('AddProduct', function (req, res, next) {
     if (currentBasket) {
         Transaction.wrap(function () {
             if (!req.form.pidsObj) {
-                quantity = parseInt(req.form.quantity, 10);// TODO, might need to handle add to cart if it's a set
+                quantity = parseInt(req.form.quantity, 10);
                 result = cartHelper.addProductToCart(
                     currentBasket,
                     productId,
@@ -101,9 +101,7 @@ server.post('AddProduct', function (req, res, next) {
             result.uuid
     );
     if (newBonusDiscountLineItem) {
-    //     OriginalPLI.custom.bonusProductLineItemUUID = 'bonus';
         var allLineItems = currentBasket.allProductLineItems.toArray();
-//        var opli;
         allLineItems.forEach(function (pli) {
             if (pli.UUID === result.uuid) {
                 Transaction.wrap(function () {
@@ -278,7 +276,6 @@ server.get('UpdateQuantity', function (req, res, next) {
     var updateQuantity = parseInt(req.querystring.quantity, 10);
     var uuid = req.querystring.uuid;
     var productLineItems = currentBasket.productLineItems;
-//    var previousBonusDiscountLineItems = [];
     var matchingLineItem = collections.find(productLineItems, function (item) {
         return item.productID === productId && item.UUID === uuid;
     });
@@ -334,7 +331,6 @@ server.get('UpdateQuantity', function (req, res, next) {
             if (currentBasket.bonusDiscountLineItems.length > bonusDiscountLineItemCount) {
                 var prevItems = JSON.stringify(previousBounsDiscountLineItems);
                 var bonusDiscountLineItems = currentBasket.bonusDiscountLineItems.toArray();
-//                var newbonusDiscountLineItems = [];
                 bonusDiscountLineItems.forEach(function (item) {
                     var test = prevItems.indexOf(item.UUID); // TODO
                     if (test < 0) {
@@ -347,7 +343,6 @@ server.get('UpdateQuantity', function (req, res, next) {
     }
 
     if (matchingLineItem && canBeUpdated) {
-        // check to see if the the number of bonus line items was updated and add the cusom attribute to it.
         var basketModel = new CartModel(currentBasket);
         res.json(basketModel);
     } else {
