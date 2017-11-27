@@ -292,10 +292,6 @@ function handleVariantResponse(response, $productContainer) {
             product: response.product, $productContainer: $productContainer
         }).trigger('product:statusUpdate', response.product);
     }
-    // Enable "Availability: Select Store" button if all required attributes have been selected
-    $('.btn-get-in-store-inventory').trigger('product:updateSelectStore', {
-        product: response.product, $productContainer: $productContainer
-    });
 
     // Update attributes
     $productContainer.find('.main-attributes').empty()
@@ -411,9 +407,7 @@ function chooseBonusProducts(data) {
         + '<!-- Modal content-->'
         + '<div class="modal-content">'
         + '<div class="modal-header">'
-        + '    <span class="bonus-products-step1">' + data.labels.selectprods + '</span>'
-        + '    <span class="bonus-products-step2 hidden-xl-down">'
-        + '        ' + data.labels.selectattrs + '</span>'
+        + '    <span class="">' + data.labels.selectprods + '</span>'
         + '    <button type="button" class="close pull-right" data-dismiss="modal">'
         + '        <span>' + data.labels.close + '</span>&times;'
         + '    </button>'

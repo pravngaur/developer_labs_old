@@ -571,32 +571,6 @@ server.get('RemoveCouponLineItem', function (req, res, next) {
     return next();
 });
 
-server.get('ChooseBonusProducts', function (req, res, next) {
-    var URLUtils = require('dw/web/URLUtils');
-    var ProductFactory = require('*/cartridge/scripts/factories/product');
-    var pids = req.querystring.pids.split(',');
-    var potentialProducts = [];
-
-    for (var i = 0; i < pids.length; i++) {
-        var params = {
-            pid: pids[i],
-            pview: 'tile'
-        };
-        var product = ProductFactory.get(params);
-        potentialProducts.push(product);
-    }
-
-    var addToCartUrl = URLUtils.url('Cart-AddProduct');
-    var template = 'product/components/choiceofbonusproducts/chooseBonusProduct.isml';
-
-    res.render(template, {
-        potentialProducts: potentialProducts,
-        addToCartUrl: addToCartUrl
-    });
-
-    next();
-});
-
 server.post('AddBonusProducts', function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
     var ProductMgr = require('dw/catalog/ProductMgr');
@@ -727,7 +701,6 @@ server.get('EditBonusProduct', function (req, res, next) {
         selectprods: [],
         labels: {
             selectprods: Resource.msg('modal.header.selectproducts', 'product', null),
-            selectattrs: Resource.msg('label.choiceofbonus.selectattrs', 'product', null),
             close: Resource.msg('link.choiceofbonus.close', 'product', null)
         },
         queryStringListBased: '?DUUID=' + bonusDiscountLineItem.UUID + '&pids=' + pids + '&maxpids=' + bonusDiscountLineItem.maxBonusItems + '',

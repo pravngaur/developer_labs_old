@@ -109,7 +109,7 @@ function getNewBonusDiscountLineItem(
         result.maxBonusItems = newBonusDiscountLineItem.maxBonusItems;
         result.addToCartUrl = urlObject.addToCartUrl;
         result.showProductsUrl = urlObject.configureProductstUrl;
-        result.queryStringlestBased = '?DUUID=' + newBonusDiscountLineItem.UUID
+        result.queryStringListBased = '?DUUID=' + newBonusDiscountLineItem.UUID
             + '&pids=' + result.bonuspids.toString()
             + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
 
@@ -130,23 +130,11 @@ function getNewBonusDiscountLineItem(
             + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
         result.newBonusDiscountLineItem = newBonusDiscountLineItem; // todo: see if we need this
 
-        result.labels = {};
-        result.labels.selectbonus =
-            Resource.msg('label.choiceofbonus.selectbonus', 'product', null);
-        result.labels.close =
-            Resource.msg('link.choiceofbonus.close', 'product', null);
-        result.labels.selectattrs =
-            Resource.msg('label.choiceofbonus.selectattrs', 'product', null);
-        result.labels.selectprods =
-            Resource.msgf('modal.header.selectproducts',
-                'product',
-                null,
-                null);
-        result.labels.maxprods =
-            Resource.msgf('label.choiceofbonus.selectproducts',
-                'product',
-                null,
-                newBonusDiscountLineItem.maxBonusItems);
+        result.labels = {
+        		close: Resource.msg('link.choiceofbonus.close', 'product', null),
+        		selectprods: Resource.msgf('modal.header.selectproducts', 'product', null, null),
+            maxprods: Resource.msgf('label.choiceofbonus.selectproducts', 'product', null, newBonusDiscountLineItem.maxBonusItems)
+        };
     }
 
     return newBonusDiscountLineItem ? result : undefined;
