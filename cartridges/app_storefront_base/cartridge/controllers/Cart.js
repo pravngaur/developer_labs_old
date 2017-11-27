@@ -715,8 +715,6 @@ server.get('EditBonusProduct', function (req, res, next) {
         count++;
     });
 
-    var queryString1 = '?DUUID=' + bonusDiscountLineItem.UUID + '&pids=' + pids + '&maxpids=' + bonusDiscountLineItem.maxBonusItems + '';
-
     res.json({
         selectedBonusProducts: selectedBonusProducts,
         addToCartUrl: URLUtils.url('Cart-AddBonusProducts').toString(),
@@ -732,8 +730,8 @@ server.get('EditBonusProduct', function (req, res, next) {
             selectattrs: Resource.msg('label.choiceofbonus.selectattrs', 'product', null),
             close: Resource.msg('link.choiceofbonus.close', 'product', null)
         },
-        queryString1: queryString1,
-        queryString2: '?DUUID=' + bonusDiscountLineItem.UUID + '&pagesize=' + cartHelper.getPageSize() + '&pagestart=0&maxpids=' + bonusDiscountLineItem.maxBonusItems + ''
+        queryStringListBased: '?DUUID=' + bonusDiscountLineItem.UUID + '&pids=' + pids + '&maxpids=' + bonusDiscountLineItem.maxBonusItems + '',
+        queryStringRuleBased: '?DUUID=' + bonusDiscountLineItem.UUID + '&pagesize=' + cartHelper.getPageSize() + '&pagestart=0&maxpids=' + bonusDiscountLineItem.maxBonusItems + ''
 
     });
     next();

@@ -393,9 +393,9 @@ function chooseBonusProducts(data) {
     }
     var queryString;
     if (data.bonusChoiceRuleBased) {
-        queryString = data.queryString2;
+        queryString = data.queryStringRuleBased;
     } else {
-        queryString = data.queryString1;
+        queryString = data.queryStringListBased;
     }
 
     var htmlString = '<!-- Modal -->'

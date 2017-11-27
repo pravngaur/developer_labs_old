@@ -109,11 +109,11 @@ function getNewBonusDiscountLineItem(
         result.maxBonusItems = newBonusDiscountLineItem.maxBonusItems;
         result.addToCartUrl = urlObject.addToCartUrl;
         result.showProductsUrl = urlObject.configureProductstUrl;
-        result.queryString1 = '?DUUID=' + newBonusDiscountLineItem.UUID
+        result.queryStringlestBased = '?DUUID=' + newBonusDiscountLineItem.UUID
             + '&pids=' + result.bonuspids.toString()
             + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
 
-        result.queryString2 = '?DUUID='
+        result.queryStringRuleBased = '?DUUID='
             + newBonusDiscountLineItem.UUID
             + '&pagesize=' + pageSize
             + '&pagestart=0'
@@ -123,7 +123,7 @@ function getNewBonusDiscountLineItem(
 
         result.configureProductstUrl = urlObject.configureProductstUrl
                 + '?pids=' + result.bonuspids.toString()
-                + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
+                + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems; // todo: see if we need this
 
         result.url = urlObject.url
             + '?pids=' + result.bonuspids.toString()
