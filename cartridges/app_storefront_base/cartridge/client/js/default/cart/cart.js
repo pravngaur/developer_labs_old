@@ -415,7 +415,8 @@ module.exports = function () {
         });
     });
     $('body').on('click', '.cart-page .bonus-product-button', function () {
-        $.ajax({
+        $.spinner().start();
+    	    $.ajax({
             url: $(this).data('url'),
             method: 'GET',
             dataType: 'json',
@@ -425,10 +426,10 @@ module.exports = function () {
                 base.colorAttribute();
                 base.bonusProductSelection();
                 base.bonusProductAttributes();
-                // $.spinner().stop();
+                $.spinner().stop();
             },
             error: function () {
-                // $.spinner().stop();
+                $.spinner().stop();
             }
         });
     });

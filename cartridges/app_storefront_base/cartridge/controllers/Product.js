@@ -227,7 +227,7 @@ server.get('ShowBonusProducts', function (req, res, next) {
                 product = ProductFactory.get({
                     pid: param,
                     pview: 'bonus',
-                    duuid: duuid });// need to attach uuid here
+                    duuid: duuid });
                 products.push(product);
             });
         } else {

@@ -746,7 +746,6 @@ module.exports = {
                 var qtyOption =
                     parseInt($(this)
                         .data('qty'), 10);
-                // console.log('qtyOption='+qtyOption);
 
                 var option = null;
                 if (qtyOption > 0) {

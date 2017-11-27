@@ -332,8 +332,7 @@ server.get('UpdateQuantity', function (req, res, next) {
                 var prevItems = JSON.stringify(previousBounsDiscountLineItems);
                 var bonusDiscountLineItems = currentBasket.bonusDiscountLineItems.toArray();
                 bonusDiscountLineItems.forEach(function (item) {
-                    var test = prevItems.indexOf(item.UUID); // TODO
-                    if (test < 0) {
+                    if (prevItems.indexOf(item.UUID) < 0) {
                         item.custom.bonusProductLineItemUUID = matchingLineItem.UUID; // eslint-disable-line no-param-reassign
                         matchingLineItem.custom.bonusProductLineItemUUID = 'bonus';
                     }
