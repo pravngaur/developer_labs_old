@@ -151,7 +151,6 @@ function updateAvailability(data, uuid) {
 }
 
 module.exports = function () {
-
     $('body').on('click', '.remove-product', function (e) {
         e.preventDefault();
 
@@ -416,7 +415,7 @@ module.exports = function () {
     });
     $('body').on('click', '.cart-page .bonus-product-button', function () {
         $.spinner().start();
-    	    $.ajax({
+        $.ajax({
             url: $(this).data('url'),
             method: 'GET',
             dataType: 'json',

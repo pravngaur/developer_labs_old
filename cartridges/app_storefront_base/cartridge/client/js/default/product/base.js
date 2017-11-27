@@ -723,7 +723,15 @@ module.exports = {
 
         $(document).on('click', '.selected-pid', function () {
             $(this).remove();
-            $('.pre-cart-products').html($('#chooseBonusProductModal .selected-bonus-products p').length);// TODO: account for qty
+            var $selected = $('#chooseBonusProductModal .selected-bonus-products .selected-pid');
+            var count = 0;
+            if ($selected.length) {
+                $selected.forEach(function () {
+                    count += parseInt($(this).data('qty'), 10);
+                });
+            }
+
+            $('.pre-cart-products').html(count);
             $('.selected-bonus-products .bonus-summary').removeClass('alert-danger');
         });
 
