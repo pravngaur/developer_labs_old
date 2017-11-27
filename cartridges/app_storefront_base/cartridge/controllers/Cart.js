@@ -650,8 +650,7 @@ server.post('AddBonusProducts', function (req, res, next) {
                         productHelper.getCurrentOptionModel(
                             product.optionModel,
                             selectedOptions);
-                    pli =
-                        currentBasket.createBonusProductLineItem(
+                    pli = currentBasket.createBonusProductLineItem(
                         bonusDiscountLineItem,
                         product,
                         optionModel,
