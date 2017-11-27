@@ -47,8 +47,6 @@ function createProductLineItemsObject(allLineItems) {
         };
 
         lineItems.push(ProductFactory.get(params));
-        // reconstruct the model based on the needed nesting
-        // TODO add the price to the product if it is of type embdedproductlineitem
     });
 
     return lineItems;

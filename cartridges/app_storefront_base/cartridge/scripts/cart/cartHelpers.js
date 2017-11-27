@@ -80,15 +80,9 @@ function getNewBonusDiscountLineItem(
     urlObject,
     pliUUID) {
     var bonusDiscountLineItems = currentBasket.getBonusDiscountLineItems();
-//    var newBonusDiscountLineItems;// = [];
     var newBonusDiscountLineItem;
     var result = {};
 
-//    newBonusDiscountLineItems = collections.filter(function(bdli){
-//            // bdli
-//    });
-
-    // TODO: add custuom attribute here to tie the discount line items to the PLI
     newBonusDiscountLineItem = collections.find(bonusDiscountLineItems, function (item) {
         return !previousBonusDiscountLineItems.contains(item);
     });
@@ -398,7 +392,6 @@ function addProductToCart(currentBasket, productId, quantity, childProducts, opt
             optionModel,
             defaultShipment
         );
-        // if this is a bonus product add to the custom attribute
 
         result.uuid = productLineItem.UUID;
     }

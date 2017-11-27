@@ -1,6 +1,5 @@
 'use strict';
 
-// var collection = require('*/cartridge/scripts/util/collections');
 var BasketMgr = require('dw/order/BasketMgr');
 var ProductMgr = require('dw/catalog/ProductMgr');
 
