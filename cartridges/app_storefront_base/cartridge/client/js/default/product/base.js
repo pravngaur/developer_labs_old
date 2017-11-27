@@ -402,7 +402,6 @@ function chooseBonusProducts(data) {
         + '<div class="modal fade" id="chooseBonusProductModal" role="dialog">'
         + '<div class="modal-dialog choose-bonus-product-dialog" '
         + 'data-total-qty="' + data.maxBonusItems + '"'
-        // + 'data-configureUrl="' + data.configureProductstUrl + '"'
         + 'data-UUID="' + data.uuid + '"'
         + 'data-pliUUID="' + data.pliUUID + '"'
         + 'data-addToCartUrl="' + data.addToCartUrl + '"'
@@ -427,11 +426,6 @@ function chooseBonusProducts(data) {
     $('body').append(htmlString);
     $('.modal-body').spinner().start();
 
-    // var configureProductstUrl =
-    //     data.bonusChoiceRuleBased
-    //     ?
-    //         ''
-    //     : data.configureProductstUrl;
     $.ajax({
         url: data.showProductsUrl + queryString,
         method: 'GET',
@@ -525,9 +519,6 @@ module.exports = {
     attributeSelect: attributeSelect,
     editBonusProducts: function (data) {
         chooseBonusProducts(data);
-//            $('.bonus-product-button').on('edit:bonusProducts', function (e, data) {
-//                    console.log('from base');
-//            });
     },
     colorAttribute: function () {
         $(document).on('click', '[data-attr="color"] a', function (e) {

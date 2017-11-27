@@ -28,18 +28,18 @@
             <isloop items="${pdict.items}" var="lineItem">
                 <div class="row">
                     <div class="col-12">
-                    		<isif condition="${lineItem.bonusProductLineItemUUID === 'bonus'}">
-                        		<div class="card ${miniCart ? 'bonus-product-line-item' : ''} uuid-${lineItem.UUID}">
-                            		<div class="card-body">
-                                		<isinclude template="checkout/productCard/bonusProductCard" />
-                            		</div>
-                        		</div>
+                        <isif condition="${lineItem.bonusProductLineItemUUID === 'bonus'}">
+                            <div class="card ${miniCart ? 'bonus-product-line-item' : ''} uuid-${lineItem.UUID}">
+                                <div class="card-body">
+                                    <isinclude template="checkout/productCard/bonusProductCard" />
+                                </div>
+                            </div>
                         <iselse/>
-                        		<div class="card uuid-${lineItem.UUID}">
-                            		<div class="card-body">
+                            <div class="card uuid-${lineItem.UUID}">
+                                <div class="card-body">
                                     <isinclude template="checkout/productCard/productCard" />
-                            		</div>
-                        		</div>
+                                </div>
+                            </div>
                         </isif>
                     </div>
                 </div>
