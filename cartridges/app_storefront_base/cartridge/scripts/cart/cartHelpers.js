@@ -123,16 +123,16 @@ function getNewBonusDiscountLineItem(
 
         result.configureProductstUrl = urlObject.configureProductstUrl
                 + '?pids=' + result.bonuspids.toString()
-                + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems; // todo: see if we need this
+                + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
 
         result.url = urlObject.url
             + '?pids=' + result.bonuspids.toString()
             + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
-        result.newBonusDiscountLineItem = newBonusDiscountLineItem; // todo: see if we need this
+        result.newBonusDiscountLineItem = newBonusDiscountLineItem;
 
         result.labels = {
-        		close: Resource.msg('link.choiceofbonus.close', 'product', null),
-        		selectprods: Resource.msgf('modal.header.selectproducts', 'product', null, null),
+            close: Resource.msg('link.choiceofbonus.close', 'product', null),
+            selectprods: Resource.msgf('modal.header.selectproducts', 'product', null, null),
             maxprods: Resource.msgf('label.choiceofbonus.selectproducts', 'product', null, newBonusDiscountLineItem.maxBonusItems)
         };
     }

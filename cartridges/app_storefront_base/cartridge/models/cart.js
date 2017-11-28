@@ -104,7 +104,7 @@ function countBonusProducts(item) {
  */
 function getDiscountLineItems(bonsDiscountLineItems) {
     var items = bonsDiscountLineItems.toArray();
-    var result = []; // TODO:conditional on if there are any?
+    var result = [];
     items.forEach(function (item) {
         var bdliObj = {};
         bdliObj.pliuuid = item.custom.bonusProductLineItemUUID;
@@ -157,7 +157,6 @@ function embedBonusLineItems(productLineItemsModel, discountLineItems) {
 
     return allItems;
 }
-
 
 /**
  * @constructor

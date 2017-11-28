@@ -1,5 +1,5 @@
 'use strict';
-var BasketMgr = require('dw/order/BasketMgr');
+
 var productDecorators = require('*/cartridge/models/product/decorators/index');
 var productLineItemDecorators = require('*/cartridge/models/productLineItem/decorators/index');
 
@@ -40,6 +40,6 @@ module.exports = function embeddedProductLineItem(product, apiProduct, options) 
     productLineItemDecorators.bonusProductLineItemUUID(product, options.lineItem);
     productLineItemDecorators.embededBonusProductLineItems(product);
     productLineItemDecorators.embededDiscountBonusLineItems(product);
-    productLineItemDecorators.bonusUnitPrice(product, options.lineItem, apiProduct, BasketMgr.getCurrentBasket().getBonusDiscountLineItems().toArray());
+    productLineItemDecorators.bonusUnitPrice(product, options.lineItem, apiProduct);
     return product;
 };

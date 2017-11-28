@@ -29,7 +29,7 @@
         </div>
         <div class="col-12 d-lg-none"><hr class="line-item-divider"></div>
         <isinclude template="cart/productCard/cartProductCardProductPrice" />
-    <div class="buonus-line-item clearfix"></div> 
+    <div class="bonus-line-item clearfix"></div> 
     </div>
        
     <div class="bonus-line-item-msg">${Resource.msg('text.lineitem.bonus.msg','cart',null)}:</div>

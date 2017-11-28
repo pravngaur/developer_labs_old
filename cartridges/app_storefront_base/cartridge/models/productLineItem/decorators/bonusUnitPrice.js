@@ -1,25 +1,27 @@
 'use strict';
 
+var BasketMgr = require('dw/order/BasketMgr');
+var collections = require('*/cartridge/scripts/util/collections');
+
 /**
  * returns the price of the bonus product line item
- * @param {Object} product - a line item of the basket.
- * @param {Array} bonusDiscountLineItems - array of bonus discount line items
- * @param {dw.order.ProductLineItem} lineItem - API ProductLineItem instance
+ * @param {dw.order.ProductLineItem} lineItem - API ProductLineItem instance of the embedded bonus product line item
+ * @param {dw.catalog.Product} product - qualifying product.
  * @returns {string} result the price of the bonus product
  */
-function getPrice(product, bonusDiscountLineItems, lineItem) {
-    var value = 0;
-    bonusDiscountLineItems.forEach(function (bonusDiscountLineItem) {
-        if (bonusDiscountLineItem.custom.bonusProductLineItemUUID === lineItem.custom.bonusProductLineItemUUID) {
-            value = bonusDiscountLineItem.getBonusProductPrice(product).toFormattedString();
-        }
+function getBonusUnitPrice(lineItem, product) {
+    var currentBasket = BasketMgr.getCurrentBasket();
+
+    var bonusDisconutLineItem = collections.find(currentBasket.getBonusDiscountLineItems(), function (dli) {
+        return dli.custom.bonusProductLineItemUUID === lineItem.custom.bonusProductLineItemUUID;
     });
-    return value;
+
+    return bonusDisconutLineItem.getBonusProductPrice(product).toFormattedString();
 }
 
-module.exports = function (object, lineItem, product, bonusDiscountLineItems) {
+module.exports = function (object, lineItem, product) {
     Object.defineProperty(object, 'bonusUnitPrice', {
         enumerable: true,
-        value: getPrice(product, bonusDiscountLineItems, lineItem)
+        value: getBonusUnitPrice(lineItem, product)
     });
 };
