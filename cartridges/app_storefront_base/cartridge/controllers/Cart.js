@@ -694,7 +694,7 @@ server.get('EditBonusProduct', function (req, res, next) {
         addToCartUrl: URLUtils.url('Cart-AddBonusProducts').toString(),
         showProductsUrl: URLUtils.url('Product-ShowBonusProducts').toString(),
         maxBonusItems: bonusDiscountLineItem.maxBonusItems,
-        pageSize: cartHelper.getPageSize(),
+        pageSize: cartHelper.BONUS_PRODUCTS_PAGE_SIZE,
         pliUUID: bonusDiscountLineItem.custom.bonusProductLineItemUUID,
         uuid: bonusDiscountLineItem.UUID,
         bonusChoiceRuleBased: bonusDiscountLineItem.bonusChoiceRuleBased,
@@ -704,7 +704,7 @@ server.get('EditBonusProduct', function (req, res, next) {
             close: Resource.msg('link.choiceofbonus.close', 'product', null)
         },
         queryStringListBased: '?DUUID=' + bonusDiscountLineItem.UUID + '&pids=' + pids + '&maxpids=' + bonusDiscountLineItem.maxBonusItems + '',
-        queryStringRuleBased: '?DUUID=' + bonusDiscountLineItem.UUID + '&pagesize=' + cartHelper.getPageSize() + '&pagestart=0&maxpids=' + bonusDiscountLineItem.maxBonusItems + ''
+        queryStringRuleBased: '?DUUID=' + bonusDiscountLineItem.UUID + '&pagesize=' + cartHelper.BONUS_PRODUCTS_PAGE_SIZE + '&pagestart=0&maxpids=' + bonusDiscountLineItem.maxBonusItems + ''
 
     });
     next();

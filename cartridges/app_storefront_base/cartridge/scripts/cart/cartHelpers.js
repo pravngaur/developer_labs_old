@@ -58,13 +58,6 @@ function updateBundleProducts(apiLineItem, childProducts) {
  */
 
 /**
- * Gets the number value for the page size parameter when getting bonus products
- * @return {number} - number of bonus products to page in when the more button is clicked
- */
-function getPageSize() {
-    return 6;
-}
-/**
  * Gets the newly added bonus discount line item
  * @param {dw.order.Basket} currentBasket -
  * @param {dw.util.Collection} previousBonusDiscountLineItems - contains BonusDiscountLineItems
@@ -404,5 +397,6 @@ module.exports = {
     ensureAllShipmentsHaveMethods: ensureAllShipmentsHaveMethods,
     getQtyAlreadyInCart: getQtyAlreadyInCart,
     getNewBonusDiscountLineItem: getNewBonusDiscountLineItem,
-    getPageSize: getPageSize
+    BONUS_PRODUCTS_PAGE_SIZE: 6
+    
 };

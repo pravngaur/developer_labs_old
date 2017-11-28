@@ -57,11 +57,7 @@
                         <isif condition="${lineItem.productType === 'bundle'}">
                             <isinclude template="cart/productCard/cartBundleCard" />
                         <iselse/>
-                            <isif condition="${lineItem.bonusProductLineItemUUID === 'bonus'}">
-                                <isinclude template="cart/productCard/cartBonusProductCard" />
-                            <iselse/>
-                                <isinclude template="cart/productCard/cartProductCard" />
-                            </isif>
+                            <isinclude template="cart/productCard/cartProductCard" />
                         </isif>
                     </isloop>
                     <isinclude template="cart/cartApproachingDiscount" />
