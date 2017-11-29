@@ -3,11 +3,13 @@
 var ProductMgr = require('dw/catalog/ProductMgr');
 var Resource = require('dw/web/Resource');
 var Transaction = require('dw/system/Transaction');
+var URLUtils = require('dw/web/URLUtils');
 
 var collections = require('*/cartridge/scripts/util/collections');
 var ShippingHelpers = require('*/cartridge/scripts/checkout/shippingHelpers');
 var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
 var arrayHelper = require('*/cartridge/scripts/util/array');
+var BONUS_PRODUCTS_PAGE_SIZE = 6;
 
 /**
  * @typedef ProductOption
@@ -92,7 +94,6 @@ function getNewBonusDiscountLineItem(
         result.bonusChoiceRuleBased = newBonusDiscountLineItem.bonusChoiceRuleBased;
         result.bonuspids = [];
         var iterBonusProducts = newBonusDiscountLineItem.bonusProducts.iterator();
-        var pageSize = getPageSize();
         while (iterBonusProducts.hasNext()) {
             var newBProduct = iterBonusProducts.next();
             result.bonuspids.push(newBProduct.ID);
@@ -102,22 +103,23 @@ function getNewBonusDiscountLineItem(
         result.maxBonusItems = newBonusDiscountLineItem.maxBonusItems;
         result.addToCartUrl = urlObject.addToCartUrl;
         result.showProductsUrl = urlObject.configureProductstUrl;
+        result.showProductsUrlListBased = URLUtils.url('Product-ShowBonusProducts', 'DUUID', newBonusDiscountLineItem.UUID, 'pids', result.bonuspids.toString(), 'maxpids', newBonusDiscountLineItem.maxBonusItems).toString(),
         result.queryStringListBased = '?DUUID=' + newBonusDiscountLineItem.UUID
             + '&pids=' + result.bonuspids.toString()
             + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
-
+        result.showProductsUrlRuleBased = URLUtils.url('Product-ShowBonusProducts', 'DUUID', newBonusDiscountLineItem.UUID, 'pagesize', BONUS_PRODUCTS_PAGE_SIZE, 'pagestart', 0, 'maxpids', newBonusDiscountLineItem.maxBonusItems).toString();
         result.queryStringRuleBased = '?DUUID='
             + newBonusDiscountLineItem.UUID
-            + '&pagesize=' + pageSize
+            + '&pagesize=' + BONUS_PRODUCTS_PAGE_SIZE
             + '&pagestart=0'
             + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
 
-        result.pageSize = pageSize;
-
+        result.pageSize = BONUS_PRODUCTS_PAGE_SIZE;
+        result.testconfigureProductstUrl = URLUtils.url('Product-ShowBonusProducts','pids',result.bonuspids.toString(), 'maxpids', newBonusDiscountLineItem.maxBonusItems).toString();
         result.configureProductstUrl = urlObject.configureProductstUrl
                 + '?pids=' + result.bonuspids.toString()
                 + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
-
+        result.testurl = URLUtils.url('Cart-ChooseBonusProducts','pids',result.bonuspids.toString(), 'maxpids', newBonusDiscountLineItem.maxBonusItems).toString();
         result.url = urlObject.url
             + '?pids=' + result.bonuspids.toString()
             + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
@@ -397,6 +399,6 @@ module.exports = {
     ensureAllShipmentsHaveMethods: ensureAllShipmentsHaveMethods,
     getQtyAlreadyInCart: getQtyAlreadyInCart,
     getNewBonusDiscountLineItem: getNewBonusDiscountLineItem,
-    BONUS_PRODUCTS_PAGE_SIZE: 6
+    BONUS_PRODUCTS_PAGE_SIZE: BONUS_PRODUCTS_PAGE_SIZE
     
 };
