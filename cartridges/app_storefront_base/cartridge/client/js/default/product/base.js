@@ -731,7 +731,7 @@ module.exports = {
 
         $('body').on('bonusproduct:updateSelectButton', function (e, response) {
             $('button.select-bonus-product', response.$productContainer).attr('disabled',
-                    (!response.product.readyToOrder || !response.product.available));
+                (!response.product.readyToOrder || !response.product.available));
             var pid = response.product.id;
             $('button.select-bonus-product').data('pid', pid);
         });
