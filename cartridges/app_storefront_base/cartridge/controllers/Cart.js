@@ -101,8 +101,9 @@ server.post('AddProduct', function (req, res, next) {
             result.uuid
     );
     if (newBonusDiscountLineItem) {
-        var allLineItems = currentBasket.allProductLineItems.toArray();
-        allLineItems.forEach(function (pli) {
+        var allLineItems = currentBasket.allProductLineItems;
+        var collections = require('*/cartridge/scripts/util/collections');
+        collections.forEach(allLineItems, function (pli) {
             if (pli.UUID === result.uuid) {
                 Transaction.wrap(function () {
                     pli.custom.bonusProductLineItemUUID = 'bonus'; // eslint-disable-line no-param-reassign
@@ -156,7 +157,6 @@ server.get(
         res.setViewData({ reportingURLs: reportingURLs });
 
         var basketModel = new CartModel(currentBasket);
-
         res.render('cart/cart', basketModel);
         next();
     }
@@ -322,18 +322,18 @@ server.get('UpdateQuantity', function (req, res, next) {
     if (canBeUpdated) {
         Transaction.wrap(function () {
             matchingLineItem.setQuantityValue(updateQuantity);
-            var previousBounsDiscountLineItems = [];
-            currentBasket.bonusDiscountLineItems.toArray().forEach(function (prevItem) {
-                previousBounsDiscountLineItems.push(prevItem.UUID);
+
+            var previousBounsDiscountLineItems = collections.map(currentBasket.bonusDiscountLineItems, function (bonusDiscountLineItem) {
+                return bonusDiscountLineItem.UUID;
             });
 
             HookMgr.callHook('dw.order.calculate', 'calculate', currentBasket);
             if (currentBasket.bonusDiscountLineItems.length > bonusDiscountLineItemCount) {
                 var prevItems = JSON.stringify(previousBounsDiscountLineItems);
-                var bonusDiscountLineItems = currentBasket.bonusDiscountLineItems.toArray();
-                bonusDiscountLineItems.forEach(function (item) {
-                    if (prevItems.indexOf(item.UUID) < 0) {
-                        item.custom.bonusProductLineItemUUID = matchingLineItem.UUID; // eslint-disable-line no-param-reassign
+
+                collections.forEach(currentBasket.bonusDiscountLineItems, function (bonusDiscountLineItem) {
+                    if (prevItems.indexOf(bonusDiscountLineItem.UUID) < 0) {
+                        bonusDiscountLineItem.custom.bonusProductLineItemUUID = matchingLineItem.UUID; // eslint-disable-line no-param-reassign
                         matchingLineItem.custom.bonusProductLineItemUUID = 'bonus';
                     }
                 });
@@ -616,36 +616,26 @@ server.post('AddBonusProducts', function (req, res, next) {
                 }
 
                 var pli;
-                var plis = [];
-                for (var l = 0; l < data.bonusProducts.length; l++) {
-                    var product = ProductMgr.getProduct(data.bonusProducts[l].pid);
-                    var selectedOptions = data.bonusProducts[l].options;
-                    var optionModel =
-                        productHelper.getCurrentOptionModel(
+                data.bonusProducts.forEach(function (bonusProduct) {
+                    var product = ProductMgr.getProduct(bonusProduct.pid);
+                    var selectedOptions = bonusProduct.options;
+                    var optionModel = productHelper.getCurrentOptionModel(
                             product.optionModel,
                             selectedOptions);
                     pli = currentBasket.createBonusProductLineItem(
-                        bonusDiscountLineItem,
-                        product,
-                        optionModel,
-                        null);
-                    pli.setQuantityValue(data.bonusProducts[l].qty);
+                            bonusDiscountLineItem,
+                            product,
+                            optionModel,
+                            null);
+                    pli.setQuantityValue(bonusProduct.qty);
                     pli.custom.bonusProductLineItemUUID = pliUUID;
-                    plis.push(pli.UUID);
-                }
+                });
 
-                var currentBasketPlis = currentBasket.getAllProductLineItems();
-                var pliIterator = currentBasketPlis.iterator();
-                pli = undefined;
-                var OriginalPLI;
-                while (pliIterator.hasNext()) {
-                    pli = pliIterator.next();
-                    if (pli.UUID === pliUUID) {
-                        OriginalPLI = pli;
-                        OriginalPLI.custom.bonusProductLineItemUUID = '';
+                collections.forEach(currentBasket.getAllProductLineItems(), function (productLineItem) {
+                    if (productLineItem.UUID === pliUUID) {
+                        productLineItem.custom.bonusProductLineItemUUID = 'bonus';// eslint-disable-line no-param-reassign
                     }
-                }
-                OriginalPLI.custom.bonusProductLineItemUUID = 'bonus';
+                });
             });
         }
 
@@ -670,18 +660,18 @@ server.get('EditBonusProduct', function (req, res, next) {
         return item.UUID === duuid;
     });
     var cartHelper = require('*/cartridge/scripts/cart/cartHelpers');
-    var selectedBonusProducts = [];
-    bonusDiscountLineItem.bonusProductLineItems.toArray().forEach(function (bonusProductLineItem) {
-        selectedBonusProducts.push({
+
+    var selectedBonusProducts = collections.map(bonusDiscountLineItem.bonusProductLineItems, function (bonusProductLineItem) {
+        return {
             pid: bonusProductLineItem.productID,
             name: bonusProductLineItem.productName,
             submittedQty: bonusProductLineItem.quantityValue
-        });
+        };
     });
 
     var pids = '';
     var count = 0;
-    bonusDiscountLineItem.bonusProducts.toArray().forEach(function (bonusProduct) {
+    collections.forEach(bonusDiscountLineItem.bonusProducts, function (bonusProduct) {
         if (count) {
             pids += ',';
         }
