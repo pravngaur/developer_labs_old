@@ -88,12 +88,12 @@ function getCartActionUrls() {
  * @returns {number} the total number of bonus products from within one bonus discount line item
  */
 function countBonusProducts(item) {
-    var bonusProductLineItems = item.bonusProductLineItems.toArray();
     var count = 0;
 
-    bonusProductLineItems.forEach(function (bonusDiscountLineItem) {
+    collections.forEach(item.bonusProductLineItems, function (bonusDiscountLineItem) {
         count += bonusDiscountLineItem.quantityValue;
     });
+
     return count;
 }
 
@@ -103,17 +103,16 @@ function countBonusProducts(item) {
  * @returns {Object} json object used to represnt the view's data for displaying bonus products button on the cart page
  */
 function getDiscountLineItems(bonsDiscountLineItems) {
-    var items = bonsDiscountLineItems.toArray();
-    var result = [];
-    items.forEach(function (item) {
-        var bdliObj = {};
-        bdliObj.pliuuid = item.custom.bonusProductLineItemUUID;
-        bdliObj.uuid = item.UUID;
-        bdliObj.full = countBonusProducts(item) < item.maxBonusItems;
-        bdliObj.maxpids = item.maxBonusItems;
-        bdliObj.url = URLUtils.url('Cart-EditBonusProduct').toString() + '?duuid=' + item.UUID;
-        bdliObj.msg = bdliObj.full ? Resource.msg('button.bonus.select', 'cart', null) : Resource.msg('button.bonus.change', 'cart', null);
-        result.push(bdliObj);
+    var result = collections.map(bonsDiscountLineItems, function (bdli) {
+        var full = countBonusProducts(bdli) < bdli.maxBonusItems;
+        return {
+            pliuuid: bdli.custom.bonusProductLineItemUUID,
+            uuid: bdli.UUID,
+            full: full,
+            maxpids: bdli.maxBonusItems,
+            url: URLUtils.url('Cart-EditBonusProduct', 'duuid', bdli.UUID).toString(),
+            msg: full ? Resource.msg('button.bonus.select', 'cart', null) : Resource.msg('button.bonus.change', 'cart', null)
+        };
     });
 
     return result;
@@ -127,32 +126,26 @@ function getDiscountLineItems(bonsDiscountLineItems) {
  */
 function embedBonusLineItems(productLineItemsModel, discountLineItems) {
     var allBonusItems = productLineItemsModel.items.filter(function (item) {
-        var returnBool;
         if (item.bonusProductLineItemUUID && item.bonusProductLineItemUUID !== 'bonus') {
-            returnBool = true;
-        } else {
-            returnBool = false;
+            return true;
         }
-        return returnBool;
+        return false;
     });
     var allItems = productLineItemsModel.items.filter(function (item) {
-        var returnBool;
         if (item.bonusProductLineItemUUID && item.bonusProductLineItemUUID !== 'bonus') {
-            returnBool = false;
-        } else {
-            allBonusItems.forEach(function (bitem) {
-                if (bitem.bonusProductLineItemUUID === item.UUID) {
-                    item.embededBonusProductLineItems.push(bitem);
-                }
-            });
-            discountLineItems.forEach(function (bdlitem) {
-                if (bdlitem.pliuuid === item.UUID && item.embededBonusDiscountLineItems) {
-                    item.embededBonusDiscountLineItems.push(bdlitem);
-                }
-            });
-            returnBool = true;
+            return false;
         }
-        return returnBool;
+        allBonusItems.forEach(function (bitem) {
+            if (bitem.bonusProductLineItemUUID === item.UUID) {
+                item.embededBonusProductLineItems.push(bitem);
+            }
+        });
+        discountLineItems.forEach(function (bdlitem) {
+            if (bdlitem.pliuuid === item.UUID && item.embededBonusDiscountLineItems) {
+                item.embededBonusDiscountLineItems.push(bdlitem);
+            }
+        });
+        return true;
     });
 
     return allItems;
