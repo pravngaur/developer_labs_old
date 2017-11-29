@@ -188,21 +188,12 @@ server.get('ShowBonusProducts', function (req, res, next) {
     var selectedBonusProducts;
 
     if (duuid) {
-        var discountLineItems = currentBasket.bonusDiscountLineItems.toArray();
-        var discountLineItem;
-
         var bonusDiscountLineItem = collections.find(currentBasket.getBonusDiscountLineItems(), function (item) {
             return item.UUID === duuid;
         });
 
-        discountLineItems.forEach(function (dli) {
-            if (dli.UUID === duuid) {
-                discountLineItem = dli;
-            }
-        });
-        selectedBonusProducts = [];// need to add this to other end point when adding a bonus product
         if (bonusDiscountLineItem && bonusDiscountLineItem.bonusProductLineItems.length) {
-            bonusDiscountLineItem.bonusProductLineItems.toArray().forEach(function (bonusProductLineItem) {
+            selectedBonusProducts = collections.map(bonusDiscountLineItem.bonusProductLineItems, function (bonusProductLineItem) {
                 var option = {
                     optionid: '',
                     selectedvalue: ''
@@ -211,14 +202,15 @@ server.get('ShowBonusProducts', function (req, res, next) {
                     option.optionid = bonusProductLineItem.optionProductLineItems[0].optionID;
                     option.optionid = bonusProductLineItem.optionProductLineItems[0].optionValueID;
                 }
-
-                selectedBonusProducts.push({
+                return {
                     pid: bonusProductLineItem.productID,
                     name: bonusProductLineItem.productName,
                     submittedQty: (bonusProductLineItem.quantityValue),
                     option: option
-                });
+                };
             });
+        } else {
+            selectedBonusProducts = [];
         }
 
         if (req.querystring.pids) {
@@ -240,7 +232,7 @@ server.get('ShowBonusProducts', function (req, res, next) {
             var ProductSearchModel = require('dw/catalog/ProductSearchModel');
             var apiProductSearch = new ProductSearchModel();
             var productSearchHit;
-            apiProductSearch.setPromotionID(discountLineItem.promotionID);
+            apiProductSearch.setPromotionID(bonusDiscountLineItem.promotionID);
             apiProductSearch.setPromotionProductType('bonus');
             apiProductSearch.search();
             pagingModel = new PagingModel(apiProductSearch.getProductSearchHits(), apiProductSearch.count);
