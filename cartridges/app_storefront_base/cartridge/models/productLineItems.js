@@ -56,7 +56,7 @@ function createProductLineItemsObject(allLineItems) {
         };
         var newLineItem = ProductFactory.get(params);
         newLineItem.bonusProducts = bonusProducts;
-        if (newLineItem.bonusProductLineItemUUID === 'bonus' || newLineItem.bonusProductLineItemUUID === '') {
+        if (newLineItem.bonusProductLineItemUUID === 'bonus' || newLineItem.bonusProductLineItemUUID === null) {
             lineItems.push(newLineItem);
         }
     });
