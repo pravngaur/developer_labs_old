@@ -60,7 +60,7 @@ describe('ProductLineItems model', function () {
         assert.equal(result.totalQuantity, 0);
     });
 
-    it.skip('should create product line items and get total quantity', function () {
+    it('should create product line items and get total quantity', function () {
         var result = new ProductLineItemsModel(apiBasket.productLineItems);
         assert.equal(result.items.length, 1);
         assert.equal(result.totalQuantity, 1);
