@@ -1,0 +1,248 @@
+@import "../utilities/swatch";
+@import "productCommon";
+
+.primary-images {
+    .carousel {
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+.product-tile {
+
+    @include media-breakpoint-down(md) {
+        min-height: 23.4375em;
+    }
+
+    @include media-breakpoint-down(sm) {
+        min-height: 19.6875em;
+    }
+
+    @include media-breakpoint-down(xs) {
+        min-height: 13.4375em;
+    }
+
+    border: 0;
+    margin-bottom: 0;
+
+    .tile-body {
+        padding: 0.625em 0 1.875em;
+
+        .color-swatches {
+            min-height: 2.25em;
+
+            .product-tile-color-label {
+                cursor: pointer;
+                font-size: 1em;
+
+                @include media-breakpoint-down(md) {
+                    font-size: 0.9375em;
+                }
+
+                @include media-breakpoint-down(sm) {
+                    font-size: 0.8125em;
+                }
+            }
+        }
+
+        .price {
+            font-size: 1.125em;
+            margin-bottom: 0;
+
+            @include media-breakpoint-down(md) {
+                font-size: 1.0625em;
+            }
+
+            @include media-breakpoint-down(sm) {
+                font-size: 1em;
+            }
+
+            .tiered {
+                font-size: 0.875em;
+
+                .value {
+                    font-weight: bold;
+                }
+            }
+        }
+
+        .coming-soon-tile {
+            text-align: center;
+        }
+
+        .pdp-link {
+            line-height: 1.2;
+
+            a {
+                font-size: 1em;
+                text-decoration: none;
+
+                @include media-breakpoint-down(md) {
+                    font-size: 0.9375em;
+                }
+
+                @include media-breakpoint-down(sm) {
+                    font-size: 0.8125em;
+                }
+            }
+        }
+
+        .ratings {
+            font-size: 0.9em;
+        }
+    }
+
+    .image-container {
+        position: relative;
+        overflow: auto;
+
+        .quickview {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        a {
+            display: block;
+
+            .tile-image {
+                width: 100%;
+            }
+        }
+    }
+
+    .swatches {
+        a {
+            text-decoration: none;
+        }
+    }
+
+    .swatch-circle {
+        // $white will be replaced by color image background via Javascript
+        @include swatch(1.8em, $white);
+    }
+}
+
+#chooseBonusProductModal {
+    .modal-footer {
+        .container {
+            margin-left: 0;
+            width: 100%;
+            margin-right: 0;
+        }
+    }
+
+    .select-cbp-container {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .product-name-wrapper {
+        width: 100%;
+    }
+
+    .bonus-quantity-select {
+        min-width: 4em;
+    }
+}
+
+.quick-view-dialog,
+.choose-bonus-product-dialog {
+    max-width: 56.25em;
+
+    .selectable-bonus-product-line-item {
+        margin-top: 0.2em;
+        margin-bottom: 0.2em;
+        padding-top: 0.3em;
+        padding-bottom: 0.3em;
+    }
+
+    .beenSelected {
+        background-color: $grey2;
+    }
+
+    .modal-header {
+        background-color: $grey2;
+        border-bottom: 2px solid #ccc;
+        border-top-left-radius: 0.1875rem;
+        border-top-right-radius: 0.1875rem;
+
+        .full-pdp-link {
+            color: $primary;
+        }
+
+        .close {
+            font-size: 2rem;
+
+            span {
+                font-size: 1rem;
+                margin-right: 0.313em;
+            }
+        }
+    }
+
+    .modal-title {
+        font-size: 1em;
+    }
+
+    .product-name {
+        font-size: 1.875em;
+    }
+
+    .swatch-circle {
+        // $white will be replaced by color image background via Javascript
+        @include swatch(2.5em, $white);
+    }
+
+    a[disabled] .swatch-circle {
+        cursor: not-allowed;
+
+        &.color-value.selected::after {
+            background-color: $gray-700;
+        }
+    }
+
+    .availablity-container {
+        text-align: right;
+    }
+
+    .availablity-container,
+    .size-chart {
+        margin-top: 0.938em;
+    }
+
+    .modal-content {
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-body {
+        max-height: 28.125em; /* 450/16 */
+        overflow-y: auto;
+    }
+
+    button.close {
+        font-size: 1.25em;
+    }
+
+    .modal-footer {
+        background-color: $white;
+        border: none;
+        border-bottom-right-radius: 0.1875rem;
+        border-bottom-left-radius: 0.1875rem;
+
+        .prices .price {
+            font-size: 1.6em;
+        }
+    }
+
+    .prices .sales {
+        font-size: 1.5rem;
+    }
+
+    .promotions {
+        text-align: center;
+        color: $red;
+    }
+}
