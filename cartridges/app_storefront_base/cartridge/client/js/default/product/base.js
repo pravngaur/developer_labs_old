@@ -620,25 +620,7 @@ module.exports = {
             }
         });
     },
-    bonusProductAttributes: function () {
-        $(document).on('click', '.show-more-bonus-products', function () {
-            var url = $(this).data('url');
-            $('.modal-content').spinner().start();
-            $.ajax({
-                url: url,
-                method: 'GET',
-                success: function (html) {
-                    var parsedHtml = parseHtml(html);
-                    $('.modal-body').append(parsedHtml.body);
-                    $('.show-more-bonus-products:first').remove();
-                    $('.modal-content').spinner().stop();
-                },
-                error: function () {
-                    $('.modal-content').spinner().stop();
-                }
-            });
-        });
-
+    selectBonusProduct: function () {
         $(document).on('click', '.select-bonus-product', function () {
             var $choiceOfBonusProduct = $(this).parents('.choice-of-bonus-product');
             var pid = $(this).data('pid');
@@ -672,7 +654,8 @@ module.exports = {
                 $('.selected-bonus-products .bonus-summary').addClass('alert-danger');
             }
         });
-
+    },
+    removeBonusProduct: function () {
         $(document).on('click', '.selected-pid', function () {
             $(this).remove();
             var $selected = $('#chooseBonusProductModal .selected-bonus-products .selected-pid');
@@ -686,14 +669,35 @@ module.exports = {
             $('.pre-cart-products').html(count);
             $('.selected-bonus-products .bonus-summary').removeClass('alert-danger');
         });
-
+    },
+    enableBonusProductSelection: function () {
         $('body').on('bonusproduct:updateSelectButton', function (e, response) {
             $('button.select-bonus-product', response.$productContainer).attr('disabled',
                 (!response.product.readyToOrder || !response.product.available));
             var pid = response.product.id;
             $('button.select-bonus-product').data('pid', pid);
         });
-
+    },
+    showMoreBonusProducts: function () {
+        $(document).on('click', '.show-more-bonus-products', function () {
+            var url = $(this).data('url');
+            $('.modal-content').spinner().start();
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (html) {
+                    var parsedHtml = parseHtml(html);
+                    $('.modal-body').append(parsedHtml.body);
+                    $('.show-more-bonus-products:first').remove();
+                    $('.modal-content').spinner().stop();
+                },
+                error: function () {
+                    $('.modal-content').spinner().stop();
+                }
+            });
+        });
+    },
+    addBonusProductsToCart: function () {
         $(document).on('click', '.add-bonus-products', function () {
             var $readyToOrderBonusProducts = $('.choose-bonus-product-dialog .selected-pid');
             var queryString = '?pids=';

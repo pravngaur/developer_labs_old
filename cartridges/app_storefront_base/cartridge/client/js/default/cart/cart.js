@@ -423,7 +423,11 @@ module.exports = function () {
                 base.editBonusProducts(data);
                 base.selectAttribute();
                 base.colorAttribute();
-                base.bonusProductAttributes();
+                base.removeBonusProduct();
+                base.selectBonusProduct();
+                base.enableBonusProductSelection();
+                base.showMoreBonusProducts();
+                base.addBonusProductsToCart();
                 $.spinner().stop();
             },
             error: function () {
