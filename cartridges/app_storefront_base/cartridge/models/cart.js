@@ -94,12 +94,11 @@ function CartModel(basket) {
         var shippingModels = ShippingHelpers.getShippingModels(basket);
         var productLineItemsModel = new ProductLineItemsModel(basket.productLineItems);
         var totalsModel = new TotalsModel(basket);
-        var productLineItems = productLineItemsModel.items;
         this.hasBonusProduct = Boolean(basket.bonusLineItems && basket.bonusLineItems.length);
         this.actionUrls = getCartActionUrls();
         this.numOfShipments = basket.shipments.length;
         this.totals = totalsModel;
-        this.allBonusItems = productLineItems;
+
         if (shippingModels) {
             this.shipments = shippingModels.map(function (shippingModel) {
                 var result = {};
@@ -107,6 +106,7 @@ function CartModel(basket) {
                 if (shippingModel.selectedShippingMethod) {
                     result.selectedShippingMethod = shippingModel.selectedShippingMethod.ID;
                 }
+
                 return result;
             });
         }
@@ -114,7 +114,7 @@ function CartModel(basket) {
         if (discountPlan) {
             this.approachingDiscounts = getApproachingDiscounts(basket, discountPlan);
         }
-        this.items = productLineItems;
+        this.items = productLineItemsModel.items;
         this.numItems = productLineItemsModel.totalQuantity;
         this.valid = HookMgr.callHook(
             'app.validate.basket',
