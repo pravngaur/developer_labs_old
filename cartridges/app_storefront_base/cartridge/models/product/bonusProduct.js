@@ -19,25 +19,15 @@ var decorators = require('*/cartridge/models/product/decorators/index');
  */
 module.exports = function bonusProduct(product, apiProduct, options, duuid) {
     decorators.base(product, apiProduct, options.productType);
-    decorators.price(product, apiProduct, options.promotions, false, options.optionModel);
     decorators.images(product, apiProduct, { types: ['large', 'small'], quantity: 'all' });
     decorators.quantity(product, apiProduct, options.quantity);
     decorators.variationAttributes(product, options.variationModel, {
         attributes: '*',
         endPoint: 'Variation'
     });
-    decorators.description(product, apiProduct);
-    decorators.ratings(product);
-    decorators.promotions(product, options.promotions);
-    decorators.attributes(product, apiProduct.attributeModel);
-    decorators.availability(product, options.quantity, apiProduct.minOrderQuantity.value, apiProduct.availabilityModel);
+    decorators.attributes(product, apiProduct.attributeModel); 
     decorators.options(product, options.optionModel, options.variables, options.quantity);
     decorators.quantitySelector(product, apiProduct.stepQuantity.value, options.variables, options.options);
-    var category = apiProduct.getPrimaryCategory()
-        ? apiProduct.getPrimaryCategory()
-        : apiProduct.getMasterProduct().getPrimaryCategory();
-    decorators.sizeChart(product, category.custom.sizeChartID);
-    decorators.currentUrl(product, options.variationModel, options.optionModel, 'Product-Show', apiProduct.ID, options.quantity);
     decorators.readyToOrder(product, options.variationModel);
     decorators.bonusUnitPrice(product, duuid);
 

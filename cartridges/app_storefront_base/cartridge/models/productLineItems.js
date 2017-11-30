@@ -11,12 +11,6 @@ var ProductFactory = require('*/cartridge/scripts/factories/product');
  */
 function createProductLineItemsObject(allLineItems) {
     var lineItems = [];
-    var bonusQulifiers = [];
-    collections.forEach(allLineItems, function (item) {
-        if (item.custom.bonusProductLineItemUUID === 'bonus') {
-            bonusQulifiers.push(item.UUID);
-        }
-    });
 
     collections.forEach(allLineItems, function (item) {
         if (!item.product) { return; }
@@ -27,7 +21,6 @@ function createProductLineItemsObject(allLineItems) {
             };
         });
 
-        var pview = 'productLineItem';
         var bonusProducts = null;
 
         if (!item.bonusProductLineItem && item.custom.bonusProductLineItemUUID) {
@@ -57,7 +50,7 @@ function createProductLineItemsObject(allLineItems) {
             pid: item.product.ID,
             quantity: item.quantity.value,
             variables: null,
-            pview: pview,
+            pview: 'productLineItem',
             lineItem: item,
             options: options
         };
@@ -65,6 +58,7 @@ function createProductLineItemsObject(allLineItems) {
         newLineItem.bonusProducts = bonusProducts;
         lineItems.push(newLineItem);
     });
+ 
     return lineItems;
 }
 

@@ -37,7 +37,7 @@ function getDiscountLineItems(UUID) {
             bdliObj.maxpids = bonsDiscountLineItem.maxBonusItems;
             bdliObj.url = URLUtils.url('Cart-EditBonusProduct', 'duuid', bonsDiscountLineItem.UUID).toString();
             bdliObj.msg = bdliObj.full ? Resource.msg('button.bonus.select', 'cart', null) : Resource.msg('button.bonus.change', 'cart', null);
-            result.push(bdliObj); // UUID - pli.UUID
+            result.push(bdliObj);
         }
     });
 

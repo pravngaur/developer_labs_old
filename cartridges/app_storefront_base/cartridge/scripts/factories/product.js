@@ -11,7 +11,6 @@ var productSet = require('*/cartridge/models/product/productSet');
 var productBundle = require('*/cartridge/models/product/productBundle');
 var productLineItem = require('*/cartridge/models/productLineItem/productLineItem');
 var bonusProductLineItem = require('*/cartridge/models/productLineItem/bonusProductLineItem');
-// var embeddedProductLineItem = require('*/cartridge/models/productLineItem/embeddedProductLineItem');
 var bundleProductLineItem = require('*/cartridge/models/productLineItem/bundleLineItem');
 
 /**

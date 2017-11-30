@@ -14,7 +14,6 @@ module.exports = {
     quantity: require('*/cartridge/models/productLineItem/decorators/quantity'),
     bundledProductLineItems: require('*/cartridge/models/productLineItem/decorators/bundledProductLineItems'),
     bonusProductLineItemUUID: require('*/cartridge/models/productLineItem/decorators/bonusProductLineItemUUID'),
-    // embededBonusProductLineItems: require('*/cartridge/models/productLineItem/decorators/embededBonusProductLineItems'),
     discountBonusLineItems: require('*/cartridge/models/productLineItem/decorators/discountBonusLineItems'),
     bonusUnitPrice: require('*/cartridge/models/productLineItem/decorators/bonusUnitPrice')
 
