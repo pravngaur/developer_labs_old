@@ -245,7 +245,8 @@ server.get('ShowBonusProducts', function (req, res, next) {
                 showMoreButton = false;
             }
 
-            moreUrl = URLUtils.url('Product-ShowBonusProducts').toString();
+            moreUrl = URLUtils.url('Product-ShowBonusProducts', 'DUUID', duuid, 'pagesize', pageSize, 'pagestart', pageStart + pageSize).toString();
+
             var iter = pagingModel.pageElements;
             while (iter !== null && iter.hasNext()) {
                 productSearchHit = iter.next();

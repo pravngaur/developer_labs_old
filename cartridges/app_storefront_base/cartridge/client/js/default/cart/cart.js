@@ -423,7 +423,6 @@ module.exports = function () {
                 base.editBonusProducts(data);
                 base.selectAttribute();
                 base.colorAttribute();
-                base.bonusProductSelection();
                 base.bonusProductAttributes();
                 $.spinner().stop();
             },

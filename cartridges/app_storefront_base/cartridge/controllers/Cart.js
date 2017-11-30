@@ -606,14 +606,11 @@ server.post('AddBonusProducts', function (req, res, next) {
 
         if (currentBasket) {
             Transaction.wrap(function () {
-                var plistoDelete = bonusDiscountLineItem.getBonusProductLineItems();
-
-                for (var n = 0; n < plistoDelete.length; n++) {
-                    var pliToDelete = plistoDelete[n];
-                    if (pliToDelete.product) {
-                        currentBasket.removeProductLineItem(pliToDelete);
+                collections.forEach(bonusDiscountLineItem.getBonusProductLineItems(), function (dli) {
+                    if (dli.product) {
+                        currentBasket.removeProductLineItem(dli);
                     }
-                }
+                });
 
                 var pli;
                 data.bonusProducts.forEach(function (bonusProduct) {
@@ -693,9 +690,8 @@ server.get('EditBonusProduct', function (req, res, next) {
             selectprods: Resource.msg('modal.header.selectproducts', 'product', null),
             close: Resource.msg('link.choiceofbonus.close', 'product', null)
         },
-        queryStringListBased: '?DUUID=' + bonusDiscountLineItem.UUID + '&pids=' + pids + '&maxpids=' + bonusDiscountLineItem.maxBonusItems + '',
-        queryStringRuleBased: '?DUUID=' + bonusDiscountLineItem.UUID + '&pagesize=' + cartHelper.BONUS_PRODUCTS_PAGE_SIZE + '&pagestart=0&maxpids=' + bonusDiscountLineItem.maxBonusItems + ''
-
+        showProductsUrlRuleBased: URLUtils.url('Product-ShowBonusProducts', 'DUUID', bonusDiscountLineItem.UUID, 'pagesize', cartHelper.BONUS_PRODUCTS_PAGE_SIZE, 'pagestart', 0, 'maxpids', bonusDiscountLineItem.maxBonusItems).toString(),
+        showProductsUrlListBased: URLUtils.url('Product-ShowBonusProducts', 'DUUID', bonusDiscountLineItem.UUID, 'pids', pids, 'maxpids', bonusDiscountLineItem.maxBonusItems).toString()
     });
     next();
 });

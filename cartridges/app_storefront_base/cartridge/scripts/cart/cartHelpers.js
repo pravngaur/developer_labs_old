@@ -103,35 +103,17 @@ function getNewBonusDiscountLineItem(
         result.maxBonusItems = newBonusDiscountLineItem.maxBonusItems;
         result.addToCartUrl = urlObject.addToCartUrl;
         result.showProductsUrl = urlObject.configureProductstUrl;
-        result.showProductsUrlListBased = URLUtils.url('Product-ShowBonusProducts', 'DUUID', newBonusDiscountLineItem.UUID, 'pids', result.bonuspids.toString(), 'maxpids', newBonusDiscountLineItem.maxBonusItems).toString(),
-        result.queryStringListBased = '?DUUID=' + newBonusDiscountLineItem.UUID
-            + '&pids=' + result.bonuspids.toString()
-            + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
+        result.showProductsUrlListBased = URLUtils.url('Product-ShowBonusProducts', 'DUUID', newBonusDiscountLineItem.UUID, 'pids', result.bonuspids.toString(), 'maxpids', newBonusDiscountLineItem.maxBonusItems).toString();
         result.showProductsUrlRuleBased = URLUtils.url('Product-ShowBonusProducts', 'DUUID', newBonusDiscountLineItem.UUID, 'pagesize', BONUS_PRODUCTS_PAGE_SIZE, 'pagestart', 0, 'maxpids', newBonusDiscountLineItem.maxBonusItems).toString();
-        result.queryStringRuleBased = '?DUUID='
-            + newBonusDiscountLineItem.UUID
-            + '&pagesize=' + BONUS_PRODUCTS_PAGE_SIZE
-            + '&pagestart=0'
-            + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
-
         result.pageSize = BONUS_PRODUCTS_PAGE_SIZE;
-        result.testconfigureProductstUrl = URLUtils.url('Product-ShowBonusProducts','pids',result.bonuspids.toString(), 'maxpids', newBonusDiscountLineItem.maxBonusItems).toString();
-        result.configureProductstUrl = urlObject.configureProductstUrl
-                + '?pids=' + result.bonuspids.toString()
-                + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
-        result.testurl = URLUtils.url('Cart-ChooseBonusProducts','pids',result.bonuspids.toString(), 'maxpids', newBonusDiscountLineItem.maxBonusItems).toString();
-        result.url = urlObject.url
-            + '?pids=' + result.bonuspids.toString()
-            + '&maxpids=' + newBonusDiscountLineItem.maxBonusItems;
+        result.configureProductstUrl = URLUtils.url('Product-ShowBonusProducts', 'pids', result.bonuspids.toString(), 'maxpids', newBonusDiscountLineItem.maxBonusItems).toString();
         result.newBonusDiscountLineItem = newBonusDiscountLineItem;
-
         result.labels = {
             close: Resource.msg('link.choiceofbonus.close', 'product', null),
             selectprods: Resource.msgf('modal.header.selectproducts', 'product', null, null),
             maxprods: Resource.msgf('label.choiceofbonus.selectproducts', 'product', null, newBonusDiscountLineItem.maxBonusItems)
         };
     }
-
     return newBonusDiscountLineItem ? result : undefined;
 }
 
@@ -400,5 +382,4 @@ module.exports = {
     getQtyAlreadyInCart: getQtyAlreadyInCart,
     getNewBonusDiscountLineItem: getNewBonusDiscountLineItem,
     BONUS_PRODUCTS_PAGE_SIZE: BONUS_PRODUCTS_PAGE_SIZE
-    
 };

@@ -387,11 +387,11 @@ function chooseBonusProducts(data) {
     if ($('#chooseBonusProductModal').length !== 0) {
         $('#chooseBonusProductModal').remove();
     }
-    var queryString;
+    var bonusUrl;
     if (data.bonusChoiceRuleBased) {
-        queryString = data.queryStringRuleBased;
+        bonusUrl = data.showProductsUrlRuleBased;
     } else {
-        queryString = data.queryStringListBased;
+        bonusUrl = data.showProductsUrlListBased;
     }
 
     var htmlString = '<!-- Modal -->'
@@ -403,6 +403,7 @@ function chooseBonusProducts(data) {
         + 'data-addToCartUrl="' + data.addToCartUrl + '"'
         + 'data-pageStart="0"'
         + 'data-pageSize="' + data.pageSize + '"'
+        + 'data-moreURL="' + data.showProductsUrlRuleBased + '"'
         + 'data-bonusChoiceRuleBased="' + data.bonusChoiceRuleBased + '">'
         + '<!-- Modal content-->'
         + '<div class="modal-content">'
@@ -421,7 +422,7 @@ function chooseBonusProducts(data) {
     $('.modal-body').spinner().start();
 
     $.ajax({
-        url: data.showProductsUrl + queryString,
+        url: bonusUrl,
         method: 'GET',
         dataType: 'html',
         success: function (html) {
@@ -619,52 +620,9 @@ module.exports = {
             }
         });
     },
-    bonusProductSelection: function () {
-        $('body').on('change', '.select-bonus-product-cb', function (e) {
-            e.preventDefault();
-            var $bonusModal = $(this).parents('.choose-bonus-product-dialog');
-            var $BonusLineItem = $(this).parents('.selectable-bonus-product-line-item');
-
-            $BonusLineItem.hasClass('beenSelected') // eslint-disable-line
-                ? $BonusLineItem.removeClass('beenSelected')
-                : $BonusLineItem.addClass('beenSelected');
-
-            var $checkBoxesSelected = $bonusModal.find('.select-bonus-product-cb:checked');
-
-            var selectionFull =
-                $checkBoxesSelected.length >= $('.choose-bonus-product-dialog').data('total-qty');
-            var atleastOneProduct = $checkBoxesSelected.length > 0;
-
-            if (atleastOneProduct) {
-                $('.next-bonus-products').attr('disabled', false);
-            } else {
-                $('.next-bonus-products').attr('disabled', true);
-            }
-
-            if (selectionFull) {
-                $('.select-bonus-product-cb:checkbox:not(:checked)').attr('disabled', true);
-            } else {
-                $('.select-bonus-product-cb:checkbox:not(:checked)').attr('disabled', false);
-            }
-        });
-        $('body').on('click', '.cancel-bonus-products', function (e) {
-            e.preventDefault();
-            $('#chooseBonusProductModal').modal('hide');
-        });
-    },
     bonusProductAttributes: function () {
         $(document).on('click', '.show-more-bonus-products', function () {
             var url = $(this).data('url');
-            var DUUID = $(this).parents('.choose-bonus-product-dialog').data('uuid');
-            var pageSize = $(this).parents('.choose-bonus-product-dialog').data('pagesize');
-            var pageStart = $(this).parents('.choose-bonus-product-dialog').data('pagestart') + pageSize;
-            $(this).parents('.choose-bonus-product-dialog').data('pagestart', pageStart);
-            var queryString = '?';
-            queryString += 'DUUID=' + DUUID;
-            queryString += '&pagestart=' + pageStart;
-            queryString += '&pagesize=' + pageSize;
-            url += queryString;
-
             $('.modal-content').spinner().start();
             $.ajax({
                 url: url,
@@ -720,7 +678,7 @@ module.exports = {
             var $selected = $('#chooseBonusProductModal .selected-bonus-products .selected-pid');
             var count = 0;
             if ($selected.length) {
-                $selected.forEach(function () {
+                $selected.each(function () {
                     count += parseInt($(this).data('qty'), 10);
                 });
             }
