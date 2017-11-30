@@ -11,11 +11,15 @@ var collections = require('*/cartridge/scripts/util/collections');
  */
 function getBonusUnitPrice(lineItem, product) {
     var currentBasket = BasketMgr.getCurrentBasket();
-
+    if (!currentBasket) {
+        return '';
+    }
     var bonusDisconutLineItem = collections.find(currentBasket.getBonusDiscountLineItems(), function (dli) {
         return dli.custom.bonusProductLineItemUUID === lineItem.custom.bonusProductLineItemUUID;
     });
-
+    if (!product || !bonusDisconutLineItem) {
+        return '';
+    }
     return bonusDisconutLineItem.getBonusProductPrice(product).toFormattedString();
 }
 

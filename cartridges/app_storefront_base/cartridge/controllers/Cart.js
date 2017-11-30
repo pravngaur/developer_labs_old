@@ -107,6 +107,7 @@ server.post('AddProduct', function (req, res, next) {
             if (pli.UUID === result.uuid) {
                 Transaction.wrap(function () {
                     pli.custom.bonusProductLineItemUUID = 'bonus'; // eslint-disable-line no-param-reassign
+                    pli.custom.preOrderUUID = pli.UUID; // eslint-disable-line no-param-reassign
                 });
             }
         });
@@ -335,6 +336,7 @@ server.get('UpdateQuantity', function (req, res, next) {
                     if (prevItems.indexOf(bonusDiscountLineItem.UUID) < 0) {
                         bonusDiscountLineItem.custom.bonusProductLineItemUUID = matchingLineItem.UUID; // eslint-disable-line no-param-reassign
                         matchingLineItem.custom.bonusProductLineItemUUID = 'bonus';
+                        matchingLineItem.custom.preOrderUUID = matchingLineItem.UUID;
                     }
                 });
             }
@@ -631,6 +633,7 @@ server.post('AddBonusProducts', function (req, res, next) {
                 collections.forEach(currentBasket.getAllProductLineItems(), function (productLineItem) {
                     if (productLineItem.UUID === pliUUID) {
                         productLineItem.custom.bonusProductLineItemUUID = 'bonus';// eslint-disable-line no-param-reassign
+                        productLineItem.custom.preOrderUUID = productLineItem.UUID;// eslint-disable-line no-param-reassign
                     }
                 });
             });

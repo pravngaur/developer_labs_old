@@ -30,6 +30,7 @@ module.exports = function bonusProductLineItem(product, apiProduct, options) {
     productLineItemDecorators.priceTotal(product, options.lineItem);
     productLineItemDecorators.options(product, options.lineItemOptions);
     productLineItemDecorators.bonusProductLineItemUUID(product, options.lineItem);
+    productLineItemDecorators.preOrderUUID(product, options.lineItem);
     productLineItemDecorators.bonusUnitPrice(product, options.lineItem, apiProduct);
 
     return product;

@@ -23,10 +23,12 @@ function createProductLineItemsObject(allLineItems) {
 
         var bonusProducts = null;
 
-        if (!item.bonusProductLineItem && item.custom.bonusProductLineItemUUID) {
+        if (!item.bonusProductLineItem
+                && item.custom.bonusProductLineItemUUID
+                && item.custom.preOrderUUID) {
             bonusProducts = [];
             collections.forEach(allLineItems, function (bonusItem) {
-                if (bonusItem.custom.bonusProductLineItemUUID === item.UUID) {
+                if (!!item.custom.preOrderUUID && bonusItem.custom.bonusProductLineItemUUID === item.custom.preOrderUUID) {
                     var bpliOptions = collections.map(bonusItem.optionProductLineItems, function (boptionItem) {
                         return {
                             optionId: boptionItem.optionID,
@@ -41,6 +43,7 @@ function createProductLineItemsObject(allLineItems) {
                         lineItem: bonusItem,
                         options: bpliOptions
                     };
+
                     bonusProducts.push(ProductFactory.get(params));
                 }
             });
