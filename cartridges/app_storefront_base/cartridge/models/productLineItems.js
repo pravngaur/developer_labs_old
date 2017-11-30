@@ -28,13 +28,29 @@ function createProductLineItemsObject(allLineItems) {
         });
 
         var pview = 'productLineItem';
+        var bonusProducts = null;
 
         if (!item.bonusProductLineItem && item.custom.bonusProductLineItemUUID) {
-            pview = 'bonusProductLineItem';
-        }
-
-        if (item.bonusProductLineItem && bonusQulifiers.indexOf(item.custom.bonusProductLineItemUUID) > -1) {
-            pview = 'embeddedProductLineItem';
+            bonusProducts = [];
+            collections.forEach(allLineItems, function (bonusItem) {
+                if (bonusItem.custom.bonusProductLineItemUUID === item.UUID) {
+                    var bpliOptions = collections.map(bonusItem.optionProductLineItems, function (boptionItem) {
+                        return {
+                            optionId: boptionItem.optionID,
+                            selectedValueId: boptionItem.optionValueID
+                        };
+                    });
+                    var params = {
+                        pid: bonusItem.product.ID,
+                        quantity: bonusItem.quantity.value,
+                        variables: null,
+                        pview: 'bonusProductLineItem',
+                        lineItem: bonusItem,
+                        options: bpliOptions
+                    };
+                    bonusProducts.push(ProductFactory.get(params));
+                }
+            });
         }
 
         var params = {
@@ -45,10 +61,10 @@ function createProductLineItemsObject(allLineItems) {
             lineItem: item,
             options: options
         };
-
-        lineItems.push(ProductFactory.get(params));
+        var newLineItem = ProductFactory.get(params);
+        newLineItem.bonusProducts = bonusProducts;
+        lineItems.push(newLineItem);
     });
-
     return lineItems;
 }
 

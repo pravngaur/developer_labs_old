@@ -83,75 +83,6 @@ function getCartActionUrls() {
 }
 
 /**
- * Generates an object of URLs
- * @param {dw.order.BonusDiscountLineItem} item - a product line item
- * @returns {number} the total number of bonus products from within one bonus discount line item
- */
-function countBonusProducts(item) {
-    var count = 0;
-
-    collections.forEach(item.bonusProductLineItems, function (bonusDiscountLineItem) {
-        count += bonusDiscountLineItem.quantityValue;
-    });
-
-    return count;
-}
-
-/**
- * Generates an object of URLs
- * @param {dw.util.Collection} bonsDiscountLineItems - collection of bonus discount line items associated with the basket
- * @returns {Object} json object used to represnt the view's data for displaying bonus products button on the cart page
- */
-function getDiscountLineItems(bonsDiscountLineItems) {
-    var result = collections.map(bonsDiscountLineItems, function (bdli) {
-        var full = countBonusProducts(bdli) < bdli.maxBonusItems;
-        return {
-            pliuuid: bdli.custom.bonusProductLineItemUUID,
-            uuid: bdli.UUID,
-            full: full,
-            maxpids: bdli.maxBonusItems,
-            url: URLUtils.url('Cart-EditBonusProduct', 'duuid', bdli.UUID).toString(),
-            msg: full ? Resource.msg('button.bonus.select', 'cart', null) : Resource.msg('button.bonus.change', 'cart', null)
-        };
-    });
-
-    return result;
-}
-
-/**
- * Embbeds the bonus products within a qualifying product line item
- * @param {Object} productLineItemsModel - json representation of the products line items model
- * @param {Array} discountLineItems - array of discount line items associated with the basket
- * @returns {Array} of all the items with bonus products nested within the qualifying product line item
- */
-function embedBonusLineItems(productLineItemsModel, discountLineItems) {
-    var allBonusItems = productLineItemsModel.items.filter(function (item) {
-        if (item.bonusProductLineItemUUID && item.bonusProductLineItemUUID !== 'bonus') {
-            return true;
-        }
-        return false;
-    });
-    var allItems = productLineItemsModel.items.filter(function (item) {
-        if (item.bonusProductLineItemUUID && item.bonusProductLineItemUUID !== 'bonus') {
-            return false;
-        }
-        allBonusItems.forEach(function (bitem) {
-            if (bitem.bonusProductLineItemUUID === item.UUID) {
-                item.embededBonusProductLineItems.push(bitem);
-            }
-        });
-        discountLineItems.forEach(function (bdlitem) {
-            if (bdlitem.pliuuid === item.UUID && item.embededBonusDiscountLineItems) {
-                item.embededBonusDiscountLineItems.push(bdlitem);
-            }
-        });
-        return true;
-    });
-
-    return allItems;
-}
-
-/**
  * @constructor
  * @classdesc CartModel class that represents the current basket
  *
@@ -162,18 +93,13 @@ function CartModel(basket) {
     if (basket !== null) {
         var shippingModels = ShippingHelpers.getShippingModels(basket);
         var productLineItemsModel = new ProductLineItemsModel(basket.productLineItems);
-
         var totalsModel = new TotalsModel(basket);
-        var discountLineItems = getDiscountLineItems(basket.bonusDiscountLineItems);
-
-        var productLineItems = embedBonusLineItems(productLineItemsModel, discountLineItems);
-
+        var productLineItems = productLineItemsModel.items;
         this.hasBonusProduct = Boolean(basket.bonusLineItems && basket.bonusLineItems.length);
         this.actionUrls = getCartActionUrls();
         this.numOfShipments = basket.shipments.length;
         this.totals = totalsModel;
         this.allBonusItems = productLineItems;
-
         if (shippingModels) {
             this.shipments = shippingModels.map(function (shippingModel) {
                 var result = {};
@@ -181,7 +107,6 @@ function CartModel(basket) {
                 if (shippingModel.selectedShippingMethod) {
                     result.selectedShippingMethod = shippingModel.selectedShippingMethod.ID;
                 }
-
                 return result;
             });
         }

@@ -38,6 +38,6 @@ module.exports = function productLineItem(product, apiProduct, options) {
     productLineItemDecorators.quantityOptions(product, apiProduct, options.quantity);
     productLineItemDecorators.options(product, options.lineItemOptions);
     productLineItemDecorators.bonusProductLineItemUUID(product, options.lineItem);
-
+    productLineItemDecorators.discountBonusLineItems(product, options.lineItem.UUID);
     return product;
 };
