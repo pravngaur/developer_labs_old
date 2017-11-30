@@ -26,6 +26,7 @@ module.exports = function bonusProduct(product, apiProduct, options, duuid) {
         endPoint: 'Variation'
     });
     decorators.attributes(product, apiProduct.attributeModel);
+    decorators.availability(product, options.quantity, apiProduct.minOrderQuantity.value, apiProduct.availabilityModel);
     decorators.options(product, options.optionModel, options.variables, options.quantity);
     decorators.quantitySelector(product, apiProduct.stepQuantity.value, options.variables, options.options);
     decorators.readyToOrder(product, options.variationModel);
