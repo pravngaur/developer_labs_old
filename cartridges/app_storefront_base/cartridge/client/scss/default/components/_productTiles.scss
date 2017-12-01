@@ -264,4 +264,20 @@
         text-align: center;
         color: $red;
     }
+
+    .bonus-summary {
+        @include media-breakpoint-down(sm) {
+            font-size: 0.625em;
+        }
+
+        .bonus-product-name {
+            @include media-breakpoint-down(sm) {
+                padding: 0;
+            }
+        }
+    }
+
+    .pre-cart-products {
+        margin-right: 0.125em;
+    }
 }

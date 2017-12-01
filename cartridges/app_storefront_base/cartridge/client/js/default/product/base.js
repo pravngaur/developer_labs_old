@@ -641,7 +641,7 @@ module.exports = {
                 + 'data-optionID="' + (optionID || '') + '"'
                 + 'data-option-selected-value="' + (valueId || '') + '"'
                 + '>'
-                + '<div class="col-11 bonus-product-name" >'
+                + '<div class="col-sm-11 col-9 bonus-product-name" >'
                 + $choiceOfBonusProduct.find('.product-name').html()
                 + '</div>'
                 + '<div class="col-1"><i class="fa fa-times" aria-hidden="true"></i></div>'
