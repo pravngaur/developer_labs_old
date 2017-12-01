@@ -143,6 +143,9 @@ describe('cartHelpers', function () {
         '*/cartridge/scripts/helpers/productHelpers': {
             getOptions: function () {},
             getCurrentOptionModel: function () {}
+        },
+        'dw/web/URLUtils': {
+            url: function () {}
         }
     });
 
