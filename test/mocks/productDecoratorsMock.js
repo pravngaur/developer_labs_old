@@ -74,7 +74,7 @@ function proxyModel() {
             stubBundleReadyToOrder: stubBundleReadyToOrder,
             stubSetIndividualProducts: stubSetIndividualProducts,
             stubBundledProducts: stubBundledProducts,
-            stubBonusUnitPrice:stubBonusUnitPrice
+            stubBonusUnitPrice: stubBonusUnitPrice
         }
     };
 }

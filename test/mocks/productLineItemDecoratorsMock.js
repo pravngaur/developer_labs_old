@@ -18,6 +18,7 @@ var stubBundledProductLineItems = sinon.stub();
 var stubBonusProductLineItemUUID = sinon.stub();
 var stubDiscountBonusLineItems = sinon.stub();
 var stubBonusUnitPrice = sinon.stub();
+var stubPreOrderUUID = sinon.stub();
 
 function proxyModel() {
     return {
@@ -36,7 +37,8 @@ function proxyModel() {
             '*/cartridge/models/productLineItem/decorators/bundledProductLineItems': stubBundledProductLineItems,
             '*/cartridge/models/productLineItem/decorators/bonusProductLineItemUUID': stubBonusProductLineItemUUID,
             '*/cartridge/models/productLineItem/decorators/discountBonusLineItems': stubDiscountBonusLineItems,
-            '*/cartridge/models/productLineItem/decorators/bonusUnitPrice': stubBonusUnitPrice
+            '*/cartridge/models/productLineItem/decorators/bonusUnitPrice': stubBonusUnitPrice,
+            '*/cartridge/models/productLineItem/decorators/preOrderUUID': stubPreOrderUUID
 
         }),
         stubs: {
@@ -54,7 +56,8 @@ function proxyModel() {
             stubBundledProductLineItems: stubBundledProductLineItems,
             stubDiscountBonusLineItems: stubDiscountBonusLineItems,
             stubBonusProductLineItemUUID: stubBonusProductLineItemUUID,
-            stubBonusUnitPrice: stubBonusUnitPrice
+            stubBonusUnitPrice: stubBonusUnitPrice,
+            stubPreOrderUUID: stubPreOrderUUID
         }
     };
 }
