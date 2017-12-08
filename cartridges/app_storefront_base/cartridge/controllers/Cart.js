@@ -345,7 +345,10 @@ server.get('UpdateQuantity', function (req, res, next) {
 
     if (matchingLineItem && canBeUpdated) {
         var basketModel = new CartModel(currentBasket);
-        res.json(basketModel);
+        res.json({
+            basketModel: basketModel,
+            bonusDiscountLineItemCount: bonusDiscountLineItemCount
+        });
     } else {
         res.setStatusCode(500);
         res.json({

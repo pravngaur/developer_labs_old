@@ -251,7 +251,6 @@ module.exports = function () {
         url = appendToUrl(url, urlParams);
 
         $(this).parents('.card').spinner().start();
-
         $.ajax({
             url: url,
             type: 'get',
@@ -259,14 +258,16 @@ module.exports = function () {
             dataType: 'json',
             success: function (data) {
                 $('.quantity[data-uuid="' + uuid + '"]').val(quantity);
-                $('.coupons-and-promos').empty().append(data.totals.discountsHtml);
-                updateCartTotals(data);
-                updateApproachingDiscounts(data.approachingDiscounts);
-                updateAvailability(data, uuid);
-                validateBasket(data);
+                $('.coupons-and-promos').empty().append(data.basketModel.totals.discountsHtml);
+                updateCartTotals(data.basketModel);
+                updateApproachingDiscounts(data.basketModel.approachingDiscounts);
+                updateAvailability(data.basketModel, uuid);
+                validateBasket(data.basketModel);
                 $(this).data('pre-select-qty', quantity);
                 $.spinner().stop();
-                if ($(this).parents('.product-info').hasClass('bonus-product-line-item') && $('.cart-page').length) {
+                if (($(this).parents('.product-info').hasClass('bonus-product-line-item')
+                    || data.bonusDiscountLineItemCount)
+                    && $('.cart-page').length) {
                     location.reload();
                 }
             },
