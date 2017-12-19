@@ -14,13 +14,13 @@
             <div class="row">
                 <div class="col-12">
                     <!---Breadcrumbs--->
-                    <div class="product-breadcrumb hidden-md-up">
-                        <isinclude template="components/breadcrumbs/pagebreadcrumbs"/>
+                    <div class="product-breadcrumb d-md-none">
+                        <isinclude template="components/breadcrumbs/pageBreadcrumbs"/>
                     </div>
 
                     <!-- Product Name -->
                     <div class="row">
-                        <div class="hidden-md-up col-sm-12">
+                        <div class="d-md-none col-sm-12">
                             <h1 class="product-name">${product.productName}</h1>
                         </div>
                     </div>
@@ -29,12 +29,12 @@
 
             <div class="row">
                 <!-- Product Images Carousel -->
-                <isinclude template="product/components/image_carousel" />
+                <isinclude template="product/components/imageCarousel" />
 
                 <div class="col-12 col-sm-6">
                     <!---Breadcrumbs--->
                     <div class="product-breadcrumb hidden-sm-down">
-                        <isinclude template="components/breadcrumbs/pagebreadcrumbs"/>
+                        <isinclude template="components/breadcrumbs/pageBreadcrumbs"/>
                     </div>
 
                     <!-- Product Name -->
@@ -78,15 +78,8 @@
                             </div>
                         </isif>
 
-                        <!-- Availability -->
-                        <div class="availability col-md-10 col-12 product-availability" data-ready-to-order="${product.readyToOrder}" data-available="${product.available}">
-                            <isinclude template="product/components/availability" />
-                        </div>
-
-                        <!-- In store inventory -->
-                        <div class="col-md-10 col-12 pdp-in-store-inventory">
-                            <isinclude template="product/components/pdpInStoreInventory" />
-                        </div>
+                        <!-- Product Availability -->
+                        <isinclude template="product/components/productAvailability" />
 
                         <!-- Applicable Promotions -->
                         <div class="col-md-10 col-12 promotions">

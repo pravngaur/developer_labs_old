@@ -43,10 +43,6 @@ function createStoresObject(storesObject) {
             storeObj.storeHours = store.storeHours.markup;
         }
 
-        if (store.inventoryListID || (store.custom && store.custom.inventoryListId)) {
-            storeObj.inventoryListId = store.inventoryListID || store.custom.inventoryListId;
-        }
-
         return storeObj;
     });
 }
@@ -58,7 +54,7 @@ function createStoresObject(storesObject) {
  */
 function createGeoLocationObject(storesObject) {
     var context;
-    var template = 'storelocator/storeinfowindow';
+    var template = 'storeLocator/storeInfoWindow';
     return Object.keys(storesObject).map(function (key) {
         var store = storesObject[key];
         context = { store: store };

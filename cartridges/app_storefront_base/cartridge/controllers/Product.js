@@ -16,17 +16,16 @@ function getAllBreadcrumbs(cgid, pid, breadcrumbs) {
     var CatalogMgr = require('dw/catalog/CatalogMgr');
     var ProductMgr = require('dw/catalog/ProductMgr');
 
-    var primaryCategory;
+    var category;
     var product;
     if (pid) {
         product = ProductMgr.getProduct(pid);
-        primaryCategory = product.variant
+        category = product.variant
             ? product.masterProduct.primaryCategory
             : product.primaryCategory;
+    } else if (cgid) {
+        category = CatalogMgr.getCategory(cgid);
     }
-    var category = cgid && cgid !== 'root'
-        ? CatalogMgr.getCategory(cgid)
-        : primaryCategory;
 
     if (category) {
         breadcrumbs.push({
@@ -73,14 +72,13 @@ function getResources() {
  */
 function showProductPage(querystring, res) {
     var URLUtils = require('dw/web/URLUtils');
-    var Site = require('dw/system/Site');
 
     var ProductFactory = require('*/cartridge/scripts/factories/product');
 
     var params = querystring;
     var product = ProductFactory.get(params);
     var addToCartUrl = URLUtils.url('Cart-AddProduct');
-    var breadcrumbs = getAllBreadcrumbs(querystring.cgid, product.id, []).reverse();
+    var breadcrumbs = getAllBreadcrumbs(null, product.id, []).reverse();
     var template = 'product/productDetails';
 
     if (product.productType === 'bundle') {
@@ -96,11 +94,7 @@ function showProductPage(querystring, res) {
         product: product,
         addToCartUrl: addToCartUrl,
         resources: getResources(),
-        breadcrumbs: breadcrumbs,
-        pickUpInStore: {
-            actionUrl: URLUtils.url('Product-GetStores').toString(),
-            enabled: Site.getCurrent().getCustomPreferenceValue('enableStorePickUp')
-        }
+        breadcrumbs: breadcrumbs
     });
 }
 
@@ -139,67 +133,6 @@ server.get('Variation', function (req, res, next) {
     next();
 });
 
-server.get('ShowTile', cache.applyPromotionSensitiveCache, function (req, res, next) {
-    var URLUtils = require('dw/web/URLUtils');
-    var ProductFactory = require('*/cartridge/scripts/factories/product');
-
-    // The req parameter has a property called querystring. In this use case the querystring could
-    // have the following:
-    // pid - the Product ID
-    // ratings - boolean to determine if the reviews should be shown in the tile.
-    // swatches - boolean to determine if the swatches should be shown in the tile.
-    //
-    // pview - string to determine if the product factory returns a model for
-    //         a tile or a pdp/quickview display
-    var productTileParams = { pview: 'tile' };
-    Object.keys(req.querystring).forEach(function (key) {
-        productTileParams[key] = req.querystring[key];
-    });
-
-    var product;
-    var productUrl;
-    var quickViewUrl;
-    var cgid = req.querystring.cgid;
-
-    // TODO: remove this logic once the Product factory is
-    // able to handle the different product types
-    try {
-        product = ProductFactory.get(productTileParams);
-        productUrl = cgid ?
-            URLUtils.url('Product-Show', 'pid', product.id, 'cgid', cgid).relative().toString() :
-            URLUtils.url('Product-Show', 'pid', product.id).relative().toString();
-        quickViewUrl = cgid ?
-            URLUtils.url('Product-ShowQuickView', 'pid', product.id, 'cgid', cgid)
-                .relative().toString() :
-            URLUtils.url('Product-ShowQuickView', 'pid', product.id).relative().toString();
-    } catch (e) {
-        product = false;
-        productUrl = URLUtils.url('Home-Show');// TODO: change to coming soon page
-        quickViewUrl = URLUtils.url('Home-Show');
-    }
-
-    var context = {
-        product: product,
-        urls: {
-            product: productUrl,
-            quickView: quickViewUrl
-        },
-        display: {}
-    };
-
-    Object.keys(req.querystring).forEach(function (key) {
-        if (req.querystring[key] === 'true') {
-            context.display[key] = true;
-        } else if (req.querystring[key] === 'false') {
-            context.display[key] = false;
-        }
-    });
-
-    res.render('product/gridTile.isml', context);
-
-    next();
-});
-
 server.get('ShowQuickView', cache.applyPromotionSensitiveCache, function (req, res, next) {
     var URLUtils = require('dw/web/URLUtils');
     var ProductFactory = require('*/cartridge/scripts/factories/product');
@@ -208,8 +141,8 @@ server.get('ShowQuickView', cache.applyPromotionSensitiveCache, function (req, r
     var product = ProductFactory.get(params);
     var addToCartUrl = URLUtils.url('Cart-AddProduct');
     var template = product.productType === 'set'
-        ? 'product/setQuickview.isml'
-        : 'product/quickview.isml';
+        ? 'product/setQuickView.isml'
+        : 'product/quickView.isml';
 
     res.render(template, {
         product: product,
@@ -236,46 +169,96 @@ server.get('SizeChart', function (req, res, next) {
     next();
 });
 
-server.get('GetStores', function (req, res, next) {
-    var URLUtils = require('dw/web/URLUtils');
-    var StoreHelpers = require('*/cartridge/scripts/helpers/storeHelpers');
-    var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
-
-    var actionUrl = URLUtils.url('Product-GetStores').toString();
-    var storesModel = StoreHelpers.getModel(req, actionUrl);
-    var product = [{
-        productID: req.querystring.pid,
-        quantityValue: req.querystring.qty
-    }];
-
-    storesModel.stores = StoreHelpers.getFilteredStores(storesModel, product);
-
-    var context = storesModel;
-    var storeTemplate = 'product/components/inStoreInventoryFind';
-
-    storesModel.storesResultsHtml = storesModel.stores
-        ? renderTemplateHelper.getRenderedHtml(context, storeTemplate)
-        : null;
-
-    res.json(storesModel);
-    next();
-});
-
 server.get('ShowBonusProducts', function (req, res, next) {
     var ProductFactory = require('*/cartridge/scripts/factories/product');
-
-    var params = JSON.parse(req.querystring.pids);
+    var moreUrl = null;
+    var pagingModel;
     var products = [];
     var product;
-    params.forEach(function (param) {
-        product = ProductFactory.get({ pid: param });
-        products.push(product);
-    });
+    var duuid = req.querystring.DUUID;
+    var collections = require('*/cartridge/scripts/util/collections');
+    var BasketMgr = require('dw/order/BasketMgr');
+    var currentBasket = BasketMgr.getCurrentOrNewBasket();
+    var showMoreButton;
+    var selectedBonusProducts;
 
-    var template = 'product/components/choiceofbonusproducts/bonusProducts.isml';
+    if (duuid) {
+        var bonusDiscountLineItem = collections.find(currentBasket.getBonusDiscountLineItems(), function (item) {
+            return item.UUID === duuid;
+        });
+
+        if (bonusDiscountLineItem && bonusDiscountLineItem.bonusProductLineItems.length) {
+            selectedBonusProducts = collections.map(bonusDiscountLineItem.bonusProductLineItems, function (bonusProductLineItem) {
+                var option = {
+                    optionid: '',
+                    selectedvalue: ''
+                };
+                if (!bonusProductLineItem.optionProductLineItems.empty) {
+                    option.optionid = bonusProductLineItem.optionProductLineItems[0].optionID;
+                    option.optionid = bonusProductLineItem.optionProductLineItems[0].optionValueID;
+                }
+                return {
+                    pid: bonusProductLineItem.productID,
+                    name: bonusProductLineItem.productName,
+                    submittedQty: (bonusProductLineItem.quantityValue),
+                    option: option
+                };
+            });
+        } else {
+            selectedBonusProducts = [];
+        }
+
+        if (req.querystring.pids) {
+            var params = req.querystring.pids.split(',');
+            products = params.map(function (param) {
+                product = ProductFactory.get({
+                    pid: param,
+                    pview: 'bonus',
+                    duuid: duuid });
+                return product;
+            });
+        } else {
+            var URLUtils = require('dw/web/URLUtils');
+            var PagingModel = require('dw/web/PagingModel');
+            var pageStart = parseInt(req.querystring.pagestart, 10);
+            var pageSize = parseInt(req.querystring.pagesize, 10);
+            showMoreButton = true;
+
+            var ProductSearchModel = require('dw/catalog/ProductSearchModel');
+            var apiProductSearch = new ProductSearchModel();
+            var productSearchHit;
+            apiProductSearch.setPromotionID(bonusDiscountLineItem.promotionID);
+            apiProductSearch.setPromotionProductType('bonus');
+            apiProductSearch.search();
+            pagingModel = new PagingModel(apiProductSearch.getProductSearchHits(), apiProductSearch.count);
+            pagingModel.setStart(pageStart);
+            pagingModel.setPageSize(pageSize);
+
+            var totalProductCount = pagingModel.count;
+
+            if (pageStart + pageSize > totalProductCount) {
+                showMoreButton = false;
+            }
+
+            moreUrl = URLUtils.url('Product-ShowBonusProducts', 'DUUID', duuid, 'pagesize', pageSize, 'pagestart', pageStart + pageSize).toString();
+
+            var iter = pagingModel.pageElements;
+            while (iter !== null && iter.hasNext()) {
+                productSearchHit = iter.next();
+                product = ProductFactory.get({ pid: productSearchHit.getProduct().ID, pview: 'bonus', duuid: duuid });
+                products.push(product);
+            }
+        }
+    }
+
+    var template = 'product/components/choiceOfBonusProducts/bonusProducts.isml';
 
     res.render(template, {
-        products: products
+        products: products,
+        selectedBonusProducts: selectedBonusProducts,
+        maxPids: req.querystring.maxpids,
+        moreUrl: moreUrl,
+        showMoreButton: showMoreButton
     });
 
     next();

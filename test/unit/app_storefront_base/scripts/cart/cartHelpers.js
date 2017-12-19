@@ -48,6 +48,7 @@ var stubGetBonusLineItems = function () {
             name: 'name1',
             ID: 'ID1',
             description: 'description 1',
+            UUID: 'uuid_string',
             maxBonusItems: 1,
             bonusProducts: {
                 iterator: function () {
@@ -142,6 +143,15 @@ describe('cartHelpers', function () {
         '*/cartridge/scripts/helpers/productHelpers': {
             getOptions: function () {},
             getCurrentOptionModel: function () {}
+        },
+        'dw/web/URLUtils': {
+            url: function () {
+                return {
+                    toString: function () {
+                        return 'string URL';
+                    }
+                };
+            }
         }
     });
 
@@ -245,7 +255,7 @@ describe('cartHelpers', function () {
                     name: 'name1',
                     ID: 'ID1',
                     description: 'description 1',
-                    uuid: 'uuid_string,',
+                    UUID: 'uuid_string',
                     maxBonusItems: 1
                 };
                 return expectedResult === x;
@@ -260,14 +270,12 @@ describe('cartHelpers', function () {
                 cartHelpers.getNewBonusDiscountLineItem(
                     currentBasket,
                     previousBonusDiscountLineItems,
-                    urlObject,
-                    'result.uuid'
+                    urlObject
             );
             assert.equal(newBonusDiscountLineItem.maxBonusItems, 1);
             assert.equal(newBonusDiscountLineItem.addToCartUrl, 'Cart-AddBonusProducts');
-            assert.equal(newBonusDiscountLineItem.configureProductstUrl, 'Product-ShowBonusProducts');
-            assert.equal(newBonusDiscountLineItem.url, 'Cart-ChooseBonusProducts?pids=pid_1,pid_2');
-            assert.equal(newBonusDiscountLineItem.uuid, 'result.uuid');
+            assert.equal(newBonusDiscountLineItem.configureProductstUrl, 'string URL');
+            assert.equal(newBonusDiscountLineItem.uuid, 'uuid_string');
             assert.equal(newBonusDiscountLineItem.bonuspids.length, 2);
             assert.equal(newBonusDiscountLineItem.bonuspids[0], 'pid_1');
             assert.equal(newBonusDiscountLineItem.bonuspids[1], 'pid_2');
@@ -276,8 +284,6 @@ describe('cartHelpers', function () {
             assert.equal(newBonusDiscountLineItem.newBonusDiscountLineItem.maxBonusItems, 1);
             assert.equal(newBonusDiscountLineItem.newBonusDiscountLineItem.description, 'description 1');
             assert.equal(newBonusDiscountLineItem.labels.close, 'someString');
-            assert.equal(newBonusDiscountLineItem.labels.selectattrs, 'someString');
-            assert.equal(newBonusDiscountLineItem.labels.selectbonus, 'someString');
             assert.equal(newBonusDiscountLineItem.labels.selectprods, 'someString');
         });
     });

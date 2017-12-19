@@ -53,7 +53,7 @@ server.post('CreateNewAddress', server.middleware.https, function (req, res, nex
     res.json({
         uuid: uuid,
         customer: new AccountModel(req.currentCustomer),
-        order: new OrderModel(basket, { countryCode: currentLocale.country })
+        order: new OrderModel(basket, { countryCode: currentLocale.country, containerView: 'basket' })
     });
     return next();
 });
@@ -189,7 +189,7 @@ server.post(
                     // Copy over preferredAddress (use addressUUID for matching)
                     COHelpers.copyBillingAddressToBasket(
                         req.currentCustomer.addressBook.preferredAddress);
-                } else if (!COHelpers.isPickUpInStore(basket)) {
+                } else {
                     // Copy over first shipping address (use shipmentUUID for matching)
                     COHelpers.copyBillingAddressToBasket(basket.defaultShipment.shippingAddress);
                 }
@@ -203,7 +203,8 @@ server.post(
                 {
                     usingMultiShipping: usingMultiShipping,
                     shippable: allValid,
-                    countryCode: currentLocale.country
+                    countryCode: currentLocale.country,
+                    containerView: 'basket'
                 }
             );
 

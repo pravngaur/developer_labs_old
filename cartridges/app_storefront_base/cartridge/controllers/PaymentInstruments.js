@@ -20,17 +20,26 @@ function verifyCard(card, form) {
     var paymentCard = PaymentMgr.getPaymentCard(card.cardType);
     var error = false;
     var cardNumber = card.cardNumber;
-    var creditCardStatus = paymentCard.verify(
-        card.expirationMonth,
-        card.expirationYear,
-        cardNumber
-    );
+    var creditCardStatus;
+    var formCardNumber = form.cardNumber;
 
-    if (creditCardStatus.error) {
+    if (paymentCard) {
+        creditCardStatus = paymentCard.verify(
+            card.expirationMonth,
+            card.expirationYear,
+            cardNumber
+        );
+    } else {
+        formCardNumber.valid = false;
+        formCardNumber.error =
+            Resource.msg('error.message.creditnumber.invalid', 'forms', null);
+        error = true;
+    }
+
+    if (creditCardStatus && creditCardStatus.error) {
         collections.forEach(creditCardStatus.items, function (item) {
             switch (item.code) {
                 case PaymentStatusCodes.CREDITCARD_INVALID_CARD_NUMBER:
-                    var formCardNumber = form.cardNumber;
                     formCardNumber.valid = false;
                     formCardNumber.error =
                         Resource.msg('error.message.creditnumber.invalid', 'forms', null);
@@ -118,13 +127,13 @@ server.get(
         var Resource = require('dw/web/Resource');
 
         var creditCardExpirationYears = getExpirationYears();
-        var paymentForm = server.forms.getForm('creditcard');
+        var paymentForm = server.forms.getForm('creditCard');
         paymentForm.clear();
         var months = paymentForm.expirationMonth.options;
         for (var j = 0, k = months.length; j < k; j++) {
             months[j].selected = false;
         }
-        res.render('account/payment/editaddpayment', {
+        res.render('account/payment/editAddPayment', {
             paymentForm: paymentForm,
             expirationYears: creditCardExpirationYears,
             breadcrumbs: [
@@ -157,11 +166,10 @@ server.post('SavePayment', csrfProtection.validateAjaxRequest, function (req, re
         return next();
     }
 
-    var paymentForm = server.forms.getForm('creditcard');
+    var paymentForm = server.forms.getForm('creditCard');
     var result = getDetailsObject(paymentForm);
-    var paymentInstruments = req.currentCustomer.wallet.paymentInstruments;
 
-    if (paymentForm.valid && !verifyCard(result, paymentForm, paymentInstruments)) {
+    if (paymentForm.valid && !verifyCard(result, paymentForm)) {
         res.setViewData(result);
         this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
             var URLUtils = require('dw/web/URLUtils');

@@ -141,7 +141,7 @@ server.get(
         }
 
         var accountModel = getModel(req);
-        res.render('account/accountdashboard', {
+        res.render('account/accountDashboard', {
             account: accountModel,
             accountlanding: true,
             breadcrumbs: [
@@ -217,8 +217,8 @@ server.post(
         var registrationForm = server.forms.getForm('profile');
 
         // form validation
-        if (registrationForm.customer.email.value
-            !== registrationForm.customer.emailconfirm.value
+        if (registrationForm.customer.email.value.toLowerCase()
+            !== registrationForm.customer.emailconfirm.value.toLowerCase()
         ) {
             registrationForm.customer.email.valid = false;
             registrationForm.customer.emailconfirm.valid = false;
@@ -299,7 +299,7 @@ server.post(
                         registrationForm.validForm = false;
                         registrationForm.form.customer.email.valid = false;
                         registrationForm.form.customer.email.error =
-                            Resource.msg('error.message.username.taken', 'forms', null);
+                            Resource.msg('error.message.username.invalid', 'forms', null);
                     }
                 }
 
@@ -380,7 +380,8 @@ server.post(
         var profileForm = server.forms.getForm('profile');
 
         // form validation
-        if (profileForm.customer.email.value !== profileForm.customer.emailconfirm.value) {
+        if (profileForm.customer.email.value.toLowerCase()
+            !== profileForm.customer.emailconfirm.value.toLowerCase()) {
             profileForm.valid = false;
             profileForm.customer.email.valid = false;
             profileForm.customer.emailconfirm.valid = false;
@@ -408,21 +409,20 @@ server.post(
                 var customerLogin;
                 var status;
                 Transaction.wrap(function () {
-                    status = customer.profile.credentials.setPassword(
-                        formInfo.password,
-                        formInfo.password,
-                        true
+                    status = profile.credentials.setPassword(
+                            formInfo.password,
+                            formInfo.password,
+                            true
                     );
-                    if (!status.error) {
-                        customerLogin = profile.credentials.setLogin(
-                            formInfo.email,
-                            formInfo.password
-                        );
-                    } else {
-                        customerLogin = false;
+                    if (status.error) {
                         formInfo.profileForm.login.password.valid = false;
                         formInfo.profileForm.login.password.error =
                             Resource.msg('error.message.currentpasswordnomatch', 'forms', null);
+                    } else {
+                        customerLogin = profile.credentials.setLogin(
+                                formInfo.email,
+                                formInfo.password
+                        );
                     }
                 });
                 if (customerLogin) {
@@ -437,6 +437,11 @@ server.post(
                         redirectUrl: URLUtils.url('Account-Show').toString()
                     });
                 } else {
+                    if (!status.error) {
+                        formInfo.profileForm.customer.email.valid = false;
+                        formInfo.profileForm.customer.email.error =
+                            Resource.msg('error.message.username.invalid', 'forms', null);
+                    }
                     res.json({
                         success: false,
                         fields: formErrors(profileForm)
@@ -614,7 +619,7 @@ server.get('SetNewPassword', server.middleware.https, function (req, res, next) 
     var CustomerMgr = require('dw/customer/CustomerMgr');
     var URLUtils = require('dw/web/URLUtils');
 
-    var passwordForm = server.forms.getForm('newpasswords');
+    var passwordForm = server.forms.getForm('newPasswords');
     passwordForm.clear();
     var token = req.querystring.token;
     var resettingCustomer = CustomerMgr.getCustomerByToken(token);
@@ -630,7 +635,7 @@ server.post('SaveNewPassword', server.middleware.https, function (req, res, next
     var Transaction = require('dw/system/Transaction');
     var Resource = require('dw/web/Resource');
 
-    var passwordForm = server.forms.getForm('newpasswords');
+    var passwordForm = server.forms.getForm('newPasswords');
     var token = req.querystring.token;
 
     if (passwordForm.newpassword.value !== passwordForm.newpasswordconfirm.value) {
@@ -672,7 +677,7 @@ server.post('SaveNewPassword', server.middleware.https, function (req, res, next
                 passwordForm.newpasswordconfirm.valid = false;
                 passwordForm.newpasswordconfirm.error =
                     Resource.msg('error.message.resetpassword.invalidformentry', 'forms', null);
-                res.render('account/password/newpassword', {
+                res.render('account/password/newPassword', {
                     passwordForm: passwordForm,
                     token: token
                 });
@@ -705,14 +710,14 @@ server.post('SaveNewPassword', server.middleware.https, function (req, res, next
             }
         });
     } else {
-        res.render('account/password/newpassword', { passwordForm: passwordForm, token: token });
+        res.render('account/password/newPassword', { passwordForm: passwordForm, token: token });
     }
     next();
 });
 
-
 server.get('Header', server.middleware.include, function (req, res, next) {
-    res.render('account/header', { name:
+    var template = req.querystring.mobile ? 'account/mobileHeader' : 'account/header';
+    res.render(template, { name:
         req.currentCustomer.profile ? req.currentCustomer.profile.firstName : null
     });
     next();

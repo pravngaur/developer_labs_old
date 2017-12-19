@@ -40,14 +40,14 @@ server.get(
 
         var orderModel = new OrderModel(
             order,
-            { config: config, countryCode: currentLocale.country }
+            { config: config, countryCode: currentLocale.country, containerView: 'order' }
         );
         var passwordForm;
 
         var reportingURLs = reportingUrls.getOrderReportingURLs(order);
 
         if (!req.currentCustomer.profile) {
-            passwordForm = server.forms.getForm('newpasswords');
+            passwordForm = server.forms.getForm('newPasswords');
             passwordForm.clear();
             res.render('checkout/confirmation/confirmation', {
                 order: orderModel,
@@ -108,11 +108,12 @@ server.get(
 
             var orderModel = new OrderModel(
                 order,
-                { config: config, countryCode: currentLocale.country }
+                { config: config, countryCode: currentLocale.country, containerView: 'order' }
             );
 
             // check the email and postal code of the form
-            if (req.querystring.trackOrderEmail !== orderModel.orderEmail) {
+            if (req.querystring.trackOrderEmail.toLowerCase()
+                    !== orderModel.orderEmail.toLowerCase()) {
                 validForm = false;
             }
 
@@ -130,10 +131,10 @@ server.get(
                     : Resource.msg('link.orderdetails.myaccount', 'account', null);
 
                 exitLinkUrl = !req.currentCustomer.profile
-                    ? URLUtils.https('Home-Show')
+                    ? URLUtils.url('Home-Show')
                     : URLUtils.https('Account-Show');
 
-                res.render('account/orderdetails', {
+                res.render('account/orderDetails', {
                     order: orderModel,
                     exitLinkText: exitLinkText,
                     exitLinkUrl: exitLinkUrl
@@ -224,12 +225,12 @@ server.get(
 
             var orderModel = new OrderModel(
                 order,
-                { config: config, countryCode: currentLocale.country }
+                { config: config, countryCode: currentLocale.country, containerView: 'order' }
             );
             var exitLinkText = Resource.msg('link.orderdetails.orderhistory', 'account', null);
             var exitLinkUrl =
                 URLUtils.https('Order-History', 'orderFilter', req.querystring.orderFilter);
-            res.render('account/orderdetails', {
+            res.render('account/orderDetails', {
                 order: orderModel,
                 exitLinkText: exitLinkText,
                 exitLinkUrl: exitLinkUrl,
@@ -263,7 +264,7 @@ server.get(
         var orders = ordersResult.orders;
         var filterValues = ordersResult.filterValues;
 
-        res.render('account/order/orderlist', {
+        res.render('account/order/orderList', {
             orders: orders,
             filterValues: filterValues,
             orderFilter: req.querystring.orderFilter,
@@ -288,7 +289,7 @@ server.post(
 
         var formErrors = require('*/cartridge/scripts/formErrors');
 
-        var passwordForm = server.forms.getForm('newpasswords');
+        var passwordForm = server.forms.getForm('newPasswords');
         var newPassword = passwordForm.newpassword.htmlValue;
         var confirmPassword = passwordForm.newpasswordconfirm.htmlValue;
         if (newPassword !== confirmPassword) {

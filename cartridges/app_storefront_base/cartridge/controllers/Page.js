@@ -16,18 +16,18 @@ server.get(
         var apiContent = ContentMgr.getContent(req.querystring.cid);
 
         if (apiContent) {
-            var content = new ContentModel(apiContent, 'components/content/contentassetinc');
+            var content = new ContentModel(apiContent, 'components/content/contentAssetInc');
             if (content.template) {
                 res.render(content.template, { content: content });
             } else {
                 Logger.warn('Content asset with ID {0} is offline', req.querystring.cid);
-                res.render('/components/content/offlinecontent');
+                res.render('/components/content/offlineContent');
             }
         } else {
             Logger.warn('Content asset with ID {0} was included but not found',
                     req.querystring.cid);
 
-            res.render('/components/content/offlinecontent');
+            res.render('/components/content/offlineContent');
         }
         next();
     }
@@ -40,21 +40,12 @@ server.get(
     function (req, res, next) {
         var catalogMgr = require('dw/catalog/CatalogMgr');
         var Categories = require('*/cartridge/models/categories');
-        var ProductSearch = require('dw/catalog/ProductSearchModel');
-        var collections = require('*/cartridge/scripts/util/collections');
         var siteRootCategory = catalogMgr.getSiteCatalog().getRoot();
-        var ps = new ProductSearch();
-        var topLevelCategories = null;
-        var categories = null;
 
-        ps.setCategoryID(siteRootCategory.getID());
-        ps.search();
-        topLevelCategories =
-            ps.getRefinements().getNextLevelCategoryRefinementValues(siteRootCategory);
-        categories = collections.map(topLevelCategories, function (item) {
-            return catalogMgr.getCategory(item.value);
-        });
-        res.render('/components/header/menu', new Categories(categories));
+        var topLevelCategories = siteRootCategory.hasOnlineSubCategories() ?
+                siteRootCategory.getOnlineSubCategories() : null;
+
+        res.render('/components/header/menu', new Categories(topLevelCategories));
         next();
     }
 );
@@ -119,10 +110,11 @@ server.get('Locale', function (req, res, next) {
     var currentLocale = Locale.getLocale(req.locale.id);
     var localeModel = new LocaleModel(currentLocale, allowedLocales, siteId);
 
-    res.render('/components/header/countryselector', {
-        localeModel: localeModel,
-        showInMenu: req.querystring.showInMenu
-    });
+    var template = req.querystring.mobile
+        ? '/components/header/mobileCountrySelector'
+        : '/components/header/countrySelector';
+
+    res.render(template, { localeModel: localeModel });
     next();
 });
 
@@ -134,12 +126,12 @@ server.get('Show', cache.applyDefaultCache, function (req, res, next) {
     var apiContent = ContentMgr.getContent(req.querystring.cid);
 
     if (apiContent) {
-        var content = new ContentModel(apiContent, 'content/contentasset');
+        var content = new ContentModel(apiContent, 'content/contentAsset');
         if (content.template) {
             res.render(content.template, { content: content });
         } else {
             Logger.warn('Content asset with ID {0} is offline', req.querystring.cid);
-            res.render('/components/content/offlinecontent');
+            res.render('/components/content/offlineContent');
         }
     } else {
         Logger.warn('Content asset with ID {0} was included but not found', req.querystring.cid);

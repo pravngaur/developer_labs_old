@@ -32,7 +32,7 @@ server.get('List', userLoggedIn.validateLoggedIn, function (req, res, next) {
         deleteActionUrl: URLUtils.url('Address-DeleteAddress').toString(),
         listActionUrl: URLUtils.url('Address-List').toString()
     };
-    res.render('account/addressbook', {
+    res.render('account/addressBook', {
         addressBook: getList(req.currentCustomer.profile.customerNo),
         actionUrls: actionUrls,
         breadcrumbs: [
@@ -56,7 +56,7 @@ server.get(
     function (req, res, next) {
         var addressForm = server.forms.getForm('address');
         addressForm.clear();
-        res.render('account/editaddaddress', {
+        res.render('account/editAddAddress', {
             addressForm: addressForm,
             breadcrumbs: [
                 {
@@ -97,7 +97,7 @@ server.get(
 
         addressForm.copyFrom(addressModel.address);
 
-        res.render('account/editaddaddress', {
+        res.render('account/editAddAddress', {
             addressForm: addressForm,
             addressId: addressId,
             breadcrumbs: [
@@ -150,25 +150,32 @@ server.post('SaveAddress', csrfProtection.validateAjaxRequest, function (req, re
                     if (req.querystring.addressId) {
                         address.setID(formInfo.addressId);
                     }
-                    address.setAddress1(formInfo.address1);
-                    address.setAddress2(formInfo.address2);
-                    address.setCity(formInfo.city);
-                    address.setFirstName(formInfo.firstName);
-                    address.setLastName(formInfo.lastName);
-                    address.setPhone(formInfo.phone);
-                    address.setPostalCode(formInfo.postalCode);
+
+                    address.setAddress1(formInfo.address1 || '');
+                    address.setAddress2(formInfo.address2 || '');
+                    address.setCity(formInfo.city || '');
+                    address.setFirstName(formInfo.firstName || '');
+                    address.setLastName(formInfo.lastName || '');
+                    address.setPhone(formInfo.phone || '');
+                    address.setPostalCode(formInfo.postalCode || '');
+
                     if (formInfo.states && formInfo.states.stateCode) {
                         address.setStateCode(formInfo.states.stateCode);
                     }
-                    address.setCountryCode(formInfo.country);
-                    address.setJobTitle(formInfo.jobTitle);
-                    address.setPostBox(formInfo.postBox);
-                    address.setSalutation(formInfo.salutation);
-                    address.setSecondName(formInfo.secondName);
-                    address.setCompanyName(formInfo.companyName);
-                    address.setSuffix(formInfo.suffix);
-                    address.setSuite(formInfo.suite);
-                    address.setJobTitle(formInfo.title);
+
+                    if (formInfo.country) {
+                        address.setCountryCode(formInfo.country);
+                    }
+
+                    address.setJobTitle(formInfo.jobTitle || '');
+                    address.setPostBox(formInfo.postBox || '');
+                    address.setSalutation(formInfo.salutation || '');
+                    address.setSecondName(formInfo.secondName || '');
+                    address.setCompanyName(formInfo.companyName || '');
+                    address.setSuffix(formInfo.suffix || '');
+                    address.setSuite(formInfo.suite || '');
+                    address.setJobTitle(formInfo.title || '');
+
                     res.json({
                         success: true,
                         redirectUrl: URLUtils.url('Address-List').toString()

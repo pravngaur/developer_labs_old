@@ -9,7 +9,6 @@ var ProductLineItemsModel = require('*/cartridge/models/productLineItems');
 var TotalsModel = require('*/cartridge/models/totals');
 
 var ShippingHelpers = require('*/cartridge/scripts/checkout/shippingHelpers');
-var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 
 var DEFAULT_MODEL_CONFIG = {
     numberOfLineItems: '*'
@@ -28,8 +27,6 @@ var RESOURCES = {
     shippingAddresses: Resource.msg('msg.shipping.addresses', 'checkout', null),
     accountAddresses: Resource.msg('msg.account.addresses', 'checkout', null),
     shippingTo: Resource.msg('msg.shipping.to', 'checkout', null),
-    pickupInStore: Resource.msg('msg.pickup.in.store', 'checkout', null),
-    storePickUp: Resource.msg('label.store.pick.up', 'checkout', null),
     shippingAddress: Resource.msg('label.order.shipping.address', 'confirmation', null),
     addressIncomplete: Resource.msg('heading.address.incomplete', 'checkout', null)
 };
@@ -124,7 +121,6 @@ function OrderModel(lineItemContainer, options) {
         this.orderEmail = null;
         this.orderStatus = null;
         this.usingMultiShipping = null;
-        this.isPickUpInStore = null;
         this.shippable = null;
     } else {
         var safeOptions = options || {};
@@ -134,7 +130,7 @@ function OrderModel(lineItemContainer, options) {
         var usingMultiShipping = (safeOptions.usingMultiShipping
             || lineItemContainer.shipments.length > 1);
 
-        var shippingModels = ShippingHelpers.getShippingModels(lineItemContainer, customer);
+        var shippingModels = ShippingHelpers.getShippingModels(lineItemContainer, customer, options.containerView);
 
         var paymentModel = new PaymentModel(lineItemContainer, customer, countryCode);
 
@@ -144,7 +140,7 @@ function OrderModel(lineItemContainer, options) {
 
         var billingModel = new BillingModel(billingAddressModel, paymentModel, associatedAddress);
 
-        var productLineItemsModel = new ProductLineItemsModel(lineItemContainer.productLineItems);
+        var productLineItemsModel = new ProductLineItemsModel(lineItemContainer.productLineItems, options.containerView);
         var totalsModel = new TotalsModel(lineItemContainer);
 
         this.shippable = safeOptions.shippable || false;
@@ -163,7 +159,6 @@ function OrderModel(lineItemContainer, options) {
             : null;
         this.productQuantityTotal = lineItemContainer.productQuantityTotal ?
                 lineItemContainer.productQuantityTotal : null;
-        this.isPickUpInStore = COHelpers.isPickUpInStore(lineItemContainer);
 
         if (modelConfig.numberOfLineItems === '*') {
             this.totals = totalsModel;

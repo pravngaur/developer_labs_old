@@ -2,7 +2,6 @@
 
 var server = require('server');
 
-var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 
 
@@ -15,6 +14,7 @@ server.post('ToggleMultiShip', server.middleware.https, function (req, res, next
     var URLUtils = require('dw/web/URLUtils');
     var collections = require('*/cartridge/scripts/util/collections');
     var Locale = require('dw/util/Locale');
+    var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 
     var currentBasket = BasketMgr.getCurrentBasket();
     if (!currentBasket) {
@@ -55,7 +55,7 @@ server.post('ToggleMultiShip', server.middleware.https, function (req, res, next
 
     var basketModel = new OrderModel(
         currentBasket,
-        { usingMultiShipping: usingMultiShipping, countryCode: currentLocale.country }
+        { usingMultiShipping: usingMultiShipping, countryCode: currentLocale.country, containerView: 'basket' }
     );
 
     res.json({
@@ -137,7 +137,7 @@ server.post('SelectShippingMethod', server.middleware.https, function (req, res,
 
         var basketModel = new OrderModel(
             currentBasket,
-            { usingMultiShipping: usingMultiShipping, countryCode: currentLocale.country }
+            { usingMultiShipping: usingMultiShipping, countryCode: currentLocale.country, containerView: 'basket' }
         );
 
         res.json({
@@ -214,7 +214,7 @@ server.post('UpdateShippingMethodsList', server.middleware.https, function (req,
 
     var basketModel = new OrderModel(
         currentBasket,
-        { usingMultiShipping: usingMultiShipping, countryCode: currentLocale.country }
+        { usingMultiShipping: usingMultiShipping, countryCode: currentLocale.country, containerView: 'basket' }
     );
 
     res.json({
@@ -236,8 +236,8 @@ server.post(
     csrfProtection.validateAjaxRequest,
     function (req, res, next) {
         var BasketMgr = require('dw/order/BasketMgr');
-        var Transaction = require('dw/system/Transaction');
         var URLUtils = require('dw/web/URLUtils');
+        var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 
         var data = res.getViewData();
         if (data && data.csrfError) {
@@ -304,29 +304,9 @@ server.post(
             this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
                 var AccountModel = require('*/cartridge/models/account');
                 var OrderModel = require('*/cartridge/models/order');
-                var ProductInventoryMgr = require('dw/catalog/ProductInventoryMgr');
-                var StoreMgr = require('dw/catalog/StoreMgr');
                 var Locale = require('dw/util/Locale');
 
                 var shippingData = res.getViewData();
-                var storeID = req.form.storeID;
-                var plis = currentBasket.defaultShipment.productLineItems;
-                var pli;
-
-                if (storeID) {
-                    var store = StoreMgr.getStore(storeID);
-                    var storeinventory = ProductInventoryMgr.getInventoryList(
-                        store.custom.inventoryListId
-                    );
-
-                    Transaction.wrap(function () {
-                        for (var i = 0, ii = plis.length; i < ii; i++) {
-                            pli = plis[i];
-                            pli.custom.fromStoreId = storeID;
-                            pli.setProductInventoryList(storeinventory);
-                        }
-                    });
-                }
 
                 COHelpers.copyShippingAddressToShipment(
                     shippingData,
@@ -339,7 +319,7 @@ server.post(
                         // Copy over preferredAddress (use addressUUID for matching)
                         COHelpers.copyBillingAddressToBasket(
                             req.currentCustomer.addressBook.preferredAddress);
-                    } else if (!COHelpers.isPickUpInStore(currentBasket)) {
+                    } else {
                         // Copy over first shipping address (use shipmentUUID for matching)
                         COHelpers.copyBillingAddressToBasket(
                             currentBasket.defaultShipment.shippingAddress);
@@ -359,7 +339,8 @@ server.post(
                     {
                         usingMultiShipping: usingMultiShipping,
                         shippable: true,
-                        countryCode: currentLocale.country
+                        countryCode: currentLocale.country,
+                        containerView: 'basket'
                     }
                 );
 

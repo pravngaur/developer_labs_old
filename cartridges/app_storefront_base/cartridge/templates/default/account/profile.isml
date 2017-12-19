@@ -9,15 +9,15 @@
     </div>
     <div class="container">
         <!---Breadcrumbs--->
-        <isinclude template="components/breadcrumbs/pagebreadcrumbs"/>
+        <isinclude template="components/breadcrumbs/pageBreadcrumbs"/>
         <div class="row justify-content-center">
             <div class="col-sm-8 col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h4>${Resource.msg('label.profile.edit','account',null)}</h4>
                     </div>
-                    <div class="card-block">
-                        <isinclude template="account/editprofileform"/>
+                    <div class="card-body">
+                        <isinclude template="account/editProfileForm"/>
                     </div>
                 </div>
             </div>

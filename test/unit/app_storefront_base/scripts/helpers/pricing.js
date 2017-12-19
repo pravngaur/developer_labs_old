@@ -2,11 +2,16 @@
 
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
+var ArrayList = require('../../../../mocks/dw.util.Collection');
 var sinon = require('sinon');
 
 
 describe('Helpers - Pricing', function () {
     var templateStub = sinon.stub();
+    var collections = proxyquire('../../../../../cartridges/app_storefront_base/cartridge/scripts/util/collections', {
+        'dw/util/ArrayList': ArrayList
+    });
+
     var priceHelper = proxyquire('../../../../../cartridges/app_storefront_base/cartridge/scripts/helpers/pricing.js', {
         'dw/util/HashMap': function () {
             return {
@@ -17,7 +22,8 @@ describe('Helpers - Pricing', function () {
             };
         },
         'dw/value/Money': function () {},
-        'dw/util/Template': templateStub
+        'dw/util/Template': templateStub,
+        '*/cartridge/scripts/util/collections': collections
     });
 
     describe('getHtmlContext', function () {
@@ -49,7 +55,7 @@ describe('Helpers - Pricing', function () {
     describe('renderHtml', function () {
         var context = 'context';
         var renderedHtml = 'rendered';
-        var defaultTemplatePath = 'product/components/pricing/ajax-main.isml';
+        var defaultTemplatePath = 'product/components/pricing/ajaxMain.isml';
 
         beforeEach(function () {
             templateStub.returns({

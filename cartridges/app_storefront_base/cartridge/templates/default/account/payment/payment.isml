@@ -10,7 +10,7 @@
     </div>
     <div class="container">
         <!---Breadcrumbs--->
-        <isinclude template="components/breadcrumbs/pagebreadcrumbs"/>
+        <isinclude template="components/breadcrumbs/pageBreadcrumbs"/>
         <isif condition="${!pdict.paymentInstruments}">
             <div class="row justify-content-center">
                 <div class="col">
@@ -26,7 +26,7 @@
                         <div class="card-header">
                             <h4 class="pull-left">${paymentInstrument.creditCardHolder}</h4>
                         </div>
-                        <div class="card-block card-block-positioning">
+                        <div class="card-body card-body-positioning">
                             <div class="card-info-group">
                                 <p>${Resource.msg('label.payment.credit','account',null)} ${paymentInstrument.creditCardType}</p>
                                 <p>${paymentInstrument.maskedCreditCardNumber}</p>
