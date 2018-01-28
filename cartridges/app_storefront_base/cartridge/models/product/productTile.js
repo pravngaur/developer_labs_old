@@ -41,7 +41,7 @@ module.exports = function productTile(product, apiProduct, productType) {
     var productSearchHit = getProductSearchHit(apiProduct);
     decorators.base(product, apiProduct, productType);
     decorators.searchPrice(product, productSearchHit, promotionCache.promotions, getProductSearchHit);
-    decorators.images(product, apiProduct, { types: ['medium'], quantity: 'single' });
+    decorators.images(product, apiProduct, { types: ['medium', 'large'], quantity: 'single' });
     decorators.ratings(product);
     decorators.searchVariationAttributes(product, productSearchHit);
 

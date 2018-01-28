@@ -95,8 +95,12 @@
     }
 
     .image-container {
+        background-color: $white;
         position: relative;
         overflow: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         .quickview {
             position: absolute;
@@ -119,7 +123,8 @@
             display: block;
 
             .tile-image {
-                width: 100%;
+                object-fit: contain;
+                font-family: 'object-fit: contain;'; //IE Polyfill, see also https://github.com/bfred-it/object-fit-images
             }
         }
     }
