@@ -2,6 +2,9 @@
 
 var addressHelpers = require('./address');
 var formHelpers = require('./formErrors');
+var ShippingState = require('./shippingState');
+
+var shippingState;
 
 /**
  * updates the shipping address selector within shipping forms
@@ -483,6 +486,14 @@ function selectShippingMethodAjax(url, urlParams) {
         });
 }
 
+/**
+ * Initializes state object from shipping form data attribute
+ */
+function initializeStateObject() {
+    var initialState = $('.shipping-form').data('initial-state');
+    shippingState = new ShippingState(initialState.shippingState);
+}
+
 module.exports = {
     methods: {
         updateShippingAddressSelector: updateShippingAddressSelector,
@@ -497,7 +508,8 @@ module.exports = {
         toggleMultiShip: toggleMultiShip,
         createNewShipment: createNewShipment,
         selectShippingMethodAjax: selectShippingMethodAjax,
-        updateShippingMethodList: updateShippingMethodList
+        updateShippingMethodList: updateShippingMethodList,
+        initializeStateObject: initializeStateObject
     },
 
     selectShippingMethod: function () {
@@ -508,6 +520,8 @@ module.exports = {
             var urlParams = addressHelpers.methods.getAddressFieldsFromUI($shippingForm);
             urlParams.shipmentUUID = shipmentUUID;
             urlParams.methodID = methodID;
+
+            shippingState.changeState({ methodID: methodID, pickupEnabled: methodID === '005' }, shipmentUUID);
 
             var url = $(this).data('select-shipping-method-url');
             selectShippingMethodAjax(url, urlParams);
