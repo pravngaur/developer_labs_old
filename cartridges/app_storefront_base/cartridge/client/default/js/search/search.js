@@ -140,6 +140,8 @@ module.exports = {
     },
 
     showMore: function () {
+        var tileResizer = require('../product/tileResizer');
+
         // Show more products
         $('.container').on('click', '.show-more button', function (e) {
             e.stopPropagation();
@@ -157,6 +159,7 @@ module.exports = {
                     $('.grid-footer').replaceWith(response);
                     updateSortOptions(response);
                     $.spinner().stop();
+                    tileResizer.imageResize();
                 },
                 error: function () {
                     $.spinner().stop();

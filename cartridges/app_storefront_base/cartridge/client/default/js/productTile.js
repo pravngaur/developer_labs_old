@@ -4,5 +4,5 @@ var processInclude = require('./util');
 
 $(document).ready(function () {
     processInclude(require('./product/quickView'));
-    processInclude(require('./components/objectFit'));
+    processInclude(require('./product/tileResizer'));
 });
