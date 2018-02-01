@@ -167,7 +167,10 @@ function ensureShipmentHasMethod(shipment) {
  * @returns {dw.order.Shipment} a Shipment object
  */
 function getShipmentByUUID(basket, uuid) {
-    return collections.find(basket.shipments, function (shipment) {
+    var BasketMgr = require('dw/order/BasketMgr');
+    var currentBasket = basket || BasketMgr.getCurrentBasket();
+
+    return collections.find(currentBasket.shipments, function (shipment) {
         return shipment.UUID === uuid;
     });
 }
