@@ -521,7 +521,7 @@ module.exports = {
             urlParams.shipmentUUID = shipmentUUID;
             urlParams.methodID = methodID;
 
-            shippingState.changeState({ methodID: methodID, pickupEnabled: methodID === '005' }, shipmentUUID);
+            shippingState.changeState({ pickupEnabled: methodID === '005' }, shipmentUUID);
 
             var url = $(this).data('select-shipping-method-url');
             selectShippingMethodAjax(url, urlParams);
