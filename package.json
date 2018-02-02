@@ -4,7 +4,7 @@
   "description": "Mobile First SiteGenesis",
   "main": "index.js",
   "engines": {
-    "node": ">=4.0"
+    "node": ">=8.0"
   },
   "scripts": {
     "test": "sgmf-scripts --test test/unit/**/*.js",
