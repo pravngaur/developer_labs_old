@@ -11,6 +11,8 @@ var shippingHelpers = proxyquire('../../../../../cartridges/app_storefront_base/
     }),
 
     'dw/order/ShippingMgr': require('../../../../mocks/dw/order/ShippingMgr'),
+    'dw/order/BasketMgr': require('../../../../mocks/dw/order/BasketMgr'),
+
 
     '*/cartridge/models/shipping': require('../../../../mocks/models/shipping'),
     '*/cartridge/models/shipping/shippingMethod': require('../../../../mocks/models/shippingMethod')
@@ -83,6 +85,11 @@ describe('shippingHelpers', function () {
 
         it('should return null when no shipment found', function () {
             var shipment = shippingHelpers.getShipmentByUUID(basket, '12345');
+            assert.isNull(shipment);
+        });
+
+        it('should use current basket if no basket is passed in', function () {
+            var shipment = shippingHelpers.getShipmentByUUID(null, '000');
             assert.isNull(shipment);
         });
     });
