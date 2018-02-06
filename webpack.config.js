@@ -15,7 +15,7 @@ var bootstrapPackages = {
     // Popover: 'exports-loader?Popover!bootstrap/js/src/popover',
     Scrollspy: 'exports-loader?Scrollspy!bootstrap/js/src/scrollspy',
     Tab: 'exports-loader?Tab!bootstrap/js/src/tab',
-    // Tooltip: 'exports-loader?Tooltip!bootstrap/js/src/tooltip',
+    Tooltip: 'exports-loader?Tooltip!bootstrap/js/src/tooltip',
     Util: 'exports-loader?Util!bootstrap/js/src/util'
 };
 

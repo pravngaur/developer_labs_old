@@ -77,11 +77,8 @@
             <isif condition=${creditFields.securityCode.mandatory === true}>required</isif>
             ${creditFields.securityCode.htmlName}">
             <label class="form-control-label" for="securityCode">${Resource.msg('field.credit.card.security.code','creditCard',null)}</label>
-            <span class="info-icon">
-                <span class="icon">i</span>
-                <div class="tooltip">
-                    ${Resource.msg('tooltip.security.code','creditCard',null)}
-                </div>
+            <span class="info-icon" data-toggle="tooltip" title="${Resource.msg('tooltip.security.code','creditCard',null)}">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
             </span>
 
             <input type="text" class="form-control securityCode" id="securityCode"
@@ -97,11 +94,8 @@
             <isif condition=${creditFields.email.mandatory === true}>required</isif>
             ${creditFields.email.htmlName}">
             <label class="form-control-label" for="email">${Resource.msg('field.customer.email','checkout',null)}</label>
-            <span class="info-icon">
-                <span class="icon">i</span>
-                <div class="tooltip">
-                    ${Resource.msg('tooltip.email','creditCard',null)}
-                </div>
+            <span class="info-icon" data-toggle="tooltip" title="${Resource.msg('tooltip.email','creditCard',null)}">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
             </span>
             <input type="text" class="form-control email" id="email"
                 value="${pdict.order.orderEmail||''}" <isprint value=${creditFields.email.attributes} encoding="off"/> >
@@ -113,11 +107,9 @@
             <isif condition=${creditFields.phone.mandatory === true}>required</isif>
             ${creditFields.phone.htmlName}">
             <label class="form-control-label" for="phoneNumber">${Resource.msg('field.customer.phone.number','checkout',null)}</label>
-            <span class="info-icon">
-                <span class="icon">i</span>
-                <div class="tooltip">
-                    ${Resource.msg('tooltip.phone.number','creditCard',null)}
-                </div>
+            <span class="info-icon" data-toggle="tooltip" title="${Resource.msg('tooltip.phone.number','creditCard',null)}">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
             </span>
             <input type="tel" class="form-control phone" id="phoneNumber"
                 value="${pdict.order.billing.billingAddress.address
