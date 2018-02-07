@@ -36,6 +36,7 @@ describe('shippingState', function () {
         assert.equal(result.shippingState.shipments[0].methodID, '009');
         assert.equal(result.shippingState.shipments[0].pickupAddress, 'someStoreForPickUp');
         assert.isTrue(result.shippingState.shipments[0].pickupEnabled, true);
+        assert.isFalse(result.shippingState.collapsed);
     });
 
 
@@ -45,16 +46,33 @@ describe('shippingState', function () {
         assert.equal(result.shippingState.shipments[0].methodID, '008');
         assert.equal(result.shippingState.shipments[0].deliveryAddress, 'someAddressForDelivery');
         assert.isFalse(result.shippingState.shipments[0].pickupEnabled, false);
+        assert.isFalse(result.shippingState.collapsed);
     });
 
     it('should return multiship as true for more than one shipment', function () {
         var result = new ShippingStateModel(orderMock3);
+        assert.equal(result.shippingState.shipments[0].shipmentUUID, '345');
+        assert.equal(result.shippingState.shipments[0].methodID, '008');
+        assert.equal(result.shippingState.shipments[0].deliveryAddress, 'someAddressForDelivery');
+        assert.isFalse(result.shippingState.shipments[0].pickupEnabled, false);
         assert.equal(result.shippingState.multiship, true);
+        assert.equal(result.shippingState.shipments[1].shipmentUUID, '123');
+        assert.equal(result.shippingState.shipments[1].methodID, '009');
+        assert.equal(result.shippingState.shipments[1].pickupAddress, 'someStoreForPickUp');
+        assert.isTrue(result.shippingState.shipments[1].pickupEnabled, true);
+        assert.isFalse(result.shippingState.collapsed);
     });
 
     it('should return multiship as false for only one shipment', function () {
         var result = new ShippingStateModel(orderMock);
         assert.equal(result.shippingState.multiship, false);
+        assert.isFalse(result.shippingState.collapsed);
     });
+    it('should return multiship as true for more than one shipment', function () {
+        var result = new ShippingStateModel(orderMock3);
+        assert.equal(result.shippingState.multiship, true);
+        assert.isFalse(result.shippingState.collapsed);
+    });
+
 });
 
