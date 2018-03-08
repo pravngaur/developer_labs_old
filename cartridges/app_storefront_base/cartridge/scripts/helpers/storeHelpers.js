@@ -62,7 +62,7 @@ function createStoresResultsHtml(storesInfo) {
     var Template = require('dw/util/Template');
 
     var context = new HashMap();
-    var object = { stores: storesInfo };
+    var object = { stores: { stores: storesInfo } };
 
     Object.keys(object).forEach(function (key) {
         context.put(key, object[key]);

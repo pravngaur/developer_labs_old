@@ -58,7 +58,8 @@ function getFirstApplicableShippingMethod(methods, filterPickupInStore) {
     var iterator = methods.iterator();
     while (iterator.hasNext()) {
         method = iterator.next();
-        if (!filterPickupInStore || (filterPickupInStore && !method.custom.storePickupEnabled)) {
+        // TODO: remove reference to '005' replace with constant
+        if (!filterPickupInStore || (filterPickupInStore && method.ID !== '005')) {
             break;
         }
     }
@@ -166,10 +167,7 @@ function ensureShipmentHasMethod(shipment) {
  * @returns {dw.order.Shipment} a Shipment object
  */
 function getShipmentByUUID(basket, uuid) {
-    var BasketMgr = require('dw/order/BasketMgr');
-    var currentBasket = basket || BasketMgr.getCurrentBasket();
-
-    return collections.find(currentBasket.shipments, function (shipment) {
+    return collections.find(basket.shipments, function (shipment) {
         return shipment.UUID === uuid;
     });
 }
