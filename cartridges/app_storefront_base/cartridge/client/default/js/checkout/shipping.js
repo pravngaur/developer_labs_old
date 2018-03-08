@@ -2,9 +2,6 @@
 
 var addressHelpers = require('./address');
 var formHelpers = require('./formErrors');
-var ShippingState = require('./shippingState');
-
-var shippingState;
 
 /**
  * updates the shipping address selector within shipping forms
@@ -97,8 +94,6 @@ function updateShippingAddressFormValues(shipping) {
         }
 
         $('input[name$=_phone]', form).val(shipping.shippingAddress.phone);
-
-        shippingState.changeState({ deliveryAddress: shipping.shippingAddress }, shipping.UUID, shipping);
     });
 }
 
@@ -115,40 +110,37 @@ function updateShippingMethods(shipping) {
 
             var $shippingMethodList = $('.shipping-method-list', form);
 
-            if (shipping.shippingAddress && shipping.shippingAddress.stateCode && shipping.shippingAddress.stateCode !== '') {
-                if ($shippingMethodList && $shippingMethodList.length > 0) {
-                    $shippingMethodList.empty();
-                    var shippingMethods = shipping.applicableShippingMethods;
-                    var selected = shipping.selectedShippingMethod || {};
-                    var shippingMethodFormID = form.name + '_shippingAddress_shippingMethodID';
-                    //
-                    // Create the new rows for each shipping method
-                    //
-                    $.each(shippingMethods, function (methodIndex, shippingMethod) {
-                        var tmpl = $('#shipping-method-template').clone();
-                        // set input
-                        $('input', tmpl)
-                            .prop('id', 'shippingMethod-' + shippingMethod.ID)
-                            .prop('name', shippingMethodFormID)
-                            .prop('value', shippingMethod.ID)
-                            .attr('checked', shippingMethod.ID === selected.ID)
-                            .attr('data-pickup', shippingMethod.storePickupEnabled);
+            if ($shippingMethodList && $shippingMethodList.length > 0) {
+                $shippingMethodList.empty();
+                var shippingMethods = shipping.applicableShippingMethods;
+                var selected = shipping.selectedShippingMethod || {};
+                var shippingMethodFormID = form.name + '_shippingAddress_shippingMethodID';
+                //
+                // Create the new rows for each shipping method
+                //
+                $.each(shippingMethods, function (methodIndex, shippingMethod) {
+                    var tmpl = $('#shipping-method-template').clone();
+                    // set input
+                    $('input', tmpl)
+                        .prop('id', 'shippingMethod-' + shippingMethod.ID)
+                        .prop('name', shippingMethodFormID)
+                        .prop('value', shippingMethod.ID)
+                        .attr('checked', shippingMethod.ID === selected.ID);
 
-                        $('label', tmpl)
-                            .prop('for', 'shippingMethod-' + shippingMethod.ID);
-                        // set shipping method name
-                        $('.display-name', tmpl).text(shippingMethod.displayName);
-                        // set or hide arrival time
-                        if (shippingMethod.estimatedArrivalTime) {
-                            $('.arrival-time', tmpl)
-                                .text('(' + shippingMethod.estimatedArrivalTime + ')')
-                                .show();
-                        }
-                        // set shipping cost
-                        $('.shipping-cost', tmpl).text(shippingMethod.shippingCost);
-                        $shippingMethodList.append(tmpl.html());
-                    });
-                }
+                    $('label', tmpl)
+                        .prop('for', 'shippingMethod-' + shippingMethod.ID);
+                    // set shipping method name
+                    $('.display-name', tmpl).text(shippingMethod.displayName);
+                    // set or hide arrival time
+                    if (shippingMethod.estimatedArrivalTime) {
+                        $('.arrival-time', tmpl)
+                            .text('(' + shippingMethod.estimatedArrivalTime + ')')
+                            .show();
+                    }
+                    // set shipping cost
+                    $('.shipping-cost', tmpl).text(shippingMethod.shippingCost);
+                    $shippingMethodList.append(tmpl.html());
+                });
             }
         });
     }
@@ -360,14 +352,12 @@ function updateMultiShipInformation(order) {
     var $submitShippingBtn = $('button.submit-shipping');
 
     if (order.usingMultiShipping) {
-        shippingState.changeState({ multiship: order.usingMultiShipping, collapsed: true });
         $checkoutMain.addClass('multi-ship');
         $checkbox.prop('checked', true);
     } else {
         $checkoutMain.removeClass('multi-ship');
         $checkbox.prop('checked', null);
         $submitShippingBtn.prop('disabled', null);
-        shippingState.changeState({ collapsed: true });
     }
 }
 
@@ -476,7 +466,8 @@ function selectShippingMethodAjax(url, urlParams) {
                     {
                         order: data.order,
                         customer: data.customer,
-                        options: { keepOpen: true }
+                        options: { keepOpen: true },
+                        urlParams: urlParams
                     }
                 );
             }
@@ -485,14 +476,6 @@ function selectShippingMethodAjax(url, urlParams) {
         .fail(function () {
             $.spinner().stop();
         });
-}
-
-/**
- * Initializes state object from shipping form data attribute
- */
-function initializeStateObject() {
-    var initialState = $('.shipping-form').data('initial-state');
-    shippingState = new ShippingState(initialState.shippingState);
 }
 
 module.exports = {
@@ -509,21 +492,17 @@ module.exports = {
         toggleMultiShip: toggleMultiShip,
         createNewShipment: createNewShipment,
         selectShippingMethodAjax: selectShippingMethodAjax,
-        updateShippingMethodList: updateShippingMethodList,
-        initializeStateObject: initializeStateObject
+        updateShippingMethodList: updateShippingMethodList
     },
 
     selectShippingMethod: function () {
         $('.shipping-method-list').change(function () {
             var $shippingForm = $(this).parents('form');
             var methodID = $(':checked', this).val();
-            var pickupEnabled = $(':checked', this).data('pickup');
             var shipmentUUID = $shippingForm.find('[name=shipmentUUID]').val();
             var urlParams = addressHelpers.methods.getAddressFieldsFromUI($shippingForm);
             urlParams.shipmentUUID = shipmentUUID;
             urlParams.methodID = methodID;
-
-            shippingState.changeState({ pickupEnabled: pickupEnabled }, shipmentUUID);
 
             var url = $(this).data('select-shipping-method-url');
             selectShippingMethodAjax(url, urlParams);

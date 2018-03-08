@@ -4,7 +4,7 @@
             <div class="card mb-auto search-form">
                 <isinclude template="storeLocator/storeLocatorFields" />
             </div>
-            <isif condition="${pdict.stores.showMap === 'false'}">
+            <isif condition="${pdict.showMap === 'false'}">
                 <button class="btn btn-primary btn-block select-store" disabled>${Resource.msg('button.select.store','storeLocator',null)}</button>
             </isif>
         </div>

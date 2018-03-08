@@ -439,9 +439,6 @@ var formHelpers = require('./formErrors');
 var exports = {
     initialize: function () {
         $('#checkout-main').checkout();
-        $(window).on('load', function () {
-            shippingHelpers.methods.initializeStateObject();
-        });
     },
 
     updateCheckoutView: function () {
@@ -469,7 +466,11 @@ var exports = {
 
 [billingHelpers, shippingHelpers, addressHelpers].forEach(function (library) {
     Object.keys(library).forEach(function (item) {
-        exports[item] = library[item];
+        if (typeof library[item] === 'object') {
+            exports[item] = Object.assign({}, exports[item], library[item]);
+        } else {
+            exports[item] = library[item];
+        }
     });
 });
 
