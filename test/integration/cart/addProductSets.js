@@ -8,7 +8,7 @@ chai.use(chaiSubset);
 describe('Add Product Set to cart', function () {
     this.timeout(5000);
 
-    it.skip('should add all products in a product set', function () {
+    it('should add all products in a product set', function () {
         var cookieJar = request.jar();
 
         var pidsObj = [
@@ -18,7 +18,7 @@ describe('Add Product Set to cart', function () {
                 options: ''
             },
             {
-                'pid': '69309284-2M',
+                'pid': '69309284M-2',
                 'qty': '1',
                 options: ''
             },
@@ -197,7 +197,7 @@ describe('Add Product Set to cart', function () {
                                 'isAvailableForInStorePickup': false
                             },
                             {
-                                'id': '69309284-2M',
+                                'id': '69309284M-2',
                                 'productName': 'Modern Striped Dress Shirt',
                                 'price': {
                                     'sales': {
@@ -401,7 +401,7 @@ describe('Add Product Set to cart', function () {
 
                 // Verify items in cart - item 2
                 var expectedItem1 = {
-                    id: '69309284-2M',
+                    id: '69309284M-2',
                     productName: 'Modern Striped Dress Shirt',
                     price: {
                         sales: {
