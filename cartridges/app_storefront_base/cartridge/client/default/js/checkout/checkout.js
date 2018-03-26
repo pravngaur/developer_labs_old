@@ -135,7 +135,7 @@ var formHelpers = require('./formErrors');
                                     window.location.href = err.responseJSON.redirectUrl;
                                 }
                                 // Server error submitting form
-                                defer.reject();
+                                defer.reject(err.responseJSON);
                             }
                         });
                     }
