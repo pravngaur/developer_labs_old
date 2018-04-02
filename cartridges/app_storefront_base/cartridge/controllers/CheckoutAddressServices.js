@@ -120,11 +120,22 @@ server.post(
                 form.shippingAddress.shippingMethodID.value ?
                 '' + form.shippingAddress.shippingMethodID.value : null;
 
+            res.setViewData(result);
+        }
+
+        this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
+            var viewData = res.getViewData();
+
+            if (viewData.error) {
+                res.json(viewData);
+                return;
+            }
+
             var shipment;
 
             if (!COHelpers.isShippingAddressInitialized()) {
                 // First use always applies to defaultShipment
-                COHelpers.copyShippingAddressToShipment(result, basket.defaultShipment);
+                COHelpers.copyShippingAddressToShipment(viewData, basket.defaultShipment);
                 shipment = basket.defaultShipment;
             } else {
                 try {
@@ -132,7 +143,7 @@ server.post(
                         if (origUUID === shipmentUUID) {
                             // An edit to the address or shipping method
                             shipment = ShippingHelper.getShipmentByUUID(basket, shipmentUUID);
-                            COHelpers.copyShippingAddressToShipment(result, shipment);
+                            COHelpers.copyShippingAddressToShipment(viewData, shipment);
                         } else {
                             var productLineItem = COHelpers.getProductLineItem(basket, pliUUID);
                             if (shipmentUUID === 'new') {
@@ -151,14 +162,14 @@ server.post(
                                 // Choose an existing shipment for this PLI
                                 shipment = ShippingHelper.getShipmentByUUID(basket, shipmentUUID);
                             }
-                            COHelpers.copyShippingAddressToShipment(result, shipment);
+                            COHelpers.copyShippingAddressToShipment(viewData, shipment);
                             productLineItem.setShipment(shipment);
 
                             COHelpers.ensureNoEmptyShipments(req);
                         }
                     });
                 } catch (e) {
-                    result.error = e;
+                    viewData.error = e;
                 }
             }
 
@@ -206,7 +217,7 @@ server.post(
 
             res.json({
                 form: form,
-                data: result,
+                data: viewData,
                 order: basketModel,
                 customer: accountModel,
 
@@ -214,7 +225,7 @@ server.post(
                 serverErrors: [],
                 error: false
             });
-        }
+        });
 
         return next();
     }
