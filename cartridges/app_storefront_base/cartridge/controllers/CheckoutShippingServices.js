@@ -34,13 +34,31 @@ server.post('ToggleMultiShip', server.middleware.https, function (req, res, next
 
     req.session.privacyCache.set('usingMultiShipping', usingMultiShipping);
 
-    if (!usingMultiShipping && shipments.length > 1) {
-        // Make sure we move all product line items back to the default shipment
+
+    if (usingMultiShipping) {
+        var UUIDUtils = require('dw/util/UUIDUtils');
+        // split line items into separate shipments
+        Transaction.wrap(function () {
+            collections.forEach(shipments, function (shipment) {
+                if (shipment.productLineItems.length > 1) {
+                    collections.forEach(shipment.productLineItems, function (lineItem) {
+                        var uuid = UUIDUtils.createUUID();
+                        var newShipment = currentBasket.createShipment(uuid);
+                        lineItem.setShipment(newShipment);
+                    });
+                }
+            });
+            COHelpers.ensureNoEmptyShipments(req);
+
+            basketCalculationHelpers.calculateTotals(currentBasket);
+        });
+    } else {
+        // combine multiple shipments into a single one
         Transaction.wrap(function () {
             collections.forEach(shipments, function (shipment) {
                 if (!shipment.default) {
-                    collections.forEach(shipment.productLineItems, function (pli) {
-                        pli.setShipment(defaultShipment);
+                    collections.forEach(shipment.productLineItems, function (lineItem) {
+                        lineItem.setShipment(defaultShipment);
                     });
                     currentBasket.removeShipment(shipment);
                 }
