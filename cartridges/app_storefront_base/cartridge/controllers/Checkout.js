@@ -96,7 +96,6 @@ server.get(
         var shippingAddress = currentBasket.defaultShipment.shippingAddress;
 
         var currentCustomer = req.currentCustomer.raw;
-        var usingMultiShipping = req.session.privacyCache.get('usingMultiShipping');
         var currentLocale = Locale.getLocale(req.locale.id);
         var preferredAddress;
 
@@ -117,6 +116,10 @@ server.get(
             COHelpers.ensureNoEmptyShipments(req);
         });
 
+        if (currentBasket.shipments.length <= 1) {
+            req.session.privacyCache.set('usingMultiShipping', false);
+        }
+
         if (currentBasket.currencyCode !== req.session.currency.currencyCode) {
             Transaction.wrap(function () {
                 currentBasket.updateCurrency();
@@ -127,6 +130,7 @@ server.get(
 
         var shippingForm = COHelpers.prepareShippingForm(currentBasket);
         var billingForm = COHelpers.prepareBillingForm(currentBasket);
+        var usingMultiShipping = req.session.privacyCache.get('usingMultiShipping');
 
         if (preferredAddress) {
             shippingForm.copyFrom(preferredAddress);

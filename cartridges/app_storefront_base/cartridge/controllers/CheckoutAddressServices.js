@@ -119,6 +119,7 @@ server.post(
             result.shippingMethod =
                 form.shippingAddress.shippingMethodID.value ?
                 '' + form.shippingAddress.shippingMethodID.value : null;
+            result.form = form;
 
             res.setViewData(result);
         }
