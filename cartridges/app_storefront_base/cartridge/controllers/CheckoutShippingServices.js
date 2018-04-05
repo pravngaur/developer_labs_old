@@ -15,6 +15,7 @@ server.post('ToggleMultiShip', server.middleware.https, function (req, res, next
     var Locale = require('dw/util/Locale');
     var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
     var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
+    var shippingHelpers = require('*/cartridge/scripts/checkout/shippingHelpers');
 
     var currentBasket = BasketMgr.getCurrentBasket();
     if (!currentBasket) {
@@ -44,6 +45,7 @@ server.post('ToggleMultiShip', server.middleware.https, function (req, res, next
                     collections.forEach(shipment.productLineItems, function (lineItem) {
                         var uuid = UUIDUtils.createUUID();
                         var newShipment = currentBasket.createShipment(uuid);
+                        shippingHelpers.selectShippingMethod(newShipment);
                         lineItem.setShipment(newShipment);
                     });
                 }
