@@ -132,17 +132,6 @@ server.post(
                 return;
             }
 
-            res.setViewData(result);
-        }
-
-        this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
-            var viewData = res.getViewData();
-
-            if (viewData.error) {
-                res.json(viewData);
-                return;
-            }
-
             var shipment;
 
             if (!COHelpers.isShippingAddressInitialized()) {
