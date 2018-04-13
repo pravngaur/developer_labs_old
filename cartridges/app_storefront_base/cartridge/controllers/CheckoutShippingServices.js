@@ -116,42 +116,44 @@ server.post('SelectShippingMethod', server.middleware.https, function (req, res,
         shipment = currentBasket.defaultShipment;
     }
 
-    var address = ShippingHelper.getAddressFromRequest(req);
+    var viewData = res.getViewData();
+    viewData.address = ShippingHelper.getAddressFromRequest(req);
+    res.setViewData(viewData);
 
-    var error;
+    this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
+        var address = res.getViewData().address;
 
-    try {
-        Transaction.wrap(function () {
-            var shippingAddress = shipment.shippingAddress;
+        try {
+            Transaction.wrap(function () {
+                var shippingAddress = shipment.shippingAddress;
 
-            if (!shippingAddress) {
-                shippingAddress = shipment.createShippingAddress();
-            }
-
-            Object.keys(address).forEach(function (key) {
-                var value = address[key];
-                if (value) {
-                    shippingAddress[key] = value;
-                } else {
-                    shippingAddress[key] = null;
+                if (!shippingAddress) {
+                    shippingAddress = shipment.createShippingAddress();
                 }
+
+                Object.keys(address).forEach(function (key) {
+                    var value = address[key];
+                    if (value) {
+                        shippingAddress[key] = value;
+                    } else {
+                        shippingAddress[key] = null;
+                    }
+                });
+
+                ShippingHelper.selectShippingMethod(shipment, shippingMethodID);
+
+                basketCalculationHelpers.calculateTotals(currentBasket);
+            });
+        } catch (err) {
+            res.setStatusCode(500);
+            res.json({
+                error: true,
+                errorMessage: Resource.msg('error.cannot.select.shipping.method', 'cart', null)
             });
 
-            ShippingHelper.selectShippingMethod(shipment, shippingMethodID);
+            return;
+        }
 
-            basketCalculationHelpers.calculateTotals(currentBasket);
-        });
-    } catch (err) {
-        error = err;
-    }
-
-    if (error) {
-        res.setStatusCode(500);
-        res.json({
-            error: true,
-            errorMessage: Resource.msg('error.cannot.select.shipping.method', 'cart', null)
-        });
-    } else {
         var usingMultiShipping = req.session.privacyCache.get('usingMultiShipping');
         var currentLocale = Locale.getLocale(req.locale.id);
 
@@ -164,7 +166,8 @@ server.post('SelectShippingMethod', server.middleware.https, function (req, res,
             customer: new AccountModel(req.currentCustomer),
             order: basketModel
         });
-    }
+    });
+
     return next();
 });
 
