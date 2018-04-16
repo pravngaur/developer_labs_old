@@ -176,6 +176,7 @@ server.post(
 
             if (shipment && shipment.UUID) {
                 req.session.privacyCache.set(shipment.UUID, 'valid');
+                viewData.shipmentUUID = shipment.UUID;
             }
 
             // Loop through all shipments and make sure all are valid
