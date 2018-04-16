@@ -76,7 +76,6 @@ function updateOrderProductSummaryInformation(order) {
 
         if (shipping.shippingAddress
             && shipping.shippingAddress.firstName
-            && shipping.shippingAddress.lastName
             && shipping.shippingAddress.address1
             && shipping.shippingAddress.city
             && stateBoolean
