@@ -224,6 +224,24 @@ function getFirstNonDefaultShipmentWithProductLineItems(currentBasket) {
 }
 
 /**
+ * Loop through all shipments and make sure all not null
+ * @param {dw.order.LineItemCtnr} lineItemContainer - Current users's basket
+ * @returns {boolean} - allValid
+ */
+function ensureValidShipments(lineItemContainer) {
+    var shipments = lineItemContainer.shipments;
+    var allValid = collections.every(shipments, function (shipment) {
+        if (shipment) {
+            var address = shipment.shippingAddress;
+            return address && address.address1;
+        }
+        return false;
+    });
+    return allValid;
+}
+
+
+/**
  * Ensures that no shipment exists with 0 product line items
  * @param {Object} req - the request object needed to access session.privacyCache
  */
@@ -653,5 +671,6 @@ module.exports = {
     placeOrder: placeOrder,
     savePaymentInstrumentToWallet: savePaymentInstrumentToWallet,
     getRenderedPaymentInstruments: getRenderedPaymentInstruments,
-    sendConfirmationEmail: sendConfirmationEmail
+    sendConfirmationEmail: sendConfirmationEmail,
+    ensureValidShipments: ensureValidShipments
 };
