@@ -7,7 +7,7 @@
  */
 function createAddressObject(addressObject) {
     var result;
-    if (addressObject && addressObject.address1) {
+    if (addressObject) {
         result = {
             address1: addressObject.address1,
             address2: addressObject.address2,
