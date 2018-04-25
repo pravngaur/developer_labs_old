@@ -138,15 +138,7 @@ server.get(
         }
 
         // Loop through all shipments and make sure all are valid
-        var isValid;
-        var allValid = true;
-        for (var i = 0, ii = currentBasket.shipments.length; i < ii; i++) {
-            isValid = req.session.privacyCache.get(currentBasket.shipments[i].UUID);
-            if (isValid !== 'valid') {
-                allValid = false;
-                break;
-            }
-        }
+        var allValid = COHelpers.ensureValidShipments(currentBasket);
 
         var orderModel = new OrderModel(
             currentBasket,
