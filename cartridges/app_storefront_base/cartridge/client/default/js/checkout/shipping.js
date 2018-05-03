@@ -37,11 +37,21 @@ function updateShippingAddressSelector(productLineItem, shipping, order, custome
         shippings.forEach(function (aShipping) {
             var isSelected = shipping.UUID === aShipping.UUID;
             hasSelectedAddress = hasSelectedAddress || isSelected;
-            $shippingAddressSelector.append(
-                addressHelpers.methods.optionValueForAddress(aShipping, isSelected, order,
-                    { className: 'multi-shipping' }
-                )
+            var addressOption = addressHelpers.methods.optionValueForAddress(
+                aShipping,
+                isSelected,
+                order,
+                { className: 'multi-shipping' }
             );
+
+            var newAddress = addressOption.html() === order.resources.addNewAddress;
+            var matchingUUID = aShipping.UUID === shipping.UUID;
+            if ((newAddress && matchingUUID) || (!newAddress && matchingUUID) || (!newAddress && !matchingUUID)) {
+                $shippingAddressSelector.append(addressOption);
+            }
+            if (newAddress && !matchingUUID) {
+                $shippingAddressSelector.append(addressOption[0].outerHTML.replace('class="multi-shipping', 'class="multi-shipping d-none'));
+            }
         });
         if (customer.addresses && customer.addresses.length > 0) {
             $shippingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
