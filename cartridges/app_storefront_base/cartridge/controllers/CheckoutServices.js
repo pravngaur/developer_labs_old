@@ -31,7 +31,7 @@ server.get('Get', server.middleware.https, function (req, res, next) {
     res.json({
         order: basketModel,
         customer: new AccountModel(req.currentCustomer),
-        addresses: addressSelectorModel,
+        addressSelector: addressSelectorModel,
         error: !allValid,
         message: allValid ? '' : Resource.msg('error.message.shipping.addresses', 'checkout', null)
     });
@@ -348,7 +348,7 @@ server.post(
                     renderedPaymentInstruments: renderedStoredPaymentInstrument,
                     customer: accountModel,
                     order: basketModel,
-                    addresses: addressSelectorModel,
+                    addressSelector: addressSelectorModel,
                     form: billingForm,
                     error: false
                 });

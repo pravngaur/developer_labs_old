@@ -178,7 +178,7 @@ server.get(
         res.render('checkout/checkout', {
             order: orderModel,
             customer: accountModel,
-            addresses: addressSelectorModel,
+            addressSelector: addressSelectorModel,
             forms: {
                 shippingForm: shippingForm,
                 billingForm: billingForm

@@ -102,7 +102,7 @@ server.post('ToggleMultiShip', server.middleware.https, function (req, res, next
     res.json({
         customer: new AccountModel(req.currentCustomer),
         order: basketModel,
-        addresses: addressSelectorModel
+        addressSelector: addressSelectorModel
     });
 
     next();
@@ -190,7 +190,7 @@ server.post('SelectShippingMethod', server.middleware.https, function (req, res,
         res.json({
             customer: new AccountModel(req.currentCustomer),
             order: basketModel,
-            addresses: addressSelectorModel
+            addressSelector: addressSelectorModel
         });
     });
 
@@ -272,7 +272,7 @@ server.post('UpdateShippingMethodsList', server.middleware.https, function (req,
         customer: new AccountModel(req.currentCustomer),
         order: basketModel,
         shippingForm: server.forms.getForm('shipping'),
-        addresses: addressSelectorModel
+        addressSelector: addressSelectorModel
     });
 
     return next();
@@ -396,7 +396,7 @@ server.post(
                     customer: new AccountModel(req.currentCustomer),
                     order: basketModel,
                     form: server.forms.getForm('shipping'),
-                    addresses: addressSelectorModel
+                    addressSelector: addressSelectorModel
                 });
             });
         }

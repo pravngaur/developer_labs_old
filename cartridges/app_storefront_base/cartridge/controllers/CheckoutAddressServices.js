@@ -56,7 +56,7 @@ server.post('CreateNewAddress', server.middleware.https, function (req, res, nex
         uuid: uuid,
         customer: new AccountModel(req.currentCustomer),
         order: new OrderModel(basket, { countryCode: currentLocale.country, containerView: 'basket' }),
-        addresses: addressSelectorModel
+        addressSelector: addressSelectorModel
     });
     return next();
 });
@@ -227,7 +227,7 @@ server.post(
                 data: viewData,
                 order: basketModel,
                 customer: accountModel,
-                addresses: addressSelectorModel,
+                addressSelector: addressSelectorModel,
                 fieldErrors: [],
                 serverErrors: [],
                 error: false

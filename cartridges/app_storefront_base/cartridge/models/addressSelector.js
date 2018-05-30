@@ -61,6 +61,7 @@ function getCustomerAddresses(customer) {
         result = collections.map(customer.addressBook.addresses, function (address) {
             addressObject = new AddressModel(address);
             addressObject.isPreferredAddress = preferredAddressID === address.ID;
+            addressObject.UUID = address.UUID;
             return addressObject;
         });
     }
