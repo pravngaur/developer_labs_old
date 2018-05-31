@@ -105,7 +105,7 @@ var formHelpers = require('./formErrors');
                             success: function (data) {
                                 if (!data.error) {
                                     $('body').trigger('checkout:updateCheckoutView',
-                                        { order: data.order, customer: data.customer });
+                                        { order: data.order, customer: data.customer, addressSelector: data.addressSelector });
                                     defer.resolve();
                                 } else if ($('.shipping-error .alert-danger').length < 1) {
                                     var errorMsg = data.message;
@@ -225,7 +225,7 @@ var formHelpers = require('./formErrors');
                                 // Populate the Address Summary
                                 //
                                 $('body').trigger('checkout:updateCheckoutView',
-                                    { order: data.order, customer: data.customer });
+                                    { order: data.order, customer: data.customer, addressSelector: data.addressSelector });
 
                                 if (data.renderedPaymentInstruments) {
                                     $('.stored-payments').empty().html(
@@ -465,7 +465,8 @@ var exports = {
                     shipping,
                     data.order,
                     data.customer,
-                    data.options
+                    data.options,
+                    data.addressSelector
                 );
             });
             billingHelpers.methods.updateBillingInformation(

@@ -9,8 +9,9 @@ var formHelpers = require('./formErrors');
  * @param {Object} shipping - the shipping (shipment model) model
  * @param {Object} order - the order model
  * @param {Object} customer - the customer model
+ * @param {Object} addressSelector - the addressSelector model
  */
-function updateShippingAddressSelector(productLineItem, shipping, order, customer) {
+function updateShippingAddressSelector(productLineItem, shipping, order, customer, addressSelector) {
     var uuidEl = $('input[value=' + productLineItem.UUID + ']');
     var shippings = order.shipping;
 
@@ -208,7 +209,8 @@ function updateShippingMethodList($shippingForm) {
                         {
                             order: data.order,
                             customer: data.customer,
-                            options: { keepOpen: true }
+                            options: { keepOpen: true },
+                            addressSelector: data.addressSelector
                         });
 
                     $shippingMethodList.spinner().stop();
@@ -378,7 +380,7 @@ function updateProductLineItemShipmentUUIDs(productLineItem, shipping) {
  * @param {Object} [options] - options for updating PLI summary info
  * @param {Object} [options.keepOpen] - if true, prevent changing PLI view mode to 'view'
  */
-function updateShippingInformation(shipping, order, customer, options) {
+function updateShippingInformation(shipping, order, customer, options, addressSelector) {
     // First copy over shipmentUUIDs from response, to each PLI form
     order.shipping.forEach(function (aShipping) {
         aShipping.productLineItems.items.forEach(function (productLineItem) {
@@ -393,7 +395,7 @@ function updateShippingInformation(shipping, order, customer, options) {
 
     // And update the PLI-based summary information as well
     shipping.productLineItems.items.forEach(function (productLineItem) {
-        updateShippingAddressSelector(productLineItem, shipping, order, customer);
+        updateShippingAddressSelector(productLineItem, shipping, order, customer, addressSelector);
         updatePLIShippingSummaryInformation(productLineItem, shipping, order, options);
     });
 
@@ -401,7 +403,8 @@ function updateShippingInformation(shipping, order, customer, options) {
         order: order,
         shipping: shipping,
         customer: customer,
-        options: options
+        options: options,
+        addressSelector: addressSelector
     });
 }
 
@@ -459,7 +462,8 @@ function shippingFormResponse(defer, data) {
 
         $('body').trigger('checkout:updateCheckoutView', {
             order: data.order,
-            customer: data.customer
+            customer: data.customer,
+            addressSelector: data.addressSelector
         });
 
         defer.resolve(data);
@@ -534,7 +538,8 @@ function selectShippingMethodAjax(url, urlParams, el) {
                         order: data.order,
                         customer: data.customer,
                         options: { keepOpen: true },
-                        urlParams: urlParams
+                        urlParams: urlParams,
+                        addressSelector: data.addressSelector
                     }
                 );
                 $('body').trigger('checkout:postUpdateCheckoutView',
@@ -668,7 +673,8 @@ module.exports = {
                     } else {
                         $('body').trigger('checkout:updateCheckoutView', {
                             order: response.order,
-                            customer: response.customer
+                            customer: response.customer,
+                            addressSelector: response.addressSelector
                         });
 
                         if ($('#checkout-main').data('customer-type') === 'guest') {
@@ -783,7 +789,8 @@ module.exports = {
                             {
                                 order: response.order,
                                 customer: response.customer,
-                                options: { keepOpen: true }
+                                options: { keepOpen: true },
+                                addressSelector: response.addressSelector
                             }
                         );
 
@@ -812,7 +819,8 @@ module.exports = {
                             {
                                 order: response.order,
                                 customer: response.customer,
-                                options: { keepOpen: true }
+                                options: { keepOpen: true },
+                                addressSelector: response.addressSelector
                             }
                         );
 
@@ -840,7 +848,8 @@ module.exports = {
                             {
                                 order: response.order,
                                 customer: response.customer,
-                                options: { keepOpen: true }
+                                options: { keepOpen: true },
+                                addressSelector: response.addressSelector
                             }
                         );
 
@@ -908,7 +917,8 @@ module.exports = {
                         $('body').trigger('checkout:updateCheckoutView',
                             {
                                 order: response.order,
-                                customer: response.customer
+                                customer: response.customer,
+                                addressSelector: response.addressSelector
                             }
                         );
 
