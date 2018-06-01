@@ -6,10 +6,11 @@ var cleave = require('../components/cleave');
 /**
  * updates the billing address selector within billing forms
  * @param {Object} order - the order model
- * @param {Object} customer - the customer model
+ * @param {Object} addressSelector - the addressSelector model
  */
-function updateBillingAddressSelector(order, customer) {
-    var shippings = order.shipping;
+function updateBillingAddressSelector(order, addressSelector) {
+    var shippings = addressSelector.addresses.shipmentAddresses;
+    var customerAddresses = addressSelector.addresses.customerAddresses;
 
     var form = $('form[name$=billing]')[0];
     var $billingAddressSelector = $('.addressSelector', form);
@@ -46,17 +47,17 @@ function updateBillingAddressSelector(order, customer) {
             );
         });
 
-        if (customer.addresses && customer.addresses.length > 0) {
+        if (customerAddresses && customerAddresses.length > 0) {
             $billingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
                 order.resources.accountAddresses, false, order));
-            customer.addresses.forEach(function (address) {
-                var isSelected = order.billing.matchingAddressId === address.ID;
+            customerAddresses.forEach(function (customerAddress) {
+                var isSelected = order.billing.matchingAddressId === customerAddress.address.ID;
                 hasSelectedAddress = hasSelectedAddress || isSelected;
                 // Customer Address option
                 $billingAddressSelector.append(
                     addressHelpers.methods.optionValueForAddress({
-                        UUID: 'ab_' + address.ID,
-                        shippingAddress: address
+                        UUID: 'ab_' + customerAddress.address.ID,
+                        address: customerAddress.address
                     }, isSelected, order, { type: 'billing' })
                 );
             });
@@ -127,10 +128,10 @@ function clearBillingAddressFormValues() {
  * Updates the billing information in checkout, based on the supplied order model
  * @param {Object} order - checkout model to use as basis of new truth
  * @param {Object} customer - customer model to use as basis of new truth
- * @param {Object} [options] - options
+ * @param {Object} addressSelector - the addressSelector model
  */
-function updateBillingInformation(order, customer) {
-    updateBillingAddressSelector(order, customer);
+function updateBillingInformation(order, customer, addressSelector) {
+    updateBillingAddressSelector(order, addressSelector);
 
     // update billing address form
     updateBillingAddressFormValues(order);

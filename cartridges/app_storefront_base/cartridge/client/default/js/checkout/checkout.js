@@ -472,7 +472,7 @@ var exports = {
             billingHelpers.methods.updateBillingInformation(
                 data.order,
                 data.customer,
-                data.options
+                data.addressSelector
             );
             billingHelpers.methods.updatePaymentInformation(data.order, data.options);
             summaryHelpers.updateOrderProductSummaryInformation(data.order, data.options);
