@@ -385,6 +385,7 @@ function updateProductLineItemShipmentUUIDs(productLineItem, shipping) {
  * @param {Object} customer - the customer model
  * @param {Object} [options] - options for updating PLI summary info
  * @param {Object} [options.keepOpen] - if true, prevent changing PLI view mode to 'view'
+ * @param {Object} addressSelector - the addressSelector model
  */
 function updateShippingInformation(shipping, order, customer, options, addressSelector) {
     // First copy over shipmentUUIDs from response, to each PLI form
