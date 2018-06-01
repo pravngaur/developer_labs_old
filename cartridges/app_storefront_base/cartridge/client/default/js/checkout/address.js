@@ -30,7 +30,7 @@ function optionValueForAddress(shipping, selected, order, options) {
         return $('<option class="' + className + '" disabled>' + shipping + '</option>');
     }
     var safeShipping = shipping || {};
-    var shippingAddress = safeShipping.shippingAddress || {};
+    var shippingAddress = safeShipping.address || {};
 
     if (isBilling && isNew && !order.billing.matchingAddressId) {
         shippingAddress = order.billing.billingAddress.address || {};

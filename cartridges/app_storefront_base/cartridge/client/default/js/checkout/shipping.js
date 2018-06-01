@@ -8,12 +8,13 @@ var formHelpers = require('./formErrors');
  * @param {Object} productLineItem - the productLineItem model
  * @param {Object} shipping - the shipping (shipment model) model
  * @param {Object} order - the order model
- * @param {Object} customer - the customer model
  * @param {Object} addressSelector - the addressSelector model
  */
-function updateShippingAddressSelector(productLineItem, shipping, order, customer, addressSelector) {
+function updateShippingAddressSelector(productLineItem, shipping, order, addressSelector) {
     var uuidEl = $('input[value=' + productLineItem.UUID + ']');
-    var shippings = order.shipping;
+    var shippings = addressSelector.addresses.shipmentAddresses;
+    var customerAddresses = addressSelector.addresses.customerAddresses;
+    var isCustomerAddress = false;
 
     var form;
     var $shippingAddressSelector;
@@ -26,30 +27,21 @@ function updateShippingAddressSelector(productLineItem, shipping, order, custome
 
     if ($shippingAddressSelector && $shippingAddressSelector.length === 1) {
         $shippingAddressSelector.empty();
+
         // Add New Address option
         $shippingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
             null,
             false,
             order));
-        if (customer.addresses && customer.addresses.length > 0) {
-            $shippingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
-                order.resources.accountAddresses, false, order));
-            customer.addresses.forEach(function (address) {
-                var isSelected = shipping.matchingAddressId === address.ID;
-                $shippingAddressSelector.append(
-                    addressHelpers.methods.optionValueForAddress({
-                        UUID: 'ab_' + address.ID,
-                        shippingAddress: address
-                    }, isSelected, order)
-                );
-            });
-        }
+
         // Separator -
         $shippingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
             order.resources.shippingAddresses, false, order, { className: 'multi-shipping' }
         ));
+
         shippings.forEach(function (aShipping) {
-            var isSelected = shipping.UUID === aShipping.UUID;
+            isCustomerAddress = aShipping.selectedCustomerAddressUUID || false;
+            var isSelected = !isCustomerAddress && shipping.UUID === aShipping.UUID;
             hasSelectedAddress = hasSelectedAddress || isSelected;
             var addressOption = addressHelpers.methods.optionValueForAddress(
                 aShipping,
@@ -67,6 +59,20 @@ function updateShippingAddressSelector(productLineItem, shipping, order, custome
                 $(addressOption[0]).remove();
             }
         });
+
+        if (customerAddresses && customerAddresses.length > 0) {
+            $shippingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
+                order.resources.accountAddresses, false, order));
+            customerAddresses.forEach(function (customerAddress) {
+                var isSelected = isCustomerAddress && isCustomerAddress === customerAddress.UUID;
+                $shippingAddressSelector.append(
+                    addressHelpers.methods.optionValueForAddress({
+                        UUID: 'ab_' + customerAddress.address.ID,
+                        address: customerAddress.address
+                    }, isSelected, order)
+                );
+            });
+        }
     }
 
     if (!hasSelectedAddress) {
@@ -80,7 +86,7 @@ function updateShippingAddressSelector(productLineItem, shipping, order, custome
         productLineItem: productLineItem,
         shipping: shipping,
         order: order,
-        customer: customer
+        addressSelector: addressSelector
     });
 }
 
@@ -395,7 +401,7 @@ function updateShippingInformation(shipping, order, customer, options, addressSe
 
     // And update the PLI-based summary information as well
     shipping.productLineItems.items.forEach(function (productLineItem) {
-        updateShippingAddressSelector(productLineItem, shipping, order, customer, addressSelector);
+        updateShippingAddressSelector(productLineItem, shipping, order, addressSelector);
         updatePLIShippingSummaryInformation(productLineItem, shipping, order, options);
     });
 

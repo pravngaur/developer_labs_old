@@ -6,7 +6,7 @@
         data-phone="">
     ${Resource.msg('msg.add.new.address', 'checkout', null)}
 </option>
-<isif condition="${pdict.addressSelector.addresses.shipmentAddresses.length > 0}">
+<isif condition="${pdict.addressSelector.addresses.shipmentAddresses[0].address}">
     <option class="multi-shipping" disabled>${Resource.msg('msg.shipping.addresses', 'checkout', null)}</option>
     <isloop items="${pdict.addressSelector.addresses.shipmentAddresses}" var="shipmentAddress">
       <isif condition="${shipmentAddress.UUID === shippingModel.UUID}">
