@@ -9,39 +9,39 @@
 <isif condition="${pdict.addressSelector.addresses.shipmentAddresses[0].address}">
     <option class="multi-shipping" disabled>${Resource.msg('msg.shipping.addresses', 'checkout', null)}</option>
     <isloop items="${pdict.addressSelector.addresses.shipmentAddresses}" var="shipmentAddress">
-      <isif condition="${shipmentAddress.UUID === shippingModel.UUID}">
-        <isset name="isCustomerAddress" value="${shipmentAddress.selectedCustomerAddressUUID || false}" scope="page"/>
-        <option 
-            class="multi-shipping
-            value="${shipmentAddress.UUID}"
-            ${!isCustomerAddress && shipmentAddress.UUID === shippingModel.UUID ? 'selected="selected"' : '' }
-            data-first-name="${shipmentAddress.address.firstName||''}" data-last-name="${shipmentAddress.address.lastName||''}"
-            data-address1="${shipmentAddress.address.address1||''}" data-address2="${shipmentAddress.address.address2||''}"
-            data-city="${shipmentAddress.address.city||''}" data-state-code="${shipmentAddress.address.stateCode||''}"
-            data-country-code="${shipmentAddress.address.countryCode.value||''}" data-postal-code="${shipmentAddress.address.postalCode}"
-            data-phone="${shipmentAddress.address.phone}"
-        >
-        <isif condition="${shipmentAddress.address.firstName
-            && shipmentAddress.address.lastName
-            && shipmentAddress.address.address1
-            && shipmentAddress.address.city
-            && shipmentAddress.address.stateCode
-            && shipmentAddress.address.postalCode}"
-        >
-            ${shipmentAddress.address.firstName || ''}
-            ${shipmentAddress.address.lastName || ''}
-            ${shipmentAddress.address.address1 || ''}
-            ${shipmentAddress.address.address2 || ''}
-            ${shipmentAddress.address.city || ''}${!shipmentAddress.address.city || ','}
-            ${shipmentAddress.address.stateCode||''}
-            ${shipmentAddress.address.postalCode||''}
-            ${!shipmentAddress.selectedShippingMethod.displayName||'-'}
-            ${shipmentAddress.selectedShippingMethod.displayName||''}
-            <iselse/>
-            ${Resource.msg('msg.new.address', 'checkout', null)}
-        </isif>
-        </option>
-       </isif>
+        <isif condition="${shipmentAddress.UUID === shippingModel.UUID}">
+            <isset name="isCustomerAddress" value="${shipmentAddress.selectedCustomerAddressUUID || false}" scope="page"/>
+            <option
+                class="multi-shipping
+                value="${shipmentAddress.UUID}"
+                ${!isCustomerAddress && shipmentAddress.UUID === shippingModel.UUID ? 'selected="selected"' : '' }
+                data-first-name="${shipmentAddress.address.firstName||''}" data-last-name="${shipmentAddress.address.lastName||''}"
+                data-address1="${shipmentAddress.address.address1||''}" data-address2="${shipmentAddress.address.address2||''}"
+                data-city="${shipmentAddress.address.city||''}" data-state-code="${shipmentAddress.address.stateCode||''}"
+                data-country-code="${shipmentAddress.address.countryCode.value||''}" data-postal-code="${shipmentAddress.address.postalCode}"
+                data-phone="${shipmentAddress.address.phone}"
+            >
+            <isif condition="${shipmentAddress.address.firstName
+                && shipmentAddress.address.lastName
+                && shipmentAddress.address.address1
+                && shipmentAddress.address.city
+                && shipmentAddress.address.stateCode
+                && shipmentAddress.address.postalCode}"
+            >
+                ${shipmentAddress.address.firstName || ''}
+                ${shipmentAddress.address.lastName || ''}
+                ${shipmentAddress.address.address1 || ''}
+                ${shipmentAddress.address.address2 || ''}
+                ${shipmentAddress.address.city || ''}${!shipmentAddress.address.city || ','}
+                ${shipmentAddress.address.stateCode||''}
+                ${shipmentAddress.address.postalCode||''}
+                ${!shipmentAddress.selectedShippingMethod.displayName||'-'}
+                ${shipmentAddress.selectedShippingMethod.displayName||''}
+                <iselse/>
+                ${Resource.msg('msg.new.address', 'checkout', null)}
+            </isif>
+            </option>
+         </isif>
     </isloop>
 </isif>
 <isif condition="${pdict.customer.addresses && pdict.customer.addresses.length > 0}">

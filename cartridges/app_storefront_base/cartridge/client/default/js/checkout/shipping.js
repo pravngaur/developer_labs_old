@@ -43,6 +43,7 @@ function updateShippingAddressSelector(productLineItem, shipping, order, address
             isCustomerAddress = aShipping.selectedCustomerAddressUUID || false;
             var isSelected = !isCustomerAddress && shipping.UUID === aShipping.UUID;
             hasSelectedAddress = hasSelectedAddress || isSelected;
+
             var addressOption = addressHelpers.methods.optionValueForAddress(
                 aShipping,
                 isSelected,

@@ -6,50 +6,53 @@
         data-phone="">
     ${Resource.msg('msg.add.new.address', 'checkout', null)}
 </option>
-<isif condition="${pdict.order.shipping[0].shippingAddress}">
+<isif condition="${pdict.addressSelector.addresses.shipmentAddresses[0].address}">
     <option class="multi-shipping" disabled>${Resource.msg('msg.shipping.addresses', 'checkout', null)}</option>
-    <isloop items="${pdict.order.shipping}" var="aShippingModel">
-        <option class="multi-shipping" value="${aShippingModel.UUID}"
-                ${!shippingModel.matchingAddressId && aShippingModel.UUID === shippingModel.UUID ? 'selected="selected"' : '' }
-        data-first-name="${aShippingModel.shippingAddress.firstName||''}" data-last-name="${aShippingModel.shippingAddress.lastName||''}"
-        data-address1="${aShippingModel.shippingAddress.address1||''}" data-address2="${aShippingModel.shippingAddress.address2||''}"
-        data-city="${aShippingModel.shippingAddress.city||''}" data-state-code="${aShippingModel.shippingAddress.stateCode||''}"
-        data-country-code="${aShippingModel.shippingAddress.countryCode.value||''}" data-postal-code="${aShippingModel.shippingAddress.postalCode}"
-        data-phone="${aShippingModel.shippingAddress.phone}"
-        >
-        <isif condition="${aShippingModel.shippingAddress.firstName
-                    && aShippingModel.shippingAddress.lastName
-                    && aShippingModel.shippingAddress.address1
-                    && aShippingModel.shippingAddress.city
-                    && aShippingModel.shippingAddress.stateCode
-                    && aShippingModel.shippingAddress.postalCode}"
-        >
-            ${aShippingModel.shippingAddress.firstName || ''}
-            ${aShippingModel.shippingAddress.lastName || ''}
-            ${aShippingModel.shippingAddress.address1 || ''}
-            ${aShippingModel.shippingAddress.address2 || ''}
-            ${aShippingModel.shippingAddress.city || ''}${!aShippingModel.shippingAddress.city || ','}
-            ${aShippingModel.shippingAddress.stateCode||''}
-            ${aShippingModel.shippingAddress.postalCode||''}
-            ${!aShippingModel.selectedShippingMethod.displayName||'-'}
-            ${aShippingModel.selectedShippingMethod.displayName||''}
-            <iselse/>
-            ${Resource.msg('msg.new.address', 'checkout', null)}
+    <isloop items="${pdict.addressSelector.addresses.shipmentAddresses}" var="shipmentAddress">
+        <isif condition="${shipmentAddress.UUID === shippingModel.UUID}">
+            <isset name="isCustomerAddress" value="${shipmentAddress.selectedCustomerAddressUUID || false}" scope="page"/>
+            <option class="multi-shipping" value="${shipmentAddress.UUID}"
+                    ${!isCustomerAddress && shipmentAddress.UUID === shippingModel.UUID ? 'selected="selected"' : '' }
+            data-first-name="${shipmentAddress.address.firstName||''}" data-last-name="${shipmentAddress.address.lastName||''}"
+            data-address1="${shipmentAddress.address.address1||''}" data-address2="${shipmentAddress.address.address2||''}"
+            data-city="${shipmentAddress.address.city||''}" data-state-code="${shipmentAddress.address.stateCode||''}"
+            data-country-code="${shipmentAddress.address.countryCode.value||''}" data-postal-code="${shipmentAddress.address.postalCode}"
+            data-phone="${shipmentAddress.address.phone}"
+            >
+            <isif condition="${shipmentAddress.address.firstName
+                        && shipmentAddress.address.lastName
+                        && shipmentAddress.address.address1
+                        && shipmentAddress.address.city
+                        && shipmentAddress.address.stateCode
+                        && shipmentAddress.address.postalCode}"
+            >
+                ${shipmentAddress.address.firstName || ''}
+                ${shipmentAddress.address.lastName || ''}
+                ${shipmentAddress.address.address1 || ''}
+                ${shipmentAddress.address.address2 || ''}
+                ${shipmentAddress.address.city || ''}${!shipmentAddress.address.city || ','}
+                ${shipmentAddress.address.stateCode||''}
+                ${shipmentAddress.address.postalCode||''}
+                ${!shipmentAddress.selectedShippingMethod.displayName||'-'}
+                ${shipmentAddress.selectedShippingMethod.displayName||''}
+                <iselse/>
+                ${Resource.msg('msg.new.address', 'checkout', null)}
+            </isif>
+            </option>
         </isif>
-        </option>
     </isloop>
 </isif>
 <isif condition="${pdict.customer.addresses && pdict.customer.addresses.length > 0}">
     <option disabled>${Resource.msg('msg.account.addresses', 'checkout', null)}</option>
-    <isloop items="${pdict.customer.addresses}" var="address">
-        <option value="${'ab_'+address.ID}"
-                ${address.ID==shippingModel.matchingAddressId ? 'selected="selected"' : '' }
-        data-first-name="${address.firstName||''}" data-last-name="${address.lastName||''}"
-        data-address1="${address.address1||''}" data-address2="${address.address2||''}"
-        data-city="${address.city||''}" data-state-code="${address.stateCode||''}"
-        data-country-code="${address.countryCode.value||''}" data-postal-code="${address.postalCode||''}"
-        data-phone="${address.phone||''}">
-        ${address.ID || ''} - ${address.firstName || ''} ${address.lastName || ''} ${address.address1 || ''} ${address.address2 || ''} ${address.city || ''}${!address.city || ','} ${address.stateCode||''} ${address.postalCode||''}
+    <isloop items="${pdict.addressSelector.addresses.customerAddresses}" var="customerAddress">
+        <option value="${'ab_'+customerAddress.address.ID}"
+                ${isCustomerAddress && isCustomerAddress === customerAddress.UUID ? 'selected="selected"' : '' }
+        data-first-name="${customerAddress.address.firstName||''}" data-last-name="${customerAddress.address.lastName||''}"
+        data-address1="${customerAddress.address.address1||''}" data-address2="${customerAddress.address.address2||''}"
+        data-city="${customerAddress.address.city||''}" data-state-code="${customerAddress.address.stateCode||''}"
+        data-country-code="${customerAddress.address.countryCode.value||''}" data-postal-code="${customerAddress.address.postalCode||''}"
+        data-phone="${customerAddress.address.phone||''}">
+        ${customerAddress.address.ID || ''} - ${customerAddress.address.firstName || ''} ${customerAddress.address.lastName || ''} ${customerAddress.address.address1 || ''} ${customerAddress.address.address2 || ''} ${customerAddress.address.city || ''}${!customerAddress.address.city || ','} ${customerAddress.address.stateCode||''} ${customerAddress.address.postalCode||''}
         </option>
     </isloop>
 </isif>
