@@ -11,84 +11,91 @@ var formHelpers = require('./formErrors');
  * @param {Object} addressSelector - the addressSelector model
  */
 function updateShippingAddressSelector(productLineItem, shipping, order, addressSelector) {
-    var uuidEl = $('input[value=' + productLineItem.UUID + ']');
-    var shippings = addressSelector.addresses.shipmentAddresses;
-    var customerAddresses = addressSelector.addresses.customerAddresses;
-    var isCustomerAddress = false;
-
-    var form;
-    var $shippingAddressSelector;
-    var hasSelectedAddress = false;
-
-    if (uuidEl && uuidEl.length > 0) {
-        form = uuidEl[0].form;
-        $shippingAddressSelector = $('.addressSelector', form);
-    }
-
-    if ($shippingAddressSelector && $shippingAddressSelector.length === 1) {
-        $shippingAddressSelector.empty();
-
-        // Add New Address option
-        $shippingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
-            null,
-            false,
-            order));
-
-        // Separator -
-        $shippingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
-            order.resources.shippingAddresses, false, order, { className: 'multi-shipping' }
-        ));
-
-        shippings.forEach(function (aShipping) {
-            isCustomerAddress = aShipping.selectedCustomerAddressUUID || false;
-            var isSelected = !isCustomerAddress && shipping.UUID === aShipping.UUID;
-            hasSelectedAddress = hasSelectedAddress || isSelected;
-
-            var addressOption = addressHelpers.methods.optionValueForAddress(
-                aShipping,
-                isSelected,
-                order,
-                { className: 'multi-shipping' }
-            );
-
-            var newAddress = addressOption.html() === order.resources.addNewAddress;
-            var matchingUUID = aShipping.UUID === shipping.UUID;
-            if ((newAddress && matchingUUID) || (!newAddress && matchingUUID) || (!newAddress && !matchingUUID)) {
-                $shippingAddressSelector.append(addressOption);
-            }
-            if (newAddress && !matchingUUID) {
-                $(addressOption[0]).remove();
-            }
+    if (addressSelector) {
+        $('body').trigger('checkout:updateAddressSelectors', {
+            addressSelector: addressSelector,
+            order: order,
+            shipping: shipping
         });
-
-        if (customerAddresses && customerAddresses.length > 0) {
-            $shippingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
-                order.resources.accountAddresses, false, order));
-            customerAddresses.forEach(function (customerAddress) {
-                var isSelected = isCustomerAddress && isCustomerAddress === customerAddress.UUID;
-                $shippingAddressSelector.append(
-                    addressHelpers.methods.optionValueForAddress({
-                        UUID: 'ab_' + customerAddress.address.ID,
-                        address: customerAddress.address
-                    }, isSelected, order)
-                );
-            });
-        }
     }
-
-    if (!hasSelectedAddress) {
-        // show
-        $(form).addClass('hide-details');
-    } else {
-        $(form).removeClass('hide-details');
-    }
-
-    $('body').trigger('shipping:updateShippingAddressSelector', {
-        productLineItem: productLineItem,
-        shipping: shipping,
-        order: order,
-        addressSelector: addressSelector
-    });
+//    var uuidEl = $('input[value=' + productLineItem.UUID + ']');
+//    var shippings = addressSelector.addresses.shipmentAddresses;
+//    var customerAddresses = addressSelector.addresses.customerAddresses;
+//    var isCustomerAddress = false;
+//
+//    var form;
+//    var $shippingAddressSelector;
+//    var hasSelectedAddress = false;
+//
+//    if (uuidEl && uuidEl.length > 0) {
+//        form = uuidEl[0].form;
+//        $shippingAddressSelector = $('.addressSelector', form);
+//    }
+//
+//    if ($shippingAddressSelector && $shippingAddressSelector.length === 1) {
+//        $shippingAddressSelector.empty();
+//
+//        // Add New Address option
+//        $shippingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
+//            null,
+//            false,
+//            order));
+//
+//        // Separator -
+//        $shippingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
+//            order.resources.shippingAddresses, false, order, { className: 'multi-shipping' }
+//        ));
+//
+//        shippings.forEach(function (aShipping) {
+//            isCustomerAddress = aShipping.selectedCustomerAddressUUID || false;
+//            var isSelected = !isCustomerAddress && shipping.UUID === aShipping.UUID;
+//            hasSelectedAddress = hasSelectedAddress || isSelected;
+//
+//            var addressOption = addressHelpers.methods.optionValueForAddress(
+//                aShipping,
+//                isSelected,
+//                order,
+//                { className: 'multi-shipping' }
+//            );
+//
+//            var newAddress = addressOption.html() === order.resources.addNewAddress;
+//            var matchingUUID = aShipping.UUID === shipping.UUID;
+//            if ((newAddress && matchingUUID) || (!newAddress && matchingUUID) || (!newAddress && !matchingUUID)) {
+//                $shippingAddressSelector.append(addressOption);
+//            }
+//            if (newAddress && !matchingUUID) {
+//                $(addressOption[0]).remove();
+//            }
+//        });
+//
+//        if (customerAddresses && customerAddresses.length > 0) {
+//            $shippingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
+//                order.resources.accountAddresses, false, order));
+//            customerAddresses.forEach(function (customerAddress) {
+//                var isSelected = isCustomerAddress && isCustomerAddress === customerAddress.UUID;
+//                $shippingAddressSelector.append(
+//                    addressHelpers.methods.optionValueForAddress({
+//                        UUID: 'ab_' + customerAddress.address.ID,
+//                        address: customerAddress.address
+//                    }, isSelected, order)
+//                );
+//            });
+//        }
+//    }
+//
+//    if (!hasSelectedAddress) {
+//        // show
+//        $(form).addClass('hide-details');
+//    } else {
+//        $(form).removeClass('hide-details');
+//    }
+//
+//    $('body').trigger('shipping:updateShippingAddressSelector', {
+//        productLineItem: productLineItem,
+//        shipping: shipping,
+//        order: order,
+//        addressSelector: addressSelector
+//    });
 }
 
 /**

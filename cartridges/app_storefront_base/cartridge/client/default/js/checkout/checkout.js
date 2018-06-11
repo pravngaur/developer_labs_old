@@ -477,6 +477,119 @@ var exports = {
             billingHelpers.methods.updatePaymentInformation(data.order, data.options);
             summaryHelpers.updateOrderProductSummaryInformation(data.order, data.options);
         });
+    },
+
+    updateAddressSelector: function () {
+        $('body').on('checkout:updateAddressSelectors', function (e, data) {
+            var addressSelector = data.addressSelector;
+            var shipmentAddresses = addressSelector.addresses.shipmentAddresses;
+            var order = data.order;
+            var billing = order.billing;
+            var shipping = data.shipping;
+            var customerAddresses = addressSelector.addresses.customerAddresses;
+            var isCustomerAddress = false;
+            var hasSelectedAddress = false;
+
+            var $addressSelectors = $('.addressSelector');
+            var newAddressOption = addressHelpers.methods.optionValueForAddress(null, false, order);
+            var separator = addressHelpers.methods.optionValueForAddress(
+                order.resources.shippingAddresses, false, order, { className: 'multi-shipping' }
+            );
+            var customerAddressOption = addressHelpers.methods.optionValueForAddress(
+                order.resources.accountAddresses, false, order
+            );
+
+            if ($addressSelectors.length > 0) {
+                $addressSelectors.each(function () {
+                    var addressSelectorEl = $(this);
+                    var isBilling = addressSelectorEl.attr('data-is-billing');
+                    var form = addressSelectorEl.parents('form');
+
+                    // Empty addressSelector
+                    addressSelectorEl.empty();
+
+                    // Add New Address option
+                    addressSelectorEl.append(newAddressOption);
+
+                    // Separator -
+                    addressSelectorEl.append(separator);
+
+                    if (!isBilling && shipping) {
+                        shipmentAddresses.forEach(function (aShipping) {
+                            isCustomerAddress = aShipping.selectedCustomerAddressUUID || false;
+                            var isSelected = !isCustomerAddress && shipping.UUID === aShipping.UUID;
+                            hasSelectedAddress = hasSelectedAddress || isSelected;
+
+                            var addressOption = addressHelpers.methods.optionValueForAddress(
+                                aShipping,
+                                isSelected,
+                                order,
+                                { className: 'multi-shipping' }
+                            );
+
+                            var newAddress = addressOption.html() === order.resources.addNewAddress;
+                            var matchingUUID = aShipping.UUID === shipping.UUID;
+                            if ((newAddress && matchingUUID) || (!newAddress && matchingUUID) || (!newAddress && !matchingUUID)) {
+                                addressSelectorEl.append(addressOption);
+                            }
+                            if (newAddress && !matchingUUID) {
+                                $(addressOption[0]).remove();
+                            }
+                        });
+
+                        if (!hasSelectedAddress) {
+                            // show
+                            $(form).addClass('hide-details');
+                        } else {
+                            $(form).removeClass('hide-details');
+                        }
+                    } else {
+                        form = $('form[name$=billing]')[0];
+                        shipmentAddresses.forEach(function (aShipping) {
+                            var isSelected = billing.matchingAddressId === aShipping.UUID;
+                            hasSelectedAddress = hasSelectedAddress || isSelected;
+                            // Shipping Address option
+                            addressSelectorEl.append(
+                                addressHelpers.methods.optionValueForAddress(
+                                    aShipping,
+                                    isSelected,
+                                    order,
+                                    { type: 'billing' }
+                                )
+                            );
+                        });
+
+                        if (hasSelectedAddress
+                            || (!billing.matchingAddressId && billing.billingAddress.address)) {
+                            // show
+                            $(form).attr('data-address-mode', 'edit');
+                        } else {
+                            $(form).attr('data-address-mode', 'new');
+                        }
+                    }
+
+                    // Address Separator
+                    addressSelectorEl.append(separator);
+
+                    // Customer Addresses Option
+                    addressSelectorEl.append(customerAddressOption);
+
+                    if (customerAddresses && customerAddresses.length > 0) {
+                        addressSelectorEl.append(addressHelpers.methods.optionValueForAddress(
+                            order.resources.accountAddresses, false, order));
+                        customerAddresses.forEach(function (customerAddress) {
+                            var isSelected = isCustomerAddress && isCustomerAddress === customerAddress.UUID;
+                            addressSelectorEl.append(
+                                addressHelpers.methods.optionValueForAddress({
+                                    UUID: 'ab_' + customerAddress.address.ID,
+                                    address: customerAddress.address
+                                }, isSelected, order)
+                            );
+                        });
+                    }
+                });
+            }
+        });
     }
 };
 

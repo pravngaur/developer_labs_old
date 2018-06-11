@@ -9,70 +9,76 @@ var cleave = require('../components/cleave');
  * @param {Object} addressSelector - the addressSelector model
  */
 function updateBillingAddressSelector(order, addressSelector) {
-    var shippings = addressSelector.addresses.shipmentAddresses;
-    var customerAddresses = addressSelector.addresses.customerAddresses;
-
-    var form = $('form[name$=billing]')[0];
-    var $billingAddressSelector = $('.addressSelector', form);
-    var hasSelectedAddress = false;
-
-    if ($billingAddressSelector && $billingAddressSelector.length === 1) {
-        $billingAddressSelector.empty();
-        // Add New Address option
-        $billingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
-            null,
-            false,
-            order,
-            { type: 'billing' }));
-
-        // Separator -
-        $billingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
-            order.resources.shippingAddresses, false, order, {
-                // className: 'multi-shipping',
-                type: 'billing'
-            }
-        ));
-
-        shippings.forEach(function (aShipping) {
-            var isSelected = order.billing.matchingAddressId === aShipping.UUID;
-            hasSelectedAddress = hasSelectedAddress || isSelected;
-            // Shipping Address option
-            $billingAddressSelector.append(
-                addressHelpers.methods.optionValueForAddress(aShipping, isSelected, order,
-                    {
-                        // className: 'multi-shipping',
-                        type: 'billing'
-                    }
-                )
-            );
+    if (addressSelector) {
+        $('body').trigger('checkout:updateAddressSelectors', {
+            addressSelector: addressSelector,
+            order: order
         });
-
-        if (customerAddresses && customerAddresses.length > 0) {
-            $billingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
-                order.resources.accountAddresses, false, order));
-            customerAddresses.forEach(function (customerAddress) {
-                var isSelected = order.billing.matchingAddressId === customerAddress.address.ID;
-                hasSelectedAddress = hasSelectedAddress || isSelected;
-                // Customer Address option
-                $billingAddressSelector.append(
-                    addressHelpers.methods.optionValueForAddress({
-                        UUID: 'ab_' + customerAddress.address.ID,
-                        address: customerAddress.address
-                    }, isSelected, order, { type: 'billing' })
-                );
-            });
-        }
     }
-
-    if (hasSelectedAddress
-        || (!order.billing.matchingAddressId && order.billing.billingAddress.address)) {
-        // show
-        $(form).attr('data-address-mode', 'edit');
-    } else {
-        $(form).attr('data-address-mode', 'new');
-    }
-
-    $billingAddressSelector.show();
+//    var shippings = addressSelector.addresses.shipmentAddresses;
+//    var customerAddresses = addressSelector.addresses.customerAddresses;
+//
+//    var form = $('form[name$=billing]')[0];
+//    var $billingAddressSelector = $('.addressSelector', form);
+//    var hasSelectedAddress = false;
+//
+//    if ($billingAddressSelector && $billingAddressSelector.length === 1) {
+//        $billingAddressSelector.empty();
+//        // Add New Address option
+//        $billingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
+//            null,
+//            false,
+//            order,
+//            { type: 'billing' }));
+//
+//        // Separator -
+//        $billingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
+//            order.resources.shippingAddresses, false, order, {
+//                // className: 'multi-shipping',
+//                type: 'billing'
+//            }
+//        ));
+//
+//        shippings.forEach(function (aShipping) {
+//            var isSelected = order.billing.matchingAddressId === aShipping.UUID;
+//            hasSelectedAddress = hasSelectedAddress || isSelected;
+//            // Shipping Address option
+//            $billingAddressSelector.append(
+//                addressHelpers.methods.optionValueForAddress(aShipping, isSelected, order,
+//                    {
+//                        // className: 'multi-shipping',
+//                        type: 'billing'
+//                    }
+//                )
+//            );
+//        });
+//
+//        if (customerAddresses && customerAddresses.length > 0) {
+//            $billingAddressSelector.append(addressHelpers.methods.optionValueForAddress(
+//                order.resources.accountAddresses, false, order));
+//            customerAddresses.forEach(function (customerAddress) {
+//                var isSelected = order.billing.matchingAddressId === customerAddress.address.ID;
+//                hasSelectedAddress = hasSelectedAddress || isSelected;
+//                // Customer Address option
+//                $billingAddressSelector.append(
+//                    addressHelpers.methods.optionValueForAddress({
+//                        UUID: 'ab_' + customerAddress.address.ID,
+//                        address: customerAddress.address
+//                    }, isSelected, order, { type: 'billing' })
+//                );
+//            });
+//        }
+//    }
+//
+//    if (hasSelectedAddress
+//        || (!order.billing.matchingAddressId && order.billing.billingAddress.address)) {
+//        // show
+//        $(form).attr('data-address-mode', 'edit');
+//    } else {
+//        $(form).attr('data-address-mode', 'new');
+//    }
+//
+//    $billingAddressSelector.show();
 }
 
 /**
