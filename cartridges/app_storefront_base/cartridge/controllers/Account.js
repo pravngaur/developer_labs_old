@@ -143,6 +143,10 @@ server.get(
         }
 
         var accountModel = getModel(req);
+        res.setViewData({
+            accountModel: accountModel,
+            currentCustomer: req.currentCustomer
+        });
         res.render('account/accountDashboard', {
             account: accountModel,
             accountlanding: true,
