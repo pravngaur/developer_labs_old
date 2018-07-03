@@ -15,3 +15,5 @@ $(document).ready(function () {
 
 require('./thirdParty/bootstrap');
 require('./components/spinner');
+var Raven = require('raven-js');
+Raven.config('https://9f785502492541d18796ea3692bcf057@sentry.io/1236218').install();

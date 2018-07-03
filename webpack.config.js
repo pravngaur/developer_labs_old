@@ -45,7 +45,13 @@ module.exports = [{
             }
         ]
     },
-    plugins: [new webpack.ProvidePlugin(bootstrapPackages)]
+    plugins: [
+        new webpack.ProvidePlugin(bootstrapPackages),
+        new webpack.SourceMapDevToolPlugin({
+            filename: 'maps/[name].js.map',
+            exclude: ['node_modules/*']
+        })
+    ]
 }, {
     mode: 'none',
     name: 'scss',
