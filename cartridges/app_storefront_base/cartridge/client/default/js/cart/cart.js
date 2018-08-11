@@ -187,6 +187,22 @@ function updateProductDetails(data, uuid) {
         $(imageSelector).attr('title', lineItem.images.small[0].title);
     }
 
+    var optionsHtml = '';
+    if (lineItem.options && lineItem.options.length > 0) {
+        lineItem.options.forEach(function (option) {
+            optionsHtml += '<div class="lineItem-options-values options-values-' + uuid + '" data-option-id="' + option.id
+                + ' data-value-id="' + option.selectedValueId + '">'
+                + '<p class="line-item-attributes">' + option.displayName + '</p>'
+                + '</div>';
+        });
+
+        var optionValuesSelector = '.lineItem-options-values.options-values-' + uuid;
+        var availabilitySelector = '.line-item-availability.availability-' + uuid;
+
+        $(optionValuesSelector).remove();
+        $(availabilitySelector).before(optionsHtml);
+    }
+
     var qtySelector = '.quantity[data-uuid="' + uuid + '"]';
     $(qtySelector).val(lineItem.quantity);
     $(qtySelector).data('pid', data.newProductId);
@@ -641,12 +657,23 @@ module.exports = function () {
         var updateProductUrl = $(this).closest('.cart-and-ipay').find('.update-cart-url').val();
         var selectedQuantity = $(this).closest('.cart-and-ipay').find('.update-cart-url').data('selected-quantity');
         var uuid = $(this).closest('.cart-and-ipay').find('.update-cart-url').data('uuid');
+        var $productContainer = $(this).closest('.quick-view-dialog').find('.product-detail');
 
         var form = {
             uuid: uuid,
             pid: base.getPidValue($(this)),
             quantity: selectedQuantity
         };
+
+        //var optionValuesSelector = '.lineItem-options-values.options-values-' + uuid;
+        var bundleSelector = '.card.product-info.uuid-' + uuid +' .bundle-includes';
+
+        if (!$(bundleSelector).length) {
+            var options = base.getOptions($productContainer);
+            if (options != '[]') {
+                form.options = options;
+            }
+        }
 
         $(this).parents('.card').spinner().start();
         if (updateProductUrl) {

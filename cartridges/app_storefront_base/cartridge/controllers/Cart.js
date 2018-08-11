@@ -700,17 +700,31 @@ server.get('GetProduct', function (req, res, next) {
 
     var requestUuid = req.querystring.uuid;
 
-
     var requestPLI = collections.find(BasketMgr.getCurrentBasket().allProductLineItems, function (item) {
         return item.UUID === requestUuid;
     });
 
     var requestQuantity = requestPLI.quantityValue.toString();
+    
+    var selectedOptions = [];
+    if (!requestPLI.product.bundle && !requestPLI.optionProductLineItems.empty) {
+    	selectedOptions = [
+        	{
+        		optionId: requestPLI.optionProductLineItems[0].optionID,
+        		selectedValueId: requestPLI.optionProductLineItems[0].optionValueID
+        	}
+        ]
+    }
 
     var pliProduct = {
         pid: requestPLI.productID,
-        quantity: requestQuantity
+        quantity: requestQuantity   //,
+        //options: selectedOptions
     };
+    
+    if (selectedOptions.length > 0) {
+    	pliProduct.options = selectedOptions
+    }
 
     res.render('product/quickView.isml', {
         product: ProductFactory.get(pliProduct),
@@ -733,10 +747,12 @@ server.post('EditProductLineItem', function (req, res, next) {
     var collections = require('*/cartridge/scripts/util/collections');
     var cartHelper = require('*/cartridge/scripts/cart/cartHelpers');
     var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
+    var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
 
     var uuid = req.form.uuid;
     var productId = req.form.pid;
     var updateQuantity = parseInt(req.form.quantity, 10);
+    var newOptions = req.form.options ? JSON.parse(req.form.options) : [];
 
     var currentBasket = BasketMgr.getCurrentBasket();
 
@@ -821,6 +837,28 @@ server.post('EditProductLineItem', function (req, res, next) {
 
                 if (!requestLineItem.product.bundle) {
                     requestLineItem.replaceProduct(product);
+
+//-- AnnDiep option update begin
+                    if (newOptions.length > 0) {
+                    	var productOptionModel = productHelper.getCurrentOptionModel(product.optionModel, newOptions);
+                        //var optionValues = productOptionModel.getOptions().toArray();
+
+                        //var productOptions = productOptionModel.getOptions();
+                        // collections.forEach(productOptions, function (option) {
+                        //
+                        // });
+
+                        //var productOptionModel = product.optionModel;
+                        var productOption = productOptionModel.getOption(newOptions[0].optionId);
+                        var productOptionValue = productOptionModel.getOptionValue(productOption, newOptions[0].selectedValueId);
+
+
+                        if (productOptionValue) {
+                        	//requestLineItem.updateOptionValue(optionValues[0]);
+                        	requestLineItem.updateOptionValue(productOptionValue);
+                        }
+                    }
+//-- AnnDiep option update end
                 }
 
                 requestLineItem.setQuantityValue(updateQuantity);
