@@ -708,18 +708,18 @@ server.get('GetProduct', function (req, res, next) {
     
     var selectedOptions = [];
     if (!requestPLI.product.bundle && !requestPLI.optionProductLineItems.empty) {
-    	selectedOptions = [
-        	{
-        		optionId: requestPLI.optionProductLineItems[0].optionID,
-        		selectedValueId: requestPLI.optionProductLineItems[0].optionValueID
-        	}
-        ]
+    	 collections.forEach(requestPLI.optionProductLineItems, function (optionPli) {
+            var selectOption = {
+            		optionId: optionPli.optionID,
+            		selectedValueId: optionPli.optionValueID
+            }
+            selectedOptions.push(selectOption);
+         });
     }
 
     var pliProduct = {
         pid: requestPLI.productID,
-        quantity: requestQuantity   //,
-        //options: selectedOptions
+        quantity: requestQuantity
     };
     
     if (selectedOptions.length > 0) {
@@ -836,7 +836,7 @@ server.post('EditProductLineItem', function (req, res, next) {
                 }
 
                 if (!requestLineItem.product.bundle) {
-                    requestLineItem.replaceProduct(product);
+                    //requestLineItem.replaceProduct(product);
 
 //-- AnnDiep option update begin
                     if (newOptions.length > 0) {
@@ -852,11 +852,18 @@ server.post('EditProductLineItem', function (req, res, next) {
                         var productOption = productOptionModel.getOption(newOptions[0].optionId);
                         var productOptionValue = productOptionModel.getOptionValue(productOption, newOptions[0].selectedValueId);
 
+                      //for debug only. check the set option id and value
+                        var tempOptionId1 = requestLineItem.getOptionID();
+                    	var tempOptionValue1 = requestLineItem.getOptionValueID();
 
                         if (productOptionValue) {
                         	//requestLineItem.updateOptionValue(optionValues[0]);
                         	requestLineItem.updateOptionValue(productOptionValue);
                         }
+                    	//for debug only. check the set option id and value
+                    	var tempOptionId2 = requestLineItem.getOptionID();
+                    	var tempOptionValue2 = requestLineItem.getOptionValueID();
+                    	var temp = 'test';
                     }
 //-- AnnDiep option update end
                 }
