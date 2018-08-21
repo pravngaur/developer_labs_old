@@ -80,7 +80,7 @@
         </div>
     </isif>
 
-    <isloop items="${lineItem.bonusProducts}" var="nestedLineItem" status="loopstate">
+    <isloop items="${lineItem.bonusProducts}" var="nestedLineItem" status="loopState">
         <isif condition="${loopstate.first}">
             ${Resource.msg('text.lineitem.bonus.msg', 'cart', null)}:
         </isif>

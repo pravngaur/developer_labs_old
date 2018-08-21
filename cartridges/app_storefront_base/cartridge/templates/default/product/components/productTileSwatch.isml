@@ -1,7 +1,7 @@
 <div class="color-swatches">
     <div class="swatches">
         <isif condition="${product.variationAttributes && product.variationAttributes.length > 0}">
-            <isloop items="${product.variationAttributes[0].values}" var="swatch" status="loopstate">
+            <isloop items="${product.variationAttributes[0].values}" var="swatch" status="loopState">
                 <isif condition="${loopstate.count < 4
                                 && swatch.images != null
                                 && swatch.images.swatch[0] != null

@@ -1,4 +1,4 @@
-<isloop items="${pdict.customer.customerPaymentInstruments}" var="paymentInstrument" status="loopSate">
+<isloop items="${pdict.customer.customerPaymentInstruments}" var="paymentInstrument" status="loopState">
     <div class="row saved-payment-instrument ${loopSate.first ? 'selected-payment' : ''}" data-uuid="${paymentInstrument.UUID}">
         <div class="form-group required saved-security-code col-6 col-md-3">
             <img class="card-image ${loopSate.first ? 'checkout-hidden' : ''}"

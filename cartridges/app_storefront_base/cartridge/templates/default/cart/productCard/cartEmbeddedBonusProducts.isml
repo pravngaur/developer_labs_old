@@ -1,4 +1,4 @@
-<isloop items="${lineItem.bonusProducts}" var="productLineItem" status="loopstate">
+<isloop items="${lineItem.bonusProducts}" var="productLineItem" status="loopState">
     <isif condition="${loopstate.first}">
         <div class="bonus-line-item-msg">${Resource.msg('text.lineitem.bonus.msg','cart',null)}:</div>
     </isif>
@@ -7,7 +7,7 @@
 <div class="bundled-line-item clearfix"></div>
 <isloop items="${lineItem.discountLineItems}" var="discountLineItem">
     <div
-        class="card bonus-product-button" 
+        class="card bonus-product-button"
         data-duuid="${discountLineItem.uuid}"
         data-pliuuid="${discountLineItem.pliuuid}"
         data-maxpids="${discountLineItem.maxpids}"
