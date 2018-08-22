@@ -106,7 +106,7 @@ Sometimes you might want to reuse the route's name, but do not want any of the e
 
 ```js
 var page = require('app_storefront_base/cartridge/controller/Page');
-var server = require('server);
+var server = require('server');
 
 server.extend(page);
 
