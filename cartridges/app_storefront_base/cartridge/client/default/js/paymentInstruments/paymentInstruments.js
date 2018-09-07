@@ -12,7 +12,7 @@ module.exports = {
             url = $(this).data('url') + '?UUID=' + $(this).data('id');
             $('.payment-to-remove').empty().append($(this).data('card'));
 
-            $('.delete-confirmation-btn').click(function (f) {
+            $('.delete-confirmation-btn').unbind('click').click(function (f) {
                 f.preventDefault();
                 $('.remove-payment').trigger('payment:remove', f);
                 $.ajax({
