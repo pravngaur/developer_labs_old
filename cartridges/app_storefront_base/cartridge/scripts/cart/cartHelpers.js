@@ -416,6 +416,77 @@ function ensureAllShipmentsHaveMethods(basket) {
     });
 }
 
+/**
+ * Generates an object of URLs
+ * @returns {Object} an object of URLs in string format
+ */
+function getCartActionUrls() {
+    return {
+        removeProductLineItemUrl: URLUtils.url('Cart-RemoveProductLineItem').toString(),
+        updateQuantityUrl: URLUtils.url('Cart-UpdateQuantity').toString(),
+        selectShippingUrl: URLUtils.url('Cart-SelectShippingMethod').toString(),
+        submitCouponCodeUrl: URLUtils.url('Cart-AddCoupon').toString(),
+        removeCouponLineItem: URLUtils.url('Cart-RemoveCouponLineItem').toString()
+    };
+}
+
+/**
+ * Generates an object of approaching discounts
+ * @param {dw.order.Basket} basket - Current users's basket
+ * @param {dw.campaign.DiscountPlan} discountPlan - set of applicable discounts
+ * @returns {Object} an object of approaching discounts
+ */
+function getApproachingDiscounts(basket, discountPlan) {
+    var approachingOrderDiscounts;
+    var approachingShippingDiscounts;
+    var orderDiscountObject;
+    var shippingDiscountObject;
+    var discountObject;
+    var formatMoney = require('dw/util/StringUtils').formatMoney;
+
+    if (basket && basket.productLineItems) {
+        // TODO: Account for giftCertificateLineItems once gift certificates are implemented
+        approachingOrderDiscounts = discountPlan.getApproachingOrderDiscounts();
+        approachingShippingDiscounts =
+            discountPlan.getApproachingShippingDiscounts(basket.defaultShipment);
+
+        orderDiscountObject =
+            collections.map(approachingOrderDiscounts, function (approachingOrderDiscount) {
+                return {
+                    discountMsg: Resource.msgf(
+                        'msg.approachingpromo',
+                        'cart',
+                        null,
+                        formatMoney(
+                            approachingOrderDiscount.getDistanceFromConditionThreshold()
+                        ),
+                        approachingOrderDiscount.getDiscount()
+                            .getPromotion().getCalloutMsg()
+                    )
+                };
+            });
+
+        shippingDiscountObject =
+            collections.map(approachingShippingDiscounts, function (approachingShippingDiscount) {
+                return {
+                    discountMsg: Resource.msgf(
+                        'msg.approachingpromo',
+                        'cart',
+                        null,
+                        formatMoney(
+                            approachingShippingDiscount.getDistanceFromConditionThreshold()
+                        ),
+                        approachingShippingDiscount.getDiscount()
+                            .getPromotion().getCalloutMsg()
+                    )
+                };
+            });
+        discountObject = orderDiscountObject.concat(shippingDiscountObject);
+    }
+    return discountObject;
+}
+
+
 module.exports = {
     addLineItem: addLineItem,
     addProductToCart: addProductToCart,
@@ -424,5 +495,7 @@ module.exports = {
     getQtyAlreadyInCart: getQtyAlreadyInCart,
     getNewBonusDiscountLineItem: getNewBonusDiscountLineItem,
     getExistingProductLineItemsInCart: getExistingProductLineItemsInCart,
-    BONUS_PRODUCTS_PAGE_SIZE: BONUS_PRODUCTS_PAGE_SIZE
+    BONUS_PRODUCTS_PAGE_SIZE: BONUS_PRODUCTS_PAGE_SIZE,
+    getCartActionUrls: getCartActionUrls,
+    getApproachingDiscounts: getApproachingDiscounts
 };

@@ -95,21 +95,53 @@ function emptyAddress(shipment) {
 function ShippingModel(shipment, address, customer, containerView) {
     var shippingHelpers = require('*/cartridge/scripts/checkout/shippingHelpers');
 
-    // Simple properties
-    this.UUID = getShipmentUUID(shipment);
+    // Derived properties
+    Object.defineProperty(this, 'UUID', {
+        enumerable: true,
+        get: function () {
+            return getShipmentUUID(shipment);
+        }
+    });
 
     // Derived properties
-    this.productLineItems = getProductLineItemsModel(shipment, containerView);
-    this.applicableShippingMethods = shippingHelpers.getApplicableShippingMethods(shipment, address);
-    this.selectedShippingMethod = getSelectedShippingMethod(shipment);
-    this.matchingAddressId = getAssociatedAddress(shipment, customer);
+    Object.defineProperty(this, 'productLineItems', {
+        enumerable: true,
+        get: function () {
+            return getProductLineItemsModel(shipment, containerView);
+        }
+    });
 
-    // Optional properties
-    if (emptyAddress(shipment)) {
-        this.shippingAddress = new AddressModel(shipment.shippingAddress).address;
-    } else {
-        this.shippingAddress = address;
-    }
+    Object.defineProperty(this, 'applicableShippingMethods', {
+        enumerable: true,
+        get: function () {
+            return shippingHelpers.getApplicableShippingMethods(shipment, address);
+        }
+    });
+
+    Object.defineProperty(this, 'selectedShippingMethod', {
+        enumerable: true,
+        get: function () {
+            return getSelectedShippingMethod(shipment);
+        }
+    });
+
+    Object.defineProperty(this, 'matchingAddressId', {
+        enumerable: true,
+        get: function () {
+            return getAssociatedAddress(shipment, customer);
+        }
+    });
+
+    Object.defineProperty(this, 'shippingAddress', {
+        enumerable: true,
+        get: function () {
+            // Optional properties
+            if (emptyAddress(shipment)) {
+                return new AddressModel(shipment.shippingAddress).address;
+            }
+            return address;
+        }
+    });
 
     this.isGift = shipment ? shipment.gift : null;
     this.giftMessage = shipment ? shipment.giftMessage : null;

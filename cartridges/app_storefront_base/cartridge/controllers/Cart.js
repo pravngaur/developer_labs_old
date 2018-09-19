@@ -158,7 +158,7 @@ server.get(
 
         res.setViewData({ reportingURLs: reportingURLs });
 
-        var basketModel = new CartModel(currentBasket);
+        var basketModel = new CartModel(currentBasket, { includeShipments: true });
         res.render('cart/cart', basketModel);
         next();
     }
@@ -421,11 +421,7 @@ server.post('SelectShippingMethod', server.middleware.https, function (req, res,
 server.get('MiniCartShow', function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
     var Transaction = require('dw/system/Transaction');
-    var CartModel = require('*/cartridge/models/cart');
-    var cartHelper = require('*/cartridge/scripts/cart/cartHelpers');
-    var reportingUrlsHelper = require('*/cartridge/scripts/reportingUrls');
-    var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
-
+    var MiniCartModel = require('*/cartridge/models/minicart');
     var currentBasket = BasketMgr.getCurrentBasket();
     var reportingURLs;
 
@@ -434,19 +430,22 @@ server.get('MiniCartShow', function (req, res, next) {
             if (currentBasket.currencyCode !== req.session.currency.currencyCode) {
                 currentBasket.updateCurrency();
             }
+            var cartHelper = require('*/cartridge/scripts/cart/cartHelpers');
             cartHelper.ensureAllShipmentsHaveMethods(currentBasket);
+            var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
             basketCalculationHelpers.calculateTotals(currentBasket);
         });
     }
 
     if (currentBasket && currentBasket.allLineItems.length) {
+        var reportingUrlsHelper = require('*/cartridge/scripts/reportingUrls');
         reportingURLs = reportingUrlsHelper.getBasketOpenReportingURLs(currentBasket);
     }
 
     res.setViewData({ reportingURLs: reportingURLs });
 
 
-    var basketModel = new CartModel(currentBasket);
+    var basketModel = new MiniCartModel(currentBasket);
 
     res.render('checkout/cart/miniCart', basketModel);
     next();

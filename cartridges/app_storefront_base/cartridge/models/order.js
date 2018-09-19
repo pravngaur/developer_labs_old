@@ -138,7 +138,16 @@ function OrderModel(lineItemContainer, options) {
 
         var billingModel = new BillingModel(billingAddressModel, paymentModel, associatedAddress);
 
-        var productLineItemsModel = new ProductLineItemsModel(lineItemContainer.productLineItems, options.containerView);
+        var productLineItemsModel;
+        /**
+         * if not multishipping, use productLineItems model of shipment & no need to re-calculate
+         * because defaultShipment will have all productlineItems
+         */
+        if (!usingMultiShipping && shippingModels && shippingModels.length && shippingModels[0].productLineItems) {
+            productLineItemsModel = shippingModels[0].productLineItems;
+        } else {
+            productLineItemsModel = new ProductLineItemsModel(lineItemContainer.productLineItems, options.containerView);
+        }
         var totalsModel = new TotalsModel(lineItemContainer);
 
         this.shippable = safeOptions.shippable || false;

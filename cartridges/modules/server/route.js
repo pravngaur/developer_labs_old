@@ -29,7 +29,9 @@ function Route(name, chain, req, res) {
     this.chain = chain;
     this.req = req;
     this.res = res;
-    res.setViewData(getPageMetadata(req));
+    if (!req.includeRequest) {
+        res.setViewData(getPageMetadata(req));
+    }
     EventEmitter.call(this);
 }
 

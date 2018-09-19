@@ -126,6 +126,21 @@ function getAddressObject(address) {
 }
 
 /**
+ * Translates all global customer's address into local object
+ * @param {dw.customer.addressBook} addresses - All CustomerAddress or OrderAddress
+ * @returns {Array} local instance of address object
+ */
+function getAllAddresses(addresses) {
+    var result = [];
+    if (addresses && addresses.length > 0) {
+        for (var i = 0, ii = addresses.length; i < ii; i++) {
+            result.push(getAddressObject(addresses[i]));
+        }
+    }
+    return result;
+}
+
+/**
  * Creates a list of payment instruments for the current user
  * @param {Array} rawPaymentInstruments - current customer's payment instruments
  * @returns {Array} an array of payment instruments
@@ -174,7 +189,7 @@ function getCustomerObject(customer) {
             }
         };
     }
-    var preferredAddress = customer.addressBook.preferredAddress;
+
     var result;
     result = {
         raw: customer,
@@ -184,20 +199,28 @@ function getCustomerObject(customer) {
             email: customer.profile.email,
             phone: customer.profile.phoneHome,
             customerNo: customer.profile.customerNo
-        },
-        addressBook: {
-            preferredAddress: getAddressObject(preferredAddress),
-            addresses: []
-        },
-        wallet: {
-            paymentInstruments: getPaymentInstruments(customer.profile.wallet.paymentInstruments)
         }
     };
-    if (customer.addressBook.addresses && customer.addressBook.addresses.length > 0) {
-        for (var i = 0, ii = customer.addressBook.addresses.length; i < ii; i++) {
-            result.addressBook.addresses.push(getAddressObject(customer.addressBook.addresses[i]));
+
+    Object.defineProperty(result, 'addressBook', {
+        enumerable: true,
+        get: function () {
+            return {
+                preferredAddress: getAddressObject(customer.addressBook.preferredAddress),
+                addresses: getAllAddresses(customer.addressBook.addresses) || []
+            };
         }
-    }
+    });
+
+    Object.defineProperty(result, 'wallet', {
+        enumerable: true,
+        get: function () {
+            return {
+                paymentInstruments: getPaymentInstruments(customer.profile.wallet.paymentInstruments)
+            };
+        }
+    });
+
     return result;
 }
 

@@ -5,6 +5,7 @@ var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 var sinon = require('sinon');
 
 var ArrayList = require('../../../../mocks/dw.util.Collection.js');
+var mockCollections = require('../../../../mocks/util/collections.js');
 
 var mockOptions = [{
     optionId: 'option 1',
@@ -123,7 +124,8 @@ describe('cartHelpers', function () {
             }
         },
         '*/cartridge/scripts/util/collections': proxyquire('../../../../../cartridges/app_storefront_base/cartridge/scripts/util/collections', {
-            'dw/util/ArrayList': ArrayList
+            'dw/util/ArrayList': ArrayList,
+            map: mockCollections.map
         }),
         '*/cartridge/scripts/checkout/shippingHelpers': {},
         'dw/system/Transaction': {
@@ -151,6 +153,11 @@ describe('cartHelpers', function () {
                         return 'string URL';
                     }
                 };
+            }
+        },
+        'dw/util/StringUtils': {
+            formatMoney: function (val) {
+                return val;
             }
         }
     });
@@ -285,6 +292,51 @@ describe('cartHelpers', function () {
             assert.equal(newBonusDiscountLineItem.newBonusDiscountLineItem.description, 'description 1');
             assert.equal(newBonusDiscountLineItem.labels.close, 'someString');
             assert.equal(newBonusDiscountLineItem.labels.selectprods, 'someString');
+        });
+    });
+
+    describe('getApproachingDiscounts() function', function () {
+        it('should return approaching discount', function () {
+            var currentBasket = createApiBasket(false);
+            var discountPlanMock = {
+                getApproachingOrderDiscounts: function () {
+                    return new ArrayList([{
+                        getDistanceFromConditionThreshold: function () { return 'order-amount'; },
+                        getDiscount: function () {
+                            return {
+                                getPromotion: function () {
+                                    return {
+                                        getCalloutMsg: function () {
+                                            return 'order-callout-message';
+                                        }
+                                    };
+                                }
+                            };
+                        }
+                    }]);
+                },
+                getApproachingShippingDiscounts: function () {
+                    return new ArrayList([{
+                        getDistanceFromConditionThreshold: function () { return 'shipping-amount'; },
+                        getDiscount: function () {
+                            return {
+                                getPromotion: function () {
+                                    return {
+                                        getCalloutMsg: function () {
+                                            return 'shipping-callout-message';
+                                        }
+                                    };
+                                }
+                            };
+                        }
+                    }]);
+                }
+            };
+
+            var approachingDiscounts = cartHelpers.getApproachingDiscounts(currentBasket, discountPlanMock);
+            var expectedResult = [{ 'discountMsg': 'someString' }, { 'discountMsg': 'someString' }];
+            assert.equal(approachingDiscounts.length, 2);
+            assert.deepEqual(approachingDiscounts, expectedResult);
         });
     });
 });

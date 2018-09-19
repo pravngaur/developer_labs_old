@@ -121,13 +121,15 @@ function VariationAttributesModel(variationModel, attrConfig, selectedOptionsQue
     var result = [];
     collections.forEach(allAttributes, function (attr) {
         var selectedValue = variationModel.getSelectedValue(attr);
-        var values = getAllAttrValues(variationModel, selectedValue, attr, attrConfig.endPoint,
-            selectedOptionsQueryParams, quantity);
-        var resetUrl = getAttrResetUrl(values, attr.ID);
+
 
         if ((Array.isArray(attrConfig.attributes)
             && attrConfig.attributes.indexOf(attr.attributeID) > -1)
             || attrConfig.attributes === '*') {
+            var values = getAllAttrValues(variationModel, selectedValue, attr, attrConfig.endPoint,
+                selectedOptionsQueryParams, quantity);
+            var resetUrl = getAttrResetUrl(values, attr.ID);
+
             result.push({
                 attributeId: attr.attributeID,
                 displayName: attr.displayName,

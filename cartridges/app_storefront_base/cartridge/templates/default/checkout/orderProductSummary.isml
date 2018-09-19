@@ -14,8 +14,9 @@
                 <isif condition="${pdict.order.shipping.length > 1}">
                     <div class="shipment-block">
                 </isif>
+                <isset name="lineItems" value="${shippingModel.productLineItems.items}" scope="page"/>
 
-                <isloop items="${shippingModel.productLineItems.items}" var="lineItem">
+                <isloop items="${lineItems}" var="lineItem">
                     <isif condition="${lineItem.bonusProductLineItemUUID === 'bonus'}">
                         <div class="card ${miniCart ? 'bonus-product-line-item' : ''} uuid-${lineItem.UUID}">
                             <div class="card-body">

@@ -4,6 +4,7 @@ var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
 var TotalsModel = require('./totals');
 var ProductLineItemsModel = require('./productLineItems');
+var MiniCartModel = require('./minicart');
 
 var ShippingHelpers = require('../helpers/shippingHelpers');
 
@@ -58,6 +59,7 @@ function proxyModel() {
         },
         '*/cartridge/models/totals': TotalsModel,
         '*/cartridge/models/productLineItems': ProductLineItemsModel,
+        '*/cartridge/models/minicart': MiniCartModel,
         '*/cartridge/scripts/checkout/shippingHelpers': ShippingHelpers,
         '*/cartridge/scripts/helpers/hooks': function () {
             return { error: false, message: 'some message' };
@@ -75,6 +77,17 @@ function proxyModel() {
             },
             msgf: function () {
                 return 'someString';
+            }
+        },
+        '*/cartridge/scripts/cart/cartHelpers': {
+            getCartActionUrls: function () {
+                return {
+                    removeProductLineItemUrl: 'removeProductLineItemUrl',
+                    updateQuantityUrl: 'updateQuantityUrl',
+                    selectShippingUrl: 'selectShippingUrl',
+                    submitCouponCodeUrl: 'submitCouponCodeUrl',
+                    removeCouponLineItem: 'removeCouponLineItem'
+                };
             }
         }
     });

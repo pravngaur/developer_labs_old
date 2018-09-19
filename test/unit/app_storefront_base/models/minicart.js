@@ -61,20 +61,6 @@ var createApiBasket = function (options) {
     };
 
 
-    if (safeOptions.shipping) {
-        basket.shipments = [safeOptions.shipping];
-    } else {
-        basket.shipments = [{
-            shippingMethod: {
-                ID: '005'
-            }
-        }];
-    }
-    basket.defaultShipment = basket.shipments[0];
-
-    basket.getShipments = function () {
-        return basket.shipments;
-    };
     basket.getAdjustedMerchandizeTotalPrice = function () {
         return new Money(true);
     };
@@ -90,43 +76,23 @@ var createApiBasket = function (options) {
     return basket;
 };
 
-describe('cart', function () {
-    var Cart = require('../../../mocks/models/cart');
+describe('minicart', function () {
+    var MiniCart = require('../../../mocks/models/minicart');
 
     it('should accept/process a null Basket object', function () {
         var nullBasket = null;
-        var result = new Cart(nullBasket);
+        var result = new MiniCart(nullBasket);
 
         assert.equal(result.items.length, 0);
         assert.equal(result.numItems, 0);
     });
 
-    it('should get shippingMethods from the shipping model', function () {
-        var result = new Cart(createApiBasket(), { includeShipments: true });
-        assert.equal(result.shipments[0].shippingMethods[0].description, 'Order received within 7-10 ' +
-            'business days'
-        );
-        assert.equal(result.shipments[0].shippingMethods[0].displayName, 'Ground');
-        assert.equal(result.shipments[0].shippingMethods[0].ID, '001');
-        assert.equal(result.shipments[0].shippingMethods[0].shippingCost, '$0.00');
-        assert.equal(result.shipments[0].shippingMethods[0].estimatedArrivalTime, '7-10 Business Days');
-    });
-
-    it('should not get shippingMethods from the shipping model', function () {
-        var result = new Cart(createApiBasket());
-        assert.isUndefined(result.shipments);
-    });
-
     it('should get totals from totals model', function () {
-        var result = new Cart(createApiBasket());
+        var result = new MiniCart(createApiBasket());
         assert.equal(result.totals.subTotal, 'formatted money');
         assert.equal(result.totals.grandTotal, 'formatted money');
         assert.equal(result.totals.totalTax, 'formatted money');
         assert.equal(result.totals.totalShippingCost, 'formatted money');
     });
-    // it('should get approaching discounts', function () {
-    //     var result = new Cart(createApiBasket());
-    //     assert.equal(result.approachingDiscounts[0].discountMsg, 'someString');
-    //     assert.equal(result.approachingDiscounts[1].discountMsg, 'someString');
-    // });
 });
+
