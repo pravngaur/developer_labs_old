@@ -7,7 +7,7 @@ var isDefault;
 
 module.exports = {
     removeAddress: function () {
-        $('.remove-address').on('click', function (e) {
+        $('.remove-address-address-book').on('click', function (e) {
             e.preventDefault();
             isDefault = $(this).data('default');
             if (isDefault) {
@@ -35,7 +35,7 @@ module.exports = {
                             var addressHeading = addressId + ' (' + data.defaultMsg + ')';
                             $('.card .address-heading').first().text(addressHeading);
                             $('.card .card-make-default-link').first().remove();
-                            $('.remove-address').data('default', true);
+                            $('.remove-address-address-book').data('default', true);
                             if (data.message) {
                                 var toInsert = '<div><h3>' +
                                 data.message +
