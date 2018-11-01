@@ -231,10 +231,15 @@ function getFirstNonDefaultShipmentWithProductLineItems(currentBasket) {
  */
 function ensureValidShipments(lineItemContainer) {
     var shipments = lineItemContainer.shipments;
+    var storeAddress = true;
     var allValid = collections.every(shipments, function (shipment) {
         if (shipment) {
+            var hasStoreID = shipment.custom && shipment.custom.fromStoreId;
+            if (shipment.shippingMethod.custom && shipment.shippingMethod.custom.storePickupEnabled && !hasStoreID) {
+                storeAddress = false;
+            }
             var address = shipment.shippingAddress;
-            return address && address.address1;
+            return address && address.address1 && storeAddress;
         }
         return false;
     });
