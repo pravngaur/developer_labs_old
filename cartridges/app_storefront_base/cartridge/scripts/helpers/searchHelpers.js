@@ -55,6 +55,18 @@ function setupContentSearch(params) {
     return contentSearch;
 }
 
+/**
+ * Set the cache values
+ *
+ * @param {Object} res - The response object
+ */
+function applyCache(res) {
+    res.cachePeriod = 1; // eslint-disable-line no-param-reassign
+    res.cachePeriodUnit = 'hours'; // eslint-disable-line no-param-reassign
+    res.personalized = true; // eslint-disable-line no-param-reassign
+}
+
 exports.setupSearch = setupSearch;
 exports.getCategoryTemplate = getCategoryTemplate;
 exports.setupContentSearch = setupContentSearch;
+exports.applyCache = applyCache;

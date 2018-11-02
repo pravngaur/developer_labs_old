@@ -7,7 +7,7 @@ var cache = require('*/cartridge/scripts/middleware/cache');
 var consentTracking = require('*/cartridge/scripts/middleware/consentTracking');
 var pageMetaData = require('*/cartridge/scripts/middleware/pageMetaData');
 
-server.get('UpdateGrid', cache.applyPromotionSensitiveCache, function (req, res, next) {
+server.get('UpdateGrid', function (req, res, next) {
     var ProductSearchModel = require('dw/catalog/ProductSearchModel');
     var searchHelper = require('*/cartridge/scripts/helpers/searchHelpers');
     var ProductSearch = require('*/cartridge/models/search/productSearch');
@@ -15,6 +15,11 @@ server.get('UpdateGrid', cache.applyPromotionSensitiveCache, function (req, res,
     var apiProductSearch = new ProductSearchModel();
     apiProductSearch = searchHelper.setupSearch(apiProductSearch, req.querystring);
     apiProductSearch.search();
+
+    if (!apiProductSearch.personalizedSort) {
+        searchHelper.applyCache(res);
+    }
+
     var productSearch = new ProductSearch(
         apiProductSearch,
         req.querystring,
@@ -54,7 +59,7 @@ server.get('Refinebar', cache.applyDefaultCache, function (req, res, next) {
 });
 
 
-server.get('Show', cache.applyShortPromotionSensitiveCache, consentTracking.consent, function (req, res, next) {
+server.get('Show', consentTracking.consent, function (req, res, next) {
     var ProductSearchModel = require('dw/catalog/ProductSearchModel');
     var URLUtils = require('dw/web/URLUtils');
     var ProductSearch = require('*/cartridge/models/search/productSearch');
@@ -81,6 +86,10 @@ server.get('Show', cache.applyShortPromotionSensitiveCache, consentTracking.cons
 
     apiProductSearch = searchHelper.setupSearch(apiProductSearch, req.querystring);
     apiProductSearch.search();
+
+    if (!apiProductSearch.personalizedSort) {
+        searchHelper.applyCache(res);
+    }
 
     categoryTemplate = searchHelper.getCategoryTemplate(apiProductSearch);
     productSearch = new ProductSearch(
