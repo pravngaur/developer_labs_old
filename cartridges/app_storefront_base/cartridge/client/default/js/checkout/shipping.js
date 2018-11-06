@@ -957,14 +957,12 @@ module.exports = {
                 .done(function (response) {
                     formHelpers.clearPreviousErrors(form);
                     if (response.error) {
-                        if (response.fieldErrors.length) {
-                            formHelpers.loadFormErrors(form, response.fieldErrors);
-                        } else if (response.serverErrors && response.serverErrors.length) {
+                        if (response.serverErrors && response.serverErrors.length) {
                             $.each(response.serverErrors, function (index, element) {
                                 createErrorNotification(element);
                             });
-                        } else {
-                            createErrorNotification(response.errorMessage);
+                        } else if (Object.keys(response.fieldErrors).length) {
+                            formHelpers.loadFormErrors(form, response.fieldErrors);
                         }
                     } else {
                         // Update UI from response
