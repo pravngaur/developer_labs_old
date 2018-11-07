@@ -193,8 +193,7 @@ server.post(
                     break;
                 }
             }
-
-            if (shipment) {
+            if (shipment && viewData && !!viewData.isGift) {
                 var giftResult = COHelpers.setGift(shipment, viewData.isGift, viewData.giftMessage);
 
                 if (giftResult.error) {
