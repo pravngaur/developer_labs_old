@@ -447,6 +447,20 @@ function updateMultiShipInformation(order) {
 }
 
 /**
+  * Create an alert to display the error message
+  * @param {Object} message - Error message to display
+  */
+function createErrorNotification(message) {
+    var errorHtml = '<div class="alert alert-danger alert-dismissible valid-cart-error ' +
+    'fade show" role="alert">' +
+    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+    '<span aria-hidden="true">&times;</span>' +
+    '</button>' + message + '</div>';
+
+    $('.shipping-error').append(errorHtml);
+}
+
+/**
  * Handle response from the server for valid or invalid form fields.
  * @param {Object} defer - the deferred object which will resolve on success or reject.
  * @param {Object} data - the response data with the invalid form fields or
@@ -469,14 +483,9 @@ function shippingFormResponse(defer, data) {
             defer.reject(data);
         }
 
-        if (data.severErrors && data.severErrors.length) {
-            $.each(data.severErrors, function (element) {
-                var errorHtml = '<div class="alert alert-danger alert-dismissible valid-cart-error ' +
-                    'fade show" role="alert">' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span>' +
-                    '</button>' + element + '</div>';
-                $('.shipping-error').append(errorHtml);
+        if (data.serverErrors && data.serverErrors.length) {
+            $.each(data.serverErrors, function (index, element) {
+                createErrorNotification(element);
             });
 
             defer.reject(data);
@@ -671,7 +680,9 @@ module.exports = {
         updateShippingMethodList: updateShippingMethodList,
         clearShippingForms: clearShippingForms,
         editMultiShipAddress: editMultiShipAddress,
-        editOrEnterMultiShipInfo: editOrEnterMultiShipInfo
+        editOrEnterMultiShipInfo: editOrEnterMultiShipInfo,
+        createErrorNotification: createErrorNotification,
+        viewMultishipAddress: viewMultishipAddress
     },
 
     selectShippingMethod: function () {
@@ -945,46 +956,45 @@ module.exports = {
                 dataType: 'json',
                 data: data
             })
-                .done(function (response) {
-                    formHelpers.clearPreviousErrors(form);
-                    if (response.error) {
-                        if (response.fieldErrors.length) {
-                            formHelpers.loadFormErrors(form, response.fieldErrors);
-                        } else {
-                            $.each(response.severErrors, function (element) {
-                                var errorHtml = '<div class="alert alert-danger alert-dismissible valid-cart-error ' +
-                                    'fade show" role="alert">' +
-                                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                                    '<span aria-hidden="true">&times;</span>' +
-                                    '</button>' + element + '</div>';
-                                $('.shipping-error').append(errorHtml);
-                            });
-                        }
-                    } else {
-                        // Update UI from response
-                        $('body').trigger('checkout:updateCheckoutView',
-                            {
-                                order: response.order,
-                                customer: response.customer
+            .done(function (response) {
+                formHelpers.clearPreviousErrors(form);
+                if (response.error) {
+                    if (response.fieldErrors && response.fieldErrors.length) {
+                        response.fieldErrors.forEach(function (error) {
+                            if (Object.keys(error).length) {
+                                formHelpers.loadFormErrors(form, error);
                             }
-                        );
-
-                        viewMultishipAddress($rootEl);
+                        });
+                    } else if (response.serverErrors && response.serverErrors.length) {
+                        $.each(response.serverErrors, function (index, element) {
+                            createErrorNotification(element);
+                        });
                     }
+                } else {
+                    // Update UI from response
+                    $('body').trigger('checkout:updateCheckoutView',
+                        {
+                            order: response.order,
+                            customer: response.customer
+                        }
+                    );
 
-                    if (response.order && response.order.shippable) {
-                        $('button.submit-shipping').attr('disabled', null);
-                    }
+                    viewMultishipAddress($rootEl);
+                }
 
-                    $rootEl.spinner().stop();
-                })
-                .fail(function (err) {
-                    if (err.responseJSON.redirectUrl) {
-                        window.location.href = err.responseJSON.redirectUrl;
-                    }
+                if (response.order && response.order.shippable) {
+                    $('button.submit-shipping').attr('disabled', null);
+                }
 
-                    $rootEl.spinner().stop();
-                });
+                $rootEl.spinner().stop();
+            })
+            .fail(function (err) {
+                if (err.responseJSON.redirectUrl) {
+                    window.location.href = err.responseJSON.redirectUrl;
+                }
+
+                $rootEl.spinner().stop();
+            });
 
             return false;
         });
