@@ -12,7 +12,7 @@
                     data-name="${lineItem.productName}"
                     data-action="${pdict.actionUrls.removeProductLineItemUrl}"
                     data-uuid="${lineItem.UUID}"
-                    aria-label="remove">
+                    aria-label="remove ${lineItem.productName}">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -22,7 +22,7 @@
                     data-name="${lineItem.productName}"
                     data-action="${pdict.actionUrls.removeProductLineItemUrl}"
                     data-uuid="${lineItem.UUID}"
-                    aria-label="remove">
+                    aria-label="remove ${lineItem.productName}">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
