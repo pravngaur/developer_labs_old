@@ -343,7 +343,8 @@ function addProductToCart(currentBasket, productId, quantity, childProducts, opt
     var optionModel = productHelper.getCurrentOptionModel(product.optionModel, options);
     var result = {
         error: false,
-        message: Resource.msg('text.alert.addedtobasket', 'product', null)
+        message: Resource.msg('text.alert.addedtobasket', 'product', null),
+        uuid: null
     };
 
     var totalQtyRequested = 0;

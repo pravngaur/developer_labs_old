@@ -41,6 +41,7 @@ server.post('AddProduct', function (req, res, next) {
     var quantity;
     var result;
     var pidsObj;
+    var PIDResultArr = [];
 
     if (currentBasket) {
         Transaction.wrap(function () {
@@ -53,14 +54,16 @@ server.post('AddProduct', function (req, res, next) {
                     childProducts,
                     options
                 );
+                // add result to result array object
+                PIDResultArr.push(result);
             } else {
                 // product set
                 pidsObj = JSON.parse(req.form.pidsObj);
                 result = {
                     error: false,
-                    message: Resource.msg('text.alert.addedtobasket', 'product', null)
+                    message: Resource.msg('text.alert.addedtobasket', 'product', null),
+                    arrMessages: []
                 };
-
                 pidsObj.forEach(function (PIDObj) {
                     quantity = parseInt(PIDObj.qty, 10);
                     var pidOptions = PIDObj.options ? JSON.parse(PIDObj.options) : {};
@@ -74,8 +77,16 @@ server.post('AddProduct', function (req, res, next) {
                     if (PIDObjResult.error) {
                         result.error = PIDObjResult.error;
                         result.message = PIDObjResult.message;
+                        result.arrMessages.push(PIDObjResult.message);
+                    } else {
+                        PIDResultArr.push(PIDObjResult);
                     }
                 });
+            }
+            // This is for multiple errors in case of product set.
+            if (result.arrMessages && result.arrMessages.length > 0) {
+                result.error = true;
+                result.message = result.arrMessages;
             }
             if (!result.error) {
                 cartHelper.ensureAllShipmentsHaveMethods(currentBasket);
@@ -93,33 +104,40 @@ server.post('AddProduct', function (req, res, next) {
         addToCartUrl: URLUtils.url('Cart-AddBonusProducts').toString()
     };
 
-    var newBonusDiscountLineItem =
+    // PIDResultArr has result object from both single product add and prodct set add scenarios.
+    var newBonusDiscountLineItem;
+    var newnewBonusDiscountLineItemsArr = [];
+    PIDResultArr.forEach(function (pidResult) {
+        newBonusDiscountLineItem =
         cartHelper.getNewBonusDiscountLineItem(
             currentBasket,
             previousBonusDiscountLineItems,
             urlObject,
-            result.uuid
-    );
-    if (newBonusDiscountLineItem) {
-        var allLineItems = currentBasket.allProductLineItems;
-        var collections = require('*/cartridge/scripts/util/collections');
-        collections.forEach(allLineItems, function (pli) {
-            if (pli.UUID === result.uuid) {
-                Transaction.wrap(function () {
-                    pli.custom.bonusProductLineItemUUID = 'bonus'; // eslint-disable-line no-param-reassign
-                    pli.custom.preOrderUUID = pli.UUID; // eslint-disable-line no-param-reassign
-                });
-            }
-        });
-    }
+            pidResult.uuid
+        );
+        if (newBonusDiscountLineItem) {
+            var allLineItems = currentBasket.allProductLineItems;
+            var collections = require('*/cartridge/scripts/util/collections');
+            collections.forEach(allLineItems, function (pli) {
+                if (pli.UUID === pidResult.uuid) {
+                    Transaction.wrap(function () {
+                        pli.custom.bonusProductLineItemUUID = 'bonus'; // eslint-disable-line no-param-reassign
+                        pli.custom.preOrderUUID = pli.UUID; // eslint-disable-line no-param-reassign
+                    });
+                }
+            });
+            newnewBonusDiscountLineItemsArr.push(newBonusDiscountLineItem);
+        }
+    });
 
     res.json({
         quantityTotal: quantityTotal,
         message: result.message,
         cart: cartModel,
-        newBonusDiscountLineItem: newBonusDiscountLineItem || {},
+        newBonusDiscountLineItem: newnewBonusDiscountLineItemsArr || {},
         error: result.error,
-        pliUUID: result.uuid
+        pliUUID: result.uuid,
+        pliUUIDSet: PIDResultArr // for multiple products/set added.
     });
 
     next();
