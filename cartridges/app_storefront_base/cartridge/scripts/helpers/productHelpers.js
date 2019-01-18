@@ -70,6 +70,78 @@ function getOptions(optionModel, attributeVariables) {
 }
 
 /**
+ * Retrieve provided product's category specific descriptions
+ *
+ * @param  {dw.catalog.Product} product - Product instance returned from the API
+ * @return {ProductDescriptions[]} - Descriptions for this product
+ */
+function getProductDescriptions(product) {
+    var shortDescription;
+    var longDescription;
+    var catAssignments;
+    if (product) {
+        catAssignments = product.categoryAssignments;
+    }
+    if (catAssignments) {
+        //	check for classification category
+        if (product.classificationCategory) {
+            for (var i = 0; i < catAssignments.length; i++) {
+                if (catAssignments[i].category.ID === product.classificationCategory.ID) {
+                    if (catAssignments[i].shortDescription) {
+                        shortDescription = catAssignments[i].shortDescription;
+                    }
+                    if (catAssignments[i].longDescription) {
+                        longDescription = catAssignments[i].longDescription;
+                    }
+                    break;
+                }
+            }
+        }
+        if (!shortDescription || !longDescription) {
+            // check for primary category
+            if (product.primaryCategory) {
+                for (var k = 0; k < catAssignments.length; k++) {
+                    if (catAssignments[k].category.ID === product.primaryCategory.ID) {
+                        if (!shortDescription && catAssignments[k].shortDescription) {
+                            shortDescription = catAssignments[k].shortDescription;
+                        }
+                        if (!longDescription && catAssignments[k].longDescription) {
+                            longDescription = catAssignments[k].longDescription;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        if (!shortDescription || !longDescription) {
+            // check for category which is neither classification nor primary
+            for (var j = 0; j < catAssignments.length; j++) {
+                if (!shortDescription && catAssignments[j].shortDescription) {
+                    shortDescription = catAssignments[j].shortDescription;
+                }
+                if (!longDescription && catAssignments[j].longDescription) {
+                    longDescription = catAssignments[j].longDescription;
+                }
+                if (longDescription && shortDescription) {
+                    break;
+                }
+            }
+        }
+    }
+    // retrieve from product
+    if (product && product.shortDescription && !shortDescription) {
+        shortDescription = product.shortDescription;
+    }
+    if (product && product.longDescription && !longDescription) {
+        longDescription = product.longDescription;
+    }
+    return {
+        shortDescription: shortDescription,
+        longDescription: longDescription
+    };
+}
+
+/**
  * @typedef SelectedOption
  * @type Object
  * @property {string} optionId - Product option ID
@@ -383,5 +455,6 @@ module.exports = {
     getLineItemOptionNames: getLineItemOptionNames,
     showProductPage: showProductPage,
     getAllBreadcrumbs: getAllBreadcrumbs,
-    getResources: getResources
+    getResources: getResources,
+    getProductDescriptions: getProductDescriptions
 };

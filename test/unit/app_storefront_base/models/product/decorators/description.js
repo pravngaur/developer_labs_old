@@ -1,6 +1,7 @@
 'use strict';
 
 var assert = require('chai').assert;
+var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
 var productMock = {
     longDescription: {
@@ -11,10 +12,27 @@ var productMock = {
     }
 };
 
+var productDescription = {
+    shortDescription: productMock.shortDescription,
+    longDescription: productMock.longDescription
+};
+
+
 var productMockNoDescription = {};
 
 describe('product description decorator', function () {
-    var description = require('../../../../../../cartridges/app_storefront_base/cartridge/models/product/decorators/description');
+    var description = proxyquire('../../../../../../cartridges/app_storefront_base/cartridge/models/product/decorators/description', {
+        '*/cartridge/scripts/helpers/productHelpers': {
+            getProductDescriptions: function () { return productDescription; }
+        }
+    });
+
+    var descriptionNull = proxyquire('../../../../../../cartridges/app_storefront_base/cartridge/models/product/decorators/description', {
+        '*/cartridge/scripts/helpers/productHelpers': {
+            getProductDescriptions: function () { return productMockNoDescription; }
+        }
+    });
+
 
     it('should create longDescription property for passed in object', function () {
         var object = {};
@@ -25,7 +43,7 @@ describe('product description decorator', function () {
 
     it('should handle null long description', function () {
         var object = {};
-        description(object, productMockNoDescription);
+        descriptionNull(object, productMockNoDescription);
 
         assert.equal(object.longDescription, null);
     });
@@ -37,9 +55,9 @@ describe('product description decorator', function () {
         assert.equal(object.shortDescription, 'short description mark up');
     });
 
-    it('should handel null short description', function () {
+    it('should handle null short description', function () {
         var object = {};
-        description(object, productMockNoDescription);
+        descriptionNull(object, productMockNoDescription);
 
         assert.equal(object.shortDescription, null);
     });
