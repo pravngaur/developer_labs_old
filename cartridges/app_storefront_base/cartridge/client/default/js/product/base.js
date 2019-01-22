@@ -248,11 +248,11 @@ function updateOptions(options, $productContainer) {
 function handleVariantResponse(response, $productContainer) {
     var isChoiceOfBonusProducts =
         $productContainer.parents('.choose-bonus-product-dialog').length > 0;
-    var isVaraint;
+    var isVariant;
     if (response.product.variationAttributes) {
         updateAttrs(response.product.variationAttributes, $productContainer);
-        isVaraint = response.product.productType === 'variant';
-        if (isChoiceOfBonusProducts && isVaraint) {
+        isVariant = response.product.productType === 'variant';
+        if (isChoiceOfBonusProducts && isVariant) {
             $productContainer.parent('.bonus-product-item')
                 .data('pid', response.product.id);
 
