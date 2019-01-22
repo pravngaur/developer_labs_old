@@ -56,15 +56,15 @@
             </div>
         </isloop>
         <div class="row justify-content-center">
-            <div class="col-6">
+            <div class="col-sm-8 col-md-6">
                 <div class="row">
-                    <div class="col text-center">
-                        <a href="${URLUtils.url('Account-Show')}" class="normal">
+                    <div class="col-md-7 col-lg-6 order-md-1 order-2 text-center">
+                        <a href="${URLUtils.url('Account-Show')}" class="normal btn btn-link">
                             ${Resource.msg('link.profile.backtomyaccount','account',null)}
                         </a>
                     </div>
-                    <div class="col">
-                        <a href="${URLUtils.url('Address-AddAddress')}" class="btn btn-save btn-block btn-primary">${Resource.msg('button.addnew','account',null)}</a>
+                    <div class="col-md-5 col-lg-6 order-md-2 order-1">
+                        <a href="${URLUtils.url('Address-AddAddress')}" class="btn btn-block btn-primary">${Resource.msg('button.addnew','account',null)}</a>
                     </div>
                 </div>
             </div>
