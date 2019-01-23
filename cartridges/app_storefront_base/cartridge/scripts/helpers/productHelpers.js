@@ -78,38 +78,25 @@ function getOptions(optionModel, attributeVariables) {
 function getProductDescriptions(product) {
     var shortDescription;
     var longDescription;
-    var catAssignments;
-    if (product) {
-        catAssignments = product.categoryAssignments;
+    // check for primary category assignment
+    if (product && product.primaryCategory) {
+        var categoryAssignment = product.primaryCategoryAssignment;
+        shortDescription = categoryAssignment.shortDescription;
+        longDescription = categoryAssignment.longDescription;
     }
-    if (catAssignments) {
+    if (product && (!shortDescription || !longDescription)) {
+        var catAssignments = product.categoryAssignments;
         //	check for classification category
         if (product.classificationCategory) {
             for (var i = 0; i < catAssignments.length; i++) {
                 if (catAssignments[i].category.ID === product.classificationCategory.ID) {
-                    if (catAssignments[i].shortDescription) {
+                    if (!shortDescription && catAssignments[i].shortDescription) {
                         shortDescription = catAssignments[i].shortDescription;
                     }
-                    if (catAssignments[i].longDescription) {
+                    if (!longDescription && catAssignments[i].longDescription) {
                         longDescription = catAssignments[i].longDescription;
                     }
                     break;
-                }
-            }
-        }
-        if (!shortDescription || !longDescription) {
-            // check for primary category
-            if (product.primaryCategory) {
-                for (var k = 0; k < catAssignments.length; k++) {
-                    if (catAssignments[k].category.ID === product.primaryCategory.ID) {
-                        if (!shortDescription && catAssignments[k].shortDescription) {
-                            shortDescription = catAssignments[k].shortDescription;
-                        }
-                        if (!longDescription && catAssignments[k].longDescription) {
-                            longDescription = catAssignments[k].longDescription;
-                        }
-                        break;
-                    }
                 }
             }
         }
