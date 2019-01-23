@@ -106,6 +106,7 @@ module.exports = {
                     dataType: 'json',
                     success: function (data) {
                         $sizeChart.append(data.content);
+                        $sizeChart.children('div').addClass('card card-body');
                     }
                 });
             }

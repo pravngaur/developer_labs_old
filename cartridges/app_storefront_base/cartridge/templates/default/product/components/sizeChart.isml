@@ -1,2 +1,2 @@
-<a href="${URLUtils.url('Product-SizeChart', 'cid', product.sizeChartId)}">${Resource.msg('link.size_chart', 'product', null)}</a>
+<p><a href="${URLUtils.url('Product-SizeChart', 'cid', product.sizeChartId)}">${Resource.msg('link.size_chart', 'product', null)}</a></p>
 <div class="size-chart-collapsible"></div>
