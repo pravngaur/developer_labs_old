@@ -90,12 +90,8 @@ function getProductDescriptions(product) {
         if (product.classificationCategory) {
             for (var i = 0; i < catAssignments.length; i++) {
                 if (catAssignments[i].category.ID === product.classificationCategory.ID) {
-                    if (!shortDescription && catAssignments[i].shortDescription) {
-                        shortDescription = catAssignments[i].shortDescription;
-                    }
-                    if (!longDescription && catAssignments[i].longDescription) {
-                        longDescription = catAssignments[i].longDescription;
-                    }
+                    shortDescription = (!shortDescription && catAssignments[i].shortDescription) ? catAssignments[i].shortDescription : shortDescription;
+                    longDescription = (!longDescription && catAssignments[i].longDescription) ? catAssignments[i].longDescription : longDescription;
                     break;
                 }
             }
@@ -103,12 +99,8 @@ function getProductDescriptions(product) {
         if (!shortDescription || !longDescription) {
             // check for category which is neither classification nor primary
             for (var j = 0; j < catAssignments.length; j++) {
-                if (!shortDescription && catAssignments[j].shortDescription) {
-                    shortDescription = catAssignments[j].shortDescription;
-                }
-                if (!longDescription && catAssignments[j].longDescription) {
-                    longDescription = catAssignments[j].longDescription;
-                }
+                shortDescription = (!shortDescription && catAssignments[j].shortDescription) ? catAssignments[j].shortDescription : shortDescription;
+                longDescription = (!longDescription && catAssignments[j].longDescription) ? catAssignments[j].longDescription : longDescription;
                 if (longDescription && shortDescription) {
                     break;
                 }
@@ -116,12 +108,8 @@ function getProductDescriptions(product) {
         }
     }
     // retrieve from product
-    if (product && product.shortDescription && !shortDescription) {
-        shortDescription = product.shortDescription;
-    }
-    if (product && product.longDescription && !longDescription) {
-        longDescription = product.longDescription;
-    }
+    shortDescription = (product && product.shortDescription && !shortDescription) ? product.shortDescription : shortDescription;
+    longDescription = (product && product.longDescription && !longDescription) ? product.longDescription : longDescription;
     return {
         shortDescription: shortDescription,
         longDescription: longDescription
