@@ -39,13 +39,14 @@ server.post('AddProduct', function (req, res, next) {
         : [];
     var options = req.form.options ? JSON.parse(req.form.options) : [];
     var quantity;
-    var result;
+    var result = {};
     var pidsObj;
-    var PIDResultArr = [];
+    var pidsAddedArr = [];
+    var errorMessages = [];
 
     if (currentBasket) {
         Transaction.wrap(function () {
-            if (!req.form.pidsObj) {
+            if (!req.form.pidsObj) { // single product
                 quantity = parseInt(req.form.quantity, 10);
                 result = cartHelper.addProductToCart(
                     currentBasket,
@@ -54,18 +55,23 @@ server.post('AddProduct', function (req, res, next) {
                     childProducts,
                     options
                 );
-                // add result to result array object
-                PIDResultArr.push(result);
+                if (result.error) {
+                    // add result to error message array object
+                    errorMessages.push(result.message);
+                    result.message = Resource.msg('error.alert.addedtobasket', 'product', null);
+                } else {
+                    pidsAddedArr.push(result.uuid);// collection of uuid for products added
+                }
             } else {
                 // product set
                 pidsObj = JSON.parse(req.form.pidsObj);
-                result = {
-                    error: false,
-                    message: Resource.msg('text.alert.addedtobasket', 'product', null),
-                    arrMessages: []
-                };
+                result.error = false;
+                result.message = Resource.msg('text.alert.addedtobasket', 'product', null);
                 pidsObj.forEach(function (PIDObj) {
                     quantity = parseInt(PIDObj.qty, 10);
+                    if (PIDObj.pid === '') {
+                        return;
+                    }
                     var pidOptions = PIDObj.options ? JSON.parse(PIDObj.options) : {};
                     var PIDObjResult = cartHelper.addProductToCart(
                         currentBasket,
@@ -76,19 +82,15 @@ server.post('AddProduct', function (req, res, next) {
                     );
                     if (PIDObjResult.error) {
                         result.error = PIDObjResult.error;
-                        result.message = PIDObjResult.message;
-                        result.arrMessages.push(PIDObjResult.message);
+                        result.message = Resource.msg('error.alert.addedtobasket', 'product', null);
+                        errorMessages.push(PIDObjResult.message);
                     } else {
-                        PIDResultArr.push(PIDObjResult);
+                        pidsAddedArr.push(PIDObjResult.uuid);
                     }
                 });
             }
-            // This is for multiple errors in case of product set.
-            if (result.arrMessages && result.arrMessages.length > 0) {
-                result.error = true;
-                result.message = result.arrMessages;
-            }
-            if (!result.error) {
+            // calculate cart one or more product(s) added to cart successfully.
+            if (pidsAddedArr.length > 0) {
                 cartHelper.ensureAllShipmentsHaveMethods(currentBasket);
                 basketCalculationHelpers.calculateTotals(currentBasket);
             }
@@ -104,40 +106,40 @@ server.post('AddProduct', function (req, res, next) {
         addToCartUrl: URLUtils.url('Cart-AddBonusProducts').toString()
     };
 
-    // PIDResultArr has result object from both single product add and prodct set add scenarios.
+    // pidsAddedArr has UUIDs for products from both single product add and prodct set add scenarios.
     var newBonusDiscountLineItem;
-    var newnewBonusDiscountLineItemsArr = [];
-    PIDResultArr.forEach(function (pidResult) {
+    var newBonusDiscountLineItemsArr = [];
+    pidsAddedArr.forEach(function (pidResultUUID) {
         newBonusDiscountLineItem =
         cartHelper.getNewBonusDiscountLineItem(
             currentBasket,
             previousBonusDiscountLineItems,
             urlObject,
-            pidResult.uuid
+            pidResultUUID
         );
         if (newBonusDiscountLineItem) {
             var allLineItems = currentBasket.allProductLineItems;
             var collections = require('*/cartridge/scripts/util/collections');
             collections.forEach(allLineItems, function (pli) {
-                if (pli.UUID === pidResult.uuid) {
+                if (pli.UUID === pidResultUUID) {
                     Transaction.wrap(function () {
                         pli.custom.bonusProductLineItemUUID = 'bonus'; // eslint-disable-line no-param-reassign
                         pli.custom.preOrderUUID = pli.UUID; // eslint-disable-line no-param-reassign
                     });
                 }
             });
-            newnewBonusDiscountLineItemsArr.push(newBonusDiscountLineItem);
+            newBonusDiscountLineItemsArr.push(newBonusDiscountLineItem);
         }
     });
 
     res.json({
         quantityTotal: quantityTotal,
-        message: result.message,
+        message: result.message, // generic message notifying customer
         cart: cartModel,
-        newBonusDiscountLineItem: newnewBonusDiscountLineItemsArr || {},
+        newBonusDiscountLineItems: newBonusDiscountLineItemsArr || [],
         error: result.error,
-        pliUUID: result.uuid,
-        pliUUIDSet: PIDResultArr // for multiple products/set added.
+        errorMessages: errorMessages || [], // collection of error messages per product that had an error
+        pliUUID: pidsAddedArr
     });
 
     next();

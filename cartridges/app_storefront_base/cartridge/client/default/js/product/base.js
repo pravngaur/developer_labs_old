@@ -444,10 +444,13 @@ function chooseBonusProducts(data) {
 function handlePostCartAdd(response) {
     $('.minicart').trigger('count:update', response);
     var messageType = response.error ? 'alert-danger' : 'alert-success';
+
     // show add to cart toast
-    if (response.newBonusDiscountLineItem
-        && Object.keys(response.newBonusDiscountLineItem).length !== 0) {
-        chooseBonusProducts(response.newBonusDiscountLineItem);
+    if (response.newBonusDiscountLineItems
+        && Object.keys(response.newBonusDiscountLineItems).length !== 0) {
+        response.newBonusDiscountLineItems.forEach(function (bonusLineItem) {
+            chooseBonusProducts(bonusLineItem);
+        });
     } else {
         if ($('.add-to-cart-messages').length === 0) {
             $('body').append(
