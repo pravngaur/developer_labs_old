@@ -24,8 +24,18 @@
     .fa-close,
     .fa-search {
         position: absolute;
+        border: none;
         top: 0.5625em; /* 9/16 */
         right: 0.5625em; /* 9/16 */
+        padding: 0;
+    }
+
+    .reset-button {
+        position: absolute;
+        border: none;
+        top: 0.5625em; /* 9/16 */
+        right: 2em; /* 32/16 */
+        padding: 0;
     }
 
     input {
@@ -39,23 +49,7 @@
         .site-search {
             display: none;
         }
-
-        .search-button {
-            display: block;
-        }
     }
-
-    .search-row {
-        .search-button {
-            display: none;
-        }
-    }
-}
-
-.search-button {
-    display: none;
-    margin-top: 0.375em; /* 6/16 */
-    margin-right: 0.375em;
 }
 
 .suggestions-wrapper {

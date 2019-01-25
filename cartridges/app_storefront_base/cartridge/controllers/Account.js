@@ -426,18 +426,19 @@ server.post(
 
                 Transaction.wrap(function () {
                     status = profile.credentials.setPassword(
-                            formInfo.password,
-                            formInfo.password,
-                            true
+                        formInfo.password,
+                        formInfo.password,
+                        true
                     );
+
                     if (status.error) {
                         formInfo.profileForm.login.password.valid = false;
                         formInfo.profileForm.login.password.error =
                             Resource.msg('error.message.currentpasswordnomatch', 'forms', null);
                     } else {
                         customerLogin = profile.credentials.setLogin(
-                                formInfo.email,
-                                formInfo.password
+                            formInfo.email,
+                            formInfo.password
                         );
                     }
                 });
@@ -659,7 +660,7 @@ server.get('SetNewPassword', server.middleware.https, consentTracking.consent, f
 
     var passwordForm = server.forms.getForm('newPasswords');
     passwordForm.clear();
-    var token = req.querystring.token;
+    var token = req.querystring.Token;
     var resettingCustomer = CustomerMgr.getCustomerByToken(token);
     if (!resettingCustomer) {
         res.redirect(URLUtils.url('Account-PasswordReset'));
@@ -674,7 +675,7 @@ server.post('SaveNewPassword', server.middleware.https, function (req, res, next
     var Resource = require('dw/web/Resource');
 
     var passwordForm = server.forms.getForm('newPasswords');
-    var token = req.querystring.token;
+    var token = req.querystring.Token;
 
     if (passwordForm.newpassword.value !== passwordForm.newpasswordconfirm.value) {
         passwordForm.valid = false;
