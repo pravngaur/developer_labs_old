@@ -138,7 +138,7 @@ server.post('AddProduct', function (req, res, next) {
         cart: cartModel,
         newBonusDiscountLineItems: newBonusDiscountLineItemsArr || [],
         error: result.error,
-        errorMessages: errorMessages || [], // collection of error messages per product that had an error
+        errorMessages: errorMessages || [], // array of error messages per product that had an error. The array of error messages is not displayed by default and is up to the customer to implement the desired view.
         pliUUID: pidsAddedArr
     });
 
