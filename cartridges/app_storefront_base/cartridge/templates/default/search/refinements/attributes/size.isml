@@ -5,6 +5,6 @@
         <iselse>
             <i class="fa fa-square-o"></i>
         </isif>
-        <span class="${refinementValue.swatchId}<isif condition="${refinementValue.selected && refinementValue.selectable}"> selected</isif>">${refinementValue.displayValue}</span>
+        <span class="<isif condition="${refinementValue.selected && refinementValue.selectable}"> selected</isif>">${refinementValue.displayValue}</span>
     </a>
 </li>
