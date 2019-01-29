@@ -639,13 +639,15 @@ server.post('AddBonusProducts', function (req, res, next) {
                     var product = ProductMgr.getProduct(bonusProduct.pid);
                     var selectedOptions = bonusProduct.options;
                     var optionModel = productHelper.getCurrentOptionModel(
-                            product.optionModel,
-                            selectedOptions);
+                        product.optionModel,
+                        selectedOptions
+                    );
                     pli = currentBasket.createBonusProductLineItem(
-                            bonusDiscountLineItem,
-                            product,
-                            optionModel,
-                            null);
+                        bonusDiscountLineItem,
+                        product,
+                        optionModel,
+                        null
+                    );
                     pli.setQuantityValue(bonusProduct.qty);
                     pli.custom.bonusProductLineItemUUID = pliUUID;
                 });
