@@ -16,7 +16,7 @@ function getModalHtmlElement() {
         + '<div class="modal-content">'
         + '<div class="modal-header">'
         + '    <a class="full-pdp-link" href="">View Full Details</a>'
-        + '    <button type="button" class="close pull-right" data-dismiss="modal">'
+        + '    <button type="button" class="close float-right" data-dismiss="modal">'
         + '        &times;'
         + '    </button>'
         + '</div>'

@@ -233,7 +233,7 @@ function getModalHtmlElement() {
         + '<!-- Modal content-->'
         + '<div class="modal-content">'
         + '<div class="modal-header">'
-        + '    <button type="button" class="close pull-right" data-dismiss="modal">'
+        + '    <button type="button" class="close float-right" data-dismiss="modal">'
         + '        &times;'
         + '    </button>'
         + '</div>'

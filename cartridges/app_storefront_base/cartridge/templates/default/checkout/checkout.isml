@@ -50,8 +50,8 @@
                 <isinclude template="checkout/shipping/shipping" />
                 <div class="card shipping-summary">
                     <div class="card-header clearfix">
-                        <h4 class="pull-left">${Resource.msg('heading.checkout.shipping', 'checkout', null)}</h4>
-                        <span class="edit-button pull-right">${Resource.msg('action.edit.step', 'checkout', null)}</span>
+                        <h4 class="float-left">${Resource.msg('heading.checkout.shipping', 'checkout', null)}</h4>
+                        <span class="edit-button float-right">${Resource.msg('action.edit.step', 'checkout', null)}</span>
                     </div>
                     <div class="card-body">
                         <isinclude template="checkout/shipping/shippingSummary" />
@@ -62,8 +62,8 @@
                 <isinclude template="checkout/billing/billing" />
                 <div class="card payment-summary">
                     <div class="card-header clearfix">
-                        <h4 class="pull-left">${Resource.msg('heading.payment', 'checkout', null)}</h4>
-                        <span class="edit-button pull-right">${Resource.msg('action.edit.step', 'checkout', null)}</span>
+                        <h4 class="float-left">${Resource.msg('heading.payment', 'checkout', null)}</h4>
+                        <span class="edit-button float-right">${Resource.msg('action.edit.step', 'checkout', null)}</span>
                     </div>
 
                     <div class="card-body">

@@ -25,7 +25,7 @@
                         </a>
                     </div>
                     <div class="navbar-header">
-                        <div class="pull-left">
+                        <div class="float-left">
                             <div class="hidden-md-down">
                                 <isinclude url="${URLUtils.url('Account-Header')}" />
                                 <isinclude url="${URLUtils.url('Page-Locale')}" />
@@ -34,7 +34,7 @@
                                 &#9776; <span class="hidden-xs-down">Menu</span>
                             </button>
                         </div>
-                        <div class="pull-right">
+                        <div class="float-right">
                             <div class="search hidden-xs-down">
                                 <isinclude template="components/header/search" />
                             </div>

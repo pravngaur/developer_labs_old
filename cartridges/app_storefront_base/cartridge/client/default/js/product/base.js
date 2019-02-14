@@ -409,7 +409,7 @@ function chooseBonusProducts(data) {
         + '<div class="modal-content">'
         + '<div class="modal-header">'
         + '    <span class="">' + data.labels.selectprods + '</span>'
-        + '    <button type="button" class="close pull-right" data-dismiss="modal">&times;</button>'
+        + '    <button type="button" class="close float-right" data-dismiss="modal">&times;</button>'
         + '</div>'
         + '<div class="modal-body"></div>'
         + '<div class="modal-footer"></div>'

@@ -15,8 +15,8 @@
     <div class="container">
         <div class="row d-sm-none">
             <div class="col-12 cleafix">
-                <span class="total-items-label pull-left">${Resource.msgf('label.number.items.in.cart','cart', null, pdict.details.totalQuantity)}</span>
-                <span class="total-price pull-right">${pdict.details.subTotal}</span>
+                <span class="total-items-label float-left">${Resource.msgf('label.number.items.in.cart','cart', null, pdict.details.totalQuantity)}</span>
+                <span class="total-price float-right">${pdict.details.subTotal}</span>
             </div>
         </div>
         <div class="row justify-content-center">

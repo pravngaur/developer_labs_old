@@ -1,8 +1,8 @@
 <div class="card">
     <div class="card-header clearfix">
-        <h4 class="pull-left">${Resource.msg('label.payment','account',null)}</h4>
+        <h4 class="float-left">${Resource.msg('label.payment','account',null)}</h4>
         <isif condition="${pdict.account.payment}">
-            <a href="${URLUtils.url('PaymentInstruments-List')}" class="pull-right">${Resource.msg('link.view','account',null)}</a>
+            <a href="${URLUtils.url('PaymentInstruments-List')}" class="float-right">${Resource.msg('link.view','account',null)}</a>
         </isif>
     </div>
     <isif condition="${pdict.account.payment}">
