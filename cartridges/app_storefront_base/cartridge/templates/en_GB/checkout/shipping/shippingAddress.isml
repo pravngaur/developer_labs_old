@@ -118,9 +118,9 @@
                 value="${shippingAddress.stateCode||''}"
                 <isprint value="${addressFields.states.stateCode.attributes}" encoding="off" />
                 autocomplete="shipping address-level1"
-                aria-describedby="shipment${shippingModel.UUID}County">
+                aria-describedby="shipment${shippingModel.UUID}StateCode">
             </input>
-            <div class="invalid-feedback" id="shipment${shippingModel.UUID}County"><isprint value="${addressFields.states.stateCode.error}" ></div>
+            <div class="invalid-feedback" id="shipment${shippingModel.UUID}StateCode"><isprint value="${addressFields.states.stateCode.error}" ></div>
         </div>
     </div>
     <div class="col-sm-6">
