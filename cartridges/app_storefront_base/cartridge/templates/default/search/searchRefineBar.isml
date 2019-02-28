@@ -27,12 +27,12 @@
         <isloop items="${pdict.productSearch.refinements}" var="refinement">
             <div class="card collapsible-sm refinement refinement-${refinement.displayName.toLowerCase().replace(/ /g, '-')}">
                 <div class="card-header col-sm-12">
-                    <a class="title d-block d-sm-none" href="${'#'}"
+                    <button class="title btn text-left btn-block d-sm-none"
                        aria-controls="refinement-${refinement.displayName.toLowerCase().replace(/ /g, '-')}"
                        aria-expanded="false"
                     >
-                        ${refinement.displayName}
-                    </a>
+                        <span>${refinement.displayName}</span>
+                    </button>
                     <div aria-label="${refinement.displayName}" class="d-none d-sm-block">${refinement.displayName}</div>
                 </div>
                 <div class="card-body content value" id="refinement-${refinement.displayName.toLowerCase().replace(/ /g, '-')}">
