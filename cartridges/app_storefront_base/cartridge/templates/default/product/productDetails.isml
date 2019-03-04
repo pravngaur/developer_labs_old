@@ -52,13 +52,16 @@
                             <isset name="isBundle" value="${false}" scope="page" />
                             <isloop items="${product.variationAttributes}" var="attr" status="attributeStatus">
                                 <div data-attr="${attr.id}">
-                                    <isif condition="${attributeStatus.last && !isBundle && product.options.length === 0}">
-                                        <!-- Quantity Drop Down Menu -->
-                                        <div class="quantity col-sm-6">
-                                            <isinclude template="product/components/quantity" />
-                                        </div>
-                                    </isif>
-                                    <isinclude template="product/components/variationAttribute" />
+                                    <div class="row">
+                                        <isinclude template="product/components/variationAttribute" />
+
+                                        <isif condition="${attributeStatus.last && !isBundle && product.options.length === 0}">
+                                            <!-- Quantity Drop Down Menu -->
+                                            <div class="quantity col-sm-3">
+                                                <isinclude template="product/components/quantity" />
+                                            </div>
+                                        </isif>
+                                    </div>
                                 </div>
                             </isloop>
 

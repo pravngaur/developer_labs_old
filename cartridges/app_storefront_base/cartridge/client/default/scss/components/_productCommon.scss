@@ -2,8 +2,9 @@
 
 .attribute {
     margin-top: 0.938em;
-    margin-right: 25%;
     padding-right: 1em;
+    padding-left: 1em;
+    width: 74%;
 
     label {
         display: block;
@@ -53,9 +54,9 @@
 }
 
 div.quantity {
-    float: right;
     padding: 0;
-    width: 25%;
+    width: 22%;
+    margin-top: 0.938em;
 }
 
 .cart-and-ipay {
