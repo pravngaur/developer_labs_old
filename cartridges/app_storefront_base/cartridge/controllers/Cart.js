@@ -346,6 +346,28 @@ server.get('UpdateQuantity', function (req, res, next) {
                     }
                 });
             }
+            if (req.querystring.pid && req.querystring.uuid) {
+                var bonusProductsUUIDs = [];
+                var productLineItms = currentBasket.getAllProductLineItems(req.querystring.pid);
+                var bonusProductLineItems = currentBasket.bonusLineItems;
+                var mainProdItem;
+                for (var i = 0; i < productLineItms.length; i++) {
+                    var item = productLineItms[i];
+                    if ((item.UUID === req.querystring.uuid)) {
+                        if (bonusProductLineItems && bonusProductLineItems.length > 0) {
+                            for (var j = 0; j < bonusProductLineItems.length; j++) {
+                                var bonusItem = bonusProductLineItems[j];
+                                mainProdItem = bonusItem.getQualifyingProductLineItemForBonusProduct(); // returns null for an order level promotion
+                                if (mainProdItem !== null
+                                    && (mainProdItem.productID === item.productID)) {
+                                    bonusProductsUUIDs.push(bonusItem.UUID);
+                                    // refresh and Display only bonus products in currentbasket
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         });
     }
 
