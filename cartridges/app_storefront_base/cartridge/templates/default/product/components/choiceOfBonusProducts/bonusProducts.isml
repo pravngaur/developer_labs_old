@@ -11,28 +11,22 @@
                 <div class="col-sm-6">
                     <div class="detail-panel">
                         <!-- Attributes -->
-                        <section class="attributes">
+                        <section>
                             <div class="col-12">
                                 <isloop items="${product.variationAttributes}" var="attr" status="attributeStatus">
                                     <div data-attr="${attr.id}" class="swatch">
-                                        <isif condition="${attributeStatus.last}">
-                                            <div class="row">
-                                                <isset name="isQuickView" value="${false}" scope="page"/>
-                                                <div class="col-md-10 col-12 product-options">
-                                                    <div class="row">
-                                                        <isinclude template="product/components/choiceOfBonusProducts/variationAttributeBonusProducts" />
+                                        <div class="row product-options" >
+                                        <isinclude template="product/components/choiceOfBonusProducts/variationAttributeBonusProducts" />
 
-                                                        <!-- Quantity Drop Down Menu -->
-                                                        <div class="col-4 quantity">
-                                                            <isinclude template="product/components/choiceOfBonusProducts/bonusProductsQuantity" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <isset name="isQuickView" value="${true}" scope="page"/>
+                                        <isif condition="${attributeStatus.last}">
+                                            <!-- Quantity Drop Down Menu -->
+                                            <div class="quantity col-sm-3">
+                                                <isinclude template="product/components/choiceOfBonusProducts/bonusProductsQuantity" />
                                             </div>
-                                        <iselse>
-                                            <isinclude template="product/components/choiceOfBonusProducts/variationAttributeBonusProducts" />
                                         </isif>
+                                    </div>
+                                        
+                                        
                                     </div>
                                 </isloop>
                             </div>
