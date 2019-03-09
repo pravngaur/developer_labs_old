@@ -219,6 +219,7 @@ server.get('ShowBonusProducts', function (req, res, next) {
     }
 
     var context = {
+        pliUUID: req.querystring.pliUUID,
         products: products,
         selectedBonusProducts: selectedBonusProducts,
         maxPids: req.querystring.maxpids,

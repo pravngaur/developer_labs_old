@@ -1,6 +1,7 @@
 <isloop items="${pdict.products}" var="product" status="productLoopStatus">
     <div class="col-12 bonus-product-item ready-to-order choice-of-bonus-product" data-pid="${product.id}" data-ready-to-order="${product.readyToOrder}" data-optionID="">
-        <div class="product-quickview product-${product.productType} col product-wrapper product-detail" data-pid="${product.id}">
+        <div class="product-quickview product-${product.productType} col product-wrapper product-detail" data-pid="${product.id}" 
+             data-modal-link-id="modalLinkId-${pdict.pliUUID}">
             <div class="row">
                 <section class="product-name-wrapper">
                     <h4 class="product-name">${product.productName}</h4>

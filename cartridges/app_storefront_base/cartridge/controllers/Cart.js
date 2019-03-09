@@ -687,8 +687,13 @@ server.get('EditBonusProduct', function (req, res, next) {
             selectprods: Resource.msg('modal.header.selectproducts', 'product', null),
             close: Resource.msg('link.choiceofbonus.close', 'product', null)
         },
-        showProductsUrlRuleBased: URLUtils.url('Product-ShowBonusProducts', 'DUUID', bonusDiscountLineItem.UUID, 'pagesize', cartHelper.BONUS_PRODUCTS_PAGE_SIZE, 'pagestart', 0, 'maxpids', bonusDiscountLineItem.maxBonusItems).toString(),
-        showProductsUrlListBased: URLUtils.url('Product-ShowBonusProducts', 'DUUID', bonusDiscountLineItem.UUID, 'pids', pids, 'maxpids', bonusDiscountLineItem.maxBonusItems).toString()
+        showProductsUrlRuleBased: URLUtils.url('Product-ShowBonusProducts', 'DUUID', bonusDiscountLineItem.UUID,
+                                               'pliUUID', bonusDiscountLineItem.custom.bonusProductLineItemUUID,
+                                               'pagesize', cartHelper.BONUS_PRODUCTS_PAGE_SIZE, 'pagestart', 0,
+                                               'maxpids', bonusDiscountLineItem.maxBonusItems).toString(),
+        showProductsUrlListBased: URLUtils.url('Product-ShowBonusProducts', 'DUUID', bonusDiscountLineItem.UUID,
+                                                'pliUUID', bonusDiscountLineItem.custom.bonusProductLineItemUUID,
+                                                'pids', pids, 'maxpids', bonusDiscountLineItem.maxBonusItems).toString()
     });
     next();
 });
@@ -750,6 +755,7 @@ server.post('EditProductLineItem', function (req, res, next) {
 
     var uuid = req.form.uuid;
     var productId = req.form.pid;
+    var productName;
     var updateQuantity = parseInt(req.form.quantity, 10);
 
     var currentBasket = BasketMgr.getCurrentBasket();
@@ -822,6 +828,7 @@ server.post('EditProductLineItem', function (req, res, next) {
     var error = false;
     if (canBeUpdated) {
         var product = ProductMgr.getProduct(productId);
+        productName = product.name;
 
         try {
             Transaction.wrap(function () {
@@ -849,9 +856,20 @@ server.post('EditProductLineItem', function (req, res, next) {
     if (!error && requestLineItem && canBeUpdated) {
         var cartModel = new CartModel(currentBasket);
 
+        var href = URLUtils.url('Cart-GetProduct', 'uuid', uuid);
+        var editLineItemText = Resource.msgf('text.edit.line.item', 'cart', null, productName);
+        var resourceMsg = Resource.msg('link.edit.item', 'cart', null);
+        var editLink = '<a href="' + href + '" ' +
+                           'class="edit modalLinkId-' + productId + '" ' +
+                           'aria-label="' + editLineItemText + '" ' +
+                           'title="' + resourceMsg + '"> ' +
+                           resourceMsg +
+                       ' </a>';
+
         var responseObject = {
             cartModel: cartModel,
-            newProductId: productId
+            newProductId: productId,
+            newEditLink: editLink
         };
 
         if (uuidToBeDeleted) {
