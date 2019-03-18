@@ -119,7 +119,7 @@ module.exports = {
         });
     },
     copyProductLink: function () {
-        $('body').on('click', '.fa-link', function () {
+        $('body').on('click', '#fa-link', function () {
             var $temp = $('<input>');
             $('body').append($temp);
             $temp.val($('#shareUrl').val()).select();
