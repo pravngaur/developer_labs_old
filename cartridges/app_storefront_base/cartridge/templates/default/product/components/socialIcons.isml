@@ -19,7 +19,7 @@
 		    </a>
 	    </li>
 	    <li>
-	    <a href="JavaScript:Void(0);" class="share-icons" id="fa-link" role="button" title="${Resource.msgf('label.social.link', 'product', null, product.productName)}" aria-label="${Resource.msgf('label.social.link', 'product', null, product.productName)}">
+	    <a href="#copy-link-message" class="share-icons" id="fa-link" role="button" title="${Resource.msgf('label.social.link', 'product', null, product.productName)}" aria-label="${Resource.msgf('label.social.link', 'product', null, product.productName)}">
             <i class="fa fa-link"></i>
         </a>
         <input type="hidden" id="shareUrl" value="${URLUtils.https('Product-Show', 'pid', product.id)}"/>
