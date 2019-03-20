@@ -576,9 +576,7 @@ module.exports = function () {
             }
         });
     });
-    $('body').on('click', '.cart-page .bonus-product-button', function (e) {
-        e.preventDefault();
-
+    $('body').on('click', '.cart-page .bonus-product-button', function () {
         $.spinner().start();
         $.ajax({
             url: $(this).data('url'),
