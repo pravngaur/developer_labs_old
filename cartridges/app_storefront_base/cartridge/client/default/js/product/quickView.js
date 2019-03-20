@@ -1,6 +1,5 @@
 'use strict';
 var base = require('./base');
-var scrollAnimate = require('../components/scrollAnimate');
 
 /**
  * Generates the modal window on the first call.
@@ -93,19 +92,11 @@ module.exports = {
             fillModalElement(selectedValueUrl);
         });
     },
-    focusQuickviewModal: function () {
+    focusQuickview: function () {
         $('body').on('shown.bs.modal', '#quickViewModal', function () {
             $('#quickViewModal .close').focus();
         });
     },
-    reFocusQuickviewLink: function () {
-        $('body').on('hidden.bs.modal', '#quickViewModal', function () {
-            var initiatedLinkSelector = '.' + $('#quickViewModal .product-quickview').data('modal-link-id');
-            $(initiatedLinkSelector).focus();
-            scrollAnimate(initiatedLinkSelector);
-        });
-    },
-
     colorAttribute: base.colorAttribute,
     selectAttribute: base.selectAttribute,
     removeBonusProduct: base.removeBonusProduct,

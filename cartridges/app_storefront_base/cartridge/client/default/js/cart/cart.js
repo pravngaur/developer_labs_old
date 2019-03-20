@@ -1,7 +1,6 @@
 'use strict';
 
 var base = require('../product/base');
-var scrollAnimate = require('../components/scrollAnimate');
 
 /**
  * appends params to a url
@@ -218,10 +217,6 @@ function updateProductDetails(data, uuid) {
         $(listPriceSelector).text(lineItem.price.list.formatted);
         $(listPriceSelector).attr('content', lineItem.price.list.decimalPrice);
     }
-
-    var editSelector = '.product-edit[data-uuid="' + uuid + '"]';
-    $(editSelector).empty();
-    $(editSelector).html(data.newEditLink);
 }
 
 /**
@@ -581,7 +576,9 @@ module.exports = function () {
             }
         });
     });
-    $('body').on('click', '.cart-page .bonus-product-button', function () {
+    $('body').on('click', '.cart-page .bonus-product-button', function (e) {
+        e.preventDefault();
+
         $.spinner().start();
         $.ajax({
             url: $(this).data('url'),
@@ -598,9 +595,9 @@ module.exports = function () {
     });
 
     $('body').on('hidden.bs.modal', '#chooseBonusProductModal', function () {
-        var initiatedLinkSelector = '.' + $('#chooseBonusProductModal .product-quickview').data('modal-link-id');
-        $(initiatedLinkSelector).focus();
-        scrollAnimate(initiatedLinkSelector);
+        $('#chooseBonusProductModal').remove();
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
     });
 
     $('body').on('click', '.cart-page .product-edit .edit, .cart-page .bundle-edit .edit', function (e) {
@@ -613,12 +610,6 @@ module.exports = function () {
 
     $('body').on('shown.bs.modal', '#editProductModal', function () {
         $('#editProductModal .close').focus();
-    });
-
-    $('body').on('hidden.bs.modal', '#editProductModal', function () {
-        var initiatedLinkSelector = '.' + $('#editProductModal .product-quickview').data('modal-link-id');
-        $(initiatedLinkSelector).focus();
-        scrollAnimate(initiatedLinkSelector);
     });
 
     $('body').on('product:updateAddToCart', function (e, response) {
@@ -706,8 +697,6 @@ module.exports = function () {
                 data: form,
                 dataType: 'json',
                 success: function (data) {
-                    $('#editProductModal .product-quickview').data('modal-link-id', 'modalLinkId-' + form.pid);
-
                     $('#editProductModal').modal('hide');
 
                     $('.coupons-and-promos').empty().append(data.cartModel.totals.discountsHtml);
