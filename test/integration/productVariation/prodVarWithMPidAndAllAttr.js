@@ -35,6 +35,18 @@ describe('ProductVariation - Get product variation with master product ID and al
 
             // strip out all "url" properties from the actual response
             var actualRespBodyStripped = jsonHelpers.deleteProperties(bodyAsJson, ['url', 'resetUrl', 'selectedProductUrl', 'raw', 'absURL']);
+            var attrColor = actualRespBodyStripped.product.variationAttributes[0].values[0];
+
+            // Verify color swatch
+            assert.equal(attrColor.value, 'SLABLFB');
+            assert.isTrue(actualRespBodyStripped.product.variationAttributes[0].swatchable);
+
+            // Verify rating
+            assert.equal(actualRespBodyStripped.product.rating, '4.8');
+
+            // Verify description
+            assert.equal(actualRespBodyStripped.product.longDescription, 'This cotton dress shirt is available in white or blue. Both colors are a wardrobe necessity.');
+            assert.equal(actualRespBodyStripped.product.shortDescription, 'This cotton dress shirt is available in white or blue. Both colors are a wardrobe necessity.');
 
             // Verify product
             assert.equal(actualRespBodyStripped.product.productName, 'No-Iron Textured Dress Shirt');

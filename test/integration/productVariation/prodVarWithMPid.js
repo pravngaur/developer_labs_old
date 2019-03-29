@@ -45,20 +45,41 @@ describe('ProductVariation - Get product variation with only master product ID',
             assert.equal(actualRespBodyStripped.product.price.list.currency, 'USD');
             assert.equal(actualRespBodyStripped.product.price.list.formatted, '$69.50');
 
-            // Verify URL for product.variationAttributes of color = SLABLFB
+            // Verifying the following for product.variationAttributes of color swatch color= SLABLFB
             var attrColorBlue = bodyAsJson.product.variationAttributes[0].values[0];
+
+            // Verify color swatch
+            assert.equal(attrColorBlue.value, 'SLABLFB');
+            assert.isTrue(bodyAsJson.product.variationAttributes[0].swatchable);
 
             // Clean the resourcePath if basic auth is set
             var resourcePathCleaned = urlHelpers.stripBasicAuth(resourcePath);
 
+            // Verify URL
             assert.equal(attrColorBlue.url, resourcePathCleaned + 'dwvar_25604455M_color=SLABLFB&pid=25604455M&quantity=1', 'Actual color attribute = SLABLFB: url not as expected.');
+
+            // Verify Image
             var colorBlueImages = attrColorBlue.images;
             assert.isTrue(colorBlueImages.swatch[0].url.endsWith('SLABLFB.CP.jpg'), 'color SLABLFB image swatch[0]: url not ended with SLABLFB.CP.jpg.');
 
-            // Verify URL for product.variationAttributes of color = WHITEFB
+            // Verify rating
+            assert.equal(bodyAsJson.product.rating, '3.3');
+
+            // Verify description
+            assert.equal(bodyAsJson.product.longDescription, 'This cotton dress shirt is available in white or blue. Both colors are a wardrobe necessity.');
+            assert.equal(bodyAsJson.product.shortDescription, 'This cotton dress shirt is available in white or blue. Both colors are a wardrobe necessity.');
+
+            // Verify availability
+            assert.equal(bodyAsJson.product.availability.messages, 'In Stock');
+
+            // Verifying the following for product.variationAttributes of color swatch color= WHITEFB
             var attrColorWhite = bodyAsJson.product.variationAttributes[0].values[1];
+
+            // Verify color swatch
+            assert.equal(attrColorBlue.value, 'SLABLFB');
             assert.equal(attrColorWhite.url, resourcePathCleaned + 'dwvar_25604455M_color=WHITEFB&pid=25604455M&quantity=1', 'Actual color attribute = WHITEFB: url not as expected.');
 
+            // Verify URL
             var colorWhiteImages = attrColorWhite.images;
             assert.isTrue(colorWhiteImages.swatch[0].url.endsWith('WHITEFB.CP.jpg'), 'color WHITEFB image swatch[0].url not ended with WHITEFB.CP.jpg.');
 
