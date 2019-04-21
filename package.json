@@ -38,12 +38,14 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.51",
     "@babel/preset-env": "^7.0.0-beta.51",
     "@tridnguyen/config": "^2.3.1",
+    "@wdio/selenium-standalone-service": "^5.7.8",
     "babel-loader": "^8.0.0-beta.3",
     "chai": "^3.5.0",
     "chai-subset": "^1.5.0",
     "chalk": "^1.1.3",
     "cheerio": "0.22.0",
     "cldr-data": "^32.0.1",
+    "codeceptjs": "^2.1.0",
     "css-loader": "^0.28.11",
     "eslint": "^3.2.2",
     "eslint-config-airbnb-base": "^5.0.1",
@@ -72,6 +74,7 @@
     "stylelint-scss": "^2.1.0",
     "url": "^0.11.0",
     "wdio-sauce-service": "^0.4.8",
+    "webdriverio": "^5.7.15",
     "xml2js": "^0.4.17"
   },
   "dependencies": {
