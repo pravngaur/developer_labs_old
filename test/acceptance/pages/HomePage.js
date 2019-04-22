@@ -4,7 +4,8 @@ module.exports = {
 
   locators: {
     root: '.modal-content',
-    searchField: {css: '.search-field'}
+    searchField: {css: '.search-field'},
+    headerText: ".header-promotion"
   },
 
   accept() {
@@ -16,7 +17,7 @@ module.exports = {
 
   async search(searchFor) {
    I.fillField(this.locators.searchField, searchFor)
-   const searchText = await I.grabTextFrom(this.locators.searchField);
-   console.log('search text: =========== ', searchText);
+   const headerText = await I.grabTextFrom(this.locators.headerText);
+   console.log('header text: ', headerText);
   }
 };
