@@ -1,10 +1,9 @@
 // Add in your custom step files
 // use I and productPage via inject() function
-const { I, loginPage } = inject();
+const { I, homePage } = inject();
 
 Given('Fred searches for {string}', () => {
-    // From "test/acceptance/features/addToCart.feature" {"line":8,"column":5}
-
+    homePage.search('Elbow Sleeve Ribbed Sweater');
   });
   
 When('selects size {string}', () => {
