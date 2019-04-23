@@ -10,10 +10,6 @@ module.exports = {
   },
 
   selectSize(size) {
-    // if (this.helpers['Puppeteer']) {
-    //   const page =  this.helpers['Puppeteer'].page;
-    //   await page.waitForSelector(this.locators.selectSize);
-    // }
     I.waitForElement(this.locators.selectSize);
     I.selectOption(this.locators.selectSize, size);
   },
@@ -24,10 +20,8 @@ module.exports = {
   },
 
   viewCart() {
-    I.wait(3);
     I.scrollPageToTop();
     I.waitForEnabled(this.locators.miniCartIcon);
-    I.waitForElement(this.locators.miniCartIcon);
     I.click(this.locators.miniCartIcon);
     I.waitForElement(this.locators.cartHeader);
   }

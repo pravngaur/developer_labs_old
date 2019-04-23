@@ -11,7 +11,6 @@ Before(() => {
 // test REST
 Before(async () => {
     const post = await I.sendGetRequest('/todos/1');
-
     console.log('\n===== REST TEST ======');
     console.log('POSTS:1 > ', post.data);
     console.log('===== ===== ======\n');

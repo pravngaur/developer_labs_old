@@ -7,8 +7,10 @@ Before((I) => {
 });
 
 Scenario('Fred is able to schedule a Job', async (I) => {
-    const searchString = 'echo';
-    expect(searchString).to.be.equal('echos', 'search string did not equal');
+    // just an example of test and other Codecept Features
+    
+    // can use external assertio libraries or in-built Codecept assertions
+    expect('echo').to.be.equal('echos', 'search string did not equal');
 
 }).tag('@job').retry(2);
     

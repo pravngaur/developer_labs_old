@@ -56,13 +56,6 @@ const conf = {
             require: RELATIVE_PATH + '/helpers/saucelabsHelper.js'
          },
     },
-    gherkin: {
-        features: RELATIVE_PATH + '/features/**/*.feature',
-        steps: [
-            RELATIVE_PATH + '/features/_step_definitions/add_to_cart.steps.js',
-            RELATIVE_PATH + '/features/_step_definitions/hooks.js'
-        ]
-    },
     plugins: {
         autoDelay: {
             enabled: true
@@ -78,6 +71,13 @@ const conf = {
         allure: {
             outputDir: RELATIVE_PATH + '/report'
         }
+    },
+    gherkin: {
+        features: RELATIVE_PATH + '/features/**/*.feature',
+        steps: [
+            RELATIVE_PATH + '/features/_step_definitions/add_to_cart.steps.js',
+            RELATIVE_PATH + '/features/_step_definitions/hooks.js'
+        ]
     },
     multiple: {
         parallel: {
