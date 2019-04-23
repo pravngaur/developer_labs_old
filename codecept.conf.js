@@ -78,10 +78,8 @@ const conf = {
     },
     multiple: {
         parallel: {
-          chunks: 4
-        },
-        sauce: {
-
+          chunks: 2,
+          browsers: ['firefox', 'chrome']
         },
         basic: {
             browsers: ['firefox', 'chrome']
