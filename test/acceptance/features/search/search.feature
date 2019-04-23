@@ -1,3 +1,4 @@
+  @search
   Feature: Search Product
   
     In order to select a product
@@ -6,5 +7,5 @@
 
   @search_product
   Scenario: Fred is able to search product
-    Given Fred searches for "Some Product"
+    Given Fred searches for "Tie"
   

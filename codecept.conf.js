@@ -64,6 +64,9 @@ const conf = {
         ]
     },
     plugins: {
+        autoDelay: {
+            enabled: true
+        },
         screenshotOnFail: {
             enabled: true
         },

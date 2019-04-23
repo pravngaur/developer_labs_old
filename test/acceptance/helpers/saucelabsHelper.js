@@ -10,7 +10,9 @@ class SauceLabsHelper extends Helper {
     // access current client of WebDriver helper
     // let client = this.helpers['WebDriver'].browser;
     // console.log('Update Saucelabs Job here with  unique Session ID: ', client.sessionId);
-    console.log('Update Saucelabs Job here');
+    console.log('\n===== CUSTOM HELPERS TEST ======');
+    console.log('SauceLabsHelper: Update Saucelabs Job here');
+    console.log('===== ===== ======\n');
   }
 }
 
