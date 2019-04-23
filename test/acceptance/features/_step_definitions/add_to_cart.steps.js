@@ -1,21 +1,24 @@
 // Add in your custom step files
 // use I and productPage via inject() function
-const { I, homePage } = inject();
+const { I, homePage, productPage, cartPage } = inject();
+import {expect} from 'chai';
+let product;
 
-Given('Fred searches for {string}', (searchesFor) => {
-    // From "test/acceptance/features/addToCart.feature" {"line":8,"column":5}
-    homePage.search(searchesFor);
-    // pause();
+Given('Fred searches for {string}', (product) => {
+    this.product = product;
+    homePage.searchAndSelect(product);
 });
   
 When('selects size {string}', (size) => {
-// From "test/acceptance/features/addToCart.feature" {"line":9,"column":5}
+    productPage.selectSize(size);
 });
 
 When('he adds the product to cart', () => {
-// From "test/acceptance/features/addToCart.feature" {"line":10,"column":5}
+    productPage.addToCart();
+    productPage.viewCart();
+    // pause();
 });
 
 Then('he is able to see the correct product in cart', () => {
-// From "test/acceptance/features/addToCart.feature" {"line":11,"column":5}
+    I.see(this.product, cartPage.locators.lineItemName);
 });

@@ -1,40 +1,67 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable indent */
+
 require('import-export');
 require('events').EventEmitter.prototype._maxListeners = 100;
-const fs = require('fs');
-const selenium = require('selenium-standalone');
-const reportFolder = process.cwd() + '/test/acceptance/report';
-const OUTPUT_PATH = './test/acceptance/report';
+var debug = require('debug')('acceptance:config');
+const RELATIVE_PATH = './test/acceptance';
+const OUTPUT_PATH = RELATIVE_PATH + '/report';
+const HOST = 'https://ecom-2015234003.vpod.t.force.com/';
 
-exports.config = {
+const puppeteer = {
+    url: HOST,
+    waitForTimeout: 10000,
+    waitForAction: 200,
+    chrome: {
+        ignoreHTTPSErrors: true
+    },
+    show: false,
+    waitForNavigation: 'domcontentloaded'
+};
+
+const webDriver = {
+    url: HOST,
+    browser: 'chrome',
+    waitForTimeout: 10000,
+    timeouts: {
+        script: 60000,
+        'page load': 10000
+    }
+};
+
+const headlessCaps = {
+    chromeOptions: {
+        args: [ '--headless', '--disable-gpu', '--window-size=800,600' ]
+    }
+};
+
+const sauceDriver = {
+    url: HOST,
+    browser: "chrome",
+    host: "ondemand.saucelabs.com",
+    port: 443,
+    user: "jsautomation",
+    key: "eb4958c7-b945-4ccd-a1d3-0ba226f7f8ff"
+}
+
+const conf = {
     output: OUTPUT_PATH,
-    timeout: 30000,
-    smartWait: 5000,
+    smartWait: 10000,
     cleanup: true,
     helpers: {
-        // Puppeteer: {
-        //     url: 'https://ecom-2015234003.vpod.t.force.com/',
-        //     show: true,
-        //     "waitForNavigation": "networkidle0"
-        // },
-
-        WebDriver: {
-            url: 'https://ecom-2015234003.vpod.t.force.com/',
-            browser: 'chrome',
-            // desiredCapabilities: {
-            //     chromeOptions: {
-            //         args: [ '--headless', '--disable-gpu', '--window-size=800,600' ]
-            //     }
-            // }
-        },
         REST: {
             endpoint: 'https://jsonplaceholder.typicode.com'
-         }
+         },
+         SauceLabsHelper: {
+            require: RELATIVE_PATH + '/helpers/saucelabsHelper.js'
+         },
     },
     gherkin: {
-        features: './test/acceptance/features/**/*.feature',
-        steps: ['./test/acceptance/features/_step_definitions/add_to_cart.steps.js', './test/acceptance/features/_step_definitions/before_after.js']
+        features: RELATIVE_PATH + '/features/**/*.feature',
+        steps: [
+            RELATIVE_PATH + '/features/_step_definitions/add_to_cart.steps.js',
+            RELATIVE_PATH + '/features/_step_definitions/hooks.js'
+        ]
     },
     plugins: {
         screenshotOnFail: {
@@ -46,7 +73,7 @@ exports.config = {
             key: 'eb4958c7-b945-4ccd-a1d3-0ba226f7f8ff'
         },
         allure: {
-            outputDir: './test/acceptance/report'
+            outputDir: RELATIVE_PATH + '/report'
         }
     },
     multiple: {
@@ -61,15 +88,78 @@ exports.config = {
         },
         smoke: {
             grep: '@smoke',
-            outputName: './test/acceptance/report/smoke',
+            outputName: RELATIVE_PATH + '/report/smoke',
             browsers: ['firefox', 'chrome']
         }
     },
     include: {
         I: '.test/acceptance/steps',
-        loginPage: './test/acceptance/pages/LoginPage.js',
-        homePage: './test/acceptance/pages/HomePage.js'
+        loginPage: RELATIVE_PATH + '/pages/LoginPage.js',
+        homePage: RELATIVE_PATH + '/pages/HomePage.js',
+        productPage: RELATIVE_PATH + '/pages/ProductPage.js',
+        cartPage: './test/acceptance/pages/CartPage.js',
     },
-    tests: './test/acceptance/tests/**/*.test.js',
+    tests: RELATIVE_PATH + '/tests/**/*.test.js',
     name: 'storefront-reference-architecture'
 };
+
+if ( process.env.CODECEPT_ENV && process.env.CODECEPT_ENV === 'puppeteer') {
+    debug('running tests on Puppeteer');
+    conf.helpers.Puppeteer = puppeteer;
+} else if ( process.env.CODECEPT_ENV && process.env.CODECEPT_ENV === 'sauce') {   
+    debug('running tests on Sauce Labs');
+    conf.helpers.WebDriver = sauceDriver;
+} else if ( process.env.CODECEPT_ENV && process.env.CODECEPT_ENV === 'headless') {    
+    debug('running tests Headlessly');
+    conf.helpers.WebDriver = webDriver;    
+    conf.helpers.WebDriver.desiredCapabilities = headlessCaps;
+} else {
+    conf.helpers.WebDriver = webDriver;
+    debug('launching browser locally:', conf.helpers.WebDriver.browser);
+}
+
+exports.config = conf;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

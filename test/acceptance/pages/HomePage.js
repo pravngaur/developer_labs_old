@@ -5,7 +5,8 @@ module.exports = {
   locators: {
     root: '.modal-content',
     searchField: {css: '.search-field'},
-    headerText: ".header-promotion"
+    headerText: '.header-promotion',
+    searchedImage: {css: 'a>img.swatch-circle'}
   },
 
   accept() {
@@ -15,9 +16,9 @@ module.exports = {
     });
   },
 
-  async search(searchFor) {
-   I.fillField(this.locators.searchField, searchFor)
-   const headerText = await I.grabTextFrom(this.locators.headerText);
-   console.log('header text: ', headerText);
+  searchAndSelect(product) {
+    I.fillField(this.locators.searchField, product);
+    I.waitForElement(this.locators.searchedImage);
+    I.click(this.locators.searchedImage);
   }
 };
