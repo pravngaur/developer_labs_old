@@ -2,13 +2,13 @@
 // use I and productPage via inject() function
 const { I, homePage } = inject();
 
-Given('(*) searches for {string}', () => {
+Given('Fred searches for {string}', (searchesFor) => {
     // From "test/acceptance/features/addToCart.feature" {"line":8,"column":5}
-    homePage.search('Elbow Sleeve Ribbed Sweater');
+    homePage.search(searchesFor);
     // pause();
 });
   
-When('selects size {string}', () => {
+When('selects size {string}', (size) => {
 // From "test/acceptance/features/addToCart.feature" {"line":9,"column":5}
 });
 

@@ -7,8 +7,8 @@ class SauceLabsHelper extends Helper {
   // use: this.helpers['helperName']
   async updateJob() {
     // access current client of WebDriver helper
-    let client = this.helpers['WebDriver'].browser;
-    console.log('Update Saucelabs Job here with  unique Session ID: ', client.sessionId);
+    // let client = this.helpers['WebDriver'].browser;
+    // console.log('Update Saucelabs Job here with  unique Session ID: ', client.sessionId);
   }
 }
 

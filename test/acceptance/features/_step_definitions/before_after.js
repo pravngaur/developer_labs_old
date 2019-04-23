@@ -1,10 +1,11 @@
 // Add in your custom step files
 // use I and productPage via inject() function
 
-const { I, homePage } = inject();
+const { I, homePage, config } = inject();
 
 Before(() => {
-    I.updateJob();
+    console.log('this.config ==================\n\n\n\n', this);
+    // I.updateJob();
     I.amOnPage('/s/RefArch/home?lang=en_US');
     homePage.accept();
 })
