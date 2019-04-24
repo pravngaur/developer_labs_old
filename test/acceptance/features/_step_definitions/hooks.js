@@ -1,7 +1,7 @@
 // Add in your custom step files
 // use I and productPage via inject() function
 
-const { I, homePage, config } = inject();
+const { I, homePage } = inject();
 
 Before(() => {
     I.amOnPage('/s/RefArch/home?lang=en_US');
