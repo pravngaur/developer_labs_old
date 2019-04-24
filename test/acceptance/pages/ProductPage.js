@@ -24,5 +24,6 @@ module.exports = {
     I.waitForEnabled(this.locators.miniCartIcon);
     I.click(this.locators.miniCartIcon);
     I.waitForElement(this.locators.cartHeader);
+    I.wait(2);
   }
 }

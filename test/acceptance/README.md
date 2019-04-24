@@ -1,13 +1,14 @@
 
 ## CodeceptJS POC
->> BDD Test Framework
-more info on POC is availble [here](https://salesforce.quip.com/61xcAMSf14J4)
+> BDD Test Framework
+> more info on POC is availble [here](https://salesforce.quip.com/61xcAMSf14J4)
 
 ### To get started
 
 Start Selenium Server (this is temporary steps. It will become part of Test bootstrap in future)
 
 ```
+$ npm install selenium-standalone@latest -g
 $ selenium-standalone start
 ```
 
