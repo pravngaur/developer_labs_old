@@ -1,6 +1,6 @@
 const RELATIVE_PATH = './test/acceptance';
 const OUTPUT_PATH = RELATIVE_PATH + '/report';
-const HOST = 'https://dev11-sitegenesis-dw.demandware.net';
+const HOST = 'https://dev03-sitegenesis-dw.demandware.net';
 
 const webDriver = {
     url: HOST,
@@ -27,13 +27,13 @@ exports.config = {
         }
     },
     include: {
-        I: RELATIVE_PATH + '/steps',
+        I: './steps_file.js',
         homePage: RELATIVE_PATH + '/pages/HomePage.js'
     },
     gherkin: {
         features: RELATIVE_PATH + '/features/**/*.feature',
         steps: [
-            RELATIVE_PATH + '/features/_step_definitions/add_to_cart.steps.js'
+            RELATIVE_PATH + '/features/steps/land_home_page.steps.js'
         ]
     },
     tests: RELATIVE_PATH + '/tests/**/*.test.js',

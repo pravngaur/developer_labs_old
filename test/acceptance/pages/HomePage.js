@@ -7,8 +7,8 @@ module.exports = {
     },
     accept() {
         I.waitForElement(this.locators.consentTrackModal);
-        within(this.consentTrackModal.root, () => {
-            I.click(consentTrackAffirm);
+        within(this.locators.consentTrackModal, () => {
+            I.click(this.locators.consentTrackAffirm);
         });
     }
 }
