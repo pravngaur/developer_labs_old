@@ -5,7 +5,7 @@ module.exports = {
         consentTrackModal: '.modal-content',
         consentTrackAffirm: '.affirm',
         searchField: 'input.form-control.search-field',
-        searchedImage: 'a>img.swatch-circle'
+        searchedImage: {css: 'a>img.swatch-circle'}
     },
     accept() {
         I.waitForElement(this.locators.consentTrackModal);
