@@ -28,12 +28,15 @@ exports.config = {
     },
     include: {
         I: './steps_file.js',
-        homePage: RELATIVE_PATH + '/pages/HomePage.js'
+        homePage: RELATIVE_PATH + '/pages/HomePage.js',
+        productPage: RELATIVE_PATH + '/pages/ProductPage.js',
+        cartPage: RELATIVE_PATH + '/pages/CartPage.js'
     },
     gherkin: {
         features: RELATIVE_PATH + '/features/**/*.feature',
         steps: [
-            RELATIVE_PATH + '/features/steps/land_home_page.steps.js'
+            RELATIVE_PATH + '/features/steps/land_home_page.steps.js',
+            RELATIVE_PATH + '/features/steps/add_product_to_cart.steps.js'
         ]
     },
     tests: RELATIVE_PATH + '/tests/**/*.test.js',
