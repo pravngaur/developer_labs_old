@@ -1,0 +1,19 @@
+{
+    "name": "mylayout",
+    "group": "layouts",
+    "attribute_definition_groups": [],
+    "region_definitions": [
+        {
+            "id": "region1",
+            "name": "Region 1",
+            "max_components": 5,
+            "component_type_exclusions": [
+                { "type_id": "layouts.1column" },
+                { "type_id": "layouts.2column" },
+                { "type_id": "layouts.3column" },
+                { "type_id": "layouts.4column" },
+                { "type_id": "layouts.gridcomponentlayout" }
+            ]
+        }
+    ]
+}
