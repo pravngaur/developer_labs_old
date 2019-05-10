@@ -14,6 +14,7 @@ const webDriver = {
 
 exports.config = {
     output: OUTPUT_PATH,
+    smartWait: 10000,
     helpers: {
         WebDriver: webDriver
     },
@@ -24,6 +25,10 @@ exports.config = {
         },
         allure: {
             outPutDir: RELATIVE_PATH + '/report'
+        },
+        retryFailedStep: {
+            enabled: true,
+            retries: 5
         }
     },
     include: {
