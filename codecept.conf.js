@@ -15,6 +15,7 @@ var webDriver = {
 
 exports.config = {
     output: OUTPUT_PATH,
+    smartWait: 10000,
     helpers: {
         WebDriver: webDriver
     },
@@ -24,7 +25,8 @@ exports.config = {
             services: ['selenium-standalone']
         },
         allure: {
-            enabled: true
+            enabled: true,
+            outPutDir: RELATIVE_PATH + '/report'
         },
         retryFailedStep: {
             enabled: true,
