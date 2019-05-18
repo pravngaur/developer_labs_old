@@ -185,10 +185,12 @@ server.get('OAuthReentry', server.middleware.https, consentTracking.consent, fun
                 // The other providers use one of these, GitHub has just a 'name'.
                 firstName = externalProfile['first-name']
                     || externalProfile.first_name
+                    || externalProfile.given_name
                     || externalProfile.name;
 
                 lastName = externalProfile['last-name']
                     || externalProfile.last_name
+                    || externalProfile.family_name
                     || externalProfile.name;
             }
 
