@@ -177,22 +177,15 @@ server.get('OAuthReentry', server.middleware.https, consentTracking.consent, fun
             var lastName;
             var email;
 
-            // Google comes with a 'name' property that holds first and last name.
-            if (typeof externalProfile.name === 'object') {
-                firstName = externalProfile.name.givenName;
-                lastName = externalProfile.name.familyName;
-            } else {
-                // The other providers use one of these, GitHub has just a 'name'.
-                firstName = externalProfile['first-name']
+            firstName = externalProfile['first-name']
                     || externalProfile.first_name
                     || externalProfile.given_name
                     || externalProfile.name;
 
-                lastName = externalProfile['last-name']
+            lastName = externalProfile['last-name']
                     || externalProfile.last_name
                     || externalProfile.family_name
                     || externalProfile.name;
-            }
 
             email = externalProfile['email-address'] || externalProfile.email;
 
