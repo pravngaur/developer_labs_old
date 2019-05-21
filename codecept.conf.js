@@ -5,6 +5,7 @@ const HOST = 'https://dev03-sitegenesis-dw.demandware.net';
 const webDriver = {
     url: HOST,
     browser: 'chrome',
+    smartWait: 10000,
     waitForTimeout: 10000,
     timeouts: {
         script: 60000,
@@ -14,7 +15,6 @@ const webDriver = {
 
 exports.config = {
     output: OUTPUT_PATH,
-    smartWait: 10000,
     helpers: {
         WebDriver: webDriver
     },
@@ -24,7 +24,7 @@ exports.config = {
             services: ['selenium-standalone']
         },
         allure: {
-            outPutDir: RELATIVE_PATH + '/report'
+            enabled: true
         },
         retryFailedStep: {
             enabled: true,
@@ -41,7 +41,8 @@ exports.config = {
         features: RELATIVE_PATH + '/features/**/*.feature',
         steps: [
             RELATIVE_PATH + '/features/steps/land_home_page.steps.js',
-            RELATIVE_PATH + '/features/steps/add_product_to_cart.steps.js'
+            RELATIVE_PATH + '/features/steps/add_product_to_cart.steps.js',
+            RELATIVE_PATH + '/features/steps/simple_product_details.steps.js'
         ]
     },
     tests: RELATIVE_PATH + '/tests/**/*.test.js',
