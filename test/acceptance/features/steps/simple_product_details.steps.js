@@ -8,15 +8,15 @@ Given('shopper goes to the Product Detail Page', () => {
 });
 
 Then('shopper is able to see all the information related to a Simple Product', async () => {
-    (await productPage.grabProductImageSrc())[0].should.containEql('P0150_001.jpg'); // Product Image
-    const breadcrumbsHrefs = await productPage.grabHrefFromBreadcrumbs();
+    (await I.grabAttributeFrom(productPage.locators.productImage, 'src'))[0].should.containEql('P0150_001.jpg'); // Product Image
+    const breadcrumbsHrefs = await I.grabAttributeFrom(productPage.locators.navigationCrumbs, 'href');
     breadcrumbsHrefs[0].should.containEql('mens'); // Mens Category
     breadcrumbsHrefs[1].should.containEql('accessories'); // Accessories Category
     breadcrumbsHrefs[2].should.containEql('luggage'); // Luggage Category
-    (await productPage.grabProductName())[0].should.equal('Upright Case (33L - 3.7Kg)'); // Product Name
-    (await productPage.grabProductItemNo()).should.equal('P0150M'); // Product ID
-    (await productPage.grabProductAvailability()).should.equal('In Stock'); // Product Availability
-    (await productPage.grabProductPrice()).should.equal('$99.99'); // Product Price
+    (await I.grabTextFrom(productPage.locators.productName))[0].should.equal('Upright Case (33L - 3.7Kg)'); // Product Name
+    (await I.grabTextFrom(productPage.locators.productId)).should.equal('P0150M'); // Product ID
+    (await I.grabTextFrom(productPage.locators.productAvailability)).should.equal('In Stock'); // Product Availability
+    (await I.grabTextFrom(productPage.locators.productPrice)).should.equal('$99.99'); // Product Price
     I.seeElement(productPage.locators.addToCartButtonEnabled); // Add to Cart Button Enabled
     I.seeElement(productPage.locators.pinterest); // Pinterest
     I.seeElement(productPage.locators.facebook); // Facebook
