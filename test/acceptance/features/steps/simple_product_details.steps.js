@@ -1,5 +1,5 @@
 const { I, homePage, productPage } = inject();
-var should = require('should');
+var should = require('should'); // eslint-disable-line
 
 Given('shopper goes to the Product Detail Page', () => {
     // From "test/acceptance/features/productDetailPage/pdpSimpleLayout.feature" {"line":6,"column":9}

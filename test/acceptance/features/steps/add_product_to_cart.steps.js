@@ -1,8 +1,8 @@
 const { I, homePage, productPage, cartPage } = inject();
 let product;
 
-Given('Shopper searches for {string}', (product) => {
-    this.product = product;
+Given('Shopper searches for {string}', (inputProduct) => {
+    product = inputProduct;
     homePage.search(product);
 });
 
@@ -19,5 +19,5 @@ When('he adds the product to cart', async () => {
 });
 
 Then('he is able to see the correct product in cart', () => {
-    I.see(this.product, cartPage.locators.lineItemName);
+    I.see(product, cartPage.locators.lineItemName);
 });

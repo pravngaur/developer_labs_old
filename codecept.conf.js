@@ -1,8 +1,8 @@
-const RELATIVE_PATH = './test/acceptance';
-const OUTPUT_PATH = RELATIVE_PATH + '/report';
-const HOST = 'https://dev03-sitegenesis-dw.demandware.net';
+var RELATIVE_PATH = './test/acceptance';
+var OUTPUT_PATH = RELATIVE_PATH + '/report';
+var HOST = 'https://dev03-sitegenesis-dw.demandware.net';
 
-const webDriver = {
+var webDriver = {
     url: HOST,
     browser: 'chrome',
     smartWait: 10000,
@@ -47,4 +47,4 @@ exports.config = {
     },
     tests: RELATIVE_PATH + '/tests/**/*.test.js',
     name: 'storefront-reference-architecture'
-}
+};

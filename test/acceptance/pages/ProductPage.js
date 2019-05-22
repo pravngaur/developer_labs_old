@@ -3,30 +3,30 @@ const I = actor();
 module.exports = {
     locators: {
         selectSize: '.select-size',
-        selectQuantity : '.quantity-select',
+        selectQuantity: '.quantity-select',
         addToCartButton: '.add-to-cart',
-        addToCartButtonEnabled : '.add-to-cart:not(:disabled)',
+        addToCartButtonEnabled: '.add-to-cart:not(:disabled)',
         miniCartIcon: '.minicart',
         cartHeader: '.cart-header',
-        productImage : '.carousel-item.active > img',
-        navigationCrumbs : '.product-breadcrumb:not(.d-md-none) .breadcrumb-item a',
-        productName : '.product-name',
-        productId : '.product-id',
+        productImage: '.carousel-item.active > img',
+        navigationCrumbs: '.product-breadcrumb:not(.d-md-none) .breadcrumb-item a',
+        productName: '.product-name',
+        productId: '.product-id',
         ratings: '.ratings',
-        quantitySelect : '.quantity-select',
-        productAvailability : '.availability-msg',
-        productPrice : '.prices .price .value',
-        socialShare : 'ul.social-icons a',
-        pinterest : '.fa-pinterest',
-        facebook : '.fa-facebook-official',
-        twitter : '.fa-twitter',
-        copyLink : '.fa-link',
-        productDescription : '.description-and-detail .description .content',
-        productDetails : '.description-and-detail .details .content',
-        copyLinkMsgVisible : '.copy-link-message:not(.d-none)',
-        miniCartQuantity : '.minicart-quantity',
-        addToCartSuccess : '.add-to-cart-messages .alert-success',
-        addToCartFailure : '.add-to-cart-messages .alert-danger'
+        quantitySelect: '.quantity-select',
+        productAvailability: '.availability-msg',
+        productPrice: '.prices .price .value',
+        socialShare: 'ul.social-icons a',
+        pinterest: '.fa-pinterest',
+        facebook: '.fa-facebook-official',
+        twitter: '.fa-twitter',
+        copyLink: '.fa-link',
+        productDescription: '.description-and-detail .description .content',
+        productDetails: '.description-and-detail .details .content',
+        copyLinkMsgVisible: '.copy-link-message:not(.d-none)',
+        miniCartQuantity: '.minicart-quantity',
+        addToCartSuccess: '.add-to-cart-messages .alert-success',
+        addToCartFailure: '.add-to-cart-messages .alert-danger'
     },
     selectSize(size) {
         I.waitForElement(this.locators.selectSize);
@@ -59,4 +59,4 @@ module.exports = {
     async grabAddToCartFailureMsg() {
         return await I.grabTextFrom(this.locators.addToCartFailure);
     }
-}
+};

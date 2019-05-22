@@ -18,4 +18,4 @@ module.exports = {
         I.waitForElement(this.locators.searchedImage);
         I.click(this.locators.searchedImage);
     }
-}
+};
