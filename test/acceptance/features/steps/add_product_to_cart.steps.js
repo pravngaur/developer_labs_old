@@ -1,8 +1,8 @@
 const { I, homePage, productPage, cartPage } = inject();
 let product;
 
-Given('Shopper searches for {string}', (product) => {
-    this.product = product;
+Given('Shopper searches for {string}', (inputProduct) => {
+    product = inputProduct;
     homePage.search(product);
 });
 
