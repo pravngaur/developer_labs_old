@@ -61,7 +61,7 @@ Then('shopper is able to see Social Share Icons and Links', async () => {
 Then('shopper is able to copy Product URL using Copy Link Icon', () => {
     // From "test/acceptance/features/productDetailPage/pdpSimpleLayout.feature" {"line":15,"column":9}
     productPage.clickCopyLink();
-    I.seeElement(productPage.locators.copyLinkMsgVisible); 
+    I.seeElement(productPage.locators.copyLinkMsgVisible);
 });
 
 Then('shopper is able to see Product Description', async () => {
