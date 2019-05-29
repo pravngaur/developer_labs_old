@@ -1,6 +1,6 @@
 var RELATIVE_PATH = './test/acceptance';
 var OUTPUT_PATH = RELATIVE_PATH + '/report';
-var HOST = 'https://dev03-sitegenesis-dw.demandware.net';
+var HOST = 'https://dev12-sitegenesis-dw.demandware.net';
 
 var webDriver = {
     url: HOST,
@@ -35,7 +35,8 @@ exports.config = {
         I: './steps_file.js',
         homePage: RELATIVE_PATH + '/pages/HomePage.js',
         productPage: RELATIVE_PATH + '/pages/ProductPage.js',
-        cartPage: RELATIVE_PATH + '/pages/CartPage.js'
+        cartPage: RELATIVE_PATH + '/pages/CartPage.js',
+        uriUtils: RELATIVE_PATH + '/utils/uriUtils.js'
     },
     gherkin: {
         features: RELATIVE_PATH + '/features/**/*.feature',

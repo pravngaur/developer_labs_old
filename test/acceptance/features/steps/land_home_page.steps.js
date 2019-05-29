@@ -1,6 +1,6 @@
-const { I, homePage } = inject();
+const { I, homePage, uriUtils } = inject();
 
 When('shopper selects yes or no for tracking consent', () => {
-    I.amOnPage('/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show');
+    I.amOnPage(uriUtils.uri.homePage);
     homePage.accept();
 });
