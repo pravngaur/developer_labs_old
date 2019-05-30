@@ -49,14 +49,14 @@ exports.config = {
     gherkin: {
         features: RELATIVE_PATH + '/features/**/*.feature',
         steps: [
-            RELATIVE_PATH + '/features/steps/TEMPSTORAGE.steps.js',
-            RELATIVE_PATH + '/features/steps/land_home_page.steps.js',
-            RELATIVE_PATH + '/features/steps/add_product_to_cart.steps.js',
-            RELATIVE_PATH + '/features/steps/simple_product_details.steps.js',
-            RELATIVE_PATH + '/features/steps/login.steps.js',
-            RELATIVE_PATH + '/features/steps/create_account.steps.js',
-            RELATIVE_PATH + '/features/steps/check_order.steps.js',
-            RELATIVE_PATH + '/features/steps/email_signup.steps.js'
+            RELATIVE_PATH + '/steps/step_file.steps.js',
+            RELATIVE_PATH + '/steps/homePage/addProductToCart.steps.js',
+            RELATIVE_PATH + '/steps/homePage/emailSignup.steps.js',
+            RELATIVE_PATH + '/steps/homePage/landHomePage.steps.js',
+            RELATIVE_PATH + '/steps/loginPage/checkOrder.steps.js',
+            RELATIVE_PATH + '/steps/loginPage/createAccount.steps.js',
+            RELATIVE_PATH + '/steps/loginPage/loginUser.steps.js',
+            RELATIVE_PATH + '/steps/productDetailPage/pdpSimpleLayout.steps.js',
         ]
     },
     tests: RELATIVE_PATH + '/tests/**/*.test.js',

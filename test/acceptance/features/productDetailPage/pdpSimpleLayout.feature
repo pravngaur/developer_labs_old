@@ -14,7 +14,7 @@ Feature: Product Detail Page Simple Layout
         And shopper is able to see Social Share Icons and Links
         And shopper is able to copy Product URL using Copy Link Icon
         And shopper is able to see Product Description
-        And shopper is able to see Product details
+        And shopper is able to see Product Details
 
     @simpleProductDetail
     Scenario: Shopper sees all the product related information on the Simple product page
