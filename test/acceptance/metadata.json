@@ -1,4 +1,22 @@
 {
+    "include": {
+        "I": "./steps_file.js",
+        "data": "./test/acceptance/metadata.json",
+        "homePage": "./test/acceptance/pages/HomePage.js",
+        "productPage": "./test/acceptance/pages/ProductPage.js",
+        "cartPage": "./test/acceptance/pages/CartPage.js",
+        "loginPage": "./test/acceptance/pages/LoginPage.js"
+    },
+    "gherkin_steps": [
+        "./test/acceptance/steps/step_file.steps.js",
+        "./test/acceptance/steps/homePage/addProductToCart.steps.js",
+        "./test/acceptance/steps/homePage/emailSignup.steps.js",
+        "./test/acceptance/steps/homePage/landHomePage.steps.js",
+        "./test/acceptance/steps/loginPage/checkOrder.steps.js",
+        "./test/acceptance/steps/loginPage/createAccount.steps.js",
+        "./test/acceptance/steps/loginPage/loginUser.steps.js",
+        "./test/acceptance/steps/productDetailPage/pdpSimpleLayout.steps.js"
+    ],
     "home": {
         "email": "test@user.com"
     },

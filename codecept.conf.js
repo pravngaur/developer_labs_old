@@ -38,26 +38,10 @@ exports.config = {
             retries: 5
         }
     },
-    include: {
-        I: './steps_file.js',
-        data: RELATIVE_PATH + '/metadata.json',
-        homePage: RELATIVE_PATH + '/pages/HomePage.js',
-        productPage: RELATIVE_PATH + '/pages/ProductPage.js',
-        cartPage: RELATIVE_PATH + '/pages/CartPage.js',
-        loginPage: RELATIVE_PATH + '/pages/LoginPage.js'
-    },
+    include: metadata.include,
     gherkin: {
         features: RELATIVE_PATH + '/features/**/*.feature',
-        steps: [
-            RELATIVE_PATH + '/steps/step_file.steps.js',
-            RELATIVE_PATH + '/steps/homePage/addProductToCart.steps.js',
-            RELATIVE_PATH + '/steps/homePage/emailSignup.steps.js',
-            RELATIVE_PATH + '/steps/homePage/landHomePage.steps.js',
-            RELATIVE_PATH + '/steps/loginPage/checkOrder.steps.js',
-            RELATIVE_PATH + '/steps/loginPage/createAccount.steps.js',
-            RELATIVE_PATH + '/steps/loginPage/loginUser.steps.js',
-            RELATIVE_PATH + '/steps/productDetailPage/pdpSimpleLayout.steps.js',
-        ]
+        steps: metadata.gherkin_steps
     },
     tests: RELATIVE_PATH + '/tests/**/*.test.js',
     name: 'storefront-reference-architecture'
