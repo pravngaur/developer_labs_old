@@ -13,6 +13,17 @@
           { "type_id": "assets.texttile" },
           { "type_id": "layouts.carousel" }
         ]
+      },
+      {
+        "id":"headerbanner",
+        "name":"Header Banner Region",
+        "component_type_exclusions": [
+          { "type_id": "assets.categorytile" },
+          { "type_id": "assets.headlinebanner" },
+          { "type_id": "assets.producttile" },
+          { "type_id": "assets.ruledrivenproducttile" },
+          { "type_id": "layouts.carousel" }
+        ]
       }
     ]
 }
