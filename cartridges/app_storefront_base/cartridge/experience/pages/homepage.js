@@ -28,6 +28,10 @@ module.exports.render = function (context) {
     model.CurrentPageMetaData.description = page.pageDescription;
     model.CurrentPageMetaData.keywords = page.pageKeywords;
 
+    if (PageRenderHelper.isInEditMode()) {
+        dw.system.HookMgr.callHook('app.experience.editmode', 'editmode');
+    }
+
     // render the page
     return new Template('experience/pages/homepage').render(model).text;
 };
