@@ -1,0 +1,19 @@
+{
+    "home": {
+        "email": "test@user.com"
+    },
+    "login": {
+        "loginPage": "/on/demandware.store/Sites-RefArch-Site/en_US/Login-Show",
+        "homePage": "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show",
+        "email": "ctest@email.com",
+        "password": "Password123!",
+        "currentUrl": "/on/demandware.store/Sites-RefArch-Site/en_US/Account-Show",
+        "fName": "Joe",
+        "lName": "Smith",
+        "phone": "5555551234",
+        "regEmail": "jsmith9999119999@email.com",
+        "orderNum": "12345",
+        "orderEmail": "order@email.com",
+        "orderZip": "10101"
+    }
+}
