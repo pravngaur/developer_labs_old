@@ -43,21 +43,12 @@ exports.config = {
         features: RELATIVE_PATH + '/features/**/*.feature',
         steps: metadata.gherkin_steps
     },
-    // multiple: {
-    //     basic: {
-    //         browsers: [
-    //             // {browser: 'chrome', windowSize: 'maximize'},
-    //             // {browser: 'chrome', windowSize: '1220x1000'},
-    //             // {browser: 'chrome', windowSize: '1024x1000'},
-    //             // {browser: 'chrome', windowSize: '768x1000'},
-    //             // {browser: 'chrome', windowSize: '320x1000'},
-    //             {browser: 'safari', windowSize: '1220x1000'},
-    //             {browser: 'safari', windowSize: '1024x1000'},
-    //             {browser: 'safari', windowSize: '768x1000'},
-    //             {browser: 'safari', windowSize: '320x1000'}
-    //         ]
-    //     }
-    // },
+    multiple: {
+        parallel: {
+            chunks: 2,
+            browsers: 'chrome'
+        }
+    },
     tests: RELATIVE_PATH + '/tests/**/*.test.js',
     name: 'storefront-reference-architecture'
 };
