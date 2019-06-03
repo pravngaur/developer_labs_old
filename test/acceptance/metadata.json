@@ -22,10 +22,10 @@
     },
     "login": {
         "loginPage": "/on/demandware.store/Sites-RefArch-Site/en_US/Login-Show",
-        "homePage": "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show",
+        "homePage": "/s/RefArch/home?lang=en_US",
         "email": "ctest@email.com",
         "password": "Password123!",
-        "currentUrl": "/on/demandware.store/Sites-RefArch-Site/en_US/Account-Show",
+        "currentUrl": "/s/RefArch/account?registration=false&lang=en_US",
         "fName": "Joe",
         "lName": "Smith",
         "phone": "5555551234",

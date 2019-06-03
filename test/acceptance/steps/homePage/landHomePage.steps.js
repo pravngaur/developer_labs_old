@@ -1,6 +1,6 @@
 const { I, homePage } = inject();
 
 When('shopper selects yes or no for tracking consent', () => {
-    I.amOnPage('/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show');
+    I.amOnPage('/s/RefArch/home?lang=en_US');
     homePage.accept();
 });

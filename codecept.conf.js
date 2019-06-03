@@ -1,6 +1,6 @@
 var RELATIVE_PATH = './test/acceptance';
 var OUTPUT_PATH = RELATIVE_PATH + '/report';
-var HOST = 'https://dev03-sitegenesis-dw.demandware.net';
+var HOST = 'https://dev12-sitegenesis-dw.demandware.net';
 
 const metadata = require('./test/acceptance/metadata.json');
 
@@ -44,9 +44,8 @@ exports.config = {
         steps: metadata.gherkin_steps
     },
     multiple: {
-        parallel: {
-            chunks: 2,
-            browsers: 'chrome'
+        basic: {
+            browsers: ['chrome', 'firefox', 'safari']
         }
     },
     tests: RELATIVE_PATH + '/tests/**/*.test.js',
