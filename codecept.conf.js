@@ -44,9 +44,8 @@ exports.config = {
         steps: metadata.gherkin_steps
     },
     multiple: {
-        parallel: {
-            chunks: 2,
-            browsers: 'chrome'
+        basic: {
+            browsers: ['chrome', 'firefox', 'safari']
         }
     },
     tests: RELATIVE_PATH + '/tests/**/*.test.js',
