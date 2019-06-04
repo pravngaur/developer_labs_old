@@ -3,7 +3,7 @@
     assets.addCss('/css/experience/category.css');
 </isscript>
 <div class="container">
-    <div class="row shop-category-component d-flex justify-content-between">
+    <div class="row shop-category-component justify-content-between">
         <div class="col-auto shop-category-header"><isprint value="${pdict.textHeadline}"/></div>
         <div class="col-md-auto shop-category-column">
             <div class="row">
