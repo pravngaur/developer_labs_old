@@ -1,0 +1,22 @@
+{
+    "name": "My Product",
+    "description": "My Product Example",
+    "group": "storefront",
+    "attribute_definition_groups": [
+        {
+            "id": "myproduct_spec",
+            "name": "My Product Specifications",
+            "description": "Specify the product to be displayed from this product tile.",
+            "attribute_definitions": [
+                {
+                    "id": "product",
+                    "name": "Product",
+                    "description": "Select the product SKU to be displayed.",
+                    "type": "product",
+                    "required": true
+                }
+            ]
+        }
+    ],
+    "region_definitions": []
+}
