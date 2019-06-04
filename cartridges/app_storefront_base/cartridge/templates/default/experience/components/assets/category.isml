@@ -1,0 +1,21 @@
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addCss('/css/experience/category.css');
+</isscript>
+<div class="container">
+    <div class="row shop-category-component justify-content-between">
+        <div class="col-auto shop-category-header"><isprint value="${pdict.textHeadline}"/></div>
+        <div class="col-md-auto shop-category-column">
+            <div class="row">
+                <isif condition="${pdict.categories}">
+                    <isloop items="${pdict.categories}" var="category">
+                        <div class="col-auto shop-category-label">
+                            <a href="${category.url}" id="${category.id}" class="shop-category-label-a">${category.name}</a>
+                        </div>
+                    </isloop>
+                </isif>
+            </div>
+        </div>
+    </div>
+</div>
+
