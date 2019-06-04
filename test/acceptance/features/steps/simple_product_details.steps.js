@@ -38,7 +38,7 @@ Then('shopper sees the correct social links', async () => {
     socialHrefs[2].should.containEql('twitter.com'); // Twitter href
     socialHrefs[3].should.containEql('copy-link-message'); // Copy Link href
 });
-  
+
 Then('shopper is able to see Add to Cart Button Enabled', () => {
     // From "test/acceptance/features/productDetailPage/pdpSimpleLayout.feature" {"line":21,"column":9}
     I.seeElement(productPage.locators.addToCartButtonEnabled);
