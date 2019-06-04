@@ -4,7 +4,7 @@ var HOST = 'https://dev12-sitegenesis-dw.demandware.net';
 
 var webDriver = {
     url: HOST,
-    browser: 'firefox',
+    browser: 'chrome',
     smartWait: 10000,
     waitForTimeout: 10000,
     timeouts: {
