@@ -32,7 +32,6 @@ exports.config = {
         }
     },
     include: {
-        I: './steps_file.js',
         homePage: RELATIVE_PATH + '/pages/HomePage.js',
         productPage: RELATIVE_PATH + '/pages/ProductPage.js',
         cartPage: RELATIVE_PATH + '/pages/CartPage.js',
