@@ -14,9 +14,9 @@
 .shop-category-header {
     color: $shop-category-header-color;
     font-family: $shop-category-font;
-    white-space: nowrap;
     text-align: center;
     margin: auto;
+    width: 100%;
     font-weight: $shop-category-header-font-weight;
     @include media-breakpoint-up(lg) {
         font-size: $shop-category-header-font-size-lg;
