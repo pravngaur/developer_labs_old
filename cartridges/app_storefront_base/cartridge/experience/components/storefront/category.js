@@ -28,5 +28,5 @@ module.exports.render = function (context) {
 
     var categories = new Categories(categoriesToBeDisplayed);
     model.categories = categories.categories;
-    return new Template('experience/components/assets/category').render(model).text;
+    return new Template('experience/components/storefront/category').render(model).text;
 };
