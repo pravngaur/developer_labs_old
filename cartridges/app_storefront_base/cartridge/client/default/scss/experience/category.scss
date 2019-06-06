@@ -14,9 +14,6 @@
 .shop-category-header {
     color: $shop-category-header-color;
     font-family: $shop-category-font;
-    text-align: center;
-    margin: auto;
-    width: 100%;
     font-weight: $shop-category-header-font-weight;
     @include media-breakpoint-up(lg) {
         font-size: $shop-category-header-font-size-lg;
@@ -31,17 +28,10 @@
     }
 }
 
-.shop-category-column {
-    max-width: 100%;
-}
-
 .shop-category-label {
     font-family: $shop-category-font;
     text-decoration: underline;
-    text-align: center;
-    white-space: nowrap;
     padding: 0.375em 0.5em;
-    margin: auto;
     font-size: $shop-category-label-font-size-def;
     @include media-breakpoint-up(lg) {
         font-size: $shop-category-label-font-size-lg;
