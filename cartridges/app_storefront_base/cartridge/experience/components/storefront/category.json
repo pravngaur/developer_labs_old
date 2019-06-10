@@ -1,7 +1,7 @@
 {
     "name": "Shop Category",
     "description": "Shop Category",
-    "group": "assets",
+    "group": "storefront",
     "attribute_definition_groups": [
         {
             "id": "heading",
