@@ -1,4 +1,4 @@
-const { I, data, homePage, loginPage } = inject();
+const { I, data, loginPage } = inject();
 var should = require('should'); // eslint-disable-line
 
 Then('shopper is able to fill out the order number, email, and zip code', () => {
