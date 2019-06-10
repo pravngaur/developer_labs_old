@@ -15,17 +15,18 @@
         "./test/acceptance/steps/loginPage/checkOrder.steps.js",
         "./test/acceptance/steps/loginPage/createAccount.steps.js",
         "./test/acceptance/steps/loginPage/loginUser.steps.js",
-        "./test/acceptance/steps/productDetailPage/pdpSimpleLayout.steps.js"
+        "./test/acceptance/steps/productDetailPage/pdpSimpleLayout.steps.js",
+        "./test/acceptance/steps/suites/happyPath.steps.js"
     ],
     "home": {
         "email": "test@user.com"
     },
     "login": {
         "loginPage": "/on/demandware.store/Sites-RefArch-Site/en_US/Login-Show",
-        "homePage": "/s/RefArch/home?lang=en_US",
+        "homePage": "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show",
         "email": "ctest@email.com",
         "password": "Password123!",
-        "currentUrl": "/s/RefArch/account?registration=false&lang=en_US",
+        "currentUrl": "/on/demandware.store/Sites-RefArch-Site/en_US/Account-Show?registration=false",
         "fName": "Joe",
         "lName": "Smith",
         "phone": "5555551234",
@@ -33,5 +34,21 @@
         "orderNum": "12345",
         "orderEmail": "order@email.com",
         "orderZip": "10101"
+    },
+    "checkout": {
+        "fName": "Joe",
+        "lName": "Smith",
+        "address1": "123 Main Street",
+        "address2": "Apt 01",
+        "country": "United States",
+        "state": "Massachusetts",
+        "city": "Burlington",
+        "zip": "11111",
+        "phone": "5555551234",
+        "email": "test@user.com",
+        "ccNum": "4111111111111111",
+        "ccSecCode": "555",
+        "expMonth": "08",
+        "expYear": "2023"
     }
 }
