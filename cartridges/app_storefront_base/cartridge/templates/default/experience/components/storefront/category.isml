@@ -5,7 +5,7 @@
 <div class="container">
     <div class="row shop-category-component">
         <div class="col-auto shop-category-header text-center mw-100 m-auto"><isprint value="${pdict.textHeadline}"/></div>
-        <div class="col-md-auto mw-100 m-auto">
+        <div class="mw-100 m-auto">
             <div class="row">
                 <isif condition="${pdict.categories}">
                     <isloop items="${pdict.categories}" var="category">
