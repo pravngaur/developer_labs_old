@@ -4,15 +4,10 @@ let sauce = require('./codecept.sauce.conf');
 
 const RELATIVE_PATH = './test/acceptance';
 const OUTPUT_PATH = RELATIVE_PATH + '/report';
-const DEFAULT_HOST = 'https://dev11-sitegenesis-dw.demandware.net';
+const DEFAULT_HOST = 'https://dev12-sitegenesis-dw.demandware.net';
 
 const HOST = process.host || DEFAULT_HOST;
-    /*
-    process: {
-        host
-        profile
-    }
-    */
+
 const metadata = require('./test/acceptance/metadata.json');
 
 var webDriver = {
@@ -66,12 +61,12 @@ let conf = {
             enabled: true,
             retries: 5
         },
-        // autoDelay: {
-        //     enabled: true
-        // },
-        // screenshotOnFail: {
-        //     enabled: true
-        // }
+        autoDelay: {
+            enabled: true
+        },
+        screenshotOnFail: {
+            enabled: true
+        }
     },
     multiple: {
         parallel: {

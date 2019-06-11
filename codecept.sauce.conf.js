@@ -3,7 +3,7 @@ let debug = require('debug')('acceptance:sauce:config');
 let browsers = {
     chrome: {
         browser: 'chrome',
-        windowSize: '360x640'
+        // windowSize: '360x640'
         // add more configuration for Saucelabs platform
     },
     firefox: {

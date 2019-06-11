@@ -11,7 +11,6 @@
     "cover": "sgmf-scripts --cover",
     "test:integration": "sgmf-scripts --integration 'test/integration/**/*.js'",
     "test:acceptance": "./node_modules/.bin/codeceptjs run --verbose --features",
-    "test:acceptance:launchReport": "./node_modules/.bin/allure serve test/acceptance/report",
     "test:acceptance:parallel": "./node_modules/.bin/codeceptjs run-multiple parallel --verbose --features",
     "test:acceptance:multibrowsers": "./node_modules/.bin/codeceptjs run-multiple multibrowsers --verbose",
     "test:acceptance:report": "./node_modules/.bin/allure serve tests/acceptance/report",
