@@ -1,9 +1,10 @@
-let debug = require('debug')('acceptance:sauce:config');
+let debug = require('debug')('codeceptjs-saucelabs:config');
+const SAUCE_DELIMITER = ':';
+const MULTIBROWSER_DELIMITER = ',';
 
-let browsers = {
+let sauceBrowsers = {
     chrome: {
         browser: 'chrome',
-        // windowSize: '360x640'
         // add more configuration for Saucelabs platform
     },
     firefox: {
@@ -19,20 +20,24 @@ let browsers = {
         browser: 'internet explorer',
     }
 };
+  
+function isSauceRequested() {
+    return (process.profile && process.profile.match('sauce:[a-zA-Z]'));
+}
 
 function getBrowsers() {
-    if (process.profile) {
+    if (isSauceRequested()) {
         let multibrowsers = [];
-        let sauceBrowsers = process.profile.split(':')[1].split(',');
-        debug('requested multibrowsers:', sauceBrowsers);
-        sauceBrowsers.forEach(browser => {
-            multibrowsers.push(browsers[browser]);
+        let requestedBrowsers = process.profile.split(SAUCE_DELIMITER)[1].split(MULTIBROWSER_DELIMITER);
+        debug('Tests are running on Saucelabs on Multi-Browsers:', requestedBrowsers);
+        requestedBrowsers.forEach(browser => {
+            multibrowsers.push(sauceBrowsers[browser]);
         });
-        debug('multibrowsers saucelabs conf:', multibrowsers);
+        debug('Saucelabs Config for Multi-Browsers:', multibrowsers);
         return multibrowsers;
     }
 
-    return [browsers.chrome];
+    return [sauceBrowsers.chrome];
 }
 
 let conf = {
@@ -40,18 +45,16 @@ let conf = {
     WebDriver: getBrowsers()[0],
     SauceHelper: {
         require: "codeceptjs-saucehelper",
-        user: 'sso-saleforce-c.thorsen',
-        key: '7f91c455-a16d-4174-9361-25688ea92e23'
+        user: process.env.SAUCE_USERNAME,
+        key: process.env.SAUCE_KEY
     },
   },
   plugins: {
     wdio: {
       enabled: true,
       services: ['sauce'],
-      //   user: process.env.SAUCE_USERNAME,
-      //   key: process.env.SAUCE_KEY,
-      user: 'sso-saleforce-c.thorsen',
-      key: '7f91c455-a16d-4174-9361-25688ea92e23',
+      user: process.env.SAUCE_USERNAME,
+      key: process.env.SAUCE_KEY,
       region: 'us'
     }
   },
@@ -63,31 +66,4 @@ let conf = {
     }
 };
 
-exports.conf = conf;
-
-// capabilities: { [{
-//     // IE11 on Windows 7
-//     browserName: 'internet explorer',
-//     platform: 'Windows 7',
-//     version: '11'
-//     }, {
-//         // Chrome on iPhone X
-//         browserName: 'chrome',
-//         platform: 'Windows 10',
-//         screenResolution: '1920x1080'
-//     }, {
-//         // Safari on iPAD
-//         browserName: 'safari',
-//         platform: 'OS X 10.11',
-//         version: '10.0',
-//         screenResolution: '1152x864'
-//     }, {
-//         // Firefox on Linux
-//         browserName: 'firefox',
-//         platform: 'Linux'
-//     }, {
-//         // Edge on Windows 10
-//         browserName: 'MicrosoftEdge',
-//         platform: 'Windows 10',
-//     }]
-// }
+exports.conf = isSauceRequested() ? conf : {};
