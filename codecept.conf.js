@@ -20,11 +20,6 @@ let conf = {
         WebDriver: {
             url: HOST
         },
-        SauceHelper: {
-            require: "codeceptjs-saucehelper",
-            user: 'sso-saleforce-c.thorsen',
-            key: '7f91c455-a16d-4174-9361-25688ea92e23'
-        }
     },
     include: metadata.include,
     gherkin: {
