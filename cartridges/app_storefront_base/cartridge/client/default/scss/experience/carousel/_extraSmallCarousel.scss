@@ -1,0 +1,138 @@
+@import "../../variables";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins/breakpoints";
+@import "carouselMixins";
+
+@include media-breakpoint-only(xs) {
+    .carousel.indicators-xs {
+        @include carousel-indicators();
+    }
+
+    .carousel.controls-xs .carousel-control-next {
+        display: flex;
+    }
+
+    .carousel.controls-xs .carousel-control-prev {
+        display: flex;
+    }
+
+    // =============================================================================================
+
+    .experience-storefront-carousel .carousel-xs-2 .carousel-control-prev,
+    .experience-storefront-carousel .carousel-xs-2 .carousel-control-next {
+        top: 30%;
+    }
+
+    .carousel-xs-2.indicators-xs {
+        .carousel-control-prev,
+        .carousel-control-next {
+            top: 23%;
+        }
+    }
+
+    .carousel-xs-2 .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left),
+    .carousel-xs-2 .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item {
+        transition: none;
+    }
+
+    .carousel-xs-2 .carousel-item-next,
+    .carousel-xs-2 .carousel-item-prev {
+        position: relative;
+        transform: translate3d(0, 0, 0);
+    }
+
+    .carousel-xs-2 .active.carousel-item + .carousel-item + .carousel-item {
+        @include carousel-right-most-element(-50%);
+    }
+
+    .carousel-xs-2 .carousel-item-prev.carousel-item-right {
+        @include carousel-left-most-element(-50%);
+        @include carousel-transform(100%);
+    }
+
+    .carousel-xs-2 .active.carousel-item-left + .carousel-item-next.carousel-item-left,
+    .carousel-xs-2 .carousel-item-next.carousel-item-left + .carousel-item,
+    .carousel-xs-2 .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item {
+        position: relative;
+        visibility: visible;
+
+        @include carousel-transform(-100%);
+    }
+
+    .carousel-xs-2 .active.carousel-item-right + .carousel-item-prev.carousel-item-right,
+    .carousel-xs-2 .carousel-item-prev.carousel-item-right + .carousel-item,
+    .carousel-xs-2 .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item {
+        position: relative;
+        visibility: visible;
+        display: block;
+
+        @include carousel-transform(100%);
+    }
+
+    .carousel-xs-2 .active,
+    .carousel-xs-2 .active + .carousel-item {
+        display: block;
+    }
+
+    // =============================================================================================
+
+    .experience-storefront-carousel .carousel-xs-3 .carousel-control-prev,
+    .experience-storefront-carousel .carousel-xs-3 .carousel-control-next {
+        top: 20%;
+    }
+
+    .carousel-xs-3.indicators-xs {
+        .carousel-control-prev,
+        .carousel-control-next {
+            top: 13%;
+        }
+    }
+
+    .carousel-xs-3 .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left),
+    .carousel-xs-3 .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item,
+    .carousel-xs-3 .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item + .carousel-item {
+        transition: none;
+    }
+
+    .carousel-xs-3 .carousel-item-next,
+    .carousel-xs-3 .carousel-item-prev {
+        position: relative;
+        transform: translate3d(0, 0, 0);
+    }
+
+    .carousel-xs-3 .active.carousel-item + .carousel-item + .carousel-item + .carousel-item {
+        @include carousel-right-most-element(-33.3333%);
+    }
+
+    .carousel-xs-3 .carousel-item-prev.carousel-item-right {
+        @include carousel-left-most-element(-33.3333%);
+        @include carousel-transform(100%);
+    }
+
+    .carousel-xs-3 .active.carousel-item-left + .carousel-item-next.carousel-item-left,
+    .carousel-xs-3 .carousel-item-next.carousel-item-left + .carousel-item,
+    .carousel-xs-3 .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item,
+    .carousel-xs-3 .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item + .carousel-item {
+        position: relative;
+        visibility: visible;
+
+        @include carousel-transform(-100%);
+    }
+
+    .carousel-xs-3 .active.carousel-item-right + .carousel-item-prev.carousel-item-right,
+    .carousel-xs-3 .carousel-item-prev.carousel-item-right + .carousel-item,
+    .carousel-xs-3 .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item,
+    .carousel-xs-3 .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item + .carousel-item {
+        position: relative;
+        visibility: visible;
+        display: block;
+
+        @include carousel-transform(100%);
+    }
+
+    .carousel-xs-3 .active,
+    .carousel-xs-3 .active + .carousel-item,
+    .carousel-xs-3 .active + .carousel-item + .carousel-item {
+        display: block;
+    }
+}
