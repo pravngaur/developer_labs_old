@@ -8,7 +8,7 @@
     <div class="homepage">
         <!--- the page markup --->
         <!-- TODO: Determine appropriate CSS Styles from UX for Homepage and PD compatible default styles. -->
-        <div class="container-fluid page-designer-reference p-0">
+        <div class="container page-designer-reference">
             <div id="${pdict.page.ID}" class="row mx-n2">
                 <isprint value="${pdict.regions.main.setClassName(" col-12").render()}" encoding="off"/>
             </div>
