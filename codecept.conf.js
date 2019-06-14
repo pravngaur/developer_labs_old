@@ -5,7 +5,7 @@ let codeceptJsSauce = require('codeceptjs-saucelabs');
 
 const RELATIVE_PATH = './test/acceptance';
 const OUTPUT_PATH = RELATIVE_PATH + '/report';
-const DEFAULT_HOST = 'https://dev11-sitegenesis-dw.demandware.net';
+const DEFAULT_HOST = 'https://dev12-sitegenesis-dw.demandware.net';
 
 const HOST = process.host || DEFAULT_HOST;
 

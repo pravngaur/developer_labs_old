@@ -19,5 +19,9 @@ When('he adds the product to cart', async () => {
 });
 
 Then('he is able to see the correct product in cart', () => {
+<<<<<<< HEAD
     I.see(this.product, cartPage.locators.lineItemName);
+=======
+    I.see(product, cartPage.locators.lineItemName);
+>>>>>>> 68f70a040eb22e8410c359dbd837251234056637
 });
