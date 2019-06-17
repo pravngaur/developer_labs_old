@@ -1,0 +1,74 @@
+@import "../../variables";
+
+.shopthelook-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: 0.5s ease;
+    padding-left: 0.1em;
+    padding-right: 0.1em;
+}
+
+.product-info {
+    transition: 0.5s ease;
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    margin-left: 4em;
+    margin-right: 4em;
+}
+
+.shopthelook-figure-lg:hover {
+    .shopthelook-image {
+        filter: brightness(40%);
+    }
+
+    .product-info {
+        display: block;
+    }
+}
+
+.shopthelook-text {
+    background-color: $text-color;
+    color: $black;
+    font-size: 1.125em;
+    padding-top: 0.25em;
+    height: 2.25em;
+    padding-left: 3em;
+    padding-right: 3em;
+    font-weight: 700;
+    margin-top: 1em;
+}
+
+.shopthelook-set-count {
+    font-size: 1em;
+    margin-top: 1em;
+}
+
+.shopthelook-figure-sm {
+    .shopthelook-set-count {
+        color: $black;
+    }
+}
+
+.shopthelook-figure-lg {
+    .shopthelook-product-name .product-text-center {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: $text-color;
+        font-size: 2em;
+        font-weight: 700;
+    }
+
+    .shopthelook-product-price .price {
+        color: $text-color;
+    }
+
+    .shopthelook-set-count {
+        color: $text-color;
+    }
+}

@@ -1,8 +1,26 @@
 @import "../variables";
 
+$dark-blue: #061c3f;
+
+$text-color: white;
+$black: #000;
+$dark-gray: #212020;
+$light-gray: #d8d8d8;
+
 $banner-font: "Helvetica Neue" !default;
 $banner-heading-font-size-xl: 6em !default;
 $banner-heading-font-size-lg: 4em !default;
 $banner-heading-font-size-md: 4em !default;
 $banner-heading-font-size-sm: 3em !default;
 $banner-heading-font-size-xs: 1.875em !default;
+
+$shop-category-font: "Helvetica Neue" !default;
+$shop-category-header-color: #222 !default;
+$shop-category-header-font-weight: 900 !default;
+$shop-category-header-font-size-def: 1.125em !default;
+$shop-category-header-font-size-md: 1.5em !default;
+$shop-category-header-font-size-lg: 1.875em !default;
+$shop-category-label-font-size-def: 0.75em !default;
+$shop-category-label-font-size-md: 1em !default;
+$shop-category-label-font-size-lg: 1.25em !default;
+$shop-category-label-a-color: #212529 !default;

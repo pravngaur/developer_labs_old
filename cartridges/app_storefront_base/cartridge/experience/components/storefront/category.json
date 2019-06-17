@@ -1,0 +1,112 @@
+{
+    "name": "Shop Category",
+    "description": "Shop Category",
+    "group": "storefront",
+    "attribute_definition_groups": [
+        {
+            "id": "heading",
+            "name": "Heading Specification",
+            "description": "Specify the Heading to be Displayed",
+            "attribute_definitions": [
+                {
+                    "id": "textHeadline",
+                    "name": "Heading",
+                    "type": "string",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "categorySpec",
+            "name": "Shop Category Specifications",
+            "description": "Specify the Shop Categories to be Displayed",
+            "attribute_definitions": [
+                {
+                    "id": "category1",
+                    "name": "Category 01",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": true
+                },
+                {
+                    "id": "category2",
+                    "name": "Category 02",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": true
+                },
+                {
+                    "id": "category3",
+                    "name": "Category 03",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": true
+                },
+                {
+                    "id": "category4",
+                    "name": "Category 04",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": true
+                },
+                {
+                    "id": "category5",
+                    "name": "Category 05",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": false
+                },
+                {
+                    "id": "category6",
+                    "name": "Category 06",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": false
+                },
+                {
+                    "id": "category7",
+                    "name": "Category 07",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": false
+                },
+                {
+                    "id": "category8",
+                    "name": "Category 08",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": false
+                },
+                {
+                    "id": "category9",
+                    "name": "Category 09",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": false
+                },
+                {
+                    "id": "category10",
+                    "name": "Category 10",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": false
+                },
+                {
+                    "id": "category11",
+                    "name": "Category 11",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": false
+                },
+                {
+                    "id": "category12",
+                    "name": "Category 12",
+                    "description": "Select Category to be displayed.",
+                    "type": "category",
+                    "required": false
+                }
+            ]
+        }
+    ],
+    "region_definitions": []
+}

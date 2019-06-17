@@ -1,0 +1,45 @@
+@import "../../variables";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins/breakpoints";
+
+.shop-category-component {
+    @include media-breakpoint-up(md) {
+        padding: 2em 4em;
+    }
+    @include media-breakpoint-up(xs) {
+        padding: 1em 2em;
+    }
+}
+
+.shop-category-header {
+    color: $shop-category-header-color;
+    font-family: $shop-category-font;
+    font-weight: $shop-category-header-font-weight;
+    font-size: $shop-category-header-font-size-def;
+    @include media-breakpoint-up(lg) {
+        font-size: $shop-category-header-font-size-lg;
+        padding-right: 4em;
+    }
+    @include media-breakpoint-up(md) {
+        font-size: $shop-category-header-font-size-md;
+        padding-right: 2em;
+    }
+}
+
+.shop-category-label {
+    font-family: $shop-category-font;
+    text-decoration: underline;
+    padding: 0.375em 0.5em;
+    font-size: $shop-category-label-font-size-def;
+    @include media-breakpoint-up(lg) {
+        font-size: $shop-category-label-font-size-lg;
+    }
+    @include media-breakpoint-up(md) {
+        font-size: $shop-category-label-font-size-md;
+        padding: 0.625em 1.5em;
+    }
+}
+
+.shop-category-label-a {
+    color: $shop-category-label-a-color !important;
+}
