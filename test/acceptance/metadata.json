@@ -5,7 +5,8 @@
         "homePage": "./test/acceptance/pages/HomePage.js",
         "productPage": "./test/acceptance/pages/ProductPage.js",
         "cartPage": "./test/acceptance/pages/CartPage.js",
-        "loginPage": "./test/acceptance/pages/LoginPage.js"
+        "loginPage": "./test/acceptance/pages/LoginPage.js",
+        "accountPage": "./test/acceptance/pages/AccountPage.js"
     },
     "gherkin_steps": [
         "./test/acceptance/steps/step_file.steps.js",
@@ -50,5 +51,8 @@
         "ccSecCode": "555",
         "expMonth": "08",
         "expYear": "2023"
+    },
+    "account": {
+        
     }
 }

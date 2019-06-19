@@ -12,7 +12,17 @@ module.exports = {
         city: '#city.form-control',
         zip: '#zipCode.form-control',
         phone: '#phone.form-control',
-        saveBtn: '.btn.btn-save.btn-block.btn-primary'
+        saveBtn: '.btn.btn-save.btn-block.btn-primary',
+        nameOnCard: '#cardOwner.form-control',
+        ccNum: '#cardNumber.form-contrl',
+        expMonth: '#month.form-control',
+        expYear: '#year.form-control',
+        defaultPayment: '.custom-control-label',
+        currentPassword: '#currentPassword.form-control',
+        newPassword: '#newPassword.form-control',
+        newPasswordConfirm: '#newPasswordConfirm.form-control',
+        editPassword: 'Edit Password',
+        editProfile: 'Edit Profile',
     },
     addAddress(addressTitle, fName, lName, address1, address2, country, state, city, zipcode, phone) {
         I.fillField(this.locators.addressTitle, addressTitle);
@@ -29,14 +39,20 @@ module.exports = {
         I.fillField(this.locators.phone, phone);
         I.click(this.locators.saveBtn);
     },
-    fillPaymentInfo(email, phone, ccNum, expMonth, expYear, ccSecCode) {
-        I.fillField(this.locators.payEmail, email);
-        I.fillField(this.locators.payPhone, phone);
-        I.fillField(this.locators.payCard, ccNum);
-        I.waitForElement(this.locators.payExpMonth, expMonth);
-        I.selectOption(this.locators.payExpMonth, expMonth);
-        I.waitForElement(this.locators.payExpYear, expYear);
-        I.selectOption(this.locators.payExpYear, expYear);
-        I.fillField(this.locators.paySecCode, ccSecCode);
+    addPayment(nameOnCard, ccNum, expMonth, expYear) {
+        I.fillField(this.locators.nameOnCard, nameOnCard);
+        I.fillField(this.locators.ccNum, ccNum);
+        I.waitForElement(this.locators.expMonth, expMonth);
+        I.selectOption(this.locators.expMonth, expMonth);
+        I.waitForElement(this.locators.expYear, expYear);
+        I.selectOption(this.locators.expYear, expYear);
+        I.click(this.locators.defaultPayment);
+        I.click(this.locators.saveBtn);
+    },
+    changePassword(currentPassword, newPassword) {
+        I.fillField(this.locators.currentPassword, currentPassword);
+        I.fillField(this.locators.newPassword, newPassword);
+        I.fillField(this.locators.newPasswordConfirm, newPassword);
+        I.click(this.locators.saveBtn);
     }
 };
