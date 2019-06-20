@@ -23,6 +23,8 @@ module.exports = {
         newPasswordConfirm: '#newPasswordConfirm.form-control',
         editPassword: 'Edit Password',
         editProfile: 'Edit Profile',
+        addressBook: 'Add New Address',
+        payment: 'Add New Payment'
     },
     addAddress(addressTitle, fName, lName, address1, address2, country, state, city, zipcode, phone) {
         I.fillField(this.locators.addressTitle, addressTitle);

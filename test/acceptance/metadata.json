@@ -1,6 +1,5 @@
 {
     "include": {
-        "I": "./steps_file.js",
         "data": "./test/acceptance/metadata.json",
         "homePage": "./test/acceptance/pages/HomePage.js",
         "productPage": "./test/acceptance/pages/ProductPage.js",
@@ -9,7 +8,6 @@
         "accountPage": "./test/acceptance/pages/AccountPage.js"
     },
     "gherkin_steps": [
-        "./test/acceptance/steps/step_file.steps.js",
         "./test/acceptance/steps/homePage/addProductToCart.steps.js",
         "./test/acceptance/steps/homePage/emailSignup.steps.js",
         "./test/acceptance/steps/homePage/landHomePage.steps.js",
@@ -37,7 +35,7 @@
         "orderZip": "10101"
     },
     "checkout": {
-        "fName": "Joe",
+        "fName": "John",
         "lName": "Smith",
         "address1": "123 Main Street",
         "address2": "Apt 01",
@@ -53,6 +51,8 @@
         "expYear": "2023"
     },
     "account": {
-        
+        "name": "John Smith",
+        "addressTitle": "Apartment",
+        "newPassword": "Password123!"
     }
 }

@@ -5,7 +5,7 @@ let codeceptJsSauce = require('codeceptjs-saucelabs');
 
 const RELATIVE_PATH = './test/acceptance';
 const OUTPUT_PATH = RELATIVE_PATH + '/report';
-const DEFAULT_HOST = 'https://dev12-sitegenesis-dw.demandware.net';
+const DEFAULT_HOST = 'https://dev20-sitegenesis-dw.demandware.net';
 
 const HOST = process.host || DEFAULT_HOST;
 
@@ -21,6 +21,12 @@ let conf = {
             url: HOST
         },
     },
+    plugins: {
+        wdio: {
+            enabled: true,
+            services: ['selenium-standalone']
+        }
+    },
     include: metadata.include,
     gherkin: {
         features: RELATIVE_PATH + '/features/**/*.feature',
@@ -29,7 +35,7 @@ let conf = {
     name: 'storefront-reference-architecture'
 };
 
-// console.log(merge(merge(conf, codeceptjsShared.conf), codeceptJsSauce.conf));
+console.log(merge(merge(conf, codeceptjsShared.conf), codeceptJsSauce.conf));
 exports.config = merge(merge(conf, codeceptjsShared.conf), codeceptJsSauce.conf);
 
 // {browser: 'safari', windowSize: '800x600'},
