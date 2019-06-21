@@ -3,7 +3,6 @@ Feature: Edit profile of a User Account
 
 @accountPage
     Scenario: Shopper is able to change their password
-        When shopper selects yes or no for tracking consent
         Given shopper goes to the Login Page
         Then shopper is able to fill out the email and password
         And shopper is able to click the login button

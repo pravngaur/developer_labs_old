@@ -1,11 +1,11 @@
 {
     "include": {
         "data": "./test/acceptance/metadata.json",
-        "homePage": "./test/acceptance/pages/HomePage.js",
-        "productPage": "./test/acceptance/pages/ProductPage.js",
-        "cartPage": "./test/acceptance/pages/CartPage.js",
-        "loginPage": "./test/acceptance/pages/LoginPage.js",
-        "accountPage": "./test/acceptance/pages/AccountPage.js"
+        "homePage": "./test/acceptance/pages/home.page.js",
+        "productPage": "./test/acceptance/pages/product.page.js",
+        "cartPage": "./test/acceptance/pages/cart.page.js",
+        "loginPage": "./test/acceptance/pages/login.page.js",
+        "accountPage": "./test/acceptance/pages/account.page.js"
     },
     "gherkin_steps": [
         "./test/acceptance/steps/homePage/addProductToCart.steps.js",
@@ -15,7 +15,11 @@
         "./test/acceptance/steps/loginPage/createAccount.steps.js",
         "./test/acceptance/steps/loginPage/loginUser.steps.js",
         "./test/acceptance/steps/productDetailPage/pdpSimpleLayout.steps.js",
-        "./test/acceptance/steps/suites/happyPath.steps.js"
+        "./test/acceptance/steps/suites/happyPath.steps.js",
+        "./test/acceptance/steps/accountPage/addAddress.steps.js",
+        "./test/acceptance/steps/accountPage/addPayment.steps.js",
+        "./test/acceptance/steps/accountPage/changePassword.steps.js",
+        "./test/acceptance/steps/accountPage/editProfile.steps.js"
     ],
     "home": {
         "email": "test@user.com"

@@ -1,6 +1,6 @@
-const { I, homePage } = inject();
+const { I, data, homePage } = inject();
 
 When('shopper selects yes or no for tracking consent', () => {
-    I.amOnPage('/s/RefArch/home?lang=en_US');
+    I.amOnPage(data.login.homePage);
     homePage.accept();
 });

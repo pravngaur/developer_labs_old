@@ -1,4 +1,4 @@
-const { I, data, homePage } = inject();
+const { I, data, homePage, accountPage } = inject();
 var should = require('should'); // eslint-disable-line
 
 Then('shopper clicks edit profile', () => {

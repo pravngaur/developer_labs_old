@@ -3,7 +3,6 @@ Feature: Add Payment to User Account
 
 @accountPage
     Scenario: Shopper is able to add a payment to their account
-        When shopper selects yes or no for tracking consent
         Given shopper goes to the Login Page
         Then shopper is able to fill out the email and password
         And shopper is able to click the login button

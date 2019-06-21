@@ -14,7 +14,7 @@ module.exports = {
         phone: '#phone.form-control',
         saveBtn: '.btn.btn-save.btn-block.btn-primary',
         nameOnCard: '#cardOwner.form-control',
-        ccNum: '#cardNumber.form-contrl',
+        ccNum: '#cardNumber.form-control',
         expMonth: '#month.form-control',
         expYear: '#year.form-control',
         defaultPayment: '.custom-control-label',

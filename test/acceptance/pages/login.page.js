@@ -2,7 +2,7 @@ const I = actor();
 
 module.exports = {
     locators: {
-        loginHomeScreen: '.user-message',
+        loginHomeScreen: 'span.user-message',
         emailLogin: '#login-form-email',
         passwordLogin: '#login-form-password',
         primaryButton: '.btn.btn-block.btn-primary',
