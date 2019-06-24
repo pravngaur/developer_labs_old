@@ -597,7 +597,7 @@ server.post('AddBonusProducts', function (req, res, next) {
 
     if (totalQty === 0) {
         res.json({
-            errorMessage: Resource.msgf(
+            errorMessage: Resource.msg(
                 'error.alert.choiceofbonus.no.product.selected',
                 'product',
                 null),
