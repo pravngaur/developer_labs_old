@@ -25,6 +25,23 @@ let conf = {
         wdio: {
             enabled: true,
             services: ['selenium-standalone']
+        },
+        autoLogin: {
+            enabled: true,
+            inject: 'login',
+            users: {
+                user: {
+                    login: (I) => {
+                        I.amOnPage(metadata.login.loginPage);
+                        I.fillField(metadata.login.emailLogin, metadata.login.email);
+                        I.fillField(metadata.login.passwordLogin, metadata.login.password);
+                        I.click(metadata.login.primaryButton);
+                    },
+                    check: (I) => {
+                        I.amOnPage(metadata.login.currentUrl);
+                    }
+                }
+            }
         }
     },
     include: metadata.include,

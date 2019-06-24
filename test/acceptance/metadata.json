@@ -36,7 +36,11 @@
         "regEmail": "jsmith@email.com",
         "orderNum": "12345",
         "orderEmail": "order@email.com",
-        "orderZip": "10101"
+        "orderZip": "10101",
+        "loginHomeScreen": "span.user-message",
+        "emailLogin": "#login-form-email",
+        "passwordLogin": "#login-form-password",
+        "primaryButton": ".btn.btn-block.btn-primary"
     },
     "checkout": {
         "fName": "John",
