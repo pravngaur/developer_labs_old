@@ -1,0 +1,34 @@
+{
+    "name": "Popular Categories",
+    "description": "popular categories displayed with a circular image",
+    "group": "storefront",
+    "attribute_definition_groups": [
+        {
+            "id": "heading",
+            "name": "Heading Text",
+            "description": "Specify the heading to be displayed above the category images",
+            "attribute_definitions": [
+                {
+                    "id": "textHeadline",
+                    "name": "Heading",
+                    "type": "string",
+                    "required": true
+                }
+            ]
+        }
+    ],
+    "region_definitions": [
+    {
+      "id":"categories",
+      "name":"categories",
+      "component_type_exclusions": [
+        { "type_id": "layouts.1column" },
+        { "type_id": "layouts.2column" },
+        { "type_id": "layouts.3column" },
+        { "type_id": "layouts.4column" },
+        { "type_id": "layouts.gridcomponentlayout" },
+        { "type_id": "layouts.sfra_carousel" }
+      ]
+    }
+    ]
+}
