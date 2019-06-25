@@ -15,7 +15,7 @@ module.exports = {
         zip: '.form-control.shippingZipCode',
         phone: '.form-control.shippingPhoneNumber',
         toPayment: '.btn.btn-primary.btn-block.submit-shipping',
-        payEmail: '.form-control.email',
+        payEmail: '#email.form-control.email',
         payPhone: '#phoneNumber',
         payCard: '#cardNumber',
         payExpMonth: '#expirationMonth',
