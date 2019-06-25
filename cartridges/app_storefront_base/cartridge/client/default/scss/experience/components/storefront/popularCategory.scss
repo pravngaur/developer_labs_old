@@ -1,0 +1,42 @@
+@import "../../variables";
+
+.category-thumbnail {
+    border-radius: 50%;
+}
+
+.popular-category {
+    padding-bottom: 1em;
+    padding-top: 1em;
+}
+
+.popular-categories {
+    padding-left: 0em;
+    padding-right: 0em;
+}
+
+.image-cropper {
+    width: 7em;
+    height: 7em;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: auto;
+}
+
+header ~ #maincontent .container {
+    .popular-category-link {
+        text-align: center;
+
+        a.popular-cat-link {
+            color: $shop-category-label-a-color;
+            text-decoration: underline;
+            font-size: 1em;
+        }
+    }
+}
+
+.image-wrapper {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+}
