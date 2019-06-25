@@ -51,7 +51,7 @@
         "state": "Massachusetts",
         "city": "Burlington",
         "zip": "11111",
-        "phone": 5555551234,
+        "phone": "5555551234",
         "email": "test@user.com",
         "ccNum": "4111111111111111",
         "ccSecCode": "555",
