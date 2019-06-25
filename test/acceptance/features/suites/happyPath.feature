@@ -1,7 +1,7 @@
 Feature: Happy Path
     As a shopper, I want to go through the basic flow of shopping for a product
 
-@happyPath
+@happyPath @broken
     Scenario: Shopper is able to follow the happy path
         When shopper selects yes or no for tracking consent
         Given Shopper searches for "Elbow Sleeve Ribbed Sweater"

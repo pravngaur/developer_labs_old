@@ -18,7 +18,8 @@ let conf = {
     helpers: {
         REST: {},
         WebDriver: {
-            url: HOST
+            url: HOST,
+            waitForTimeout: 5000
         },
     },
     plugins: {
@@ -64,4 +65,5 @@ let conf = {
     name: 'storefront-reference-architecture'
 };
 
+console.log(merge(merge(conf, codeceptjsShared.conf), codeceptJsSauce.conf));
 exports.config = merge(merge(conf, codeceptjsShared.conf), codeceptJsSauce.conf);

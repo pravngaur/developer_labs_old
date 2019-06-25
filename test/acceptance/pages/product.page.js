@@ -49,14 +49,5 @@ module.exports = {
     clickCopyLink() {
         I.waitForEnabled(this.locators.copyLink);
         I.click(this.locators.copyLink);
-    },
-    async grabMiniCartQuantity() {
-        return await I.grabTextFrom(this.locators.miniCartQuantity);
-    },
-    async grabAddToCartSuccessMsg() {
-        return await I.grabTextFrom(this.locators.addToCartSuccess);
-    },
-    async grabAddToCartFailureMsg() {
-        return await I.grabTextFrom(this.locators.addToCartFailure);
     }
 };

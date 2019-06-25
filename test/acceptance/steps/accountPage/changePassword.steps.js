@@ -7,12 +7,10 @@ Before(login => {
 
 Then('shopper clicks edit password', () => {
     // From "test/acceptance/features/accountPage/changePassword.feature"
-    I.waitForElement(accountPage.locators.editPassword);
-    I.click(accountPage.locators.editPassword);
+    I.amOnPage('/on/demandware.store/Sites-RefArch-Site/en_US/Account-EditPassword');
 });
   
-Then('And shopper changes their password', () => {
+Then('shopper changes their password', () => {
     // From "test/acceptance/features/accountPage/changePassword.feature"
     accountPage.changePassword(data.login.password, data.account.newPassword);
-    I.see("Password changed!");
 });

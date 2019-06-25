@@ -21,10 +21,8 @@ module.exports = {
         currentPassword: '#currentPassword.form-control',
         newPassword: '#newPassword.form-control',
         newPasswordConfirm: '#newPasswordConfirm.form-control',
-        editPassword: 'Edit Password',
-        editProfile: 'Edit Profile',
-        addressBook: 'Add New Address',
-        payment: 'Add New Payment'
+        confirmEmail: '#confirmEmail.form-control',
+        confirmPassword: '#password.form-control'
     },
     addAddress(addressTitle, fName, lName, address1, address2, country, state, city, zipcode, phone) {
         I.fillField(this.locators.addressTitle, addressTitle);
@@ -39,6 +37,7 @@ module.exports = {
         I.fillField(this.locators.city, city);
         I.fillField(this.locators.zip, zipcode);
         I.fillField(this.locators.phone, phone);
+        I.waitForElement(this.locators.saveBtn);
         I.click(this.locators.saveBtn);
     },
     addPayment(nameOnCard, ccNum, expMonth, expYear) {
@@ -49,12 +48,21 @@ module.exports = {
         I.waitForElement(this.locators.expYear, expYear);
         I.selectOption(this.locators.expYear, expYear);
         I.click(this.locators.defaultPayment);
+        I.waitForElement(this.locators.saveBtn);
         I.click(this.locators.saveBtn);
     },
     changePassword(currentPassword, newPassword) {
         I.fillField(this.locators.currentPassword, currentPassword);
         I.fillField(this.locators.newPassword, newPassword);
         I.fillField(this.locators.newPasswordConfirm, newPassword);
+        I.waitForElement(this.locators.saveBtn);
+        I.click(this.locators.saveBtn);
+    },
+    editProfile(phone, email, password) {
+        I.fillField(this.locators.phone, phone);
+        I.fillField(this.locators.confirmEmail, email);
+        I.fillField(this.locators.confirmPassword, password);
+        I.waitForElement(this.locators.saveBtn);
         I.click(this.locators.saveBtn);
     }
 };

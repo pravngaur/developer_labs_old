@@ -7,13 +7,10 @@ Before(login => {
 
 Then('shopper clicks edit profile', () => {
     // From "test/acceptance/features/accountPage/editProfile.feature"
-    I.waitForElement(accountPage.locators.editAccount);
-    I.click(accountPage.locators.editAccount);
+    I.amOnPage('/on/demandware.store/Sites-RefArch-Site/en_US/Account-EditProfile');
 });
   
 Then('shopper edits phone number', () => {
     // From "test/acceptance/features/accountPage/editProfile.feature"
-    I.click(homePage.locators.subscribeButton);
-    I.waitForElement(homePage.locators.emailSignup);
-    I.see("Email Signup successful");
+    accountPage.editProfile(data.login.phone,data.login.email, data.login.password);
 });
