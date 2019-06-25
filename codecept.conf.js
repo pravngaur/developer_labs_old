@@ -7,9 +7,9 @@ const RELATIVE_PATH = './test/acceptance';
 const OUTPUT_PATH = RELATIVE_PATH + '/report';
 const DEFAULT_HOST = 'https://dev20-sitegenesis-dw.demandware.net';
 
-const HOST = process.host || DEFAULT_HOST;
-
 const metadata = require('./test/acceptance/metadata.json');
+
+const HOST = process.host || DEFAULT_HOST;
 
 let conf = {
     output: OUTPUT_PATH,
@@ -32,10 +32,22 @@ let conf = {
             users: {
                 user: {
                     login: (I) => {
-                        I.amOnPage(metadata.login.loginPage);
-                        I.fillField(metadata.login.emailLogin, metadata.login.email);
-                        I.fillField(metadata.login.passwordLogin, metadata.login.password);
-                        I.click(metadata.login.primaryButton);
+                        console.log('YOU ARE IN THE LOGIN FUNCTION IN CODECEPTJS');
+                        I.amOnPage(metadata.login.homePage);
+                        // Click yes for tracking consent
+                        I.waitForElement('.modal-content');
+                        within('.modal-content', () => {
+                            I.click('.affirm');
+                        });
+                        // Click login
+                        I.waitForElement('.user-message');
+                        I.click('.user-message')
+                        I.fillField('#login-form-email', metadata.login.email);
+                        I.fillField('#login-form-password', metadata.login.password);
+
+                        I.waitForElement('.btn.btn-block.btn-primary');
+                        I.click('.btn.btn-block.btn-primary');
+                        I.seeInCurrentUrl(metadata.login.currentUrl);
                     },
                     check: (I) => {
                         I.amOnPage(metadata.login.currentUrl);

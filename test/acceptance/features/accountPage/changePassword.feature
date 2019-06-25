@@ -1,11 +1,8 @@
-Feature: Edit profile of a User Account
+Feature: Edit password of a User Account
     As a shopper with an account, I want to be able to change my password
 
 @accountPage
     Scenario: Shopper is able to change their password
-        Given shopper goes to the Login Page
-        Then shopper is able to fill out the email and password
-        And shopper is able to click the login button
-        And shopper is able to view profile dashboard
+        Given shopper logs into the website
         And shopper clicks edit password
         And shopper changes their password

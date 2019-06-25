@@ -3,9 +3,6 @@ Feature: Add Address to User Account
 
 @accountPage
     Scenario: Shopper is able to add an address to their account
-        Given shopper goes to the Login Page
-        Then shopper is able to fill out the email and password
-        And shopper is able to click the login button
-        And shopper is able to view profile dashboard
+        Given shopper logs into the website
         And shopper clicks add new address
         And shopper fills out address information
