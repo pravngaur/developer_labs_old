@@ -12,8 +12,6 @@
     top: 0;
     left: $left;
     z-index: -1;
-    display: block;
-    visibility: visible;
 }
 
 @mixin carousel-transform($x) {

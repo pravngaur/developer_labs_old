@@ -54,6 +54,14 @@ module.exports.render = function (context) {
         md: 'controls-md'
     };
 
+    model.insufficientNumberOfSlides = {
+        xs: context.content.xsCarouselSlidesToDisplay >= numberOfSlides ? 'insufficient-xs-slides' : '',
+        sm: context.content.smCarouselSlidesToDisplay >= numberOfSlides ? 'insufficient-sm-slides' : '',
+        md: context.content.mdCarouselSlidesToDisplay >= numberOfSlides ? 'insufficient-md-slides' : ''
+    };
+
+    model.numberOfSlides = model.regions.slides.region.size;
+
     model.title = context.content.textHeadline;
 
     return new Template('experience/components/storefront/carousel').render(model).text;
