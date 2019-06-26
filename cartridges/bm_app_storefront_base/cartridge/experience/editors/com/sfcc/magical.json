@@ -1,0 +1,14 @@
+{
+  "name": "Magical Custom Editor",
+  "description": "A new magical editor with flying unicorns!",
+  "resources": {
+    "scripts": [
+      "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js",
+      "/experience/editors/com/sfcc/magical_editor.js"
+    ],
+    "styles": [
+      "https://cdnjs.cloudflare.com/ajax/libs/design-system/2.8.3/styles/salesforce-lightning-design-system.min.css",
+      "/experience/editors/com/sfcc/magical.css"
+    ]
+  }
+}

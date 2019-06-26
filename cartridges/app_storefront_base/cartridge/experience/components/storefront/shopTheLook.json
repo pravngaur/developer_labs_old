@@ -21,6 +21,31 @@
           "description": "Do you want to Display Pricing for product (Set product is not applicable here)?",
           "type": "boolean",
           "required": true
+        },
+          {
+          "id": "magic",
+          "name": "Magic Unicorns",
+          "type": "custom",
+          "required": true,
+          "editor_definition": {
+            "type": "com.sfcc.magical",
+            "configuration": {
+              "options": {
+                "config": [
+                  "Auris",
+                  "Chant",
+                  "Elmas",
+                  "Majesty",
+                  "Moriba",
+                  "Mystery",
+                  "Mystic",
+                  "Snowflake",
+                  "Solstice",
+                  "Sunshine"
+                ]
+              }
+            }
+          }
         }
       ]
     }
