@@ -1,9 +1,4 @@
-const { I, data, accountPage, login } = inject();
-
-// use login to inject auto-login function
-Before(login => {
-    login('user'); // login using user session
-});
+const { I, data, accountPage } = inject();
 
 Then('shopper clicks add new payment', () => {
     // From "test/acceptance/features/accountPage/addPayment.feature"

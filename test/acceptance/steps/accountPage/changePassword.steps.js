@@ -1,9 +1,5 @@
-const { I, data, accountPage, login } = inject();
+const { I, data, accountPage } = inject();
 
-// use login to inject auto-login function
-Before(login => {
-    login('user'); // login using user session
-});
 
 Then('shopper clicks edit password', () => {
     // From "test/acceptance/features/accountPage/changePassword.feature"
