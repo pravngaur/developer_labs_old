@@ -4,6 +4,19 @@
 @import "carouselMixins";
 
 @include media-breakpoint-up(md) {
+    .experience-storefront-carousel .carousel.insufficient-md-slides .carousel-control-next,
+    .experience-storefront-carousel .carousel.insufficient-md-slides .carousel-control-prev {
+        display: none !important;
+    }
+
+    .experience-storefront-carousel .carousel.insufficient-md-slides {
+        padding-bottom: 0 !important;
+
+        .pd-carousel-indicators {
+            display: none !important;
+        }
+    }
+
     .carousel.indicators-md {
         @include carousel-indicators();
     }

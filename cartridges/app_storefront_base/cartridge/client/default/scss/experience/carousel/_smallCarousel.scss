@@ -8,6 +8,19 @@
         @include carousel-indicators();
     }
 
+    .experience-storefront-carousel .carousel.insufficient-sm-slides .carousel-control-next,
+    .experience-storefront-carousel .carousel.insufficient-sm-slides .carousel-control-prev {
+        display: none !important;
+    }
+
+    .experience-storefront-carousel .carousel.insufficient-sm-slides {
+        padding-bottom: 0 !important;
+
+        .pd-carousel-indicators {
+            display: none !important;
+        }
+    }
+
     .carousel.controls-sm .carousel-control-next,
     .carousel.controls-sm .carousel-control-prev {
         display: flex;
