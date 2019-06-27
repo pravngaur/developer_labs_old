@@ -24,7 +24,7 @@ module.exports = {
     },
     clickLogin() {
         I.waitForElement(this.locators.loginButton);
-        I.click(this.locators.loginButton)
+        I.click(this.locators.loginButton);
     },
     subscribeList(email) {
         I.fillField('hpEmailSignUp', email);

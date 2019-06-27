@@ -7,7 +7,7 @@ Given('shopper goes to the Login Page', () => {
     homePage.accept();
     homePage.clickLogin();
 });
-  
+
 Then('shopper logs into the website', () => {
     I.amOnPage(data.login.homePage);
     homePage.accept();

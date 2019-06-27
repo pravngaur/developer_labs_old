@@ -27,8 +27,8 @@ module.exports = {
     fillShippingInfo(fName, lName, address1, address2, country, state, city, zipcode, phone) {
         I.fillField(this.locators.fName, fName);
         I.fillField(this.locators.lName, lName);
-        I.fillField(this.locators.address1, address1)
-        I.fillField(this.locators.address2, address2)
+        I.fillField(this.locators.address1, address1);
+        I.fillField(this.locators.address2, address2);
         I.waitForElement(this.locators.country);
         I.selectOption(this.locators.country, country);
         I.waitForElement(this.locators.state);

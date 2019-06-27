@@ -1,5 +1,4 @@
 const { I, data, loginPage } = inject();
-var should = require('should'); // eslint-disable-line
 
 Then('shopper is able to click tab to create account', () => {
     // From "test/acceptance/features/loginPage/createAccount.feature" {"line":6,"column":9}
@@ -21,6 +20,5 @@ Then('shopper is able to click the create account button', () => {
 
 Then('shopper may see a username is invalid error', () => {
     // From "test/acceptance/features/loginPage/createAccount.feature" {"line":10,"column":9}
-    I.see('Username is invalid.')
+    I.see('Username is invalid.');
 });
-  

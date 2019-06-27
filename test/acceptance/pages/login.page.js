@@ -15,10 +15,10 @@ module.exports = {
         emailAdrConfirm: '#registration-form-email-confirm',
         password: '#registration-form-password',
         passwordConfirm: '#registration-form-password-confirm',
-        orderNumber: "#trackorder-form-number",
-        orderEmail: "#trackorder-form-email",
-        orderZipCode: "#trackorder-form-zip",
-        checkOrderError: ".alert.alert-danger"
+        orderNumber: '#trackorder-form-number',
+        orderEmail: '#trackorder-form-email',
+        orderZipCode: '#trackorder-form-zip',
+        checkOrderError: '.alert.alert-danger'
     },
     fillLoginForm(email, password) {
         I.fillField(this.locators.emailLogin, email);

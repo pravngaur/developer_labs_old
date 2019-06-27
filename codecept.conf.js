@@ -1,4 +1,4 @@
-let debug = require('debug')('acceptance:config');
+const debug = require('debug')('acceptance:config');
 let merge = require('deepmerge');
 let codeceptjsShared = require('codeceptjs-shared');
 let codeceptJsSauce = require('codeceptjs-saucelabs');
