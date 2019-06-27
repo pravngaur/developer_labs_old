@@ -14,9 +14,11 @@
      class="carousel slide carousel-xs-${pdict.slidesToDisplay.xs}
         carousel-sm-${pdict.slidesToDisplay.sm} carousel-md-${pdict.slidesToDisplay.md}
         ${pdict.displayIndicators.xs} ${pdict.displayIndicators.sm} ${pdict.displayIndicators.md}
-        ${pdict.displayControls.xs} ${pdict.displayControls.sm} ${pdict.displayControls.md}"
+        ${pdict.displayControls.xs} ${pdict.displayControls.sm} ${pdict.displayControls.md}
+        ${pdict.insufficientNumberOfSlides.xs} ${pdict.insufficientNumberOfSlides.sm} ${pdict.insufficientNumberOfSlides.md}"
      data-keyboard="true"
      data-interval="false"
+     data-number-of-slides="${pdict.numberOfSlides}"
      data-sm="${pdict.slidesToDisplay.sm}"
      data-xs="${pdict.slidesToDisplay.xs}"
      data-md="${pdict.slidesToDisplay.md}"
