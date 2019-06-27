@@ -1,0 +1,346 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1561641028610' stop='1561641057950'>
+    <name>Happy Path</name>
+    <title>Happy Path</title>
+    <test-cases>
+        <test-case start='1561641028610' status='failed' stop='1561641057118'>
+            <name>Shopper is able to follow the happy path @happyPath @broken</name>
+            <title>Shopper is able to follow the happy path @happyPath @broken</title>
+            <labels>
+                <label name='tag' value='@happyPath'/>
+                <label name='tag' value='@broken'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1561641030388' status='passed' stop='1561641033970'>
+                    <name>When shopper selects yes or no for tracking consent </name>
+                    <title>When shopper selects yes or no for tracking consent </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561641030388' status='passed' stop='1561641033733'>
+                            <name>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show"</name>
+                            <title>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561641033733' status='passed' stop='1561641033970'>
+                            <name>homePage: accept </name>
+                            <title>homePage: accept </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561641033733' status='passed' stop='1561641033846'>
+                                    <name>I wait for element ".modal-content"</name>
+                                    <title>I wait for element ".modal-content"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561641033970' status='passed' stop='1561641034386'>
+                    <name>Within ".modal-content" </name>
+                    <title>Within ".modal-content" </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561641033970' status='passed' stop='1561641034285'>
+                            <name>I click ".affirm"</name>
+                            <title>I click ".affirm"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561641034386' status='passed' stop='1561641038865'>
+                    <name>Given Shopper searches for "Elbow Sleeve Ribbed Sweater" </name>
+                    <title>Given Shopper searches for "Elbow Sleeve Ribbed Sweater" </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561641034386' status='passed' stop='1561641038865'>
+                            <name>homePage: search </name>
+                            <title>homePage: search </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561641034386' status='passed' stop='1561641034973'>
+                                    <name>I fill field "input.form-control.search-field", "Elbow Sleeve Ribbed Sweater"</name>
+                                    <title>I fill field "input.form-control.search-field", "Elbow Sleeve Ribbed Sweater"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641034973' status='passed' stop='1561641035497'>
+                                    <name>I wait for element "a>img.swatch-circle"</name>
+                                    <title>I wait for element "a>img.swatch-circle"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641035602' status='passed' stop='1561641038865'>
+                                    <name>I click "a>img.swatch-circle"</name>
+                                    <title>I click "a>img.swatch-circle"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561641038865' status='passed' stop='1561641038989'>
+                    <name>And selects size "S" </name>
+                    <title>And selects size "S" </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561641038865' status='passed' stop='1561641038989'>
+                            <name>productPage: selectSize </name>
+                            <title>productPage: selectSize </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561641038865' status='passed' stop='1561641038888'>
+                                    <name>I wait for element ".select-size"</name>
+                                    <title>I wait for element ".select-size"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641038888' status='passed' stop='1561641038989'>
+                                    <name>I select option ".select-size", "S"</name>
+                                    <title>I select option ".select-size", "S"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561641038989' status='passed' stop='1561641043860'>
+                    <name>When he adds the product to cart </name>
+                    <title>When he adds the product to cart </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561641038989' status='passed' stop='1561641039939'>
+                            <name>productPage: addToCart </name>
+                            <title>productPage: addToCart </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561641038989' status='passed' stop='1561641039520'>
+                                    <name>I wait for enabled ".add-to-cart"</name>
+                                    <title>I wait for enabled ".add-to-cart"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641039624' status='passed' stop='1561641039939'>
+                                    <name>I click ".add-to-cart"</name>
+                                    <title>I click ".add-to-cart"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                        <step start='1561641039939' status='passed' stop='1561641043860'>
+                            <name>productPage: viewCart </name>
+                            <title>productPage: viewCart </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561641039939' status='passed' stop='1561641039968'>
+                                    <name>I scroll page to top </name>
+                                    <title>I scroll page to top </title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641039968' status='passed' stop='1561641041973'>
+                                    <name>I wait 2</name>
+                                    <title>I wait 2</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641042076' status='passed' stop='1561641043836'>
+                                    <name>I click ".minicart"</name>
+                                    <title>I click ".minicart"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641043836' status='passed' stop='1561641043860'>
+                                    <name>I wait for element ".cart-header"</name>
+                                    <title>I wait for element ".cart-header"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561641043860' status='passed' stop='1561641043920'>
+                    <name>Then he is able to see the correct product in cart </name>
+                    <title>Then he is able to see the correct product in cart </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561641043860' status='passed' stop='1561641043920'>
+                            <name>I see "Elbow Sleeve Ribbed Sweater", "div.line-item-name"</name>
+                            <title>I see "Elbow Sleeve Ribbed Sweater", "div.line-item-name"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561641043920' status='passed' stop='1561641045723'>
+                    <name>And shopper selects checkout from cart </name>
+                    <title>And shopper selects checkout from cart </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561641043920' status='passed' stop='1561641043945'>
+                            <name>I wait for element ".btn.btn-primary.btn-block.checkout-btn"</name>
+                            <title>I wait for element ".btn.btn-primary.btn-block.checkout-btn"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561641044048' status='passed' stop='1561641045723'>
+                            <name>I click ".btn.btn-primary.btn-block.checkout-btn"</name>
+                            <title>I click ".btn.btn-primary.btn-block.checkout-btn"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561641045723' status='passed' stop='1561641047754'>
+                    <name>And shopper selects checkout as guest </name>
+                    <title>And shopper selects checkout as guest </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561641045723' status='passed' stop='1561641045748'>
+                            <name>I wait for element ".btn.btn-block.btn-primary.checkout-as-guest"</name>
+                            <title>I wait for element ".btn.btn-block.btn-primary.checkout-as-guest"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561641045848' status='passed' stop='1561641047653'>
+                            <name>I click ".btn.btn-block.btn-primary.checkout-as-guest"</name>
+                            <title>I click ".btn.btn-block.btn-primary.checkout-as-guest"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561641047754' status='passed' stop='1561641052089'>
+                    <name>And shopper fills out shipping information </name>
+                    <title>And shopper fills out shipping information </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561641047754' status='passed' stop='1561641051564'>
+                            <name>cartPage: fillShippingInfo </name>
+                            <title>cartPage: fillShippingInfo </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561641047754' status='passed' stop='1561641048123'>
+                                    <name>I fill field ".form-control.shippingFirstName", "John"</name>
+                                    <title>I fill field ".form-control.shippingFirstName", "John"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641048224' status='passed' stop='1561641048584'>
+                                    <name>I fill field ".form-control.shippingLastName", "Smith"</name>
+                                    <title>I fill field ".form-control.shippingLastName", "Smith"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641048686' status='passed' stop='1561641049160'>
+                                    <name>I fill field ".form-control.shippingAddressOne", "123 Main Street"</name>
+                                    <title>I fill field ".form-control.shippingAddressOne", "123 Main Street"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641049261' status='passed' stop='1561641049687'>
+                                    <name>I fill field ".form-control.shippingAddressTwo", "Apt 01"</name>
+                                    <title>I fill field ".form-control.shippingAddressTwo", "Apt 01"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641049687' status='passed' stop='1561641049710'>
+                                    <name>I wait for element ".form-control.shippingCountry"</name>
+                                    <title>I wait for element ".form-control.shippingCountry"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641049710' status='passed' stop='1561641049811'>
+                                    <name>I select option ".form-control.shippingCountry", "United States"</name>
+                                    <title>I select option ".form-control.shippingCountry", "United States"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641049811' status='passed' stop='1561641049839'>
+                                    <name>I wait for element ".form-control.shippingState"</name>
+                                    <title>I wait for element ".form-control.shippingState"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641049839' status='passed' stop='1561641049946'>
+                                    <name>I select option ".form-control.shippingState", "Massachusetts"</name>
+                                    <title>I select option ".form-control.shippingState", "Massachusetts"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641050048' status='passed' stop='1561641050511'>
+                                    <name>I fill field ".form-control.shippingAddressCity", "Burlington"</name>
+                                    <title>I fill field ".form-control.shippingAddressCity", "Burlington"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641050614' status='passed' stop='1561641050979'>
+                                    <name>I fill field ".form-control.shippingZipCode", "11111"</name>
+                                    <title>I fill field ".form-control.shippingZipCode", "11111"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561641051084' status='passed' stop='1561641051564'>
+                                    <name>I fill field ".form-control.shippingPhoneNumber", "5555551234"</name>
+                                    <title>I fill field ".form-control.shippingPhoneNumber", "5555551234"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                        <step start='1561641051564' status='passed' stop='1561641051587'>
+                            <name>I wait for element ".btn.btn-primary.btn-block.submit-shipping"</name>
+                            <title>I wait for element ".btn.btn-primary.btn-block.submit-shipping"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561641051688' status='passed' stop='1561641051988'>
+                            <name>I click ".btn.btn-primary.btn-block.submit-shipping"</name>
+                            <title>I click ".btn.btn-primary.btn-block.submit-shipping"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561641052089' status='failed' stop='1561641057118'>
+                    <name>And shopper fills out payment information </name>
+                    <title>And shopper fills out payment information </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561641052089' status='failed' stop='1561641057118'>
+                            <name>accountPage: addPayment </name>
+                            <title>accountPage: addPayment </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561641052089' status='failed' stop='1561641057117'>
+                                    <name>I fill field "#cardOwner.form-control", "John Smith"</name>
+                                    <title>I fill field "#cardOwner.form-control", "John Smith"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments>
+                <attachment title='Last Seen Screenshot' source='d100477f-e91b-4936-8e21-2eac32233f8b-attachment.png' type='image/png' size='160931'/>
+            </attachments>
+            <failure>
+                <message>Field "#cardOwner.form-control" was not found by text|CSS|XPath</message>
+                <stack-trace>Error: Field "#cardOwner.form-control" was not found by text|CSS|XPath
+                    at new ElementNotFound (/Users/c.thorsen/Desktop/SFRA/storefront-reference-architecture/node_modules/codeceptjs/lib/helper/errors/ElementNotFound.js:14:11)
+                    at assertElementExists (/Users/c.thorsen/Desktop/SFRA/storefront-reference-architecture/node_modules/codeceptjs/lib/helper/WebDriver.js:2247:11)
+                    at WebDriver.fillField (/Users/c.thorsen/Desktop/SFRA/storefront-reference-architecture/node_modules/codeceptjs/lib/helper/WebDriver.js:779:5)
+                    at processTicksAndRejections (internal/process/next_tick.js:81:5)</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

@@ -1,0 +1,201 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1561640878107' stop='1561640892456'>
+    <name>Add Payment to User Account</name>
+    <title>Add Payment to User Account</title>
+    <test-cases>
+        <test-case start='1561640878108' status='passed' stop='1561640892388'>
+            <name>Shopper is able to add a payment to their account @accountPage</name>
+            <title>Shopper is able to add a payment to their account @accountPage</title>
+            <labels>
+                <label name='tag' value='@accountPage'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1561640880107' status='passed' stop='1561640883706'>
+                    <name>Given shopper logs into the website </name>
+                    <title>Given shopper logs into the website </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640880107' status='passed' stop='1561640883543'>
+                            <name>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show"</name>
+                            <title>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640883543' status='passed' stop='1561640883706'>
+                            <name>homePage: accept </name>
+                            <title>homePage: accept </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640883543' status='passed' stop='1561640883576'>
+                                    <name>I wait for element ".modal-content"</name>
+                                    <title>I wait for element ".modal-content"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640883706' status='passed' stop='1561640884032'>
+                    <name>Within ".modal-content" </name>
+                    <title>Within ".modal-content" </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640883706' status='passed' stop='1561640884032'>
+                            <name>I click ".affirm"</name>
+                            <title>I click ".affirm"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640884032' status='passed' stop='1561640888832'>
+                    <name>Given shopper logs into the website </name>
+                    <title>Given shopper logs into the website </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640884032' status='passed' stop='1561640886081'>
+                            <name>homePage: clickLogin </name>
+                            <title>homePage: clickLogin </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640884032' status='passed' stop='1561640884063'>
+                                    <name>I wait for element ".user-message"</name>
+                                    <title>I wait for element ".user-message"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640884166' status='passed' stop='1561640885977'>
+                                    <name>I click ".user-message"</name>
+                                    <title>I click ".user-message"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                        <step start='1561640886081' status='passed' stop='1561640887117'>
+                            <name>loginPage: fillLoginForm </name>
+                            <title>loginPage: fillLoginForm </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640886081' status='passed' stop='1561640886582'>
+                                    <name>I fill field "#login-form-email", "jsmith@email.com"</name>
+                                    <title>I fill field "#login-form-email", "jsmith@email.com"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640886687' status='passed' stop='1561640887117'>
+                                    <name>I fill field "#login-form-password", "Password123!"</name>
+                                    <title>I fill field "#login-form-password", "Password123!"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                        <step start='1561640887117' status='passed' stop='1561640887146'>
+                            <name>I wait for element ".btn.btn-block.btn-primary"</name>
+                            <title>I wait for element ".btn.btn-block.btn-primary"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640887251' status='passed' stop='1561640887568'>
+                            <name>I click ".btn.btn-block.btn-primary"</name>
+                            <title>I click ".btn.btn-block.btn-primary"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640887568' status='passed' stop='1561640888832'>
+                            <name>I see in current url "/on/demandware.store/Sites-RefArch-Site/en_US/Account-Show?registration=false"</name>
+                            <title>I see in current url "/on/demandware.store/Sites-RefArch-Site/en_US/Account-Show?registration=false"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640888832' status='passed' stop='1561640890303'>
+                    <name>And shopper clicks add new payment </name>
+                    <title>And shopper clicks add new payment </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640888832' status='passed' stop='1561640890202'>
+                            <name>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/PaymentInstruments-AddPayment"</name>
+                            <title>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/PaymentInstruments-AddPayment"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640890303' status='passed' stop='1561640892388'>
+                    <name>And shopper fills out payment information </name>
+                    <title>And shopper fills out payment information </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640890303' status='passed' stop='1561640892388'>
+                            <name>accountPage: addPayment </name>
+                            <title>accountPage: addPayment </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640890303' status='passed' stop='1561640890727'>
+                                    <name>I fill field "#cardOwner.form-control", "John Smith"</name>
+                                    <title>I fill field "#cardOwner.form-control", "John Smith"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640890832' status='passed' stop='1561640891250'>
+                                    <name>I fill field "#cardNumber.form-control", "4111111111111111"</name>
+                                    <title>I fill field "#cardNumber.form-control", "4111111111111111"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640891250' status='passed' stop='1561640891276'>
+                                    <name>I wait for element "#month.form-control", "08"</name>
+                                    <title>I wait for element "#month.form-control", "08"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640891276' status='passed' stop='1561640891372'>
+                                    <name>I select option "#month.form-control", "08"</name>
+                                    <title>I select option "#month.form-control", "08"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640891372' status='passed' stop='1561640891402'>
+                                    <name>I wait for element "#year.form-control", "2023"</name>
+                                    <title>I wait for element "#year.form-control", "2023"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640891402' status='passed' stop='1561640891523'>
+                                    <name>I select option "#year.form-control", "2023"</name>
+                                    <title>I select option "#year.form-control", "2023"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640891623' status='passed' stop='1561640891937'>
+                                    <name>I click ".custom-control-label"</name>
+                                    <title>I click ".custom-control-label"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640891937' status='passed' stop='1561640891962'>
+                                    <name>I wait for element ".btn.btn-save.btn-block.btn-primary"</name>
+                                    <title>I wait for element ".btn.btn-save.btn-block.btn-primary"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640892066' status='passed' stop='1561640892388'>
+                                    <name>I click ".btn.btn-save.btn-block.btn-primary"</name>
+                                    <title>I click ".btn.btn-save.btn-block.btn-primary"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

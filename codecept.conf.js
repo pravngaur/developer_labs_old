@@ -1,50 +1,69 @@
-var RELATIVE_PATH = './test/acceptance';
-var OUTPUT_PATH = RELATIVE_PATH + '/report';
-var HOST = 'https://dev12-sitegenesis-dw.demandware.net';
+let debug = require('debug')('acceptance:config');
+let merge = require('deepmerge');
+let codeceptjsShared = require('codeceptjs-shared');
+let codeceptJsSauce = require('codeceptjs-saucelabs');
 
-var webDriver = {
-    url: HOST,
-    browser: 'chrome',
-    smartWait: 10000,
-    waitForTimeout: 10000,
-    timeouts: {
-        script: 60000,
-        'page load': 10000
-    }
-};
+const RELATIVE_PATH = './test/acceptance';
+const OUTPUT_PATH = RELATIVE_PATH + '/report';
+const DEFAULT_HOST = 'https://dev20-sitegenesis-dw.demandware.net';
 
-exports.config = {
+const metadata = require('./test/acceptance/metadata.json');
+
+const HOST = process.host || DEFAULT_HOST;
+
+let conf = {
     output: OUTPUT_PATH,
+    cleanup: true,
+    coloredLogs: true,
     helpers: {
-        WebDriver: webDriver
+        REST: {},
+        WebDriver: {
+            url: HOST,
+            waitForTimeout: 5000
+        },
     },
     plugins: {
         wdio: {
             enabled: true,
             services: ['selenium-standalone']
         },
-        allure: {
-            enabled: true
-        },
-        retryFailedStep: {
+        autoLogin: {
             enabled: true,
-            retries: 5
+            inject: 'login',
+            users: {
+                user: {
+                    login: (I) => {
+                        console.log('YOU ARE IN THE LOGIN FUNCTION IN CODECEPTJS');
+                        I.amOnPage(metadata.login.homePage);
+                        // Click yes for tracking consent
+                        I.waitForElement('.modal-content');
+                        within('.modal-content', () => {
+                            I.click('.affirm');
+                        });
+                        // Click login
+                        I.waitForElement('.user-message');
+                        I.click('.user-message')
+                        I.fillField('#login-form-email', metadata.login.email);
+                        I.fillField('#login-form-password', metadata.login.password);
+
+                        I.waitForElement('.btn.btn-block.btn-primary');
+                        I.click('.btn.btn-block.btn-primary');
+                        I.seeInCurrentUrl(metadata.login.currentUrl);
+                    },
+                    check: (I) => {
+                        I.amOnPage(metadata.login.currentUrl);
+                    }
+                }
+            }
         }
     },
-    include: {
-        homePage: RELATIVE_PATH + '/pages/HomePage.js',
-        productPage: RELATIVE_PATH + '/pages/ProductPage.js',
-        cartPage: RELATIVE_PATH + '/pages/CartPage.js',
-        uriUtils: RELATIVE_PATH + '/utils/uriUtils.js'
-    },
+    include: metadata.include,
     gherkin: {
         features: RELATIVE_PATH + '/features/**/*.feature',
-        steps: [
-            RELATIVE_PATH + '/features/steps/land_home_page.steps.js',
-            RELATIVE_PATH + '/features/steps/add_product_to_cart.steps.js',
-            RELATIVE_PATH + '/features/steps/simple_product_details.steps.js'
-        ]
+        steps: metadata.gherkin_steps
     },
-    tests: RELATIVE_PATH + '/tests/**/*.test.js',
     name: 'storefront-reference-architecture'
 };
+
+console.log(merge(merge(conf, codeceptjsShared.conf), codeceptJsSauce.conf));
+exports.config = merge(merge(conf, codeceptjsShared.conf), codeceptJsSauce.conf);

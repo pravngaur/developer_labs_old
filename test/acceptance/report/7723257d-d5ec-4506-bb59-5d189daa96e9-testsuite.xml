@@ -1,0 +1,120 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1561640509768' stop='1561640519989'>
+    <name>User Login</name>
+    <title>User Login</title>
+    <test-cases>
+        <test-case start='1561640509768' status='passed' stop='1561640519932'>
+            <name>Shopper is able to log into the site from the home page @login</name>
+            <title>Shopper is able to log into the site from the home page @login</title>
+            <labels>
+                <label name='tag' value='@login'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1561640511273' status='passed' stop='1561640514858'>
+                    <name>Given shopper logs into the website </name>
+                    <title>Given shopper logs into the website </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640511273' status='passed' stop='1561640514605'>
+                            <name>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show"</name>
+                            <title>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640514605' status='passed' stop='1561640514858'>
+                            <name>homePage: accept </name>
+                            <title>homePage: accept </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640514605' status='passed' stop='1561640514731'>
+                                    <name>I wait for element ".modal-content"</name>
+                                    <title>I wait for element ".modal-content"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640514858' status='passed' stop='1561640515182'>
+                    <name>Within ".modal-content" </name>
+                    <title>Within ".modal-content" </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640514858' status='passed' stop='1561640515182'>
+                            <name>I click ".affirm"</name>
+                            <title>I click ".affirm"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640515182' status='passed' stop='1561640519932'>
+                    <name>Given shopper logs into the website </name>
+                    <title>Given shopper logs into the website </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640515182' status='passed' stop='1561640517326'>
+                            <name>homePage: clickLogin </name>
+                            <title>homePage: clickLogin </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640515182' status='passed' stop='1561640515209'>
+                                    <name>I wait for element ".user-message"</name>
+                                    <title>I wait for element ".user-message"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640515310' status='passed' stop='1561640517222'>
+                                    <name>I click ".user-message"</name>
+                                    <title>I click ".user-message"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                        <step start='1561640517326' status='passed' stop='1561640518351'>
+                            <name>loginPage: fillLoginForm </name>
+                            <title>loginPage: fillLoginForm </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640517326' status='passed' stop='1561640517847'>
+                                    <name>I fill field "#login-form-email", "jsmith@email.com"</name>
+                                    <title>I fill field "#login-form-email", "jsmith@email.com"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640517950' status='passed' stop='1561640518351'>
+                                    <name>I fill field "#login-form-password", "Password123!"</name>
+                                    <title>I fill field "#login-form-password", "Password123!"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                        <step start='1561640518351' status='passed' stop='1561640518389'>
+                            <name>I wait for element ".btn.btn-block.btn-primary"</name>
+                            <title>I wait for element ".btn.btn-block.btn-primary"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640518492' status='passed' stop='1561640518814'>
+                            <name>I click ".btn.btn-block.btn-primary"</name>
+                            <title>I click ".btn.btn-block.btn-primary"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640518814' status='passed' stop='1561640519932'>
+                            <name>I see in current url "/on/demandware.store/Sites-RefArch-Site/en_US/Account-Show?registration=false"</name>
+                            <title>I see in current url "/on/demandware.store/Sites-RefArch-Site/en_US/Account-Show?registration=false"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

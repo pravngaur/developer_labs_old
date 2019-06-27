@@ -1,0 +1,206 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1561640519995' stop='1561640545685'>
+    <name>Product Detail Page Simple Layout</name>
+    <title>Product Detail Page Simple Layout</title>
+    <test-cases>
+        <test-case start='1561640519995' status='passed' stop='1561640525277'>
+            <name>Shopper sees all the product related information on the Simple product page @simpleProductDetail</name>
+            <title>Shopper sees all the product related information on the Simple product page @simpleProductDetail</title>
+            <labels>
+                <label name='tag' value='@simpleProductDetail'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1561640524862' status='passed' stop='1561640525277'>
+                    <name>Then shopper sees all the product related information </name>
+                    <title>Then shopper sees all the product related information </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640524862' status='passed' stop='1561640524905'>
+                            <name>I grab attribute from ".carousel-item.active > img", "src"</name>
+                            <title>I grab attribute from ".carousel-item.active > img", "src"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640524907' status='passed' stop='1561640524995'>
+                            <name>I grab text from ".product-name"</name>
+                            <title>I grab text from ".product-name"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640524997' status='passed' stop='1561640525052'>
+                            <name>I grab text from ".product-id"</name>
+                            <title>I grab text from ".product-id"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640525053' status='passed' stop='1561640525109'>
+                            <name>I grab text from ".availability-msg"</name>
+                            <title>I grab text from ".availability-msg"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640525109' status='passed' stop='1561640525162'>
+                            <name>I grab text from ".prices .price .value"</name>
+                            <title>I grab text from ".prices .price .value"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640525162' status='passed' stop='1561640525220'>
+                            <name>I grab text from ".description-and-detail .description .content"</name>
+                            <title>I grab text from ".description-and-detail .description .content"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640525220' status='passed' stop='1561640525277'>
+                            <name>I grab text from ".description-and-detail .details .content"</name>
+                            <title>I grab text from ".description-and-detail .details .content"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+        <test-case start='1561640525334' status='passed' stop='1561640530390'>
+            <name>Shopper sees the correct breadcrumbs and is on right navigation path @simpleProductDetail_breadcrumbs</name>
+            <title>Shopper sees the correct breadcrumbs and is on right navigation path @simpleProductDetail_breadcrumbs</title>
+            <labels>
+                <label name='tag' value='@simpleProductDetail_breadcrumbs'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1561640530361' status='passed' stop='1561640530390'>
+                    <name>Then shopper sees the correct breadcrumbs </name>
+                    <title>Then shopper sees the correct breadcrumbs </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640530361' status='passed' stop='1561640530390'>
+                            <name>I grab attribute from ".product-breadcrumb:not(.d-md-none) .breadcrumb-item a", "href"</name>
+                            <title>I grab attribute from ".product-breadcrumb:not(.d-md-none) .breadcrumb-item a", "href"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+        <test-case start='1561640530443' status='passed' stop='1561640535187'>
+            <name>Shopper sees the correct social links @simpleProductDetail_socialLinks</name>
+            <title>Shopper sees the correct social links @simpleProductDetail_socialLinks</title>
+            <labels>
+                <label name='tag' value='@simpleProductDetail_socialLinks'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1561640534906' status='passed' stop='1561640535187'>
+                    <name>Then shopper sees the correct social links </name>
+                    <title>Then shopper sees the correct social links </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640534907' status='passed' stop='1561640534960'>
+                            <name>I see element ".fa-pinterest"</name>
+                            <title>I see element ".fa-pinterest"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640534960' status='passed' stop='1561640535016'>
+                            <name>I see element ".fa-facebook-official"</name>
+                            <title>I see element ".fa-facebook-official"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640535016' status='passed' stop='1561640535064'>
+                            <name>I see element ".fa-twitter"</name>
+                            <title>I see element ".fa-twitter"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640535064' status='passed' stop='1561640535113'>
+                            <name>I see element ".fa-link"</name>
+                            <title>I see element ".fa-link"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640535114' status='passed' stop='1561640535186'>
+                            <name>I grab attribute from "ul.social-icons a", "href"</name>
+                            <title>I grab attribute from "ul.social-icons a", "href"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+        <test-case start='1561640535242' status='passed' stop='1561640540402'>
+            <name>Shopper sees the Add to Cart Button Enabled @simpleProductDetail_addToCartButton</name>
+            <title>Shopper sees the Add to Cart Button Enabled @simpleProductDetail_addToCartButton</title>
+            <labels>
+                <label name='tag' value='@simpleProductDetail_addToCartButton'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1561640540376' status='passed' stop='1561640540402'>
+                    <name>Then shopper is able to see Add to Cart Button Enabled </name>
+                    <title>Then shopper is able to see Add to Cart Button Enabled </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640540376' status='passed' stop='1561640540402'>
+                            <name>I see element ".add-to-cart:not(:disabled)"</name>
+                            <title>I see element ".add-to-cart:not(:disabled)"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+        <test-case start='1561640540456' status='passed' stop='1561640545628'>
+            <name>Shopper is able to copy Product URL using Copy Link Icon @simpleProductDetail_addToCartButton</name>
+            <title>Shopper is able to copy Product URL using Copy Link Icon @simpleProductDetail_addToCartButton</title>
+            <labels>
+                <label name='tag' value='@simpleProductDetail_addToCartButton'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1561640545129' status='passed' stop='1561640545628'>
+                    <name>Then shopper is able to copy Product URL using Copy Link Icon </name>
+                    <title>Then shopper is able to copy Product URL using Copy Link Icon </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640545129' status='passed' stop='1561640545581'>
+                            <name>productPage: clickCopyLink </name>
+                            <title>productPage: clickCopyLink </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640545129' status='passed' stop='1561640545167'>
+                                    <name>I wait for enabled ".fa-link"</name>
+                                    <title>I wait for enabled ".fa-link"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640545270' status='passed' stop='1561640545581'>
+                                    <name>I click ".fa-link"</name>
+                                    <title>I click ".fa-link"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                        <step start='1561640545581' status='passed' stop='1561640545628'>
+                            <name>I see element ".copy-link-message:not(.d-none)"</name>
+                            <title>I see element ".copy-link-message:not(.d-none)"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

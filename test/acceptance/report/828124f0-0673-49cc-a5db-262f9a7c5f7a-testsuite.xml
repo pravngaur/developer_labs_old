@@ -1,0 +1,147 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1561640952273' stop='1561640969431'>
+    <name>User Login</name>
+    <title>User Login</title>
+    <test-cases>
+        <test-case start='1561640952273' status='passed' stop='1561640969355'>
+            <name>Shopper is able to check order status from home page @login</name>
+            <title>Shopper is able to check order status from home page @login</title>
+            <labels>
+                <label name='tag' value='@login'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1561640954318' status='passed' stop='1561640958016'>
+                    <name>Given shopper goes to the Login Page </name>
+                    <title>Given shopper goes to the Login Page </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640954318' status='passed' stop='1561640957770'>
+                            <name>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show"</name>
+                            <title>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640957770' status='passed' stop='1561640958016'>
+                            <name>homePage: accept </name>
+                            <title>homePage: accept </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640957770' status='passed' stop='1561640957884'>
+                                    <name>I wait for element ".modal-content"</name>
+                                    <title>I wait for element ".modal-content"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640958016' status='passed' stop='1561640958326'>
+                    <name>Within ".modal-content" </name>
+                    <title>Within ".modal-content" </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640958016' status='passed' stop='1561640958326'>
+                            <name>I click ".affirm"</name>
+                            <title>I click ".affirm"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640958326' status='passed' stop='1561640964122'>
+                    <name>Given shopper goes to the Login Page </name>
+                    <title>Given shopper goes to the Login Page </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640958326' status='passed' stop='1561640964122'>
+                            <name>homePage: clickLogin </name>
+                            <title>homePage: clickLogin </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640958326' status='passed' stop='1561640958352'>
+                                    <name>I wait for element ".user-message"</name>
+                                    <title>I wait for element ".user-message"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640958454' status='passed' stop='1561640964018'>
+                                    <name>I click ".user-message"</name>
+                                    <title>I click ".user-message"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640964122' status='passed' stop='1561640965546'>
+                    <name>Then shopper is able to fill out the order number, email, and zip code </name>
+                    <title>Then shopper is able to fill out the order number, email, and zip code </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640964122' status='passed' stop='1561640965546'>
+                            <name>loginPage: checkOrder </name>
+                            <title>loginPage: checkOrder </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640964122' status='passed' stop='1561640964553'>
+                                    <name>I fill field "#trackorder-form-number", "12345"</name>
+                                    <title>I fill field "#trackorder-form-number", "12345"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640964658' status='passed' stop='1561640965100'>
+                                    <name>I fill field "#trackorder-form-email", "order@email.com"</name>
+                                    <title>I fill field "#trackorder-form-email", "order@email.com"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                                <step start='1561640965204' status='passed' stop='1561640965546'>
+                                    <name>I fill field "#trackorder-form-zip", "10101"</name>
+                                    <title>I fill field "#trackorder-form-zip", "10101"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640965546' status='passed' stop='1561640969302'>
+                    <name>And shopper is able to click the check status button </name>
+                    <title>And shopper is able to click the check status button </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640965546' status='passed' stop='1561640965576'>
+                            <name>I wait for element ".btn.btn-block.btn-primary"</name>
+                            <title>I wait for element ".btn.btn-block.btn-primary"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640965679' status='passed' stop='1561640969302'>
+                            <name>I click {xpath: .//*[((contains(concat(' ', normalize-space(./@class), ' '), ' btn ') and contains(concat(' ', normalize-space(./@class), ' '), ' btn-block ')) and contains(concat(' ', normalize-space(./@class), ' '), ' btn-primary '))][contains(., 'Check status')]}</name>
+                            <title>I click {xpath: .//*[((contains(concat(' ', normalize-space(./@class), ' '), ' btn ') and contains(concat(' ', normalize-space(./@class), ' '), ' btn-block ')) and contains(concat(' ', normalize-space(./@class), ' '), ' btn-primary '))][contains(., 'Check status')]}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640969302' status='passed' stop='1561640969355'>
+                    <name>And shopper is able to view order detail </name>
+                    <title>And shopper is able to view order detail </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640969302' status='passed' stop='1561640969355'>
+                            <name>I see element ".alert.alert-danger"</name>
+                            <title>I see element ".alert.alert-danger"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

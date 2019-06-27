@@ -1,0 +1,57 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1561640479923' stop='1561640485326'>
+    <name>Land Home Page</name>
+    <title>Land Home Page</title>
+    <test-cases>
+        <test-case start='1561640479926' status='passed' stop='1561640485268'>
+            <name>Shopper is able to land on the home Page @homePage</name>
+            <title>Shopper is able to land on the home Page @homePage</title>
+            <labels>
+                <label name='tag' value='@homePage'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1561640481837' status='passed' stop='1561640485010'>
+                    <name>When shopper selects yes or no for tracking consent </name>
+                    <title>When shopper selects yes or no for tracking consent </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640481837' status='passed' stop='1561640484851'>
+                            <name>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show"</name>
+                            <title>I am on page "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1561640484851' status='passed' stop='1561640485010'>
+                            <name>homePage: accept </name>
+                            <title>homePage: accept </title>
+                            <attachments/>
+                            <steps>
+                                <step start='1561640484851' status='passed' stop='1561640484898'>
+                                    <name>I wait for element ".modal-content"</name>
+                                    <title>I wait for element ".modal-content"</title>
+                                    <attachments/>
+                                    <steps/>
+                                </step>
+                            </steps>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1561640485010' status='passed' stop='1561640485268'>
+                    <name>Within ".modal-content" </name>
+                    <title>Within ".modal-content" </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1561640485010' status='passed' stop='1561640485268'>
+                            <name>I click ".affirm"</name>
+                            <title>I click ".affirm"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>
