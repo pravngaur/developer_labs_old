@@ -121,8 +121,23 @@ $(document).ready(function () {
         var smallDisplay = $(this).data('sm');
         var mediumDisplay = $(this).data('md');
 
+        var arrayOfSlidesToDisplay = [];
+
+        if (!$(this).hasClass('insufficient-xs-slides')) {
+            arrayOfSlidesToDisplay.push(extraSmallDisplay);
+        }
+
+        if (!$(this).hasClass('insufficient-sm-slides')) {
+            arrayOfSlidesToDisplay.push(smallDisplay);
+        }
+
+        if (!$(this).hasClass('insufficient-md-slides')) {
+            arrayOfSlidesToDisplay.push(mediumDisplay);
+        }
+
+        var itemsToDisplay = Math.max.apply(Math, arrayOfSlidesToDisplay);
+
         var elementIndex = $(e.relatedTarget).index();
-        var itemsToDisplay = Math.max(extraSmallDisplay, smallDisplay, mediumDisplay);
         var numberOfSlides = $('.carousel-item', this).length;
 
         if (elementIndex >= numberOfSlides - (itemsToDisplay - 1)) {

@@ -87,6 +87,10 @@
         display: block;
     }
 
+    .experience-storefront-carousel .carousel.carousel-xs-2.insufficient-xs-slides .carousel-item {
+        display: block !important;
+    }
+
     // =============================================================================================
 
     .experience-storefront-carousel .carousel-xs-3 .carousel-control-prev,
@@ -147,5 +151,9 @@
     .carousel-xs-3 .active + .carousel-item,
     .carousel-xs-3 .active + .carousel-item + .carousel-item {
         display: block;
+    }
+
+    .experience-storefront-carousel .carousel.carousel-xs-3.insufficient-xs-slides .carousel-item {
+        display: block !important;
     }
 }
