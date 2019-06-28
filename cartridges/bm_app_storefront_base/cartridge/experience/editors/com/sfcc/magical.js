@@ -33,6 +33,6 @@ module.exports.init = function (editor) {
 
   // add some resources only required for a lot of unicorns
   if ((editor.configuration.options.config.length + editor.configuration.options.init.length) > 10) {
-     //editor.resources.styles.push("/experience/editors/com/sfcc/magical-extreme.css");
+     editor.resources.styles.push("/experience/editors/com/sfcc/magical.css");
   }
 }

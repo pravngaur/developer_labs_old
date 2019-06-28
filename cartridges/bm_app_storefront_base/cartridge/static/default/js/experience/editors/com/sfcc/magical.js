@@ -1,6 +1,6 @@
 (() => {
   const shopApiBase = `https://${location.hostname}/s/SiteGenesis/dw/shop/v19_3/`;
-  const clientId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+  const clientId = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
   const fetchOcapiGET = async () => {
     const response = await fetch(`${shopApiBase}product_search?q=shoes&count=5&client_id=${clientId}`);

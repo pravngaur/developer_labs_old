@@ -26,7 +26,7 @@
           "id": "magic",
           "name": "Magic Unicorns",
           "type": "custom",
-          "required": true,
+          "required": false,
           "editor_definition": {
             "type": "com.sfcc.magical",
             "configuration": {
