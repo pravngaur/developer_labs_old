@@ -16,7 +16,7 @@
     {
       "id": "extraSmallConfiguration",
       "name": "Phone configurations",
-      "description": "Configuration for how the carousel will display on phones",
+      "description": "Configuration for how the carousel will display on phones. Please put like sized items in the carousel",
       "attribute_definitions": [
         {
           "id": "xsCarouselIndicators",
@@ -42,7 +42,7 @@
     {
       "id": "smallConfiguration",
       "name": "Tablet configurations",
-      "description": "Configuration for how the carousel will display on tablets",
+      "description": "Configuration for how the carousel will display on tablets. Please put like sized items in the carousel",
       "attribute_definitions": [
         {
           "id": "smCarouselIndicators",
@@ -68,7 +68,7 @@
     {
       "id": "mediumConfiguration",
       "name": "Desktop configurations",
-      "description": "Configuration for how the carousel will display on desktop",
+      "description": "Configuration for how the carousel will display on desktop. Please put like sized items in the carousel",
       "attribute_definitions": [
         {
           "id": "mdCarouselIndicators",
