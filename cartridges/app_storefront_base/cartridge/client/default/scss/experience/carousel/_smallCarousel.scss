@@ -87,6 +87,10 @@
         display: block;
     }
 
+    .experience-storefront-carousel .carousel.carousel-sm-2.insufficient-sm-slides .carousel-item {
+        display: block !important;
+    }
+
     // =============================================================================================
     .experience-storefront-carousel .carousel-sm-3 .carousel-control-prev,
     .experience-storefront-carousel .carousel-sm-3 .carousel-control-next {
@@ -144,6 +148,10 @@
     .carousel-sm-3 .active + .carousel-item,
     .carousel-sm-3 .active + .carousel-item + .carousel-item {
         display: block;
+    }
+
+    .experience-storefront-carousel .carousel.carousel-sm-3.insufficient-sm-slides .carousel-item {
+        display: block !important;
     }
 
     // =============================================================================================
@@ -209,6 +217,10 @@
     .carousel-sm-4 .active + .carousel-item + .carousel-item,
     .carousel-sm-4 .active + .carousel-item + .carousel-item + .carousel-item {
         display: block;
+    }
+
+    .experience-storefront-carousel .carousel.carousel-sm-4.insufficient-sm-slides .carousel-item {
+        display: block !important;
     }
 
     // =============================================================================================
@@ -282,5 +294,9 @@
     .carousel-sm-6 .active + .carousel-item + .carousel-item + .carousel-item + .carousel-item,
     .carousel-sm-6 .active + .carousel-item + .carousel-item + .carousel-item + .carousel-item + .carousel-item {
         display: block;
+    }
+
+    .experience-storefront-carousel .carousel.carousel-sm-6.insufficient-sm-slides .carousel-item {
+        display: block !important;
     }
 }
