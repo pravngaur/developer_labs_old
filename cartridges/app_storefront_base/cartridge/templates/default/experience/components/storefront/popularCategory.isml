@@ -7,20 +7,20 @@
     <a href="${pdict.category.url}">
         <isif condition="${pdict.image}">
             <style >
-                .image-wrapper-${pdict.category.compID} {
+                .image-wrapper-${pdict.category.compID} span {
                     background-image: url('${pdict.image.src.mobile}');
                     background-position-x: ${pdict.image.focalPointX};
                     background-position-y: ${pdict.image.focalPointY};
                 }
                 @media (min-width: 768px) {
-                    .image-wrapper-${pdict.category.compID} {
+                    .image-wrapper-${pdict.category.compID} span {
                         background-image: url('${pdict.image.src.tablet}');
                         background-position-x: ${pdict.image.focalPointX};
                         background-position-y: ${pdict.image.focalPointY};
                     }
                 }
                 @media (min-width: 992px) {
-                    .image-wrapper-${pdict.category.compID} {
+                    .image-wrapper-${pdict.category.compID} span {
                         background-image: url('${pdict.image.src.desktop}');
                         background-position-x: ${pdict.image.focalPointX};
                          background-position-y: ${pdict.image.focalPointY};
@@ -28,6 +28,7 @@
                     }
             </style>
             <div class="image-wrapper-${pdict.category.compID} image-wrapper">
+                <span class="background-image" role="img" aria-label="${pdict.category.name}"> </span>
             </div>
         <iselse>
             <div class="image-wrapper"
@@ -42,6 +43,7 @@
                     "
                 </isif>
             >
+                <span class="background-image" role="img" aria-label="${pdict.category.name}"></span>
             </div>
 
         </isif>
