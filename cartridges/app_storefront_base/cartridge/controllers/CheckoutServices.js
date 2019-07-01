@@ -49,6 +49,7 @@ server.post(
         var HookManager = require('dw/system/HookMgr');
         var Resource = require('dw/web/Resource');
         var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
+        var BasketMgr = require('dw/order/BasketMgr');
 
         var viewData = {};
         var paymentForm = server.forms.getForm('billing');
@@ -113,6 +114,18 @@ server.post(
             formFieldErrors.push(paymentFormResult.fieldErrors);
         }
 
+        var currentBasket = BasketMgr.getCurrentBasket();
+        // Re-validates existing payment instruments
+        var validPayment = COHelpers.validatePayment(req, currentBasket);
+        if (validPayment.error) {
+        		paymentFormResult.error = true;
+        		var errorMsg = Resource.msg('error.payment.not.valid', 'checkout', null);
+        		if(!paymentFormResult.serverErrors) {
+        			paymentFormResult.serverErrors = [];
+        		}
+        		paymentFormResult.serverErrors.push(errorMsg);
+        }
+        
         if (formFieldErrors.length || paymentFormResult.serverErrors) {
             // respond with form data and errors
             res.json({
