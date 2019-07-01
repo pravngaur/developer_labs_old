@@ -20,7 +20,11 @@
                             />
                         </a>
                         <a id="quickShopButton" class="quick-shop btn btn-space"
-                           href="#">${Resource.msg('button.name.quickShop', 'productTile', null)}
+                           title="${Resource.msgf('button.assistive.text.quickShop', 'productTile', null, product.productName)}"
+                           aria-label="${Resource.msgf('button.assistive.text.quickShop', 'productTile', null, product.productName)}"
+                           href="#"
+                        >
+                           ${Resource.msg('button.name.quickShop', 'productTile', null)}
                         </a>
                     </div>
                 </picture>
