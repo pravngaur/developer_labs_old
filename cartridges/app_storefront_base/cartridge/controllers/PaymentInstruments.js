@@ -8,6 +8,7 @@ var consentTracking = require('*/cartridge/scripts/middleware/consentTracking');
 
 /**
  * Checks if a credit card is valid or not
+ * @param {Object} req - request object
  * @param {Object} card - plain object with card details
  * @param {Object} form - form object
  * @returns {boolean} a boolean representing card validation
@@ -24,32 +25,32 @@ function verifyCard(req, card, form) {
     var creditCardPaymentMethod = PaymentMgr.getPaymentMethod(PaymentInstrument.METHOD_CREDIT_CARD);
     var paymentCard = PaymentMgr.getPaymentCard(card.cardType);
     var error = false;
-    
+
     var applicablePaymentCards = creditCardPaymentMethod.getApplicablePaymentCards(
         currentCustomer,
         countryCode,
         null
     );
-    
+
     var cardNumber = card.cardNumber;
     var creditCardStatus;
     var formCardNumber = form.cardNumber;
 
-    if(paymentCard) {
-    		if(applicablePaymentCards.contains(paymentCard)) {
-    			creditCardStatus = paymentCard.verify(
-    		        card.expirationMonth,
-	            card.expirationYear,
-	            cardNumber
-	        );
-    		} else {
-    			// Invalid Payment Instrument
-    			formCardNumber.valid = false;
-    	        formCardNumber.error = Resource.msg('error.payment.not.valid', 'checkout', null);
-    			error = true;
-    		}
+    if (paymentCard) {
+        if (applicablePaymentCards.contains(paymentCard)) {
+            creditCardStatus = paymentCard.verify(
+                card.expirationMonth,
+                card.expirationYear,
+                cardNumber
+            );
+        } else {
+            // Invalid Payment Instrument
+            formCardNumber.valid = false;
+            formCardNumber.error = Resource.msg('error.payment.not.valid', 'checkout', null);
+            error = true;
+        }
     } else {
-    		formCardNumber.valid = false;
+        formCardNumber.valid = false;
         formCardNumber.error = Resource.msg('error.message.creditnumber.invalid', 'forms', null);
         error = true;
     }
