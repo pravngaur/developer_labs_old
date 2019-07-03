@@ -1,4 +1,4 @@
-Feature: User Login
+Feature: Check Order
     As a shopper, I want to be able to check an order status
 
 @login

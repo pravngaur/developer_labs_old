@@ -5,4 +5,4 @@ Feature: Add Payment to User Account
     Scenario: Shopper is able to add a payment to their account
         Given shopper logs into the website
         And shopper clicks add new payment
-        And shopper fills out payment information
+        And shopper fills out their payment information

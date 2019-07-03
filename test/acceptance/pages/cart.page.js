@@ -33,9 +33,10 @@ module.exports = {
         I.selectOption(this.locators.country, country);
         I.waitForElement(this.locators.state);
         I.selectOption(this.locators.state, state);
+        I.wait(3);
         I.fillField(this.locators.city, city);
-        I.fillField(this.locators.zip, zipcode);
         I.fillField(this.locators.phone, phone);
+        I.fillField(this.locators.zip, zipcode);
     },
     fillPaymentInfo(email, phone, ccNum, expMonth, expYear, ccSecCode) {
         I.fillField(this.locators.payEmail, email);
