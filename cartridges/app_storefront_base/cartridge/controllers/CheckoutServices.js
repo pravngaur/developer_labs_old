@@ -211,7 +211,7 @@ server.post(
 
             // Validate payment instrument
             var creditCardPaymentMethod = PaymentMgr.getPaymentMethod(PaymentInstrument.METHOD_CREDIT_CARD);
-            var paymentCard = PaymentMgr.getPaymentCard(billingForm.creditCardFields.cardType.value);
+            var paymentCard = PaymentMgr.getPaymentCard(billingData.paymentInformation.cardType.value);
 
             var applicablePaymentCards = creditCardPaymentMethod.getApplicablePaymentCards(
                 req.currentCustomer.raw,
