@@ -1,7 +1,7 @@
 {
   "name": "Main Banner",
   "description": "Image, text overlay that links user to a category using the markup editor",
-  "group": "assets",
+  "group": "storefront",
   "attribute_definition_groups": [
     {
       "id": "bannerImage",
