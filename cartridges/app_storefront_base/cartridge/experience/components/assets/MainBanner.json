@@ -37,8 +37,8 @@
         {
           "id": "categoryLink",
           "name": "Category Link",
-          "type": "category",
-          "required": true
+          "type": "url",
+          "required": false
         }
       ]
     }

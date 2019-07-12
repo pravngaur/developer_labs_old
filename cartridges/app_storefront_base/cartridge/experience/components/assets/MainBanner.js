@@ -29,6 +29,6 @@ module.exports.render = function (context) {
         focalPointX: (content.image.focalPoint.x * 100) + '%',
         focalPointY: (content.image.focalPoint.y * 100) + '%'
     };
-    model.categoryLink = URLUtils.url('Search-Show', 'cgid', content.categoryLink.getID()).toString();
+    model.link = content.categoryLink ? content.categoryLink : '#';
     return new Template('experience/components/assets/mainBanner').render(model).text;
 };

@@ -3,8 +3,8 @@
     assets.addCss('/css/experience/mainBanner.css');
 </isscript>
 
-<div class="container-fluid p-0">
-    <a href="${pdict.categoryLink}">
+<div class="mainbanner-container">
+    <a href="${pdict.link}" aria-label="${Resource.msg('pd.homepage.ITC.image.link','homePage',null)}">
         <div class="row">
             <div class="col-12">
                 <figure class="mainbanner-figure">
@@ -24,11 +24,6 @@
                                 <span>
                                     <isprint value="${pdict.heading}" encoding="off"/>
                                 </span>
-                            </div>
-                        </div>
-                        <div class="row mainbanner-sub-text">
-                            <div class="col-12 text-sm-left text-center">
-                                <span>${Resource.msg('pd.homepage.main.banner.shop.now','homePage',null)}</span>
                             </div>
                         </div>
                     </figcaption>
