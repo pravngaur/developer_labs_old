@@ -9,7 +9,7 @@ const DEFAULT_HOST = 'https://dev20-sitegenesis-dw.demandware.net';
 
 const metadata = require('./test/acceptance/metadata.json');
 
-const HOST = process.host || DEFAULT_HOST;
+const HOST = process.env.HOST || DEFAULT_HOST;
 
 let conf = {
     output: OUTPUT_PATH,

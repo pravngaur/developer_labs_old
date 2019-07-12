@@ -33,6 +33,7 @@ module.exports = {
         I.selectOption(this.locators.selectSize, size);
     },
     selectQuantity(quantity) {
+        I.wait(2);
         I.waitForElement(this.locators.selectQuantity);
         I.selectOption(this.locators.selectQuantity, quantity);
     },

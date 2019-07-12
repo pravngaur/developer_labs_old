@@ -3,13 +3,15 @@
         "data": "./test/acceptance/metadata.json",
         "homePage": "./test/acceptance/pages/home.page.js",
         "productPage": "./test/acceptance/pages/product.page.js",
-        "cartPage": "./test/acceptance/pages/cart.page.js"
+        "cartPage": "./test/acceptance/pages/cart.page.js",
+        "checkoutPage": "./test/acceptance/pages/checkout.page.js"
     },
     "gherkin_steps": [
         "./test/acceptance/steps/homePage/addProductToCart.steps.js",
         "./test/acceptance/steps/homePage/emailSignup.steps.js",
         "./test/acceptance/steps/homePage/landHomePage.steps.js",
-        "./test/acceptance/steps/productDetailPage/pdpSimpleLayout.steps.js"
+        "./test/acceptance/steps/productDetailPage/pdpSimpleLayout.steps.js",
+        "./test/acceptance/steps/checkoutPage/checkoutShipping.steps.js"
     ],
     "home": {
         "email": "test@user.com"
@@ -52,5 +54,13 @@
         "name": "John Smith",
         "addressTitle": "Apartment",
         "newPassword": "Password123!"
+    },
+    "product": {
+        "quantity": "2",
+        "itemPrice": "$65.99",
+        "totalItemPrice": "$131.98",
+        "shipping": "$7.99",
+        "tax": "$7.00",
+        "estimatedTotal": "$146.97"
     }
 }
