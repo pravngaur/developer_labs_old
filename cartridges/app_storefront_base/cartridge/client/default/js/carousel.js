@@ -71,6 +71,11 @@ function hiddenSlides(element) {
             break;
     }
 
+    carousel.find('.active.carousel-item').removeAttr('tabindex').removeAttr('aria-hidden');
+    carousel.find('.active.carousel-item').find('a, button, details, input, textarea, select')
+        .removeAttr('tabindex')
+        .removeAttr('aria-hidden');
+
     if (lastDisplayedElement) {
         lastDisplayedElement.removeAttr('tabindex').removeAttr('aria-hidden');
         lastDisplayedElement.find('a, button, details, input, textarea, select')
@@ -139,15 +144,21 @@ $(document).ready(function () {
 
         var elementIndex = $(e.relatedTarget).index();
         var numberOfSlides = $('.carousel-item', this).length;
+        var carouselInner = $(this).find('.carousel-inner');
+        var carouselItem;
 
         if (elementIndex >= numberOfSlides - (itemsToDisplay - 1)) {
             var it = itemsToDisplay - (numberOfSlides - elementIndex);
             for (var i = 0; i < it; i++) {
                 // append slides to end
                 if (e.direction === 'left') {
-                    $('.carousel-item').eq(i).appendTo('.carousel-inner', this);
+                    carouselItem = $('.carousel-item', this).eq(i);
+
+                    $(carouselItem).appendTo($(carouselInner));
                 } else {
-                    $('.carousel-item').eq(0).appendTo('.carousel-inner', this);
+                    carouselItem = $('.carousel-item', this).eq(0);
+
+                    $(carouselItem).appendTo($(carouselInner));
                 }
             }
         }
