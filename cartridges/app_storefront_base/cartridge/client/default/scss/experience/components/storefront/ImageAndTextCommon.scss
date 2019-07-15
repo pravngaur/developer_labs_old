@@ -1,14 +1,14 @@
-@import "variables";
+@import "../../variables";
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/mixins/breakpoints";
 
-.mainbanner-figure {
+.image-component {
     margin: 0;
     width: 100%;
     position: relative;
 }
 
-.mainbanner-image {
+.common-image-component {
     width: 100%;
     height: 43.75vw;
     object-fit: cover;
@@ -20,7 +20,7 @@
     }
 }
 
-.mainbanner-heading-container {
+.image-heading-container {
     position: absolute;
     bottom: 40%;
     width: 100%;
@@ -42,7 +42,7 @@
     }
 }
 
-.mainbanner-heading-text {
+.image-heading-text {
     font-size: $banner-heading-font-size-xs;
     font-weight: bold;
     font-family: $banner-font;
@@ -65,7 +65,7 @@
     }
 }
 
-.mainbanner-sub-text span {
+.image-heading-container .mainbanner-sub-text span {
     font-size: 1.5em;
     font-weight: 325;
     font-family: $banner-font;
