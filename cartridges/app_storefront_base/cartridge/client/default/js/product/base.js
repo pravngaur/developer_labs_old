@@ -175,7 +175,7 @@ function getPromotionsHtml(promotions) {
     promotions.forEach(function (promotion, index) {
         html += '<div class="row collapsible-xl"><div class="col-12">' +
                 '<button class="title callout btn text-left btn-block" aria-expanded="false" aria-controls="collapsible-promotion-details-' + index + '">' + promotion.calloutMsg + '</button>' +
-                '</div><div class="col-12 value content" id="collapsible-promotion-details-' + index + '">' + promotion.details + '</div></div>';
+                '</div><div class="col-12 value content" id="collapsible-promotion-details-' + index + '">' + promotion.details + '</div></div><hr>';
     });
 
     return html;
