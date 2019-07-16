@@ -172,9 +172,10 @@ function getPromotionsHtml(promotions) {
 
     var html = '';
 
-    promotions.forEach(function (promotion) {
-        html += '<div class="callout" title="' + promotion.details + '">' + promotion.calloutMsg +
-            '</div>';
+    promotions.forEach(function (promotion, index) {
+        html += '<div class="row collapsible-xl"><div class="col-12">' +
+                '<button class="title callout btn text-left btn-block" aria-expanded="false" aria-controls="collapsible-promotion-details-' + index + '">' + promotion.calloutMsg + '</button>' +
+                '</div><div class="col-12 value content" id="collapsible-promotion-details-' + index + '">' + promotion.details + '</div></div>';
     });
 
     return html;
