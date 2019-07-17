@@ -15,7 +15,7 @@ module.exports = {
         I.waitForElement(this.locators.lineItemQuantity);
         I.waitForText(quantity, this.locators.lineItemQuantity);
         I.waitForElement(this.locators.totalItemQuantity);
-        I.waitForText(quantity + " Items", this.locators.totalItemQuantity);
+        I.waitForText(quantity + ' Items', this.locators.totalItemQuantity);
         I.waitForElement(this.locators.lineItemPriceTotal);
         I.waitForText(itemPrice, this.locators.lineItemPriceTotal);
         I.waitForElement(this.locators.totalItemPrice);

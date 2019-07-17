@@ -12,11 +12,11 @@ Then('shopper selects checkout as guest', () => {
     I.click(checkoutPage.locators.checkoutAsGuestBtn);
 });
 
-Then('shopper selects checkout as registered user', () => {
+Then('shopper selects checkout as return user', () => {
     // From "test/acceptance/features/suites/happyPath.feature" {"line":12,"column":9}
     checkoutPage.fillReturnCustomerInfo(data.login.email, data.login.password);
     I.waitForElement(checkoutPage.locators.checkoutAsRegisteredBtn);
-    I.click(checkoutPage.locators.checkoutAsRegisteredBtn);
+    I.click('Login');
 });
 
 Then('shopper fills out shipping information', () => {
@@ -27,7 +27,8 @@ Then('shopper fills out shipping information', () => {
 });
 
 Then('shopper verifies shipping information', () => {
-
+    checkoutPage.verifyShipping(data.checkout.fName, data.checkout.lName, data.checkout.address1,
+        data.checkout.address2, data.checkout.city, data.checkout.stateAbr, data.checkout.zip);
 });
 
 Then('shopper procedes to payment section', () => {

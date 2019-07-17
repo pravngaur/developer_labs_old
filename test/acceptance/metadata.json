@@ -11,7 +11,8 @@
         "./test/acceptance/steps/homePage/emailSignup.steps.js",
         "./test/acceptance/steps/homePage/landHomePage.steps.js",
         "./test/acceptance/steps/productDetailPage/pdpSimpleLayout.steps.js",
-        "./test/acceptance/steps/checkoutPage/checkoutShipping.steps.js"
+        "./test/acceptance/steps/checkoutPage/checkoutShipping.steps.js",
+        "./test/acceptance/steps/checkoutPage/orderConfirmation.steps.js"
     ],
     "home": {
         "email": "test@user.com"
@@ -41,6 +42,7 @@
         "address2": "Apt 01",
         "country": "United States",
         "state": "Massachusetts",
+        "stateAbr": "MA",
         "city": "Burlington",
         "zip": "11111",
         "phone": "5555551234",
@@ -48,7 +50,8 @@
         "ccNum": "4111111111111111",
         "ccSecCode": "555",
         "expMonth": "08",
-        "expYear": "2023"
+        "expYear": "2023",
+        "ccExpDate": "8/2023"
     },
     "account": {
         "name": "John Smith",

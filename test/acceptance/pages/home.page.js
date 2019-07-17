@@ -18,6 +18,7 @@ module.exports = {
         });
     },
     search(product) {
+        I.waitForElement(this.locators.searchField, 2);
         I.fillField(this.locators.searchField, product);
         I.waitForElement(this.locators.searchedImage);
         I.click(this.locators.searchedImage);

@@ -15,6 +15,7 @@ When('shopper changes product quantity', () => {
 });
 
 When('he adds the product to cart', async () => {
+    I.wait(1);
     productPage.addToCart();
     productPage.viewCart();
 });

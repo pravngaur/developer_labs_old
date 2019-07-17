@@ -38,6 +38,7 @@ module.exports = {
         I.selectOption(this.locators.selectQuantity, quantity);
     },
     addToCart() {
+        I.scrollTo(this.locators.addToCartButton);
         I.waitForEnabled(this.locators.addToCartButton);
         I.click(this.locators.addToCartButton);
     },
