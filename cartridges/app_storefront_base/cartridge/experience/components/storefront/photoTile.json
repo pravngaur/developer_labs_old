@@ -1,22 +1,82 @@
 {
-  "name": "Photo Tile",
-  "description": "Select a photo that you want to insert into your layout component",
-  "group": "storefront",
-  "attribute_definition_groups": [
-    {
-      "id": "photoTileImage",
-      "name": "Photo Tile",
-      "description": "This is a simple photo tile component where you drag and drop it into any layout component ",
-      "attribute_definitions": [
+    "name": "Photo Tile",
+    "description": "Select a photo that you want to insert into your layout component",
+    "group": "storefront",
+    "attribute_definition_groups": [
         {
-          "id": "image",
-          "name": "Photo Tile Component Image",
-          "description": "Select a photo to be displayed",
-          "type": "image",
-          "required": true
+            "id": "photoTileImage",
+            "name": "Photo Tile",
+            "description": "This is a simple photo tile component where you drag and drop it into any layout component ",
+            "attribute_definitions": [
+                {
+                    "id": "image",
+                    "name": "Photo Tile Component Image",
+                    "description": "Select a photo to be displayed",
+                    "type": "image",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "styles",
+            "name": "Styles",
+            "description": "Spacing, sizing, colors and positions",
+            "attribute_definitions": [
+                {
+                    "id": "bootstrapWidth",
+                    "name": "Desktop Width",
+                    "description": "Choose a desktop width",
+                    "required": false,
+                    "type": "enum",
+                    "values": [
+                        "w-25",
+                        "w-50",
+                        "w-75",
+                        "w-100"
+                    ]
+                },
+                {
+                    "id": "bootstrapHeight",
+                    "name": "Desktop Height",
+                    "description": "Choose a desktop height",
+                    "required": false,
+                    "type": "enum",
+                    "values": [
+                        "h-25",
+                        "h-50",
+                        "h-75",
+                        "h-100"
+                    ]
+                },
+                {
+                    "id": "bootstrapAlign",
+                    "name": "Desktop Align",
+                    "description": "Choose a alignment",
+                    "required": false,
+                    "type": "enum",
+                    "values": [
+                        "text-left",
+                        "text-center",
+                        "text-right"
+                    ]
+                },
+                {
+                    "id": "bootstrapPadding",
+                    "name": "Desktop Padding",
+                    "description": "Choose desktop padding size",
+                    "type": "enum",
+                    "values": [
+                        "p-lg-0",
+                        "p-lg-1",
+                        "p-lg-2",
+                        "p-lg-3",
+                        "p-lg-4",
+                        "p-lg-5",
+                        "p-lg-auto"
+                    ]
+                }
+            ]
         }
-      ]
-    }
-  ],
-  "region_definitions": []
+    ],
+    "region_definitions": []
 }

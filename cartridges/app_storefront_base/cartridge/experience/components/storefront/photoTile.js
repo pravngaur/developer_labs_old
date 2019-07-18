@@ -4,6 +4,8 @@ var Template = require('dw/util/Template');
 var HashMap = require('dw/util/HashMap');
 var ImageTransformation = require('*/cartridge/experience/utilities/ImageTransformation.js');
 
+var setComponentStyleAttributes = require('*/cartridge/experience/utilities/ComponentStyleAttributes');
+
 /**
  * Render logic for the storefront.Photo Tile.
  * @param {dw.experience.PageScriptContext} context The page script context object.
@@ -12,6 +14,11 @@ var ImageTransformation = require('*/cartridge/experience/utilities/ImageTransfo
 module.exports.render = function (context) {
     var model = new HashMap();
     var content = context.content;
+
+    //
+    // Set Bootstrap style classes on model
+    //
+    setComponentStyleAttributes(model, content);
 
     var mobileImageTransformation = ImageTransformation.scale(content.image.metaData, 'mobile');
     var tabletImageTransformation = ImageTransformation.scale(content.image.metaData, 'tablet');

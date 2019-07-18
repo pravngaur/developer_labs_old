@@ -1,0 +1,5 @@
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+</isscript>
+
+<isprint value="${pdict.regions.containers.render()}" encoding="off"/>

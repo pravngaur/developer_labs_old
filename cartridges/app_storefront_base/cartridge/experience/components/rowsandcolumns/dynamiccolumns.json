@@ -1,0 +1,87 @@
+{
+    "name": "Dynamic Columns",
+    "group": "rowsandcolumns",
+    "attribute_definition_groups": [
+        {
+            "id": "desktopstyles",
+            "name": "Desktop Styles",
+            "description": "Spacing, sizing, colors and positions",
+            "attribute_definitions": [
+                {
+                    "id": "desktopColumns",
+                    "name": "Column Count",
+                    "description": "Choose a column count",
+                    "type": "enum",
+                    "values": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "phonestyles",
+            "name": "Pone Styles",
+            "description": "Spacing, sizing, colors and positions",
+            "attribute_definitions": [
+                {
+                    "id": "phoneColumns",
+                    "name": "Column Count",
+                    "description": "Choose a column count",
+                    "type": "enum",
+                    "values": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12
+                    ]
+                }
+            ]
+        }
+
+    ],
+    "region_definitions": [
+        {
+            "id": "containers",
+            "name": "Containers",
+            "component_type_exclusions": [
+                {
+                    "type_id": "layouts.1column"
+                },
+                {
+                    "type_id": "layouts.2column"
+                },
+                {
+                    "type_id": "layouts.3column"
+                },
+                {
+                    "type_id": "layouts.4column"
+                },
+                {
+                    "type_id": "layouts.gridcomponentlayout"
+                },
+                {
+                    "type_id": "storefront.carousel"
+                }
+            ]
+        }
+    ]
+}

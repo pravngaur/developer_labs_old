@@ -12,6 +12,8 @@ module.exports.render = function (context) {
     var model = new HashMap();
     var content = context.content;
 
+    model.bootstrapAlign = content.bootstrapAlign;
+
     if (content.richText) {
         model.richText = content.richText;
     }
