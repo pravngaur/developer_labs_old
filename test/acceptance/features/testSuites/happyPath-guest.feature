@@ -1,7 +1,8 @@
-Feature: Order Confirmation And Checkout
-    As a shopper, I want to shop, ship, and pay for a product.
+Feature: Follow the happy path of a guest user
+    As a shopper, I want to shop for a product and fill out the correct
+    shipping information/billing information in checkout.
 
-@happy-path @broken
+@happyPath
     Scenario: Shopper is able to add a product to a cart
         When shopper selects yes or no for tracking consent
         Given Shopper searches for "Elbow Sleeve Ribbed Sweater"

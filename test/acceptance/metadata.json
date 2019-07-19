@@ -14,6 +14,35 @@
         "./test/acceptance/steps/checkoutPage/checkoutShipping.steps.js",
         "./test/acceptance/steps/checkoutPage/orderConfirmation.steps.js"
     ],
+    "user1": {
+        "fName": "John",
+        "lName": "Smith",
+        "address1": "123 Main Street",
+        "address2": "Apt 01",
+        "country": "United States",
+        "state": "Massachusetts",
+        "stateAbr": "MA",
+        "city": "Burlington",
+        "zip": "11111",
+        "phone": "5555551234",
+        "email": "jsmith@email.com",
+        "password": "Password123!"
+    },
+    "CC": {
+        "ccNum": "4111111111111111",
+        "ccSecCode": "555",
+        "expMonth": "08",
+        "expYear": "2023",
+        "ccExpDate": "8/2023"
+    },
+    "product": {
+        "quantity": "2",
+        "itemPrice": "$65.99",
+        "totalItemPrice": "$131.98",
+        "shipping": "$7.99",
+        "tax": "$7.00",
+        "estimatedTotal": "$146.97"
+    },
     "home": {
         "email": "test@user.com"
     },
@@ -46,7 +75,7 @@
         "city": "Burlington",
         "zip": "11111",
         "phone": "5555551234",
-        "email": "test@user.com",
+        "email": "jsmith@email.com",
         "ccNum": "4111111111111111",
         "ccSecCode": "555",
         "expMonth": "08",
@@ -57,13 +86,5 @@
         "name": "John Smith",
         "addressTitle": "Apartment",
         "newPassword": "Password123!"
-    },
-    "product": {
-        "quantity": "2",
-        "itemPrice": "$65.99",
-        "totalItemPrice": "$131.98",
-        "shipping": "$7.99",
-        "tax": "$7.00",
-        "estimatedTotal": "$146.97"
     }
 }

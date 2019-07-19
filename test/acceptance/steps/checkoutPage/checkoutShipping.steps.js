@@ -31,7 +31,7 @@ Then('shopper verifies shipping information', () => {
         data.checkout.address2, data.checkout.city, data.checkout.stateAbr, data.checkout.zip);
 });
 
-Then('shopper procedes to payment section', () => {
+Then('shopper proceeds to payment section', () => {
     I.waitForElement(checkoutPage.locators.toPayment);
     I.click(checkoutPage.locators.toPayment);
 });

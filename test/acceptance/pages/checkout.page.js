@@ -23,12 +23,17 @@ module.exports = {
         payExpMonth: '#expirationMonth',
         payExpYear: '#expirationYear',
         paySecCode: '#securityCode',
+        paySecCodeSaved: '.form-control.saved-payment-security-code',
         placeOrder: '.btn.btn-primary.btn-block.submit-payment',
         confirmOrder: '.btn.btn-primary.btn-block.place-order',
         billingConfirmation: '.addressSelector.form-control',
         shipping_addSelector: '.addressSelector',
         shipping_methodBlock: '.shipping-method-block',
         shipping_methodOptions: '.form-check.col-9.start-lines',
+        checkout_shippingSection: '.card.shipping-summary',
+        checkout_paymentSection: '.card.payment-summary',
+        checkout_orderSummary: '.card-body.order-total-summary',
+
         orderConf_thankYou: '.order-thank-you-msg',
         orderConf_shippingSection: '.summary-details.shipping',
         orderConf_billingSection: '.summary-details.billing',
@@ -51,7 +56,7 @@ module.exports = {
         I.fillField(this.locators.phone, phone);
         I.fillField(this.locators.zip, zipcode);
     },
-    fillPaymentInfo(email, phone, ccNum, expMonth, expYear, ccSecCode) {
+    fillPaymentInfoGuest(email, phone, ccNum, expMonth, expYear, ccSecCode) {
         I.fillField(this.locators.payEmail, email);
         I.fillField(this.locators.payPhone, phone);
         I.fillField(this.locators.payCard, ccNum);
@@ -59,7 +64,14 @@ module.exports = {
         I.selectOption(this.locators.payExpMonth, expMonth);
         I.waitForElement(this.locators.payExpYear, expYear);
         I.selectOption(this.locators.payExpYear, expYear);
+        I.waitForElement(this.locators.paySecCode);
         I.fillField(this.locators.paySecCode, ccSecCode);
+    },
+    fillPaymentInfoRegistered(email, phone, ccSecCode) {
+        I.fillField(this.locators.payEmail, email);
+        I.fillField(this.locators.payPhone, phone);
+        I.waitForElement(this.locators.paySecCodeSaved);
+        I.fillField(this.locators.paySecCodeSaved, ccSecCode);
     },
     verifyCart(quantity, itemPrice, totalItemPrice, shipping, tax, estimatedTotal) {
         I.waitForElement(this.locators.lineItemQuantity);
@@ -93,6 +105,48 @@ module.exports = {
         // Check for best way to verify this one
         I.waitForElement(this.locators.billingConfirmation);
         I.waitForText(fName + lName + address1);
+    },
+    verifyCheckoutInfo(fName, lName, add1, add2, city, zip, phone, email, ccNum, ccExpDate, quantity,
+        totalItemPrice, shipping, tax, estimatedTotal) {
+        // verify shipping address is correct
+        I.waitForElement(this.locators.checkout_shippingSection);
+        I.scrollTo(this.locators.checkout_shippingSection);
+        I.see(fName, this.locators.checkout_shippingSection);
+        I.see(lName, this.locators.checkout_shippingSection);
+        I.see(add1, this.locators.checkout_shippingSection);
+        I.see(add2, this.locators.checkout_shippingSection);
+        I.see(city, this.locators.checkout_shippingSection);
+        I.see(zip, this.locators.checkout_shippingSection);
+        I.see(phone, this.locators.checkout_shippingSection);
+
+        // verify billing address is correct
+        I.waitForElement(this.locators.checkout_paymentSection);
+        I.scrollTo(this.locators.checkout_paymentSection);
+        I.see(fName, this.locators.checkout_paymentSection);
+        I.see(lName, this.locators.checkout_paymentSection);
+        I.see(add1, this.locators.checkout_paymentSection);
+        I.see(add2, this.locators.checkout_paymentSection);
+        I.see(city, this.locators.checkout_paymentSection);
+        I.see(zip, this.locators.checkout_paymentSection);
+        I.see(email, this.locators.checkout_paymentSection);
+        I.see(phone, this.locators.checkout_paymentSection);
+
+        // verify payment info is correct
+        I.waitForElement(this.locators.checkout_paymentSection);
+        // Leave the last 4 digits shown; replace everything else with '*'
+        I.see(ccNum.replace(/\d(?=\d{4})/g, '*'), this.locators.checkout_paymentSection);
+        I.see(ccExpDate, this.locators.checkout_paymentSection);
+
+        // verify product info is correct
+        I.waitForElement(this.locators.orderConf_quantity);
+        I.scrollTo(this.locators.orderConf_quantity);
+        I.see(quantity, this.locators.orderConf_quantity);
+
+        I.waitForElement(this.locators.checkout_orderSummary);
+        I.see(totalItemPrice, this.locators.checkout_orderSummary);
+        I.see(shipping, this.locators.checkout_orderSummary);
+        I.see(tax, this.locators.checkout_orderSummary);
+        I.see(estimatedTotal, this.locators.checkout_orderSummary);
     },
     verifyOrderConfirmation(fName, lName, add1, add2, city, zip, phone, email, ccNum, ccExpDate, quantity,
         totalItemPrice, shipping, tax, estimatedTotal) {

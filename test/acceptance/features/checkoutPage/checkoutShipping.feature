@@ -10,4 +10,4 @@ Feature: Shipping information in Checkout
         Then shopper selects checkout from cart
         And shopper selects checkout as return user
         Then shopper verifies shipping information
-        Then shopper procedes to payment section
+        Then shopper proceeds to payment section
