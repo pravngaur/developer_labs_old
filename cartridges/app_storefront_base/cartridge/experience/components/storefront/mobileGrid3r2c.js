@@ -16,5 +16,5 @@ module.exports.render = function (context) {
     // automatically register configured regions
     model.regions = PageRenderHelper.getRegionModelRegistry(component);
 
-    return new Template('experience/components/storefront/mobileGrid2r3c').render(model).text;
+    return new Template('experience/components/storefront/mobileGrid3r2c').render(model).text;
 };
