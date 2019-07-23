@@ -32,3 +32,24 @@ module.exports.render = function (context) {
 
     return new Template( 'experience/components/rowsandcolumns/dynamiccolumns' ).render( model ).text;
 };
+
+
+
+/*
+    -- DXP LAYOUT Notes ---------------------------
+
+    1 Visual Icons for column choice (12 column system slds)
+
+    2 Drag slider or "percentages" for column sizing (e.g. 20x80 40x60 etc)
+        - uses 12 column system instead of percent
+
+    3
+
+
+
+
+
+
+
+
+ */
