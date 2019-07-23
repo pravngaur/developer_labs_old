@@ -31,7 +31,7 @@
         },
         {
             "id": "phonestyles",
-            "name": "Pone Styles",
+            "name": "Phone Styles",
             "description": "Spacing, sizing, colors and positions",
             "attribute_definitions": [
                 {

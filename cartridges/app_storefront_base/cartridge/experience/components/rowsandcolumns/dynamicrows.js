@@ -6,7 +6,7 @@ var HashMap = require('dw/util/HashMap');
 var PageRenderHelper = require('*/cartridge/experience/utilities/PageRenderHelper.js');
 
 /**
- * Render logic for dynamic columns.
+ * Render logic for dynamic rows.
  * @param {dw.experience.PageScriptContext} context The page script context object.
  * @returns {string} template to be displayed
  */
@@ -16,8 +16,6 @@ module.exports.render = function (context) {
 
     // automatically register configured regions
     model.regions = PageRenderHelper.getRegionModelRegistry(component);
-
-    //model.regions.rows.setClassName('row');
 
     return new Template( 'experience/components/rowsandcolumns/dynamicrows' ).render( model ).text;
 };
