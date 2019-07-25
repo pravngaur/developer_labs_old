@@ -1,0 +1,22 @@
+{
+  "name": "Video",
+  "description": "Video Component",
+  "group": "Media",
+  "attribute_definition_groups": [
+    {
+      "id": "attributegroup1",
+      "name": "Attribute Group 1",
+      "description": "This is an attribute group",
+      "attribute_definitions": [
+        {
+          "id": "attribute1",
+          "name": "Attribute 1",
+          "description": "Enter text",
+          "type": "text",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "region_definitions": []
+}

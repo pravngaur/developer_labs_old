@@ -1,0 +1,73 @@
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addCss('/css/experience/components/sizing/sizetest.css');
+    assets.addCss('/css/component.css');
+    assets.addJs('/js/sizetest.js');
+</isscript>
+
+<div class="my-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col"> <div class="my-component">Test 1</div> </div>
+            <div class="col"> <div class="my-component">Test 2</div> </div>
+            <div class="col"> <div class="my-component">Test 3</div> </div>
+            <div class="col"> <div class="my-component">Test 4</div> </div>
+            <div class="col"> <div class="my-component">Test 5</div> </div>
+            <div class="col"> <div class="my-component">Test 6</div> </div>
+            <div class="col"> <div class="my-component">Test 7</div> </div>
+            <div class="col"> <div class="my-component">Test 8</div> </div>
+            <div class="col"> <div class="my-component">Test 9</div> </div>
+            <div class="col"> <div class="my-component">Test 10</div> </div>
+            <div class="col"> <div class="my-component">Test 11</div> </div>
+            <div class="col"> <div class="my-component">Test 12</div> </div>
+        </div>
+        <div class="row">
+            <div class="col-3"><div class="my-component">abc</div></div>
+            <div class="col-3"><div class="my-component">abc</div></div>
+            <div class="col-3"><div class="my-component">abc</div></div>
+            <div class="col-3"><div class="my-component">abc</div></div>
+            <div class="col-3"><div class="my-component">abc</div></div>
+            <div class="col-3"><div class="my-component">abc</div></div>
+        </div>
+        <div class="row">
+            <div class="col-4"><div class="my-component">abc</div></div>
+            <div class="col-4"><div class="my-component">abc</div></div>
+            <div class="col-4"><div class="my-component">abc</div></div>
+            <div class="col-4"><div class="my-component">abc</div></div>
+        </div>
+        <div class="row">
+            <div class="col-5"><div class="my-component">abc</div></div>
+            <div class="col-5"><div class="my-component">abc</div></div>
+            <div class="col-5"><div class="my-component">abc</div></div>
+        </div>
+        <div class="row">
+            <div class="col-6"><div class="my-component">abc</div></div>
+            <div class="col-6"><div class="my-component">abc</div></div>
+            <div class="col-6"><div class="my-component">abc</div></div>
+        </div>
+        <div class="row">
+            <div class="col-7"><div class="my-component">abc</div></div>
+            <div class="col-7"><div class="my-component">abc</div></div>
+        </div>
+        <div class="row">
+            <div class="col-8"><div class="my-component">abc</div></div>
+            <div class="col-8"><div class="my-component">abc</div></div>
+        </div>
+        <div class="row">
+            <div class="col-9"><div class="my-component">abc</div></div>
+            <div class="col-9"><div class="my-component">abc</div></div>
+        </div>
+        <div class="row">
+            <div class="col-10"><div class="my-component">abc</div></div>
+        </div>
+        <div class="row">
+            <div class="col-11"><div class="my-component">abc</div></div>
+        </div>
+        <div class="row">
+            <div class="col-12"><div class="my-component">abc</div></div>
+        </div>
+    </div>
+
+    <div class="my-component">My Component</div></div>
+
+</div>

@@ -1,0 +1,16 @@
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addCss('/css/experience/coomponents/Media/video.css');
+    assets.addCss('/css/component.css');
+    assets.addJs('/js/video.js');
+</isscript>
+<div>
+    <video controls width="250">
+
+        <source src="https://interactive-examples.mdn.mozilla.net/media/examples/flower.webm" type="video/webm">
+
+        <source src="https://interactive-examples.mdn.mozilla.net/media/examples/flower.mp4"  type="video/mp4">
+
+        Sorry, your browser doesn't support embedded videos.
+    </video>
+</div>

@@ -1,0 +1,92 @@
+@import "../../variables";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins/breakpoints";
+
+.sizetest {
+    color: chocolate;
+    background-color: azure;
+}
+
+.my-component {
+    background-color: #b8dec3;
+    font-size: 1em;
+    border: 1px solid black;
+    min-height: 100px;
+    overflow:hidden;
+}
+
+.col .my-component {
+    font-size: 1em;
+    background-color: #00a1e0;
+}
+
+.col-3 .my-component {
+    background-color: #00bb36;
+}
+
+//.col .my-component { @include media-breakpoint-down(sm) { &:before { content: "col < 576 "; font-size: 1em; } } }
+//.col .my-component { @include media-breakpoint-up(sm) { &:before { content: "col > 576 "; font-size: 1em; } } }
+//.col .my-component { @include media-breakpoint-up(md) { &:before { content: "col > 768 "; font-size: 1em; } } }
+//.col .my-component { @include media-breakpoint-up(lg) { &:before { content: "col > 992 "; font-size: 1em; } } }
+//.col .my-component { @include media-breakpoint-up(xl) { &:before { content: "col > 1200 "; font-size: 1em; } } }
+
+.my-component {
+    font-size: 3rem;
+    @include media-breakpoint-up(sm) { &:before { content: "> 576 1.5em"; } font-size: 1.5em;}
+    @include media-breakpoint-up(md) { &:before { content: "> 768 2em"; } font-size: 2em; }
+    @include media-breakpoint-up(lg) { &:before { content: "> 992 2.5em"; } font-size: 2.5em;}
+    @include media-breakpoint-up(xl) { &:before { content: "> 1200 3em"; } font-size: 3em; }
+}
+
+
+@for $i from 1 through 12 {
+    $size: ($i + 1) / 12;
+    .col-#{$i} > .my-component { @include media-breakpoint-down(sm) { &:before { content: "col-#{$i} < 576 #{0.7 + $size}em ( #{$size} ) - "; } font-size: 0.7em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-#{$i} > .my-component { @include media-breakpoint-up(sm) { &:before { content: "col-#{$i} > 576  #{1 + $size}em ( #{$size} ) - "; } font-size: 1em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-#{$i} > .my-component { @include media-breakpoint-up(md) { &:before { content: "col-#{$i} > 768 #{1.3 + $size}em ( #{$size} ) - "; } font-size: 1.3em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-#{$i} > .my-component { @include media-breakpoint-up(lg) { &:before { content: "col-#{$i} > 992 #{1.7 + $size}em ( #{$size} ) - "; } font-size: 1.7em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-#{$i} > .my-component { @include media-breakpoint-up(xl) { &:before { content: "col-#{$i} > 1200 #{2 + $size}em ( #{$size} ) - "; }  font-size: 2em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+
+    .col-sm-#{$i} > .my-component { @include media-breakpoint-down(sm) { &:before { content: "col-#{$i} < 576 #{0.7 + $size}em ( #{$size} ) - "; } font-size: 0.7em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-sm-#{$i} > .my-component { @include media-breakpoint-up(sm) { &:before { content: "col-#{$i} > 576  #{1 + $size}em ( #{$size} ) - "; } font-size: 1em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-sm-#{$i} > .my-component { @include media-breakpoint-up(md) { &:before { content: "col-#{$i} > 768 #{1.3 + $size}em ( #{$size} ) - "; } font-size: 1.3em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-sm-#{$i} > .my-component { @include media-breakpoint-up(lg) { &:before { content: "col-#{$i} > 992 #{1.7 + $size}em ( #{$size} ) - "; } font-size: 1.7em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-sm-#{$i} > .my-component { @include media-breakpoint-up(xl) { &:before { content: "col-#{$i} > 1200 #{2 + $size}em ( #{$size} ) - "; }  font-size: 2em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+
+    .col-md-#{$i} > .my-component { @include media-breakpoint-down(sm) { &:before { content: "col-#{$i} < 576 #{0.7 + $size}em ( #{$size} ) - "; } font-size: 0.7em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-md-#{$i} > .my-component { @include media-breakpoint-up(sm) { &:before { content: "col-#{$i} > 576  #{1 + $size}em ( #{$size} ) - "; } font-size: 1em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-md-#{$i} > .my-component { @include media-breakpoint-up(md) { &:before { content: "col-#{$i} > 768 #{1.3 + $size}em ( #{$size} ) - "; } font-size: 1.3em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-md-#{$i} > .my-component { @include media-breakpoint-up(lg) { &:before { content: "col-#{$i} > 992 #{1.7 + $size}em ( #{$size} ) - "; } font-size: 1.7em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-md-#{$i} > .my-component { @include media-breakpoint-up(xl) { &:before { content: "col-#{$i} > 1200 #{2 + $size}em ( #{$size} ) - "; }  font-size: 2em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+
+    .col-lg-#{$i} > .my-component { @include media-breakpoint-down(sm) { &:before { content: "col-#{$i} < 576 #{0.7 + $size}em ( #{$size} ) - "; } font-size: 0.7em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-lg-#{$i} > .my-component { @include media-breakpoint-up(sm) { &:before { content: "col-#{$i} > 576  #{1 + $size}em ( #{$size} ) - "; } font-size: 1em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-lg-#{$i} > .my-component { @include media-breakpoint-up(md) { &:before { content: "col-#{$i} > 768 #{1.3 + $size}em ( #{$size} ) - "; } font-size: 1.3em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-lg-#{$i} > .my-component { @include media-breakpoint-up(lg) { &:before { content: "col-#{$i} > 992 #{1.7 + $size}em ( #{$size} ) - "; } font-size: 1.7em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-lg-#{$i} > .my-component { @include media-breakpoint-up(xl) { &:before { content: "col-#{$i} > 1200 #{2 + $size}em ( #{$size} ) - "; }  font-size: 2em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+
+    .col-xl-#{$i} > .my-component { @include media-breakpoint-down(sm) { &:before { content: "col-#{$i} < 576 #{0.7 + $size}em ( #{$size} ) - "; } font-size: 0.7em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-xl-#{$i} > .my-component { @include media-breakpoint-up(sm) { &:before { content: "col-#{$i} > 576  #{1 + $size}em ( #{$size} ) - "; } font-size: 1em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-xl-#{$i} > .my-component { @include media-breakpoint-up(md) { &:before { content: "col-#{$i} > 768 #{1.3 + $size}em ( #{$size} ) - "; } font-size: 1.3em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-xl-#{$i} > .my-component { @include media-breakpoint-up(lg) { &:before { content: "col-#{$i} > 992 #{1.7 + $size}em ( #{$size} ) - "; } font-size: 1.7em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+    .col-xl-#{$i} > .my-component { @include media-breakpoint-up(xl) { &:before { content: "col-#{$i} > 1200 #{2 + $size}em ( #{$size} ) - "; }  font-size: 2em + $size; background-color: rgba( $i*10+100, $i*5+100, $i+100, 1.0 ); } }
+}
+
+/*
+    1 when are we in phone mode
+        < 576
+    2 when are we in a n column layout and phone mode
+        < 576 and col-(12/n)
+
+    col
+    col-1 2 3 4 5 6 7 8 9 10 11 12
+        media < 576
+    col-sm-1 2 3 4 5 6 7 8 9 10 11 12
+        media sm
+    col-md-1 2 3 4 5 6 7 8 9 10 11 12
+        media md
+    col-lg-1 2 3 4 5 6 7 8 9 10 11 12
+        media lg
+    col-xl-1 2 3 4 5 6 7 8 9 10 11 12
+        media xl
+*/

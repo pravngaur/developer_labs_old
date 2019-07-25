@@ -43,10 +43,16 @@ module.exports.render = function (context) {
     2 Drag slider or "percentages" for column sizing (e.g. 20x80 40x60 etc)
         - uses 12 column system instead of percent
 
-    3
+    3 Theme level settings
+        different colors
+        links
+
+    4 Theme Picker
 
 
-
+    5 Reality - DXP has same issue of too many components from too many sources, developers etc...
+        So provide ability to adjust small things like sizing spacing fonts etc...
+        Minute 26:45 in DXP recording https://drive.google.com/file/d/1M1btAMyPcjZczXWO-MZMSeGStJKmjt_u/view
 
 
 
