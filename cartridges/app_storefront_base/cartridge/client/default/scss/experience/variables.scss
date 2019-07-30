@@ -6,6 +6,9 @@ $text-color: white;
 $black: #000;
 $dark-gray: #212020;
 $light-gray: #d8d8d8;
+$bold: bold;
+$font-weight: 325;
+$imageText-color : $text-color;
 
 $banner-font: "Helvetica Neue" !default;
 $banner-heading-font-size-xl: 6em !default;
@@ -13,6 +16,12 @@ $banner-heading-font-size-lg: 4em !default;
 $banner-heading-font-size-md: 4em !default;
 $banner-heading-font-size-sm: 3em !default;
 $banner-heading-font-size-xs: 1.875em !default;
+
+$imageText-font: "Helvetica Neue" !default;
+$imageText-font-size-lg: 3em !default;
+$imageText-font-size-md: 2em !default;
+$imageText-font-size-sm: 1em !default;
+$imageText-font-size-xs: 1.875 !default;
 
 $shop-category-font: "Helvetica Neue" !default;
 $shop-category-header-color: #222 !default;
