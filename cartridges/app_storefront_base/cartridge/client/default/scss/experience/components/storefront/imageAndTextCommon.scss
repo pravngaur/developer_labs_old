@@ -2,51 +2,51 @@
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/mixins/breakpoints";
 
+.experience-storefront-imageAndText,
+.ITC-row,
+.ITC-image,
+.ITC-container {
+    height: 100%;
+}
+
 .image-component {
     margin: 0;
     width: 100%;
+    height: 93%;
     position: relative;
 }
 
 .common-image-component {
     width: 100%;
-    height: 43.75vw;
     object-fit: cover;
     object-position: var(--focal-point-x) var(--focal-point-y);
-    filter: brightness(40%);
+}
 
+.mainbanner-image {
+    height: 43.75vw;
     @include media-breakpoint-down(xs) {
         height: 75vw;
     }
 }
 
+.common-image-filter {
+    filter: brightness(40%);
+}
+
 .image-heading-container {
     position: absolute;
-    bottom: 40%;
+    top: 50%;
     width: 100%;
-
     @include media-breakpoint-up(sm) {
-        padding-left: 3em;
-    }
-
-    @include media-breakpoint-up(md) {
-        padding-left: 3em;
-    }
-
-    @include media-breakpoint-up(lg) {
-        padding-left: 4em;
-    }
-
-    @include media-breakpoint-up(xl) {
-        padding-left: 5em;
+        padding-left: 7%;
     }
 }
 
 .image-heading-text {
     font-size: $banner-heading-font-size-xs;
-    font-weight: bold;
-    font-family: $banner-font;
-    color: white;
+    font-weight: $bold;
+    font-family: $imageText-font;
+    color: $imageText-color;
 
     @include media-breakpoint-up(sm) {
         font-size: $banner-heading-font-size-sm;
@@ -65,14 +65,55 @@
     }
 }
 
+.col-4.col-sm-2 .ITC-image-heading-text {
+    font-size: $imageText-font-size-sm;
+}
+
+.grid-col.col-6.col-sm-4 .ITC-image-heading-text {
+    font-size: $imageText-font-size-sm;
+}
+
+.carousel-item.col-4.col-sm-3.col-md-2 .ITC-image-heading-text {
+    font-size: $imageText-font-size-sm;
+}
+
+.ITC-image-heading-text {
+    font-size: $imageText-font-size-sm;
+    font-weight: $bold;
+    font-family: $imageText-font;
+    color: $text-color;
+    @include media-breakpoint-up(sm) {
+        font-size: $imageText-font-size-md;
+    }
+
+    @include media-breakpoint-up(lg) {
+        font-size: $imageText-font-size-lg;
+    }
+}
+
 .image-heading-container .mainbanner-sub-text span {
     font-size: 1.5em;
-    font-weight: 325;
+    font-weight: $font-weight;
     font-family: $banner-font;
-    color: white;
+    color: $text-color;
     text-decoration: underline;
 
     @include media-breakpoint-down(xs) {
-        font-size: 1em;
+        font-size: $imageText-font-size-sm;
+    }
+}
+
+.ITC-text-underneath span {
+    font-size: $imageText-font-size-sm;
+    color: $black;
+    padding-top: 0.75em;
+    text-align: center;
+
+    @include media-breakpoint-down(md) {
+        font-size: 0.875em;
+    }
+
+    @include media-breakpoint-down(sm) {
+        font-size: 0.75em;
     }
 }

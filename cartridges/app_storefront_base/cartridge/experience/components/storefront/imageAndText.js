@@ -19,6 +19,7 @@ module.exports.render = function (context) {
     var desktopImageTransformation = ImageTransformation.scale(content.image.metaData, 'desktop');
 
     model.heading = content.heading ? content.heading : null;
+    model.ITCText = content.ITCText ? content.ITCText : null;
     model.image = {
         src: {
             mobile: ImageTransformation.url(content.image.file, mobileImageTransformation),
