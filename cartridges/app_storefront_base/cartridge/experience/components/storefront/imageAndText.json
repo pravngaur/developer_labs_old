@@ -5,7 +5,7 @@
   "attribute_definition_groups": [
     {
       "id": "ITCImage",
-      "name": "Image And Text Component Image",
+      "name": "Image",
       "description": "The visual display of the ITC image in the background.",
       "attribute_definitions": [
         {
@@ -19,7 +19,7 @@
     {
       "id": "textOverlay",
       "name": "Text Overlay",
-      "description": "The optional overlay text on top of the ITC image.",
+      "description": "The optional overlay text on top of the image.",
       "attribute_definitions": [
         {
           "id": "heading",
@@ -31,13 +31,26 @@
     },
     {
       "id": "ITCLink",
-      "name": "Image And Text component Link",
-      "description": "The optional Image And Text Component link",
+      "name": "Link",
+      "description": "The optional link around the image.",
       "attribute_definitions": [
         {
           "id": "ITCLink",
           "name": "ITCLink",
           "type": "url",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "textUnderneath",
+      "name": "Text Underneath",
+      "description": "The optional Text Underneath the image.",
+      "attribute_definitions": [
+        {
+          "id": "ITCText",
+          "name": "ITCText",
+          "type": "markup",
           "required": false
         }
       ]
