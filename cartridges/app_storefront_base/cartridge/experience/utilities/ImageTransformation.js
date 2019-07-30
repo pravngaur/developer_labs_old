@@ -83,4 +83,30 @@ ImageTransformation.url = function (image, options) {
     return mediaFile.getAbsURL();
 };
 
+/**
+ * Return an object containing the scaled image for mobile, table and desktop.  Other included image details
+ * are: alt text, focalPoint x, focalPoint y.
+ *
+ * @param {Image} image the image for which to be scaled.
+ * @param {Object} The object containing the scaled image
+ *
+ * @return {string} The Absolute url
+ */
+ImageTransformation.getScaledImage = function (image) {
+    var mobileImageTransformation = ImageTransformation.scale(image.metaData, 'mobile');
+    var tabletImageTransformation = ImageTransformation.scale(image.metaData, 'tablet');
+    var desktopImageTransformation = ImageTransformation.scale(image.metaData, 'desktop');
+
+    return {
+        src: {
+            mobile: ImageTransformation.url(image.file, mobileImageTransformation),
+            tablet: ImageTransformation.url(image.file, tabletImageTransformation),
+            desktop: ImageTransformation.url(image.file, desktopImageTransformation)
+        },
+        alt: image.file.getAlt(),
+        focalPointX: (image.focalPoint.x * 100) + '%',
+        focalPointY: (image.focalPoint.y * 100) + '%'
+    };
+};
+
 module.exports = ImageTransformation;
