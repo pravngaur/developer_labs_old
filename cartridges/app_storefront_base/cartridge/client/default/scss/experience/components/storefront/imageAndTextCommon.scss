@@ -69,8 +69,23 @@
     font-size: $imageText-font-size-sm;
 }
 
-.grid-col.col-6.col-sm-4 .ITC-image-heading-text {
-    font-size: $imageText-font-size-sm;
+.grid-col.col-6.col-sm-4 {
+    .ITC-image {
+        @include media-breakpoint-only(xs) {
+            max-height: 11rem ;
+        }
+        
+        @include media-breakpoint-up(sm) {
+            max-height: 15rem;
+        }
+        
+        @include media-breakpoint-up(lg) {
+            max-height: 24.5rem;
+        }
+    }
+    .ITC-image-heading-text {
+        font-size: $imageText-font-size-sm;
+    }
 }
 
 .carousel-item.col-4.col-sm-3.col-md-2 .ITC-image-heading-text {
