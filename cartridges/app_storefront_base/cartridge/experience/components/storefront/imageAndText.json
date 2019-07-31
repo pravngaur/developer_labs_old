@@ -5,51 +5,28 @@
   "attribute_definition_groups": [
     {
       "id": "ITCImage",
-      "name": "Image",
-      "description": "The visual display of the ITC image in the background.",
       "attribute_definitions": [
         {
           "id": "image",
           "name": "Image",
           "type": "image",
           "required": true
-        }
-      ]
-    },
-    {
-      "id": "textOverlay",
-      "name": "Text Overlay",
-      "description": "The optional overlay text on top of the image.",
-      "attribute_definitions": [
+        },
         {
           "id": "heading",
-          "name": "Heading",
+          "name": "Text Overlay",
           "type": "markup",
           "required": false
-        }
-      ]
-    },
-    {
-      "id": "ITCLink",
-      "name": "Link",
-      "description": "The optional link around the image.",
-      "attribute_definitions": [
+        },
         {
           "id": "ITCLink",
-          "name": "ITCLink",
+          "name": "Image Link",
           "type": "url",
           "required": false
-        }
-      ]
-    },
-    {
-      "id": "textUnderneath",
-      "name": "Text Underneath",
-      "description": "The optional Text Underneath the image.",
-      "attribute_definitions": [
+        },
         {
           "id": "ITCText",
-          "name": "ITCText",
+          "name": "Text Below Image",
           "type": "markup",
           "required": false
         }
