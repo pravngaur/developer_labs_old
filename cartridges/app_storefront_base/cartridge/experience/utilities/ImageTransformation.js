@@ -93,15 +93,11 @@ ImageTransformation.url = function (image, options) {
  * @return {string} The Absolute url
  */
 ImageTransformation.getScaledImage = function (image) {
-    var mobileImageTransformation = ImageTransformation.scale(image.metaData, 'mobile');
-    var tabletImageTransformation = ImageTransformation.scale(image.metaData, 'tablet');
-    var desktopImageTransformation = ImageTransformation.scale(image.metaData, 'desktop');
-
     return {
         src: {
-            mobile: ImageTransformation.url(image.file, mobileImageTransformation),
-            tablet: ImageTransformation.url(image.file, tabletImageTransformation),
-            desktop: ImageTransformation.url(image.file, desktopImageTransformation)
+            mobile: ImageTransformation.url(image.file, { device: 'mobile' }),
+            tablet: ImageTransformation.url(image.file, { device: 'tablet' }),
+            desktop: ImageTransformation.url(image.file, { device: 'desktop' })
         },
         alt: image.file.getAlt(),
         focalPointX: (image.focalPoint.x * 100) + '%',
