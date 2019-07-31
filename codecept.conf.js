@@ -2,14 +2,74 @@ const debug = require('debug')('acceptance:config');
 let merge = require('deepmerge');
 let codeceptjsShared = require('codeceptjs-shared');
 let codeceptJsSauce = require('codeceptjs-saucelabs');
-
-const RELATIVE_PATH = './test/acceptance';
-const OUTPUT_PATH = RELATIVE_PATH + '/report';
-const DEFAULT_HOST = 'https://dev20-sitegenesis-dw.demandware.net';
+const cwd = process.cwd();
+const path = require('path');
+const fs = require('fs');
 
 const metadata = require('./test/acceptance/metadata.json');
 
-const HOST = process.env.HOST || DEFAULT_HOST;
+const RELATIVE_PATH = './test/acceptance';
+const OUTPUT_PATH = RELATIVE_PATH + '/report';
+
+
+function getDwJson() {
+    if (fs.existsSync(path.join(cwd, 'dw.json'))) {
+        return require(path.join(cwd, 'dw.json'));
+    }
+    return {};
+}
+
+const SAUCE_USER = getDwJson().SAUCE_USERNAME || process.env.SAUCE_USERNAME;
+const SAUCE_KEY = getDwJson().SAUCE_KEY || process.env.SAUCE_KEY;
+
+const DEFAULT_HOST = 'https://' + getDwJson().hostname;
+const HOST = DEFAULT_HOST || process.env.HOST;
+
+// Here is where you can target specific browsers/configuration to run on sauce labs.
+const userSpecificBrowsers = {
+    chromePhone: {
+        browser: 'chrome',
+        desiredCapabilities: {
+            chromeOptions: {
+                mobileEmulation: {
+                    deviceName: "Galaxy S5"
+                }
+            }
+        }
+    },
+    chromeTablet: {
+        browser: 'chrome',
+        desiredCapabilities: {
+            chromeOptions: {
+              mobileEmulation: {
+                deviceName: "Kindle Fire HDX"
+              }
+            }
+          }
+    },
+    firefox: {
+        capabilities: {
+            'sauce:options': {
+                seleniumVersion: '3.11.0'
+            },
+        }
+    },
+    edge: {
+        capabilities: {
+            'sauce:options': {
+                seleniumVersion: '3.11.0'
+            }
+        }
+    },
+    safari: {
+        windowSize: 'maximize',
+        capabilities: {
+            'sauce:options': {
+                seleniumVersion: '3.11.0'
+            }
+        }
+    }
+}
 
 let conf = {
     output: OUTPUT_PATH,
@@ -20,6 +80,9 @@ let conf = {
         WebDriver: {
             url: HOST,
             waitForTimeout: 10000
+        },
+        isExist: {
+            require: './test/acceptance/utils.js'
         }
     },
     plugins: {
@@ -40,4 +103,4 @@ let conf = {
     name: 'storefront-reference-architecture'
 };
 
-exports.config = merge(merge(conf, codeceptjsShared.conf), codeceptJsSauce.conf);
+exports.config = merge(merge(conf, codeceptjsShared.conf), codeceptJsSauce.conf(SAUCE_USER, SAUCE_KEY, userSpecificBrowsers));

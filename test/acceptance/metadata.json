@@ -4,7 +4,9 @@
         "homePage": "./test/acceptance/pages/home.page.js",
         "productPage": "./test/acceptance/pages/product.page.js",
         "cartPage": "./test/acceptance/pages/cart.page.js",
-        "checkoutPage": "./test/acceptance/pages/checkout.page.js"
+        "checkoutPage": "./test/acceptance/pages/checkout.page.js",
+        "loginPage": "./test/acceptance/pages/login.page.js",
+        "accountPage": "./test/acceptance/pages/account.page.js"
     },
     "gherkin_steps": [
         "./test/acceptance/steps/homePage/addProductToCart.steps.js",
@@ -12,7 +14,15 @@
         "./test/acceptance/steps/homePage/landHomePage.steps.js",
         "./test/acceptance/steps/productDetailPage/pdpSimpleLayout.steps.js",
         "./test/acceptance/steps/checkoutPage/checkoutShipping.steps.js",
-        "./test/acceptance/steps/checkoutPage/orderConfirmation.steps.js"
+        "./test/acceptance/steps/checkoutPage/orderConfirmation.steps.js",
+        "./test/acceptance/steps/loginPage/checkOrder.steps.js",
+        "./test/acceptance/steps/loginPage/createAccount.steps.js",
+        "./test/acceptance/steps/loginPage/loginUser.steps.js",
+        "./test/acceptance/steps/accountPage/addAddress.steps.js",
+        "./test/acceptance/steps/accountPage/addPayment.steps.js",
+        "./test/acceptance/steps/accountPage/changePassword.steps.js",
+        "./test/acceptance/steps/accountPage/editProfile.steps.js",
+        "./test/acceptance/steps/productDetailPage/pdpQuickViewFilter.steps.js"
     ],
     "user1": {
         "fName": "John",
@@ -24,7 +34,7 @@
         "stateAbr": "MA",
         "city": "Burlington",
         "zip": "11111",
-        "phone": "5555551234",
+        "phone": "5555555555",
         "email": "jsmith@email.com",
         "password": "Password123!"
     },
@@ -43,6 +53,17 @@
         "tax": "$7.00",
         "estimatedTotal": "$146.97"
     },
+    "product2": {
+        "name": "No-Iron Platinum Easy Care Sleeveless Fitted Shirt",
+        "color": "white",
+        "size": "12",
+        "productLinkQV": "/on/demandware.store/Sites-RefArch-Site/en_US/Product-ShowQuickView?pid=25113204M",
+        "filterSizeLink": "/on/demandware.store/Sites-RefArch-Site/en_US/Search-ShowAjax?cgid=womens-clothing-tops&prefn1=refinementColor&prefv1=White&prefn2=size&prefv2=12",
+        "filterPriceLink": "/on/demandware.store/Sites-RefArch-Site/en_US/Search-ShowAjax?cgid=womens-clothing-tops&pmin=50%2e00&pmax=100%2e00&prefn1=refinementColor&prefv1=White&prefn2=size&prefv2=12"
+    },
+    "product3": {
+        "productLinkQV": "/on/demandware.store/Sites-RefArch-Site/en_US/Product-ShowQuickView?pid=25697194M"
+    },
     "home": {
         "email": "test@user.com"
     },
@@ -51,7 +72,7 @@
         "homePage": "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show",
         "email": "jsmith@email.com",
         "password": "Password123!",
-        "currentUrl": "/on/demandware.store/Sites-RefArch-Site/en_US/Account-Show?registration=false",
+        "currentUrl": "https://dev20-sitegenesis-dw.demandware.net/on/demandware.store/Sites-RefArch-Site/en_US/Login-Show",
         "fName": "John",
         "lName": "Smith",
         "phone": "5555555555",
@@ -74,7 +95,7 @@
         "stateAbr": "MA",
         "city": "Burlington",
         "zip": "11111",
-        "phone": "5555551234",
+        "phone": "5555555555",
         "email": "jsmith@email.com",
         "ccNum": "4111111111111111",
         "ccSecCode": "555",

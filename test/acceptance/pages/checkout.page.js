@@ -31,6 +31,7 @@ module.exports = {
         shipping_methodBlock: '.shipping-method-block',
         shipping_methodOptions: '.form-check.col-9.start-lines',
         checkout_shippingSection: '.card.shipping-summary',
+        checkout_prefilledShippingInfo: '.addressSelector.form-control',
         checkout_paymentSection: '.card.payment-summary',
         checkout_orderSummary: '.card-body.order-total-summary',
 
@@ -56,7 +57,15 @@ module.exports = {
         I.fillField(this.locators.phone, phone);
         I.fillField(this.locators.zip, zipcode);
     },
-    fillPaymentInfoGuest(email, phone, ccNum, expMonth, expYear, ccSecCode) {
+    fillPaymentInfoGuest(fName, lName, address1, address2, city, stateAbr, zipcode, email, phone, ccNum, expMonth, expYear, ccSecCode) {
+        I.waitForElement(this.locators.checkout_prefilledShippingInfo);
+        I.see(fName, this.locators.checkout_prefilledShippingInfo);
+        I.see(lName, this.locators.checkout_prefilledShippingInfo);
+        I.see(address1, this.locators.checkout_prefilledShippingInfo);
+        I.see(address2, this.locators.checkout_prefilledShippingInfo);
+        I.see(city, this.locators.checkout_prefilledShippingInfo);
+        I.see(stateAbr, this.locators.checkout_prefilledShippingInfo);
+        I.see(zipcode, this.locators.checkout_prefilledShippingInfo);
         I.fillField(this.locators.payEmail, email);
         I.fillField(this.locators.payPhone, phone);
         I.fillField(this.locators.payCard, ccNum);

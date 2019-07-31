@@ -1,12 +1,13 @@
 const { I, data, checkoutPage } = inject();
 
 Then('shopper fills out billing information', () => {
-    checkoutPage.fillPaymentInfoGuest(data.checkout.email, data.checkout.phone, data.checkout.ccNum,
+    checkoutPage.fillPaymentInfoGuest(data.user1.fName, data.user1.lName, data.user1.address1, data.user1.address2,
+        data.user1.city, data.user1.stateAbr, data.user1.zip, data.checkout.email, data.checkout.phone, data.checkout.ccNum,
         data.checkout.expMonth, data.checkout.expYear, data.checkout.ccSecCode);
 });
 
 Then('shopper fills out registered user billing information', () => {
-    checkoutPage.fillPaymentInfoRegistered(data.checkout.email, data.checkout.phone, data.checkout.ccSecCode)
+    checkoutPage.fillPaymentInfoRegistered(data.checkout.email, data.checkout.phone, data.checkout.ccSecCode);
 });
 
 Then('shopper places order', () => {

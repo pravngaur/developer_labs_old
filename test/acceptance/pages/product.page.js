@@ -2,6 +2,7 @@ const I = actor();
 
 module.exports = {
     locators: {
+        button: 'button',
         selectSize: '.select-size',
         selectQuantity: '.quantity-select',
         addToCartButton: '.add-to-cart',
@@ -26,7 +27,9 @@ module.exports = {
         copyLinkMsgVisible: '.copy-link-message:not(.d-none)',
         miniCartQuantity: '.minicart-quantity',
         addToCartSuccess: '.add-to-cart-messages .alert-success',
-        addToCartFailure: '.add-to-cart-messages .alert-danger'
+        addToCartFailure: '.add-to-cart-messages .alert-danger',
+        filterColor: '.swatch-circle-',
+        qv_ProductBtn: '.quickview.hidden-sm-down'
     },
     selectSize(size) {
         I.waitForElement(this.locators.selectSize);
@@ -51,5 +54,46 @@ module.exports = {
     clickCopyLink() {
         I.waitForEnabled(this.locators.copyLink);
         I.click(this.locators.copyLink);
+    },
+    filterProductColor(color) {
+        I.waitForElement(this.locators.filterColor + color);
+        I.click(this.locators.filterColor + color);
+    },
+    filterProductSize(filterSizeLink) {
+        let locator = locate(this.locators.button)
+            .withAttr({'data-href': filterSizeLink});
+        I.scrollTo(locator);
+        I.waitForElement(locator);
+        I.click(locator);
+    },
+    filterProductPrice(filterPriceLink) {
+        let locator = locate(this.locators.button)
+            .withAttr({'data-href': filterPriceLink});
+        I.scrollTo(locator);
+        I.waitForElement(locator);
+        I.click(locator);
+    },
+    openProductQuickView(pdpQuickViewLink) {
+        let locator = locate('.quickview.hidden-sm-down')
+            .withAttr({href: '/on/demandware.store/Sites-RefArch-Site/en_US/Product-ShowQuickView?pid=25697194M'});
+        //I.wait(50);
+        I.waitForElement(locator);
+        I.scrollTo(locator);
+        I.click(locator);
+    },
+    selectQuickViewColor(color) {
+        let locator = locate(this.locators.qv_ColorBtn)
+            .withAttr({'aria-label': 'Select Color ' + color})
+        I.waitForElement(locator);
+        I.click(locator);
+    },
+    selectQuickViewSize(size) {
+        I.waitForElement(this.locators.qv_SizeSelect);
+        I.selectOption(this.locators.qv_SizeSelect, size);
+    },
+    addToCartQuickView() {
+        I.waitForElement(this.locators.qv_ProductIcon);
+        I.click(this.locators.qv_ProductIcon);
+        I.scrollPageToTop();
     }
 };

@@ -2,7 +2,7 @@ Feature: Follow the happy path of a registered user
     As a shopper, I want to shop for a product, log into my account, and fill out the correct
     shipping information based on previous saved user data.
 
-@happyPath-broken
+@happyPath @registered
     Scenario: Shopper is able to add a product to a cart
         When shopper selects yes or no for tracking consent
         Given Shopper searches for "Elbow Sleeve Ribbed Sweater"
