@@ -22,7 +22,8 @@
         "./test/acceptance/steps/accountPage/addPayment.steps.js",
         "./test/acceptance/steps/accountPage/changePassword.steps.js",
         "./test/acceptance/steps/accountPage/editProfile.steps.js",
-        "./test/acceptance/steps/productDetailPage/pdpQuickViewFilter.steps.js"
+        "./test/acceptance/steps/productDetailPage/pdpQuickViewSearch.steps.js",
+        "./test/acceptance/steps/checkoutPage/editCart.steps.js"
     ],
     "user1": {
         "fName": "John",
@@ -62,7 +63,16 @@
         "filterPriceLink": "/on/demandware.store/Sites-RefArch-Site/en_US/Search-ShowAjax?cgid=womens-clothing-tops&pmin=50%2e00&pmax=100%2e00&prefn1=refinementColor&prefv1=White&prefn2=size&prefv2=12"
     },
     "product3": {
+        "name": "Ribbed Cardigan.",
+        "color": "Ivory",
+        "size": "M",
         "productLinkQV": "/on/demandware.store/Sites-RefArch-Site/en_US/Product-ShowQuickView?pid=25697194M"
+    },
+    "shippingCosts": {
+        "ground_usps": "$9.99",
+        "2day": "$15.99",
+        "overnight": "$21.99",
+        "express": "$28.99"
     },
     "home": {
         "email": "test@user.com"

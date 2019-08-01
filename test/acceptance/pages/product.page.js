@@ -29,7 +29,10 @@ module.exports = {
         addToCartSuccess: '.add-to-cart-messages .alert-success',
         addToCartFailure: '.add-to-cart-messages .alert-danger',
         filterColor: '.swatch-circle-',
-        qv_ProductBtn: '.quickview.hidden-sm-down'
+        qv_ProductBtn: '.quickview.hidden-sm-down',
+        qv_ColorBtn: '.color-attribute',
+        qv_SizeSelect: '.custom-select.form-control.select-size',
+        qv_AddToCart: '.add-to-cart-global.btn.btn-primary'
     },
     selectSize(size) {
         I.waitForElement(this.locators.selectSize);
@@ -92,8 +95,7 @@ module.exports = {
         I.selectOption(this.locators.qv_SizeSelect, size);
     },
     addToCartQuickView() {
-        I.waitForElement(this.locators.qv_ProductIcon);
-        I.click(this.locators.qv_ProductIcon);
-        I.scrollPageToTop();
+        I.waitForElement(this.locators.qv_AddToCart);
+        I.click(this.locators.qv_AddToCart);
     }
 };

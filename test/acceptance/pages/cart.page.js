@@ -11,11 +11,11 @@ module.exports = {
         estimatedTotal: '.text-right.grand-total',
         checkoutBtn: '.btn.btn-primary.btn-block.checkout-btn'
     },
-    verifyCart(quantity, itemPrice, totalItemPrice, shipping, tax, estimatedTotal) {
+    verifyCart(totalQuantity, itemPrice, totalItemPrice, shipping, tax, estimatedTotal) {
         I.waitForElement(this.locators.lineItemQuantity);
-        I.waitForText(quantity, this.locators.lineItemQuantity);
+        I.waitForText(totalQuantity, this.locators.lineItemQuantity);
         I.waitForElement(this.locators.totalItemQuantity);
-        I.waitForText(quantity + ' Items', this.locators.totalItemQuantity);
+        I.waitForText(totalQuantity + ' Items', this.locators.totalItemQuantity);
         I.waitForElement(this.locators.lineItemPriceTotal);
         I.waitForText(itemPrice, this.locators.lineItemPriceTotal);
         I.waitForElement(this.locators.totalItemPrice);
@@ -26,5 +26,11 @@ module.exports = {
         I.waitForText(tax, this.locators.taxTotal);
         I.waitForElement(this.locators.estimatedTotal);
         I.waitForText(estimatedTotal, this.locators.estimatedTotal);
+    },
+    removeProduct(name) {
+        console.log('bow');
+    },
+    editQuantity(quantity) {
+        console.log('wow');
     }
 };

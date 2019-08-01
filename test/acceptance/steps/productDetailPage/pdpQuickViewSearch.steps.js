@@ -9,13 +9,14 @@ Then('shopper opens product quick view from product display page', () => {
 });
 
 Then('shopper selects color from Quick View', () => {
-    productPage.selectQuickViewColor(data.product2.color);
+    productPage.selectQuickViewColor(data.product3.color);
 });
 
 Then('shopper selects size from Quick View', () => {
-    productPage.selectQuickViewSize(data.product2.size);
+    productPage.selectQuickViewSize(data.product3.size);
 });
 
 Then('shopper adds to cart from Quick View', () => {
     productPage.addToCartQuickView();
+    I.waitForVisible('.alert.alert-success.add-to-basket-alert');
 });

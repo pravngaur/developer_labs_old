@@ -11,7 +11,6 @@ const metadata = require('./test/acceptance/metadata.json');
 const RELATIVE_PATH = './test/acceptance';
 const OUTPUT_PATH = RELATIVE_PATH + '/report';
 
-
 function getDwJson() {
     if (fs.existsSync(path.join(cwd, 'dw.json'))) {
         return require(path.join(cwd, 'dw.json'));
@@ -19,8 +18,8 @@ function getDwJson() {
     return {};
 }
 
-const SAUCE_USER = getDwJson().SAUCE_USERNAME || process.env.SAUCE_USERNAME;
-const SAUCE_KEY = getDwJson().SAUCE_KEY || process.env.SAUCE_KEY;
+const SAUCE_USER = getDwJson().sauce_username || process.env.SAUCE_USERNAME;
+const SAUCE_KEY = getDwJson().sauce_key || process.env.SAUCE_KEY;
 
 const DEFAULT_HOST = 'https://' + getDwJson().hostname;
 const HOST = DEFAULT_HOST || process.env.HOST;
