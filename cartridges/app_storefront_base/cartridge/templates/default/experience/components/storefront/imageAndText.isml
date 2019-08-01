@@ -6,7 +6,7 @@
 <div class="ITC-container">
     <div class="row ITC-row">
         <div class="col-12">
-            <figure class="ITC-figure image-component">
+            <figure class="ITC-figure image-component ${pdict.ITCText ? '' : 'image-component-no-text'}">
                 <picture>
                     <source srcset="${pdict.image.src.tablet}" media="(min-width: 768px)"/>
                     <source srcset="${pdict.image.src.desktop}" media="(min-width: 1024px)"/>
