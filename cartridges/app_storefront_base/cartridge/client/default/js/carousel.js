@@ -98,6 +98,10 @@ $(document).ready(function () {
         hiddenSlides();
     }, 500));
 
+    $('body').on('carousel:setup', function () {
+        hiddenSlides();
+    });
+
     $('.experience-storefront-carousel .carousel').on('touchstart', function (touchStartEvent) {
         var screenSizeInfo = screenSize($(this));
 
