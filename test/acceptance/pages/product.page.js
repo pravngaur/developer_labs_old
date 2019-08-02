@@ -32,7 +32,8 @@ module.exports = {
         qv_ProductBtn: '.quickview.hidden-sm-down',
         qv_ColorBtn: '.color-attribute',
         qv_SizeSelect: '.custom-select.form-control.select-size',
-        qv_AddToCart: '.add-to-cart-global.btn.btn-primary'
+        qv_AddToCart: '.add-to-cart-global.btn.btn-primary',
+        alertAddToCart: '.alert.alert-success.add-to-basket-alert'
     },
     selectSize(size) {
         I.waitForElement(this.locators.selectSize);
@@ -50,7 +51,7 @@ module.exports = {
     },
     viewCart() {
         I.scrollPageToTop();
-        I.wait(2);
+        I.wait(1);
         I.click(this.locators.miniCartIcon);
         I.waitForElement(this.locators.cartHeader);
     },

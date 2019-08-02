@@ -22,14 +22,14 @@ module.exports = {
     },
     login(email, password, url) {
         // Do preface to decide which choice to pick
-        let desktopLocator = locate(this.locators.loginHomeScreen)
-            .withText('Login');
-        let tabletLocator = locate('.fa.fa-sign-in')
-            .withAttr({'aria-hidden': 'true'});
-        let mobileLocator = locate('.navbar-toggler.d-md-none')
-            .withAttr({'aria-label': 'Toggle navigation'});
-        let failedTest = 'this class should never be found';
-
+        // let desktopLocator = locate(this.locators.loginHomeScreen)
+        //     .withText('Login');
+        // let tabletLocator = locate('.fa.fa-sign-in')
+        //     .withAttr({'aria-hidden': 'true'});
+        // let mobileLocator = locate('.navbar-toggler.d-md-none')
+        //     .withAttr({'aria-label': 'Toggle navigation'});
+        // let failedTest = 'this class should never be found';
+        // console.log('work please');
         // if(I.isExisting(desktopLocator).then((res) => {return res})) {
         //     I.click(desktopLocator);
         // } 

@@ -27,10 +27,19 @@ module.exports = {
         I.waitForElement(this.locators.estimatedTotal);
         I.waitForText(estimatedTotal, this.locators.estimatedTotal);
     },
-    removeProduct(name) {
-        console.log('bow');
+    verifyCartQuantity(totalQuantity) {
+        I.waitForElement(this.locators.totalItemQuantity);
+        I.waitForText(totalQuantity + ' Items', this.locators.totalItemQuantity);
+    },
+    removeProduct(productName) {
+        let locator = locate('span')
+            .withAttr({'aria-hidden': true})
+            .inside('button.remove-btn-lg.remove-product.btn.btn-light')
+            .withAttr({'data-name': 'Modern Striped Dress Shirt'});
+        I.waitForElement(locator);    
+        I.click(locator);
     },
     editQuantity(quantity) {
-        console.log('wow');
+        // todo
     }
 };

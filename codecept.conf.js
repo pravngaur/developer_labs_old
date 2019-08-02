@@ -79,9 +79,6 @@ let conf = {
         WebDriver: {
             url: HOST,
             waitForTimeout: 10000
-        },
-        isExist: {
-            require: './test/acceptance/utils.js'
         }
     },
     plugins: {

@@ -18,12 +18,7 @@
         "./test/acceptance/steps/loginPage/checkOrder.steps.js",
         "./test/acceptance/steps/loginPage/createAccount.steps.js",
         "./test/acceptance/steps/loginPage/loginUser.steps.js",
-        "./test/acceptance/steps/accountPage/addAddress.steps.js",
-        "./test/acceptance/steps/accountPage/addPayment.steps.js",
-        "./test/acceptance/steps/accountPage/changePassword.steps.js",
-        "./test/acceptance/steps/accountPage/editProfile.steps.js",
-        "./test/acceptance/steps/productDetailPage/pdpQuickViewSearch.steps.js",
-        "./test/acceptance/steps/checkoutPage/editCart.steps.js"
+        "./test/acceptance/steps/productDetailPage/pdpQuickViewSearch.steps.js"
     ],
     "user1": {
         "fName": "John",
@@ -74,11 +69,14 @@
         "overnight": "$21.99",
         "express": "$28.99"
     },
+    "searchPages": {
+        "womensTops": "/on/demandware.store/Sites-RefArch-Site/en_US/Search-Show?cgid=womens-clothing-tops"
+    },
     "home": {
         "email": "test@user.com"
     },
     "login": {
-        "loginPage": "/on/demandware.store/Sites-RefArch-Site/en_US/Login-Show",
+        "loginPage": "/on/demandware.store/Sites-RefArch-Site/en_US/Account-Show?registration=false",
         "homePage": "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show",
         "email": "jsmith@email.com",
         "password": "Password123!",

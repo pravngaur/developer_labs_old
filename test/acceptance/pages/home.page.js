@@ -1,10 +1,9 @@
 const I = actor();
-const config = require('../../../codecept.conf').config;
 
 module.exports = {
     locators: {
         consentTrackModal: '.modal-content',
-        consentTrackAffirm: '.affirm',
+        consentTrackAffirm: '.affirm.btn.btn-primary',
         searchField: 'input.form-control.search-field',
         searchedImage: 'a>img.swatch-circle',
         loginButton: '.user-message',
@@ -117,13 +116,21 @@ module.exports = {
     subscribeList(email) {
         I.fillField('hpEmailSignUp', email);
     },
-    // Method is hardcoded to search for Women's tops from the menu
-    searchMenu() {
+    searchMenu(productPage) {
+        /*
+        Method is hardcoded to search for Women's tops from the menu.
+        This should be updated to take at most 3 parameters when hover is working
+        For each possible layer, can include the word to hover over rather than element
+        ie searchMenu('Womens', 'Clothing', 'Tops')
         I.waitForElement(this.locators.searchWomens);
         I.moveCursorTo(this.locators.searchWomens);
+        I.wait(2);
         I.waitForElement(this.locators.searchWomensClothing);
         I.moveCursorTo(this.locators.searchWomensClothing);
+        I.wait(2);
         I.waitForElement(this.locators.searchWomensTops);
         I.click(this.locators.searchWomensTops);
+        */
+       I.amOnPage(productPage);
     }
 };

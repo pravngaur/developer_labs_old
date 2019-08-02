@@ -1,7 +1,7 @@
-const { I, homePage, productPage, data } = inject();
+const { I, homePage, productPage, cartPage, data } = inject();
 
 Then('shopper searches for category from menu', () => {
-    homePage.searchMenu();
+    homePage.searchMenu(data.searchPages.womensTops);
 });
 
 Then('shopper opens product quick view from product display page', () => {
@@ -18,5 +18,7 @@ Then('shopper selects size from Quick View', () => {
 
 Then('shopper adds to cart from Quick View', () => {
     productPage.addToCartQuickView();
-    I.waitForVisible('.alert.alert-success.add-to-basket-alert');
+    I.waitForVisible(productPage.locators.alertAddToCart);
+    productPage.viewCart();
+    cartPage.verifyCartQuantity(1);
 });
