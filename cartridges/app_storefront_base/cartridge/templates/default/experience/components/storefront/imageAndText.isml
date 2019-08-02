@@ -6,7 +6,7 @@
 <div class="ITC-container">
     <div class="row ITC-row">
         <div class="col-12">
-            <figure class="ITC-figure image-component ${pdict.ITCText ? '' : 'image-component-no-text'}">
+            <figure class="ITC-figure image-component">
                 <picture>
                     <source srcset="${pdict.image.src.tablet}" media="(min-width: 768px)"/>
                     <source srcset="${pdict.image.src.desktop}" media="(min-width: 1024px)"/>
@@ -19,20 +19,22 @@
                         />
                     </a>
                 </picture>
-                <figcaption class="image-heading-container common-image-height">
-                    <div class="row ITC-image-heading-text">
-                        <div class="col-12 text-sm-left text-center">
-                            <span>
-                                <isprint value="${pdict.heading ? pdict.heading : ''}" encoding="off"/>
-                            </span>
+                <figcaption>
+                    <div class="image-heading-container common-image-height">
+                        <div class="row ITC-image-heading-text">
+                            <div class="col-12 text-sm-left text-center">
+                                <span>
+                                    <isprint value="${pdict.heading ? pdict.heading : ''}" encoding="off"/>
+                                </span>
+                            </div>
                         </div>
                     </div>
+                    <div class="col-12 ITC-text-underneath">
+                        <span>
+                            <isprint value="${pdict.ITCText ? pdict.ITCText : ''}" encoding="off"/>
+                        </span>
+                    </div>
                 </figcaption>
-                <div class="col-12 ITC-text-underneath">
-                    <span>
-                        <isprint value="${pdict.ITCText ? pdict.ITCText : ''}" encoding="off"/>
-                    </span>
-                </div>
             </figure>
         </div>
     </div>
