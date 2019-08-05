@@ -1,6 +1,6 @@
 
 {
-    "name": "category based recommendations (Einstein recommandation)",
+    "name": "category based recommendations (Einstein recommendation)",
     "description": "Shows products recommendations based on a category",
     "group": "storefront",
     "attribute_definition_groups": [
@@ -63,7 +63,7 @@
         {
             "id": "extraSmallConfiguration",
             "name": "Phone configurations",
-            "description": "Configuration for how the carousel will display on phones. Please put like sized items in the carousel",
+            "description": "Configuration for how the carousel will display on phones.",
             "attribute_definitions": [
                 {
                     "id": "xsCarouselIndicators",
@@ -89,7 +89,7 @@
         {
             "id": "smallConfiguration",
             "name": "Tablet configurations",
-            "description": "Configuration for how the carousel will display on tablets. Please put like sized items in the carousel",
+            "description": "Configuration for how the carousel will display on tablets.",
             "attribute_definitions": [
                 {
                     "id": "smCarouselIndicators",
@@ -115,7 +115,7 @@
         {
             "id": "mediumConfiguration",
             "name": "Desktop configurations",
-            "description": "Configuration for how the carousel will display on desktop. Please put like sized items in the carousel",
+            "description": "Configuration for how the carousel will display on desktop.",
             "attribute_definitions": [
                 {
                     "id": "mdCarouselIndicators",
