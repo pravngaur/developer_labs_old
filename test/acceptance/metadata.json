@@ -13,12 +13,16 @@
         "./test/acceptance/steps/homePage/emailSignup.steps.js",
         "./test/acceptance/steps/homePage/landHomePage.steps.js",
         "./test/acceptance/steps/productDetailPage/pdpSimpleLayout.steps.js",
-        "./test/acceptance/steps/checkoutPage/checkoutShipping.steps.js",
-        "./test/acceptance/steps/checkoutPage/orderConfirmation.steps.js",
+        "./test/acceptance/steps/productDetailPage/pdpQuickViewSearch.steps.js",
+        "./test/acceptance/steps/checkoutPage/editCart.steps.js",
         "./test/acceptance/steps/loginPage/checkOrder.steps.js",
         "./test/acceptance/steps/loginPage/createAccount.steps.js",
         "./test/acceptance/steps/loginPage/loginUser.steps.js",
-        "./test/acceptance/steps/productDetailPage/pdpQuickViewSearch.steps.js"
+        "./test/acceptance/steps/accountPage/editProfile.steps.js",
+        "./test/acceptance/steps/accountPage/changePassword.steps.js",
+        "./test/acceptance/steps/accountPage/addPayment.steps.js",
+        "./test/acceptance/steps/accountPage/addAddress.steps.js",
+        "./test/acceptance/steps/testSuites/happyPath.steps.js"
     ],
     "user1": {
         "fName": "John",
@@ -42,7 +46,9 @@
         "ccExpDate": "8/2023"
     },
     "product": {
+        "name": "Elbow Sleeve Ribbed Sweater",
         "quantity": "2",
+        "editCartQuantity": "1",
         "itemPrice": "$65.99",
         "totalItemPrice": "$131.98",
         "shipping": "$7.99",
@@ -50,27 +56,25 @@
         "estimatedTotal": "$146.97"
     },
     "product2": {
-        "name": "No-Iron Platinum Easy Care Sleeveless Fitted Shirt",
-        "color": "white",
-        "size": "12",
-        "productLinkQV": "/on/demandware.store/Sites-RefArch-Site/en_US/Product-ShowQuickView?pid=25113204M",
-        "filterSizeLink": "/on/demandware.store/Sites-RefArch-Site/en_US/Search-ShowAjax?cgid=womens-clothing-tops&prefn1=refinementColor&prefv1=White&prefn2=size&prefv2=12",
-        "filterPriceLink": "/on/demandware.store/Sites-RefArch-Site/en_US/Search-ShowAjax?cgid=womens-clothing-tops&pmin=50%2e00&pmax=100%2e00&prefn1=refinementColor&prefv1=White&prefn2=size&prefv2=12"
+        "name": "Modern Striped Dress Shirt",
+        "quantity": "1",
+        "color": "blue",
+        "size": "16R"
     },
     "product3": {
         "name": "Ribbed Cardigan.",
+        "quantity": "1",
         "color": "Ivory",
         "size": "M",
         "productLinkQV": "/on/demandware.store/Sites-RefArch-Site/en_US/Product-ShowQuickView?pid=25697194M"
     },
-    "shippingCosts": {
-        "ground_usps": "$9.99",
-        "2day": "$15.99",
-        "overnight": "$21.99",
-        "express": "$28.99"
-    },
     "searchPages": {
         "womensTops": "/on/demandware.store/Sites-RefArch-Site/en_US/Search-Show?cgid=womens-clothing-tops"
+    },
+    "orderHistory": {
+        "number": "00004201",
+        "email": "jsmith@email.com",
+        "zip": "11111"
     },
     "home": {
         "email": "test@user.com"
@@ -80,14 +84,10 @@
         "homePage": "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show",
         "email": "jsmith@email.com",
         "password": "Password123!",
-        "currentUrl": "https://dev20-sitegenesis-dw.demandware.net/on/demandware.store/Sites-RefArch-Site/en_US/Login-Show",
         "fName": "John",
         "lName": "Smith",
         "phone": "5555555555",
         "regEmail": "jsmith@email.com",
-        "orderNum": "12345",
-        "orderEmail": "order@email.com",
-        "orderZip": "10101",
         "loginHomeScreen": "span.user-message",
         "emailLogin": "#login-form-email",
         "passwordLogin": "#login-form-password",

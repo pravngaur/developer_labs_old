@@ -20,5 +20,5 @@ Then('shopper adds to cart from Quick View', () => {
     productPage.addToCartQuickView();
     I.waitForVisible(productPage.locators.alertAddToCart);
     productPage.viewCart();
-    cartPage.verifyCartQuantity(1);
+    cartPage.verifyCartQuantity(data.product3.quantity);
 });

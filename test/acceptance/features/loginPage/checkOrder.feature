@@ -1,7 +1,7 @@
 Feature: Check Order
     As a shopper, I want to be able to check an order status
 
-@login
+@checkOrder
     Scenario: Shopper is able to check order status from home page
         Given shopper goes to the Login Page
         Then shopper is able to fill out the order number, email, and zip code

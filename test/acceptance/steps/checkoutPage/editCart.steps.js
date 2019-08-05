@@ -1,18 +1,14 @@
 const { I, cartPage, productPage, data } = inject();
 
 Then('shopper edits products in cart', () => {
-    // go to cart
-    // productPage.viewCart();
-    // Verify both products on in the cart
-    // cartPage.verifyCartQuantity(1);
+    productPage.viewCart();
+    cartPage.verifyCartQuantity(+data.product.quantity + +data.product2.quantity);
     
-    // Delete Modern Striped Dress Shirt
-    // cartPage.removeProduct('wow');
+    cartPage.removeProduct(data.product2.name);
     
-    // Verify just one product is in the cart
-    // cartPage.verifyCart(1, data.product3.itemPrice, data.product3.totalItemPrice,
-        // data.product3.shipping, data.product3.tax, data.product3.estimatedTotal);
+    cartPage.verifyCart(data.product.quantity, data.product.itemPrice, data.product.totalItemPrice,
+        data.product.shipping, data.product.tax, data.product.estimatedTotal);
 
-    // Change quantity of Elbow Sleeve Ribbed Sweater
-    // cartPage.editQuantity();
+    cartPage.editQuantity(data.product.editCartQuantity);
+    cartPage.verifyCartQuantity(data.product.editCartQuantity);
 })

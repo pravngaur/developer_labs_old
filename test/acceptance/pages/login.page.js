@@ -18,38 +18,17 @@ module.exports = {
         orderNumber: '#trackorder-form-number',
         orderEmail: '#trackorder-form-email',
         orderZipCode: '#trackorder-form-zip',
-        checkOrderError: '.alert.alert-danger'
+        orderReceipt: '.card-body.order-total-summary'
     },
-    login(email, password, url) {
-        // Do preface to decide which choice to pick
-        // let desktopLocator = locate(this.locators.loginHomeScreen)
-        //     .withText('Login');
-        // let tabletLocator = locate('.fa.fa-sign-in')
-        //     .withAttr({'aria-hidden': 'true'});
-        // let mobileLocator = locate('.navbar-toggler.d-md-none')
-        //     .withAttr({'aria-label': 'Toggle navigation'});
-        // let failedTest = 'this class should never be found';
-        // console.log('work please');
-        // if(I.isExisting(desktopLocator).then((res) => {return res})) {
-        //     I.click(desktopLocator);
-        // } 
-        // else if(I.isExisting(tabletLocator).then((res) => {return res})) {
-        //     I.click(tabletLocator);
-        // } 
-        // else {
-        //     I.click(mobileLocator);
-        // }
-
+    login(email, password) {
         // fill login form
         I.waitForElement(this.locators.emailLogin);
         I.waitForElement(this.locators.passwordLogin);
         I.fillField(this.locators.emailLogin, email);
         I.fillField(this.locators.passwordLogin, password);
-
         // click login
         I.waitForElement(this.locators.primaryButton);
         I.click(this.locators.primaryButton);
-        I.seeInCurrentUrl(url);
     },
     createAccount(fName, lName, phone, email, password) {
         I.fillField(this.locators.firstName, fName);
@@ -64,5 +43,11 @@ module.exports = {
         I.fillField(this.locators.orderNumber, orderNum);
         I.fillField(this.locators.orderEmail, orderEmail);
         I.fillField(this.locators.orderZipCode, billingZip);
+    },
+    verifyOrderHistory(product) {
+        I.see(product.totalItemPrice, this.locators.orderReceipt);
+        I.see(product.shipping, this.locators.orderReceipt);
+        I.see(product.tax, this.locators.orderReceipt);
+        I.see(product.estimatedTotal, this.locators.orderReceipt);
     }
 };
