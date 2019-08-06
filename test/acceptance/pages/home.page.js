@@ -27,6 +27,7 @@ module.exports = {
         I.click(this.locators.searchedImage);
     },
     clickLogin() {
+        // Not currently in use.
         let desktopLocator = locate(this.locators.loginButton)
             .withText('Login');
         let tabletLocator = locate('.fa.fa-sign-in')
@@ -41,77 +42,6 @@ module.exports = {
         if(I.isExisting(desktopLocator).then((res) => {console.log('second res: ', res)})) {
             I.click(desktopLocator);
         }
-        // I.isExisting('.loginClass-Mobile')
-        //     .then((res) => {
-        //         console.log('loginClass-Mobile: ', res);
-        //         if (res.length !== 0) {
-        //             console.log("Clicking mobile");
-        //             I.click('.loginClass-Mobile');
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
-
-
-        // .then((res) => {
-        //     console.log("res 1: ", res);
-        //     if (res === true) {
-        //         console.log("Clicking desktop");
-        //         I.click(desktopLocator);
-        //     }   
-        // }).catch((err) => {
-        //     console.log(err);
-        // });
-
-        // I.isExisting(tabletLocator)
-        // .then((res) => {
-        //     console.log("res 2: ", res);
-        //     if (res === true) {
-        //         console.log("Clicking tablet");
-        //         I.click(tabletLocator);
-        //     }   
-        // }).catch((err) => {
-        //     console.log(err);
-        // });
-        
-        // let foo = I.isExisting(mobileLocator)
-        //     .then((res) => {
-        //         if (res.length !== 0) {
-        //             return true;
-        //         } else {
-        //             return false;
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
-        // console.log('AHDIWHJWDUHWDUHWDWUDHWUDKWH: ', foo);
-        // if(foo === true) {
-        //     I.click(mobileLocator);
-        // }
-        // I.wait(2);
-        // console.log('foo: ', foo, ' bar: ', bar);
-        // if(foo === true) {
-        //     I.click(desktopLocator);
-        // } else {
-        //     I.click(tabletLocator);
-        // }
-        // console.log('Test True: ', I.isExisting(desktopLocator));
-        // console.log('Test False: ', I.isExisting('wowowwowowoowwowoww'));
-        // console.log('WEEWOOWEEEWOOo: ', I.isExisting(desktopLocator));
-        // if(I.isExisting(tabletLocator)) {
-        //     console.log('DESKTOP/TABLET');
-        //     I.click(tabletLocator);
-        // // } else if(I.isExisting(tabletLocator)) {
-        // //     console.log('TABLET');
-        // //     I.click(tabletLocator);
-        // } else {
-        //     console.log('MOBILE');
-        //     I.click(mobileLocator);
-        // }
-        // console.log(I.click(this.locators.loginButton));
-        // I.click(this.locators.loginButton);
     },
     subscribeList(email) {
         I.fillField('hpEmailSignUp', email);
