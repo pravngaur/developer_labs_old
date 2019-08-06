@@ -10,5 +10,4 @@ Then('shopper edits products in cart', () => {
         data.product.shipping, data.product.tax, data.product.estimatedTotal);
 
     cartPage.editQuantity(data.product.editCartQuantity);
-    cartPage.verifyCartQuantity(data.product.editCartQuantity);
-})
+});

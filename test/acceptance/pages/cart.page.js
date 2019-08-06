@@ -40,7 +40,7 @@ module.exports = {
         let locator = locate(this.locators.removeProductBox)
             .find(this.locators.removeProductBtn)
             .withAttr({'data-name': productName});
-        I.waitForElement(locator);    
+        I.waitForElement(locator);
         I.click(locator);
         // Confirm remove product
         I.waitForElement(this.locators.removeProductModal);
@@ -51,6 +51,7 @@ module.exports = {
         });
     },
     editQuantity(quantity) {
+        I.wait(1);
         I.waitForElement(this.locators.editQuantitySelector);
         I.selectOption(this.locators.editQuantitySelector, quantity);
     }

@@ -5,6 +5,5 @@ Then('shopper clicks edit password', () => {
 });
 
 Then('shopper changes their password', () => {
-    // From "test/acceptance/features/accountPage/changePassword.feature"
     accountPage.changePassword(data.login.password, data.account.newPassword);
 });
