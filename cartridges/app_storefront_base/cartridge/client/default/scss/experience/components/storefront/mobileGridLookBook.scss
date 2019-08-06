@@ -1,0 +1,112 @@
+@import "bootstrap/scss/mixins/breakpoints";
+@import "../../variables";
+
+.look-book-layout {
+    //div[class^="col-"] {
+    //    padding-left: 7.5px;
+    //    padding-right: 7.5px;
+    //}
+
+    // try2
+    //div[class^="col-"]:not(:first-child) {padding-left: 7.5px;}
+    //div[class^="col-"]:not(:last-child) {padding-right: 7.5px;}
+    //div[class^="col-"]:first-child {
+    //    padding-left: 15px;
+    //}
+    //div[class^="col-"]:last-child {
+    //    padding-right: 15px;
+    //}
+
+    // try 2A
+    //div[class="custom-gutter"]:not(:first-child) {padding-left: 7.5px;}
+    //div[class="custom-gutter"]:not(:last-child) {padding-right: 7.5px;}
+    //div[class="custom-gutter"]:first-child {
+    //    padding-left: 15px;
+    //}
+    //div[class="custom-gutter"]:last-child {
+    //    padding-right: 15px;
+    //}
+
+    // try with class name custom-gutter#
+    //.look-book-set1 {
+    //
+    //    @include media-breakpoint-up(sm) {
+    //        .custom-gutter1 {
+    //            padding-left: 15px;
+    //            padding-right: 7.5px;
+    //        }
+    //        .custom-gutter2 {
+    //            padding-left: 7.5px;
+    //            padding-right: 15px;
+    //        }
+    //        .custom-gutter3 {
+    //            padding-left: 7.5px;
+    //            padding-right: 15px;
+    //        }
+    //    }
+    //}
+    //
+    //.look-book-set2 {
+    //
+    //    @include media-breakpoint-up(sm) {
+    //        .custom-gutter4 {
+    //            padding-left: 15px;
+    //            padding-right: 7.5px;
+    //        }
+    //        .custom-gutter5 {
+    //            padding-left: 7.5px;
+    //            padding-right: 7.5px;
+    //        }
+    //        .custom-gutter6 {
+    //            padding-left: 7.5px;
+    //            padding-right: 15px;
+    //        }
+    //    }
+    //}
+
+    // make all gutter 30px
+    .look-book-set1 {
+        .custom-gutter1 {
+            padding-bottom: 15px;
+        }
+
+        @include media-breakpoint-up(sm) {
+            .custom-gutter2 {
+                padding-bottom: 15px;
+            }
+        }
+    }
+
+
+    // try3
+    //div[class^="col-"]:first-child {
+    //    padding-left: 15px;
+    //}
+    //div[class^="col-"]:not(:first-child) {
+    //    padding-left: 0;
+    //    padding-right: 15px;
+    //}
+
+    // ----------------------------------------------------------------------
+
+    .show-more,
+    .hide-more {
+        text-align: center !important;
+
+        @include media-breakpoint-up(sm) {
+            display: none;
+        }
+    }
+
+    .look-book-set2 {
+        @include media-breakpoint-only(xs) {
+            display: block;
+        }
+    }
+
+    .look-book-set2.hide-set {
+        @include media-breakpoint-only(xs) {
+            display: none;
+        }
+    }
+}
