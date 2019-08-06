@@ -22,7 +22,14 @@ module.exports = {
         newPassword: '#newPassword.form-control',
         newPasswordConfirm: '#newPasswordConfirm.form-control',
         confirmEmail: '#confirmEmail.form-control',
-        confirmPassword: '#password.form-control'
+        confirmPassword: '#password.form-control',
+        addNew: '.card-link',
+        backToAccount: '.text-center.back-to-account-link',
+        viewAll: '.pull-right',
+        removeProductBtn: '.remove-btn.remove-payment.btn-light',
+        removeProductModal: '.modal-content',
+        removeProductConfirm: '.btn.btn-primary.delete-confirmation-btn'
+
     },
     addAddress(addressTitle, fName, lName, address1, address2, country, state, city, zipcode, phone) {
         I.fillField(this.locators.addressTitle, addressTitle);
@@ -40,9 +47,30 @@ module.exports = {
         I.waitForElement(this.locators.saveBtn);
         I.click(this.locators.saveBtn);
     },
+    clickAddAddress() {
+        let locator = locate(this.locators.addNew)
+            .withAttr({'aria-label': 'Add New Address'})
+        I.click(locator);
+    },
+    clickAddPayment() {
+        let locator = locate(this.locators.addNew)
+            .withAttr({'aria-label': 'Add New Payment'})
+        I.click(locator);
+    },
+    clickEditProfile() {
+        let locator = locate(this.locators.viewAll)
+            .withAttr({'aria-label': 'Edit Profile'})
+        I.click(locator);
+    },
+    clickEditPassword() {
+        let locator = locate(this.locators.viewAll)
+            .withAttr({'aria-label': 'Change Password'})
+        I.click(locator);
+    },
     addPayment(nameOnCard, ccNum, expMonth, expYear) {
         I.fillField(this.locators.nameOnCard, nameOnCard);
         I.fillField(this.locators.ccNum, ccNum);
+        I.scrollTo(this.locators.expMonth);
         I.waitForElement(this.locators.expMonth, expMonth);
         I.selectOption(this.locators.expMonth, expMonth);
         I.waitForElement(this.locators.expYear, expYear);
@@ -50,6 +78,23 @@ module.exports = {
         I.click(this.locators.defaultPayment);
         I.waitForElement(this.locators.saveBtn);
         I.click(this.locators.saveBtn);
+        I.waitForElement(this.locators.backToAccount);
+        I.click(this.locators.backToAccount);
+    },
+    viewAllPayments() {
+        let locator = locate(this.locators.viewAll)
+            .withAttr({'aria-label': 'View saved payment methods'})
+        I.click(locator);
+    },
+    removePayment() {
+        let locator = locate(this.locators.removeProductBtn).last()
+        I.click(locator);
+        I.waitForElement(this.locators.removeProductModal)
+        within(this.locators.removeProductModal, () => {
+            I.waitForElement(this.locators.removeProductConfirm)
+            I.wait(1);
+            I.click(this.locators.removeProductConfirm);
+        });
     },
     changePassword(currentPassword, newPassword) {
         I.fillField(this.locators.currentPassword, currentPassword);

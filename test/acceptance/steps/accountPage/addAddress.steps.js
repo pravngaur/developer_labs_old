@@ -1,8 +1,7 @@
 const { I, data, accountPage } = inject();
 
 Then('shopper clicks add new address', () => {
-    // From "test/acceptance/features/accountPage/addAddress.feature"
-    I.amOnPage('/on/demandware.store/Sites-RefArch-Site/en_US/Address-AddAddress');
+    accountPage.clickAddAddress();
 });
 
 Then('shopper fills out address information', () => {
