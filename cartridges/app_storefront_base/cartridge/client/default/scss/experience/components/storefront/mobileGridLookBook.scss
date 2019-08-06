@@ -1,0 +1,25 @@
+@import "bootstrap/scss/mixins/breakpoints";
+@import "../../variables";
+
+.look-book-layout {
+    .show-more,
+    .hide-more {
+        text-align: center !important;
+
+        @include media-breakpoint-up(sm) {
+            display: none;
+        }
+    }
+
+    .look-book-set2 {
+        @include media-breakpoint-only(xs) {
+            display: block;
+        }
+    }
+
+    .look-book-set2.hide-set {
+        @include media-breakpoint-only(xs) {
+            display: none;
+        }
+    }
+}
