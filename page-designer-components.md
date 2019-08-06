@@ -49,6 +49,108 @@
 
 -------------------
 
+#### Einstein Carousel
+
+*The carousel can be used to show product tiles components based on PID's coming from the Einstein engine.  It will use the productTile component and carousel component*
+
+##### Files:
+```
+./cartridges/app_storefront_base/cartridge/client/default/js/carousel.js 
+./cartridges/app_storefront_base/cartridge/client/default/js/einstienCarousel.js 
+./cartridges/app_storefront_base/cartridge/client/default/scss/experience/components/storefront/einsteinCarousel.scss
+./cartridges/app_storefront_base/cartridge/controllers/EinsteinCarousel.js
+./cartridges/app_storefront_base/cartridge/experience/components/storefront/einsteinCarousel.js
+./cartridges/app_storefront_base/cartridge/experience/components/storefront/einsteinCarousel.json
+./cartridges/app_storefront_base/cartridge/experience/components/storefront/einsteinCarouselCategory.js
+./cartridges/app_storefront_base/cartridge/experience/components/storefront/einsteinCarouselCategory.json 
+./cartridges/app_storefront_base/cartridge/experience/components/storefront/einsteinCarouselProduct.js 
+./cartridges/app_storefront_base/cartridge/experience/components/storefront/einsteinCarouselProduct.json
+./cartridges/app_storefront_base/cartridge/scripts/experience/storefront/carouselBuilder.js
+./cartridges/app_storefront_base/cartridge/templates/default/experience/components/storefront/einsteinCarousel.isml
+./cartridges/app_storefront_base/cartridge/templates/default/experience/components/storefront/product/productTileWrapper.isml
+./cartridges/app_storefront_base/cartridge/templates/resources/error.properties 
+./cartridges/app_storefront_base/cartridge/templates/resources/pageDesigner.properties
+./cartridges/app_storefront_base/cartridge/experience/editors/einstein/categoryrecommenderselector.js
+./cartridges/app_storefront_base/cartridge/experience/editors/einstein/categoryrecommenderselector.json
+./cartridges/bm_app_storefront_base/cartridge/experience/editors/einstein/globalrecommenderselector.js 
+./cartridges/app_storefront_base/cartridge/experience/editors/einstein/globalrecommenderselector.json
+./cartridges/app_storefront_base/cartridge/experience/editors/einstein/productrecommenderselector.js
+./cartridges/app_storefront_base/cartridge/static/default/experience/editors/einstein/recommenderselector.js 
+./cartridges/app_storefront_base/cartridge/templates/resources/experience/components/storefront/einsteinCarousel.properties
+./cartridges/app_storefront_base/cartridge/templates/resources/experience/components/storefront/einsteinCarouselCategory.properties
+./cartridges/app_storefront_base/cartridge/templates/resources/experience/components/storefront/einsteinCarouselProduct.properties
+```
+
+##### Notes:
+
+*The carousel has configurable display attributes for phone and desktop.*
+
+*This component reuses and overrides the Bootstrap Carousel.*
+
+*This component uses the product tile component isml file*
+
+*There are 3 einstein components to choose from.* 
+
+    1. Einstein recommendations Component recommenders
+        a. recently viewed
+        b. viewed-recently-einstein 
+        c. products-in-all-categories
+        d. home-page-recommender-mens
+        e. home-page-recommender-womens
+    2. Einstein recommendations (product) Component recommenders
+        a. Product to Product Recommendation
+        b. pdp
+    3. Einstein recommendations (category) Component recommenders
+        a. products-in-a-category-einstein
+
+-------------------
+
+#### Popular Categories
+
+*Has a text headline attribute.*
+
+
+##### Files:
+```
+./cartridges/app_storefront_base/cartridge/client/default/scss/experience/components/storefront/popularCategories.scss
+./cartridges/app_storefront_base/cartridge/experience/components/storefront/popularCategories.js 
+./cartridges/app_storefront_base/cartridge/experience/components/storefront/popularCategories.json 
+./cartridges/app_storefront_base/cartridge/templates/default/experience/components/storefront/popularCategories.isml
+./cartridges/app_storefront_base/cartridge/templates/resources/experience/components/storefront/popularCategories.properties
+```
+
+##### Notes:
+
+*Has a text headline attribute. This component will hold n number popular category components*
+
+
+-------------------
+
+#### Popular Category
+
+*Has a text headline attribute.*
+
+
+##### Files:
+```
+./cartridges/app_storefront_base/cartridge/client/default/scss/experience/components/storefront/popularCategory.scss
+./cartridges/app_storefront_base/cartridge/experience/components/storefront/popularCategory.js
+./cartridges/app_storefront_base/cartridge/experience/components/storefront/popularCategory.json
+./cartridges/app_storefront_base/cartridge/templates/default/experience/components/storefront/popularCategory.isml
+./cartridges/app_storefront_base/cartridge/templates/resources/experience/components/storefront/popularCategory.properties 
+
+```
+
+##### Notes:
+
+*This component requires a selection of a category. User can change the display name*
+
+*By default it will use one of the images assigned to the category (used in slots). If the fall back images are used there are two feilds to add inline css rules for adjusting the image display size and css positioning within the circle used to diaply in the isml template*
+
+*The image can be overwritten by using the image picker and choosing a focal point.*
+
+-------------------
+
 #### Shop Category
 
 *Navigation bar with links to categories.*
