@@ -28,7 +28,7 @@
                         </div>
                         <div class="row mainbanner-sub-text">
                             <div class="col-12 text-sm-left text-center">
-                                <span>${Resource.msg('pd.homepage.main.banner.shop.now','homePage',null)}</span>
+                                <p class="link-large">${Resource.msg('pd.homepage.main.banner.shop.now','homePage',null)}</p>
                             </div>
                         </div>
                     </figcaption>

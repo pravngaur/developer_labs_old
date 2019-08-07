@@ -14,7 +14,7 @@
                     ${pdict.image && pdict.changeTextColor ? 'shop-category-header-text-color-other' : ''}
                     text-center mw-100 m-auto"
         >
-            <isprint value="${pdict.textHeadline}">
+            <isprint value="${pdict.textHeadline}" encoding="off">
         </div>
         
         <div class="mw-100 m-auto">

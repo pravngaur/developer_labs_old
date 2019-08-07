@@ -9,11 +9,14 @@
     assets.addJs('/js/carousel.js');
 </isscript>
 
-<div class="row">
-    <div class="col-12">
-        <p class="text-center carousel-title">${pdict.textHeadline}</p>
+<isif condition="${pdict.textHeadline}">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-center carousel-title">${pdict.textHeadline}</h3>
+        </div>
     </div>
-</div>
+</isif>
+
 <div class="experience-storefront-carousel">
     <div id="${pdict.id}"
         class="carousel einstein-carousel hide-indicators slide carousel-xs-${pdict.slidesToDisplay.xs}

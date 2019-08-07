@@ -143,7 +143,22 @@
                 { "type_id": "layouts.3column" },
                 { "type_id": "layouts.4column" },
                 { "type_id": "layouts.gridcomponentlayout" },
-                { "type_id": "storefront.carousel" }
+                { "type_id": "storefront.carousel" },
+                { "type_id": "storefront.mobileGrid2r3c" },
+                { "type_id": "storefront.mobileGrid3r2c" },
+                { "type_id": "storefront.einsteinCarousel" },
+                { "type_id": "storefront.einsteinCarouselCategory" },
+                { "type_id": "storefront.einsteinCarouselProduct" },
+                { "type_id": "storefront.mainBanner" },
+                { "type_id": "storefront.photoTile" },
+                { "type_id": "storefront.imageAndText" },
+                { "type_id": "storefront.editorialRichText" },
+                { "type_id": "storefront.category" },
+                { "type_id": "storefront.campaignBanner" },
+                { "type_id": "storefront.popularCategories" },
+                { "type_id": "storefront.popularCategory" },
+                { "type_id": "storefront.productTile" },
+                { "type_id": "storefront.shopTheLook" }
             ]
         }
     ]

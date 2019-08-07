@@ -35,79 +35,23 @@
 }
 
 .image-heading-text {
-    font-size: $banner-heading-font-size-xs;
-    font-weight: $bold;
-    font-family: $imageText-font;
-    color: $imageText-color;
-
-    @include media-breakpoint-up(sm) {
-        font-size: $banner-heading-font-size-sm;
-    }
-
-    @include media-breakpoint-up(md) {
-        font-size: $banner-heading-font-size-md;
-    }
-
-    @include media-breakpoint-up(lg) {
-        font-size: $banner-heading-font-size-lg;
-    }
-
-    @include media-breakpoint-up(xl) {
-        font-size: $banner-heading-font-size-xl;
-    }
-}
-
-.col-4.col-sm-2 .ITC-image-heading-text {
-    font-size: $imageText-font-size-sm;
-}
-
-.grid-col.col-6.col-sm-4 {
-    .ITC-image-heading-text {
-        font-size: $imageText-font-size-sm;
-    }
-}
-
-.carousel-item.col-4.col-sm-3.col-md-2 .ITC-image-heading-text {
-    font-size: $imageText-font-size-sm;
+    font-family: $image-text-font;
+    color: $white-text;
 }
 
 .ITC-image-heading-text {
-    font-size: $imageText-font-size-sm;
-    font-weight: $bold;
-    font-family: $imageText-font;
-    color: $text-color;
-    @include media-breakpoint-up(sm) {
-        font-size: $imageText-font-size-md;
-    }
-
-    @include media-breakpoint-up(lg) {
-        font-size: $imageText-font-size-lg;
-    }
+    color: $banner-heading-text-color;
 }
 
-.image-heading-container .mainbanner-sub-text span {
-    font-size: 1.5em;
-    font-weight: $font-weight;
+.image-heading-container .mainbanner-sub-text p {
+    font-size: $banner-sub-text-font-size;
     font-family: $banner-font;
-    color: $text-color;
+    color: $banner-sub-text-color;
     text-decoration: underline;
-
-    @include media-breakpoint-down(xs) {
-        font-size: $imageText-font-size-sm;
-    }
 }
 
 .ITC-text-underneath span {
-    font-size: $imageText-font-size-sm;
     color: $black;
     padding-top: 0.75em;
     text-align: center;
-
-    @include media-breakpoint-down(md) {
-        font-size: 0.875em;
-    }
-
-    @include media-breakpoint-down(sm) {
-        font-size: 0.75em;
-    }
 }

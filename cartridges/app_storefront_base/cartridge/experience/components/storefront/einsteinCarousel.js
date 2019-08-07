@@ -20,7 +20,7 @@ module.exports.render = function (context) {
     var content = context.content;
 
     model = carouselBuilder.init(model, context);
-    model.textHeadline = content.textHeadline;
+    model.textHeadline = content.textHeadline ? content.textHeadline : null;
     model.displayRatings = context.content.displayRatings;
     model.swatches = true;
 
@@ -36,9 +36,6 @@ module.exports.render = function (context) {
     }
 
     model.productLoadUrl = URLUtils.abs('EinsteinCarousel-Load');
-    if (model.textHeadline === 'undefined' || model.textHeadline.length === 0) {
-        model.textHeadline = Resource.msg('pd.component.einsteinCarousel.headline', 'pageDesigner', null);
-    }
 
     model.id = 'carousel-' + PageRenderHelper.safeCSSClass(context.component.getID());
     return new Template('experience/components/storefront/einsteinCarousel').render(model).text;

@@ -28,13 +28,10 @@
     color: $shop-category-header-color;
     font-family: $shop-category-font;
     font-weight: $shop-category-header-font-weight;
-    font-size: $shop-category-header-font-size-def;
     @include media-breakpoint-up(lg) {
-        font-size: $shop-category-header-font-size-lg;
         padding-right: 4em;
     }
     @include media-breakpoint-up(md) {
-        font-size: $shop-category-header-font-size-md;
         padding-right: 2em;
     }
 }
@@ -45,14 +42,10 @@
 
 .shop-category-label {
     font-family: $shop-category-font;
+    font-size: $shop-category-font-size;
     text-decoration: underline;
     padding: 0.375em 0.5em;
-    font-size: $shop-category-label-font-size-def;
-    @include media-breakpoint-up(lg) {
-        font-size: $shop-category-label-font-size-lg;
-    }
     @include media-breakpoint-up(md) {
-        font-size: $shop-category-label-font-size-md;
         padding: 0.625em 1.5em;
     }
 }

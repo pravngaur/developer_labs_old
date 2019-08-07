@@ -74,7 +74,7 @@ function init(model, context) {
         || context.component.typeID === 'storefront.einsteinCarouselCategory') {
         model.numberOfSlides = context.content.count - 1;
     }
-    model.title = context.content.textHeadline;
+    model.title = context.content.textHeadline ? context.content.textHeadline : null;
     return model;
 }
 

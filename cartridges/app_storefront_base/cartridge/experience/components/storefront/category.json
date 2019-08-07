@@ -11,7 +11,7 @@
                 {
                     "id": "textHeadline",
                     "name": "Heading",
-                    "type": "string",
+                    "type": "markup",
                     "required": true
                 }
             ]

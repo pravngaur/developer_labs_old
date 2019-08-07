@@ -15,7 +15,7 @@ var PageRenderHelper = require('*/cartridge/experience/utilities/PageRenderHelpe
 module.exports.render = function (context) {
     var model = new HashMap();
     var content = context.content;
-    model.textHeadline = content.textHeadline;
+    model.textHeadline = content.textHeadline ? content.textHeadline : null;
 
     model.regions = PageRenderHelper.getRegionModelRegistry(context.component);
 

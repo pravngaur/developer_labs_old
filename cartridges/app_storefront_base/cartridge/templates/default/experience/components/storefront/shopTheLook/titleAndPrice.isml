@@ -2,9 +2,9 @@
     <!---product title--->
     <div class="row shopthelook-product-name">
         <div class="col-12 product-text-center">
-            <span>
+            <p>
                 <isprint value="${pdict.product.productName}" encoding="off"/>
-            </span>
+            </p>
         </div>
     </div>
     <!---display number of item in a set or price of a regular product--->
@@ -12,12 +12,9 @@
     <isif condition="${product.productType === 'set'}">
         <div class="row shopthelook-set-count">
             <div class="col-12 set-count-text-center">
-                <span>
-                    <isprint value="${pdict.itemsCount}" formatter="##" encoding="off"/>
-                </span>
-                <span>
-                    ${Resource.msg('pd.homepage.shop.the.look.set.items','homePage',null)}
-                </span>
+                <p>
+                    ${Resource.msgf('pd.homepage.shop.the.look.set.items', 'homePage', null, pdict.itemsCount)}
+                </p>
             </div>
         </div>
     <iselse>

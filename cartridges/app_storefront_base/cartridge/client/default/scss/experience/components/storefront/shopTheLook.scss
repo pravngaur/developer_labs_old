@@ -1,4 +1,6 @@
 @import "../../variables";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins/breakpoints";
 
 .shopthelook-image {
     display: block;
@@ -32,25 +34,21 @@
 }
 
 .shopthelook-text {
-    background-color: $text-color;
-    color: $black;
-    font-size: 1.125em;
-    padding-top: 0.25em;
-    height: 2.25em;
-    padding-left: 3em;
-    padding-right: 3em;
-    font-weight: 700;
+    background-color: $white;
+    color: $shop-the-look-link-color;
+    font-weight: $font-weight-huskie;
     margin-top: 1em;
+    border-color: $white;
+    border-radius: 0;
 }
 
 .shopthelook-set-count {
-    font-size: 1em;
     margin-top: 1em;
 }
 
 .shopthelook-figure-sm {
     .shopthelook-set-count {
-        color: $black;
+        color: $shop-the-look-link-color;
     }
 }
 
@@ -59,16 +57,19 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        color: $text-color;
-        font-size: 2em;
-        font-weight: 700;
+
+        @include media-breakpoint-up(sm) {
+            color: $shop-the-look-text-color;
+            font-weight: $shop-the-look-product-name-text-weight;
+            font-size: $shop-the-look-product-name-text-size;
+        }
     }
 
     .shopthelook-product-price .price {
-        color: $text-color;
+        color: $shop-the-look-text-color;
     }
 
     .shopthelook-set-count {
-        color: $text-color;
+        color: $shop-the-look-text-color;
     }
 }

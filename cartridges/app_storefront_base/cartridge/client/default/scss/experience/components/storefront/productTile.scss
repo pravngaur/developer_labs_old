@@ -3,20 +3,18 @@
 @import "../../../utilities/shapes";
 
 .product-tile-pd {
-    font-family: $product-tile-font;
+    font-family: $product-font;
 
     .product-tile-image {
         font-size: 1em;
 
         .quick-shop {
-            background-color: $white;
-            color: $black;
-            font-weight: 700;
-            text-decoration: none;
-            box-shadow: 0 0 0.25em $product-tile-quick-shop-box-shadow-color;
-            text-align: center;
-            box-sizing: border-box;
+            background-color: $product-tile-quick-shop-background-color;
+            color: $product-tile-quick-shop-text-color;
+            font-weight: $product-tile-quick-shop-font-weight;
+            box-shadow: 0 0 0.25em $product-quick-shop-box-shadow-color;
             position: relative;
+            border-radius: 0;
         }
     }
 
@@ -44,28 +42,28 @@
         }
 
         .product-name-link {
-            color: $product-tile-name-color;
+            color: $product-name-color;
         }
 
         .product-price {
-            font-weight: 700;
-            color: $product-tile-price-color;
+            font-weight: $price-font-weight;
+            color: $price-color;
 
             .strike-through {
                 text-decoration: line-through;
-                color: $product-tile-price-strike-through-color;
+                color: $strike-through-price-color;
             }
 
             .sales.reduced-price {
-                color: $product-tile-price-reduced-price-color;
+                color: $reduced-price-color;
             }
         }
 
         .product-ratings {
             .rating-number {
                 font-size: 0.75em;
-                font-weight: 300;
-                color: $product-tile-ratings-number-color;
+                font-weight: $product-ratings-weight;
+                color: $product-ratings-number-color;
             }
         }
 
@@ -107,14 +105,14 @@
                         height: 1.25em;
                         border: 0.1875em solid white;
                         padding: 0;
-                        box-shadow: 0 0 0 0.125em $product-tile-swatch-box-shadow-color;
+                        box-shadow: 0 0 0 0.125em $product-swatch-shadow-color;
                         box-sizing: content-box;
                     }
                 }
 
                 .swatch-li:nth-child(1) {
                     .swatch-button-li {
-                        box-shadow: 0 0 0 0.125em $product-tile-swatch-box-shadow-active-color;
+                        box-shadow: 0 0 0 0.125em $product-swatch-shadow-active-color;
                     }
                 }
 

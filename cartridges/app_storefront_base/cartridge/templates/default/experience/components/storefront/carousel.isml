@@ -4,11 +4,13 @@
     assets.addJs('/js/carousel.js');
 </isscript>
 
-<div class="row">
-    <div class="col-12">
-        <p class="text-center carousel-title">${pdict.title}</p>
+<isif condition="${pdict.title}">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-center carousel-title">${pdict.title}</h3>
+        </div>
     </div>
-</div>
+</isif>
 
 <div id="${pdict.id}"
      class="carousel slide carousel-xs-${pdict.slidesToDisplay.xs}
