@@ -28,6 +28,9 @@ module.exports = {
         addToCartSuccess: '.add-to-cart-messages .alert-success',
         addToCartFailure: '.add-to-cart-messages .alert-danger',
         filterColor: '.swatch-circle-',
+        filterSize: 'span.null',
+        filterPrice: 'span',
+        productTotals: '.result-count.text-center',
         qv_ProductBtn: '.quickview.hidden-sm-down',
         qv_ColorBtn: '.color-attribute',
         qv_SizeSelect: '.custom-select.form-control.select-size',
@@ -61,32 +64,40 @@ module.exports = {
     filterProductColor(color) {
         I.waitForElement(this.locators.filterColor + color);
         I.click(this.locators.filterColor + color);
+        I.wait(1);
     },
-    filterProductSize(filterSizeLink) {
-        let locator = locate(this.locators.button)
-            .withAttr({'data-href': filterSizeLink});
-        I.scrollTo(locator);
+    filterProductSize(filterSizeTotal) {
+        let locator = locate(this.locators.filterSize)
+            .withAttr({ 'aria-hidden': 'true' })
+            .withText(filterSizeTotal);
         I.waitForElement(locator);
         I.click(locator);
+        I.wait(1);
     },
-    filterProductPrice(filterPriceLink) {
-        let locator = locate(this.locators.button)
-            .withAttr({'data-href': filterPriceLink});
-        I.scrollTo(locator);
+    filterProductPrice(filterPriceTotal) {
+        let locator = locate(this.locators.filterPrice)
+            .withAttr({ 'aria-hidden': 'true' })
+            .withText(filterPriceTotal);
         I.waitForElement(locator);
         I.click(locator);
+        I.wait(1);
     },
-    openProductQuickView(pdpQuickViewLink) {
-        let locator = locate('.quickview.hidden-sm-down')
-            .withAttr({href: '/on/demandware.store/Sites-RefArch-Site/en_US/Product-ShowQuickView?pid=25697194M'});
-        //I.wait(50);
+    verifyProductTotals(totalItems) {
+        let locator = locate(this.locators.productTotals)
+            .find(this.locators.filterPrice);
         I.waitForElement(locator);
-        I.scrollTo(locator);
-        I.click(locator);
+        I.see(totalItems, locator);
     },
+    // openProductQuickView(pdpQuickViewLink) {
+    //     let locator = locate('.quickview.hidden-sm-down')
+    //         .withAttr({ href: '/on/demandware.store/Sites-RefArch-Site/en_US/Product-ShowQuickView?pid=25697194M' });
+    //     I.waitForElement(locator);
+    //     I.scrollTo(locator);
+    //     I.click(locator);
+    // },
     selectQuickViewColor(color) {
         let locator = locate(this.locators.qv_ColorBtn)
-            .withAttr({'aria-label': 'Select Color ' + color})
+            .withAttr({ 'aria-label': 'Select Color ' + color });
         I.waitForElement(locator);
         I.click(locator);
     },

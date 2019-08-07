@@ -1,7 +1,7 @@
-const { I, data, accountPage } = inject();
+const { data, accountPage } = inject();
 
 Then('shopper clicks add new payment', () => {
-    accountPage.clickAddPayment()
+    accountPage.clickAddPayment();
 });
 
 Then('shopper fills out their payment information', () => {

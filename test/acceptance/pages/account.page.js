@@ -49,22 +49,22 @@ module.exports = {
     },
     clickAddAddress() {
         let locator = locate(this.locators.addNew)
-            .withAttr({'aria-label': 'Add New Address'})
+            .withAttr({ 'aria-label': 'Add New Address' });
         I.click(locator);
     },
     clickAddPayment() {
         let locator = locate(this.locators.addNew)
-            .withAttr({'aria-label': 'Add New Payment'})
+            .withAttr({ 'aria-label': 'Add New Payment' });
         I.click(locator);
     },
     clickEditProfile() {
         let locator = locate(this.locators.viewAll)
-            .withAttr({'aria-label': 'Edit Profile'})
+            .withAttr({ 'aria-label': 'Edit Profile' });
         I.click(locator);
     },
     clickEditPassword() {
         let locator = locate(this.locators.viewAll)
-            .withAttr({'aria-label': 'Change Password'})
+            .withAttr({ 'aria-label': 'Change Password' });
         I.click(locator);
     },
     addPayment(nameOnCard, ccNum, expMonth, expYear) {
@@ -83,15 +83,15 @@ module.exports = {
     },
     viewAllPayments() {
         let locator = locate(this.locators.viewAll)
-            .withAttr({'aria-label': 'View saved payment methods'})
+            .withAttr({ 'aria-label': 'View saved payment methods' });
         I.click(locator);
     },
     removePayment() {
-        let locator = locate(this.locators.removeProductBtn).last()
+        let locator = locate(this.locators.removeProductBtn).last();
         I.click(locator);
-        I.waitForElement(this.locators.removeProductModal)
+        I.waitForElement(this.locators.removeProductModal);
         within(this.locators.removeProductModal, () => {
-            I.waitForElement(this.locators.removeProductConfirm)
+            I.waitForElement(this.locators.removeProductConfirm);
             I.wait(1);
             I.click(this.locators.removeProductConfirm);
         });

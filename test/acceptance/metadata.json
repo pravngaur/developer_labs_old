@@ -14,6 +14,7 @@
         "./test/acceptance/steps/homePage/landHomePage.steps.js",
         "./test/acceptance/steps/productDetailPage/pdpSimpleLayout.steps.js",
         "./test/acceptance/steps/productDetailPage/pdpQuickViewSearch.steps.js",
+        "./test/acceptance/steps/productDetailPage/pdpProductFilter.steps.js",
         "./test/acceptance/steps/checkoutPage/editCart.steps.js",
         "./test/acceptance/steps/loginPage/checkOrder.steps.js",
         "./test/acceptance/steps/loginPage/createAccount.steps.js",
@@ -75,6 +76,14 @@
         "number": "00004201",
         "email": "jsmith@email.com",
         "zip": "11111"
+    },
+    "filterProduct": {
+        "color": "white",
+        "colorTotalItems": "78 Results",
+        "size": "12",
+        "sizeTotalItems": "10 Results",
+        "price": "$20 - $49.99",
+        "priceTotalItems": "2 Results"
     },
     "home": {
         "email": "test@user.com"

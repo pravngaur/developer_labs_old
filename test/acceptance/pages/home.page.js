@@ -26,23 +26,23 @@ module.exports = {
         I.waitForElement(this.locators.searchedImage);
         I.click(this.locators.searchedImage);
     },
-    clickLogin() {
-        // Not currently in use.
-        let desktopLocator = locate(this.locators.loginButton)
-            .withText('Login');
-        let tabletLocator = locate('.fa.fa-sign-in')
-            .withAttr({'aria-hidden': 'true'});
-        let mobileLocator = locate('.navbar-toggler.d-md-none')
-            .withAttr({'aria-label': 'Toggle navigation'});
-        let failedTest = 'this class should never be found';
+    // clickLogin() {
+    //     // Not currently in use.
+    //     let desktopLocator = locate(this.locators.loginButton)
+    //         .withText('Login');
+    //     let tabletLocator = locate('.fa.fa-sign-in')
+    //         .withAttr({'aria-hidden': 'true'});
+    //     let mobileLocator = locate('.navbar-toggler.d-md-none')
+    //         .withAttr({'aria-label': 'Toggle navigation'});
+    //     let failedTest = 'this class should never be found';
 
-        if(I.isExisting(failedTest).then((res) => {console.log('first res: ', res)})) {
-            console.log('WOOOOOP');
-        }
-        if(I.isExisting(desktopLocator).then((res) => {console.log('second res: ', res)})) {
-            I.click(desktopLocator);
-        }
-    },
+    //     if(I.isExisting(failedTest).then((res) => {console.log('first res: ', res)})) {
+    //         console.log('WOOOOOP');
+    //     }
+    //     if(I.isExisting(desktopLocator).then((res) => {console.log('second res: ', res)})) {
+    //         I.click(desktopLocator);
+    //     }
+    // },
     subscribeList(email) {
         I.fillField('hpEmailSignUp', email);
     },
@@ -61,6 +61,6 @@ module.exports = {
         I.waitForElement(this.locators.searchWomensTops);
         I.click(this.locators.searchWomensTops);
         */
-       I.amOnPage(productPage);
+        I.amOnPage(productPage);
     }
 };

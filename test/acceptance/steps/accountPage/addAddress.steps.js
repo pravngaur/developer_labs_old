@@ -1,4 +1,4 @@
-const { I, data, accountPage } = inject();
+const { data, accountPage } = inject();
 
 Then('shopper clicks add new address', () => {
     accountPage.clickAddAddress();

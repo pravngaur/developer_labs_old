@@ -1,4 +1,4 @@
-const { I, data, accountPage } = inject();
+const { data, accountPage } = inject();
 
 Then('shopper clicks edit profile', () => {
     accountPage.clickEditProfile();

@@ -39,13 +39,13 @@ module.exports = {
         // Click x to remove product
         let locator = locate(this.locators.removeProductBox)
             .find(this.locators.removeProductBtn)
-            .withAttr({'data-name': productName});
+            .withAttr({ 'data-name': productName });
         I.waitForElement(locator);
         I.click(locator);
         // Confirm remove product
         I.waitForElement(this.locators.removeProductModal);
         within(this.locators.removeProductModal, () => {
-            I.waitForElement(this.locators.removeProductModalConfirm)
+            I.waitForElement(this.locators.removeProductModalConfirm);
             I.wait(1);
             I.click(this.locators.removeProductModalConfirm);
         });
