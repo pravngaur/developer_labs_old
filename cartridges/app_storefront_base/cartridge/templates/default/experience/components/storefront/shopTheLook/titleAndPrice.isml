@@ -1,8 +1,8 @@
 <figcaption class="shopthelook-heading-container">
     <!---product title--->
     <div class="row shopthelook-product-name">
-        <div class="col-12 product-text-center">
-            <p>
+        <div class="col-12">
+            <p class="product-text-center">
                 <isprint value="${pdict.product.productName}" encoding="off"/>
             </p>
         </div>
