@@ -3,7 +3,7 @@ Feature: Search for product using menu then add to cart from Quick View
     then add the product to cart using Quick View
 
 @quickview
-    Scenario:
+    Scenario: Shopper is able to shop using a product's quick view
         When shopper selects yes or no for tracking consent
         Given shopper searches for category from menu
         And shopper opens product quick view from product display page

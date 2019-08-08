@@ -88,13 +88,13 @@ module.exports = {
         I.waitForElement(locator);
         I.see(totalItems, locator);
     },
-    // openProductQuickView(pdpQuickViewLink) {
-    //     let locator = locate('.quickview.hidden-sm-down')
-    //         .withAttr({ href: '/on/demandware.store/Sites-RefArch-Site/en_US/Product-ShowQuickView?pid=25697194M' });
-    //     I.waitForElement(locator);
-    //     I.scrollTo(locator);
-    //     I.click(locator);
-    // },
+    openProductQuickView(pdpQuickViewLink) {
+        let locator = locate(this.locators.qv_ProductBtn)
+            .withAttr({ href: pdpQuickViewLink });
+        I.waitForElement(locator);
+        I.scrollTo(locator);
+        I.click(locator);
+    },
     selectQuickViewColor(color) {
         let locator = locate(this.locators.qv_ColorBtn)
             .withAttr({ 'aria-label': 'Select Color ' + color });

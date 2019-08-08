@@ -3,7 +3,7 @@ Feature: Follow the happy path of a guest user
     shipping information/billing information in checkout.
 
 @happyPath
-    Scenario: Shopper is able to add a product to a cart
+    Scenario: Guest shopper should be able to follow the checkout flow
         When shopper selects yes or no for tracking consent
         Given Shopper searches for "Elbow Sleeve Ribbed Sweater"
         Then selects size "S"

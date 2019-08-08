@@ -3,7 +3,7 @@ Feature: Edit products within the cart
     and edit my cart before entering checkout.
 
 @editCart
-    Scenario:
+    Scenario: Shopper is able to edit products in their cart
         When shopper selects yes or no for tracking consent
         Given Shopper searches for "Elbow Sleeve Ribbed Sweater"
         Then selects size "S"
