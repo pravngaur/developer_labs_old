@@ -10,7 +10,7 @@ Your feedback on the ease-of-use and limitations of this new architecture is inv
 
 # The latest version
 
-The latest version of SFRA is 4.1.1
+The latest version of SFRA is 4.2.0
 
 # Getting Started
 
@@ -96,3 +96,6 @@ npm run test:integration -- --baseUrl devxx-sitegenesis-dw.demandware.net
 
 # [Contributing to SFRA](./CONTRIBUTING.md)
 
+
+#Page Designer Components for Storefront
+See: [Page Desinger Components](other_file.md)

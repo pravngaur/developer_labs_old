@@ -594,7 +594,17 @@ server.post('AddBonusProducts', function (req, res, next) {
     for (var i = 0; i < data.bonusProducts.length; i++) {
         totalQty += data.bonusProducts[i].qty;
     }
-    if (totalQty > qtyAllowed) {
+
+    if (totalQty === 0) {
+        res.json({
+            errorMessage: Resource.msg(
+                'error.alert.choiceofbonus.no.product.selected',
+                'product',
+                null),
+            error: true,
+            success: false
+        });
+    } else if (totalQty > qtyAllowed) {
         res.json({
             errorMessage: Resource.msgf(
                 'error.alert.choiceofbonus.max.quantity',
@@ -713,14 +723,26 @@ server.get('GetProduct', function (req, res, next) {
 
     var requestQuantity = requestPLI.quantityValue.toString();
 
+    // If the product has options
+    var optionProductLineItems = requestPLI.getOptionProductLineItems();
+    var selectedOptions = null;
+    var selectedOptionValueId = null;
+    if (optionProductLineItems && optionProductLineItems.length) {
+        var optionProductLineItem = optionProductLineItems.iterator().next();
+        selectedOptionValueId = optionProductLineItem.optionValueID;
+        selectedOptions = [{ optionId: optionProductLineItem.optionID, selectedValueId: optionProductLineItem.optionValueID, productId: requestPLI.productID }];
+    }
+
     var pliProduct = {
         pid: requestPLI.productID,
-        quantity: requestQuantity
+        quantity: requestQuantity,
+        options: selectedOptions
     };
 
     var context = {
         product: ProductFactory.get(pliProduct),
         selectedQuantity: requestQuantity,
+        selectedOptionValueId: selectedOptionValueId,
         uuid: requestUuid,
         updateCartUrl: URLUtils.url('Cart-EditProductLineItem'),
         closeButtonText: Resource.msg('link.editProduct.close', 'cart', null),
@@ -752,10 +774,6 @@ server.post('EditProductLineItem', function (req, res, next) {
     var cartHelper = require('*/cartridge/scripts/cart/cartHelpers');
     var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
 
-    var uuid = req.form.uuid;
-    var productId = req.form.pid;
-    var updateQuantity = parseInt(req.form.quantity, 10);
-
     var currentBasket = BasketMgr.getCurrentBasket();
 
     if (!currentBasket) {
@@ -764,9 +782,13 @@ server.post('EditProductLineItem', function (req, res, next) {
             error: true,
             redirectUrl: URLUtils.url('Cart-Show').toString()
         });
-
         return next();
     }
+
+    var uuid = req.form.uuid;
+    var productId = req.form.pid;
+    var selectedOptionValueId = req.form.selectedOptionValueId;
+    var updateQuantity = parseInt(req.form.quantity, 10);
 
     var productLineItems = currentBasket.allProductLineItems;
     var requestLineItem = collections.find(productLineItems, function (item) {
@@ -829,7 +851,6 @@ server.post('EditProductLineItem', function (req, res, next) {
     var error = false;
     if (canBeUpdated) {
         var product = ProductMgr.getProduct(productId);
-
         try {
             Transaction.wrap(function () {
                 if (newPidAlreadyExist) {
@@ -844,8 +865,17 @@ server.post('EditProductLineItem', function (req, res, next) {
                     requestLineItem.replaceProduct(product);
                 }
 
-                requestLineItem.setQuantityValue(updateQuantity);
+                // If the product has options
+                var optionModel = product.getOptionModel();
+                if (optionModel && optionModel.options && optionModel.options.length) {
+                    var productOption = optionModel.options.iterator().next();
+                    var productOptionValue = optionModel.getOptionValue(productOption, selectedOptionValueId);
+                    var optionProductLineItems = requestLineItem.getOptionProductLineItems();
+                    var optionProductLineItem = optionProductLineItems.iterator().next();
+                    optionProductLineItem.updateOptionValue(productOptionValue);
+                }
 
+                requestLineItem.setQuantityValue(updateQuantity);
                 basketCalculationHelpers.calculateTotals(currentBasket);
             });
         } catch (e) {

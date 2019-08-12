@@ -17,7 +17,7 @@ module.exports.render = function (context) {
     model.page = page;
 
     // automatically register configured regions
-    var metaDefinition = require('~/cartridge/experience/pages/homepage.json');
+    var metaDefinition = require('*/cartridge/experience/pages/homepage.json');
     model.regions = new RegionModelRegistry(page, metaDefinition);
 
     // Determine seo meta data.
@@ -29,7 +29,8 @@ module.exports.render = function (context) {
     model.CurrentPageMetaData.keywords = page.pageKeywords;
 
     if (PageRenderHelper.isInEditMode()) {
-        dw.system.HookMgr.callHook('app.experience.editmode', 'editmode');
+        var HookManager = require('dw/system/HookMgr');
+        HookManager.callHook('app.experience.editmode', 'editmode');
     }
 
     // render the page
