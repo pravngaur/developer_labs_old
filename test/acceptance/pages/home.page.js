@@ -12,7 +12,12 @@ module.exports = {
         emailSignup: '.email-signup-alert',
         searchWomens: '#womens.nav-link.dropdown-toggle',
         searchWomensClothing: '#womens-clothing.dropdown-link.dropdown-toggle',
-        searchWomensTops: '#womens-clothing-tops.dropdown-link'
+        searchWomensTops: '#womens-clothing-tops.dropdown-link',
+        searchStoreZipCode: '#store-postal-code',
+        searchStoreBtn: '.btn-storelocator-search',
+        searchStoreResults: '.results.striped',
+        searchStoreCard: '.card-body',
+        searchStoreRadius: '.form-control.custom-select.radius',
     },
     accept() {
         I.waitForElement(this.locators.consentTrackModal);
@@ -62,5 +67,21 @@ module.exports = {
         I.click(this.locators.searchWomensTops);
         */
         I.amOnPage(productPage);
+    },
+    searchForStore(zip) {
+        I.waitForElement(this.locators.searchStoreZipCode);
+        I.fillField(this.locators.searchStoreZipCode, zip);
+        I.click(this.locators.searchStoreBtn);
+    },
+    verifyStoreResults(numStores) {
+        I.wait(1);
+        I.waitForElement(this.locators.searchStoreResults);
+        let locator = locate(this.locators.searchStoreCard)
+            .inside(this.locators.searchStoreResults);
+        I.seeNumberOfVisibleElements(locator, numStores);
+    },
+    changeStoreRadius(radius) {
+        I.waitForElement(this.locators.searchStoreRadius);
+        I.selectOption(this.locators.searchStoreRadius, radius);
     }
 };

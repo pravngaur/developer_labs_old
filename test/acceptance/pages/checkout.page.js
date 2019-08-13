@@ -203,5 +203,9 @@ module.exports = {
         I.see(shipping, this.locators.orderConf_totalSection);
         I.see(tax, this.locators.orderConf_totalSection);
         I.see(estimatedTotal, this.locators.orderConf_totalSection);
+    },
+    clickEnterAddress(product) {
+        let locator = locate('.card')
+            .withDescendant('.line-item-name')
     }
 };
