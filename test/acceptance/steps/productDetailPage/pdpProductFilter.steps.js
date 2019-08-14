@@ -1,5 +1,9 @@
 const { data, productPage } = inject();
 
+Then('shopper filters product by option', () => {
+    productPage.filterProductOption(data.filterProduct.option, data.filterProduct.productName);
+});
+
 Then('shopper filters product by color', () => {
     productPage.filterProductColor(data.filterProduct.color);
     productPage.verifyProductTotals(data.filterProduct.colorTotalItems);

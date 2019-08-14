@@ -64,7 +64,6 @@ module.exports = {
     filterProductColor(color) {
         I.waitForElement(this.locators.filterColor + color);
         I.click(this.locators.filterColor + color);
-        I.wait(1);
     },
     filterProductSize(filterSizeTotal) {
         let locator = locate(this.locators.filterSize)
@@ -72,7 +71,6 @@ module.exports = {
             .withText(filterSizeTotal);
         I.waitForElement(locator);
         I.click(locator);
-        I.wait(1);
     },
     filterProductPrice(filterPriceTotal) {
         let locator = locate(this.locators.filterPrice)
@@ -80,9 +78,21 @@ module.exports = {
             .withText(filterPriceTotal);
         I.waitForElement(locator);
         I.click(locator);
-        I.wait(1);
+    },
+    filterProductOption(filterOption, firstProductName) {
+        let locatorOption = locate('.custom-select')
+            .withAttr({'aria-label': 'Sort By'});
+        I.waitForElement(locatorOption);
+        I.scrollTo(locatorOption);
+        I.selectOption(locatorOption, filterOption);
+        I.wait(1.5);
+
+        let locatorProduct = locate('.pdp-link a.link').first();
+        I.waitForElement(locatorProduct);
+        I.see(firstProductName, locatorProduct);
     },
     verifyProductTotals(totalItems) {
+        I.wait(1.5)
         let locator = locate(this.locators.productTotals)
             .find(this.locators.filterPrice);
         I.waitForElement(locator);

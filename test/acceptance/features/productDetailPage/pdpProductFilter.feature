@@ -10,3 +10,4 @@ Feature: Search for a product and use the product filter options to condense opt
         And shopper filters product by color
         And shopper filters product by size
         And shopper filters product by price
+        And shopper filters product by option

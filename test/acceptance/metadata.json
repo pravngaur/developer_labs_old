@@ -84,7 +84,9 @@
         "size": "12",
         "sizeTotalItems": "10 Results",
         "price": "$20 - $49.99",
-        "priceTotalItems": "2 Results"
+        "priceTotalItems": "2 Results",
+        "option": "Price Low To High",
+        "productName": "Long Sleeve Seamed Button Front Shirt"
     },
     "storeLocator": {
         "pageURL": "/on/demandware.store/Sites-RefArch-Site/en_US/Stores-Find?showMap=true&horizontalView=true&isForm=true",
