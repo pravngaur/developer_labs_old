@@ -2,10 +2,13 @@
     "include": {
         "data": "./test/acceptance/metadata.json",
         "homePage": "./test/acceptance/pages/home.page.js",
+        "pdHomePage": "./test/acceptance/pages/home.pagePD.js",
         "productPage": "./test/acceptance/pages/product.page.js",
         "cartPage": "./test/acceptance/pages/cart.page.js"
     },
     "gherkin_steps": [
+        "./test/acceptance/steps/pdHomePage/PopularCategories.steps.js",
+        "./test/acceptance/steps/homePage/addToCartQuickView.steps.js",
         "./test/acceptance/steps/homePage/addProductToCart.steps.js",
         "./test/acceptance/steps/homePage/emailSignup.steps.js",
         "./test/acceptance/steps/homePage/landHomePage.steps.js",
@@ -14,6 +17,13 @@
     "home": {
         "email": "test@user.com"
     },
+    "pdPopularCat": {
+        "pdHomePage": "/on/demandware.store/Sites-RefArch-Site/en_US/Page-Show?cid=homepage-example",
+        "index": 1,
+        "expectedNumberOfCats": 6
+
+    },
+    "pdHomePage": "/on/demandware.store/Sites-RefArch-Site/en_US/Page-Show?cid=homepage-example",
     "login": {
         "loginPage": "/on/demandware.store/Sites-RefArch-Site/en_US/Login-Show",
         "homePage": "/on/demandware.store/Sites-RefArch-Site/en_US/Home-Show",
@@ -52,5 +62,10 @@
         "name": "John Smith",
         "addressTitle": "Apartment",
         "newPassword": "Password123!"
+    },
+    "product2": {
+        "name": "3/4 Sleeve V-Neck Top",
+        "color": "Icy Mint",
+        "size": "M"
     }
 }
