@@ -204,8 +204,19 @@ module.exports = {
         I.see(tax, this.locators.orderConf_totalSection);
         I.see(estimatedTotal, this.locators.orderConf_totalSection);
     },
-    clickEnterAddress(product) {
-        let locator = locate('.card')
-            .withDescendant('.line-item-name')
+    multiShipEnabled() {
+        I.waitForElement('.checkout-checkbox.custom-control-label');
+        I.click('.checkout-checkbox.custom-control-label');
+    },
+    clickEnterAddress(index) {
+        let locator = locate('.multi-ship-action-buttons')
+            .find('button.btn.btn-outline-primary.col-12.btn-enter-multi-ship');
+            // .withAttr({'data-action': 'enter'})
+            // .first()
+        I.waitForElement(locator);
+        I.scrollTo(locator);
+        // I.wait(300);
+        I.waitForElement('button.btn.btn-outline-primary.col-12.btn-enter-multi-ship');
+        I.click('button.btn.btn-outline-primary.col-12.btn-enter-multi-ship');
     }
 };

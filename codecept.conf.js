@@ -26,47 +26,25 @@ const HOST = DEFAULT_HOST || process.env.HOST;
 
 // Here is where you can target specific browsers/configuration to run on sauce labs.
 const userSpecificBrowsers = {
-    chromePhone: {
+    phone: {
         browser: 'chrome',
         desiredCapabilities: {
             chromeOptions: {
                 mobileEmulation: {
-                    deviceName: "Galaxy S5"
+                    deviceName: "iPhone X"
                 }
             }
         }
     },
-    chromeTablet: {
+    tablet: {
         browser: 'chrome',
         desiredCapabilities: {
             chromeOptions: {
               mobileEmulation: {
-                deviceName: "Kindle Fire HDX"
+                deviceName: "iPad"
               }
             }
           }
-    },
-    firefox: {
-        capabilities: {
-            'sauce:options': {
-                seleniumVersion: '3.11.0'
-            },
-        }
-    },
-    edge: {
-        capabilities: {
-            'sauce:options': {
-                seleniumVersion: '3.11.0'
-            }
-        }
-    },
-    safari: {
-        windowSize: 'maximize',
-        capabilities: {
-            'sauce:options': {
-                seleniumVersion: '3.11.0'
-            }
-        }
     }
 }
 

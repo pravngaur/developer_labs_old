@@ -1,7 +1,7 @@
 Feature: Multiship during checkout
     As a shopper I want to be ship to multiple addresses based on the product
 
-@multiShip
+@multiShip @mobile
     Scenario: Shopper is able to edit products in their cart
         When shopper selects yes or no for tracking consent
         Given Shopper searches for "Elbow Sleeve Ribbed Sweater"
@@ -13,3 +13,4 @@ Feature: Multiship during checkout
         Then shopper selects checkout from cart
         And shopper selects checkout as guest
         Then shopper ships to more than one address
+        Then shopper proceeds to payment section
