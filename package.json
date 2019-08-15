@@ -17,7 +17,7 @@
     "test:acceptance:parallel": "npx codeceptjs run-multiple parallel --plugins retryFailedStep --profile",
     "test:acceptance:multibrowsers": "npx codeceptjs run-multiple multibrowsers --plugins retryFailedStep --profile",
     "test:acceptance:report": "./node_modules/.bin/allure serve test/acceptance/report",
-    "bdd:snippets": "./node_modules/.bin/codeceptjs bdd:snippets",
+    "bdd:snippets": "./node_modules/.bin/codeceptjs bdd:snippets --path",
     "compile:scss": "sgmf-scripts --compile css",
     "compile:js": "sgmf-scripts --compile js",
     "compile:fonts": "node bin/Makefile compileFonts",

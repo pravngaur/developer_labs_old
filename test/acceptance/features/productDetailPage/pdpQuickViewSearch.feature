@@ -1,4 +1,4 @@
-Feature: Search for product using menu then add to cart from Quick View
+Feature: Product Quickview
     As a shopper I want to be able to search for a product from the menu
     then add the product to cart using Quick View
 

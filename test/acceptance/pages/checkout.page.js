@@ -208,7 +208,7 @@ module.exports = {
         I.waitForElement('.checkout-checkbox.custom-control-label');
         I.click('.checkout-checkbox.custom-control-label');
     },
-    clickEnterAddress(index) {
+    clickEnterAddress() {
         let locator = locate('.multi-ship-action-buttons')
             .find('button.btn.btn-outline-primary.col-12.btn-enter-multi-ship');
             // .withAttr({'data-action': 'enter'})

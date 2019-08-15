@@ -81,7 +81,7 @@ module.exports = {
     },
     filterProductOption(filterOption, firstProductName) {
         let locatorOption = locate('.custom-select')
-            .withAttr({'aria-label': 'Sort By'});
+            .withAttr({ 'aria-label': 'Sort By' });
         I.waitForElement(locatorOption);
         I.scrollTo(locatorOption);
         I.selectOption(locatorOption, filterOption);
@@ -92,7 +92,7 @@ module.exports = {
         I.see(firstProductName, locatorProduct);
     },
     verifyProductTotals(totalItems) {
-        I.wait(1.5)
+        I.wait(1.5);
         let locator = locate(this.locators.productTotals)
             .find(this.locators.filterPrice);
         I.waitForElement(locator);

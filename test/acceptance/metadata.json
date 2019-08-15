@@ -21,6 +21,7 @@
         "./test/acceptance/steps/loginPage/checkOrder.steps.js",
         "./test/acceptance/steps/loginPage/createAccount.steps.js",
         "./test/acceptance/steps/loginPage/loginUser.steps.js",
+        "./test/acceptance/steps/loginPage/forgotPassword.steps.js",
         "./test/acceptance/steps/accountPage/editProfile.steps.js",
         "./test/acceptance/steps/accountPage/changePassword.steps.js",
         "./test/acceptance/steps/accountPage/addPayment.steps.js",

@@ -1,4 +1,4 @@
-Feature: Search for a product and use the product filter options to condense options
+Feature: Filter products from PDP
     As a shopper I want to be able to search for a product type
     And then select different filter options to reduce the number of potential
     items.

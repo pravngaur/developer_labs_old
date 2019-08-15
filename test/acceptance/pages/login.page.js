@@ -18,7 +18,11 @@ module.exports = {
         orderNumber: '#trackorder-form-number',
         orderEmail: '#trackorder-form-email',
         orderZipCode: '#trackorder-form-zip',
-        orderReceipt: '.card-body.order-total-summary'
+        orderReceipt: '.card-body.order-total-summary',
+        forgotPassword: '#password-reset',
+        forgotPasswordForm: '#reset-password-email',
+        submitEmailBtn: '#submitEmailButton',
+        verifyPasswordModal: '.modal-content'
     },
     login(email, password) {
         // fill login form
@@ -49,5 +53,20 @@ module.exports = {
         I.see(product.shipping, this.locators.orderReceipt);
         I.see(product.tax, this.locators.orderReceipt);
         I.see(product.estimatedTotal, this.locators.orderReceipt);
+    },
+    forgotPassword(email) {
+        I.wait(2); // Must wait because of modal fade chops the email parameter off randomly and fails the test
+        let locator = locate(this.locators.forgotPasswordForm)
+            .withAttr({ name: 'loginEmail' });
+        I.waitForElement(locator);
+        I.fillField(locator, email);
+    },
+    verifyPasswordReset() {
+        I.waitForElement(this.locators.submitEmailBtn);
+        I.click(this.locators.submitEmailBtn);
+        I.waitForElement(this.locators.verifyPasswordModal);
+        I.see('Request to Reset Your Password', this.locators.verifyPasswordModal);
+        I.waitForElement(this.locators.submitEmailBtn);
+        I.click(this.locators.submitEmailBtn);
     }
 };
