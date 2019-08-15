@@ -1,6 +1,6 @@
 <div class="campaign-banner d-none">
     <div class="container">
-        <div class="d-flex justify-content-between">
+        <div class="campaign-banner-container d-flex justify-content-between">
             <div></div>
             <div class="campaign-banner-message">
                 <isprint value="${pdict.bannerMessage}" encoding="off"/>

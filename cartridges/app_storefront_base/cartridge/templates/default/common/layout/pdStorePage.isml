@@ -4,6 +4,11 @@
 
 <!-- Include Page Designer Campaign Banner JavaScript and Styles only once here rather than at component level. -->
 <!-- There should only be one Campagin Banner added on a PD page. Multiple Banners is unsupported at the moment. -->
+
+<isif condition="${pdict.resetEditPDMode}">
+    <script> var resetCampaignBannerSessionToken = true; </script>
+</isif>
+
 <isscript>
     var assets = require('*/cartridge/scripts/assets.js');
     assets.addCss('/css/experience/components/commerceAssets/campaignBanner.css');
