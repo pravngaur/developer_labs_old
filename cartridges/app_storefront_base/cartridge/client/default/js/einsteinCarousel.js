@@ -153,10 +153,10 @@ function loadRecommendations() {
         $recommendationTiles.each(function () {
             var $parentElement = $(this);
             $parentElement.spinner().start();
-            if ($(this).closest('.experience-storefront-einsteinCarouselProduct').length) {
+            if ($(this).closest('.experience-einstein-einsteinCarouselProduct').length) {
                 return processRecommendationsTile($parentElement, einsteinUtils, createProductAnchor($parentElement));
-            } else if ($(this).closest('.experience-storefront-einsteinCarouselCategory').length) {
-                return processRecommendationsTile($parentElement, einsteinUtils, createCategoryAnchor($parentElement)); // TODO cats
+            } else if ($(this).closest('.experience-einstein-einsteinCarouselCategory').length) {
+                return processRecommendationsTile($parentElement, einsteinUtils, createCategoryAnchor($parentElement));
             }
             return processRecommendationsTile($parentElement, einsteinUtils);
         });

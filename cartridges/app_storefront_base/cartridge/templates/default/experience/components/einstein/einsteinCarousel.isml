@@ -1,11 +1,11 @@
 <isscript>
     var assets = require('*/cartridge/scripts/assets.js');
     assets.addCss('/css/component.css');
-    assets.addCss('/css/experience/components/storefront/productTile.css');
-    assets.addCss('/css/experience/components/storefront/carousel.css');
-    assets.addCss('/css/experience/components/storefront/einsteinCarousel.css');
+    assets.addCss('/css/experience/components/commerceAssets/productTile.css');
+    assets.addCss('/css/experience/components/commerceLayouts/carousel.css');
+    assets.addCss('/css/experience/components/einstein/einsteinCarousel.css');
 
-    assets.addJs('/js/einstienCarousel.js');
+    assets.addJs('/js/einsteinCarousel.js');
     assets.addJs('/js/carousel.js');
 </isscript>
 
@@ -17,7 +17,7 @@
     </div>
 </isif>
 
-<div class="experience-storefront-carousel">
+<div class="experience-einstein-carousel experience-einstein-carouselCategory experience-einstein-carouselProduct">
     <div id="${pdict.id}"
         class="carousel einstein-carousel hide-indicators slide carousel-xs-${pdict.slidesToDisplay.xs}
             carousel-sm-${pdict.slidesToDisplay.sm} carousel-md-${pdict.slidesToDisplay.md}
@@ -34,7 +34,7 @@
 		data-bsxs="${pdict.slidesToDisplay.sizeExtraSmall}"
 		data-bsmd="${pdict.slidesToDisplay.sizeMedium}"
 		data-recommender="${pdict.recommender}"
-		data-template="storefront/product/productTileWrapper"
+		data-template="commerce_assets/product/productTileWrapper"
 		data-swatches=${pdict.swatches}
 		data-displayratings=${pdict.displayRatings}
 		data-product-load-url="${pdict.productLoadUrl}"
@@ -44,7 +44,7 @@
 		data-alternative-group-id="${pdict.alternativeGroupId}"
 		data-limit="${pdict.limit}"
 		data-category-id="${pdict.categoryId}">
-        
+
         <div class="carousel-inner row"></div>
 
         <ol class="pd-carousel-indicators"></ol>

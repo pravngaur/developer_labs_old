@@ -2,7 +2,7 @@
     "name": "Shop The Look Product Tile",
     "description": "This is the Shop The Look Product Tile component",
     "group": "commerce_assets",
-  "attribute_definition_groups": [
+    "attribute_definition_groups": [
     {
       "id": "shopTheLookSpec",
       "name": "Shop The Look Specification",

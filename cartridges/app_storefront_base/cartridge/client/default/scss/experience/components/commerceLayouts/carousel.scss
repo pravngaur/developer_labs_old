@@ -15,20 +15,29 @@
     align-items: center;
 }
 
-.experience-storefront-carousel .carousel-inner {
+.experience-einstein-einsteinCarousel .carousel-inner,
+.experience-einstein-einsteinCarouselCategory .carousel-inner,
+.experience-einstein-einsteinCarouselProduct .carousel-inner,
+.experience-commerce_layouts-carousel .carousel-inner {
     width: auto;
 }
 
-.experience-storefront-carousel .carousel-control-next {
+.experience-commerce_layouts-carousel .carousel-control-next {
     display: none;
 }
 
-.experience-storefront-carousel .carousel-control-prev {
+.experience-commerce_layouts-carousel .carousel-control-prev {
     display: none;
 }
 
-.experience-storefront-carousel .carousel-control-prev,
-.experience-storefront-carousel .carousel-control-next {
+.experience-einstein-einsteinCarousel .carousel-control-prev,
+.experience-einstein-einsteinCarousel .carousel-control-next,
+.experience-einstein-einsteinCarouselCategory .carousel-control-next,
+.experience-einstein-einsteinCarouselCategory .carousel-control-prev,
+.experience-einstein-einsteinCarouselProduct .carousel-control-prev,
+.experience-einstein-einsteinCarouselProduct .carousel-control-next,
+.experience-commerce_layouts-carousel .carousel-control-prev,
+.experience-commerce_layouts-carousel .carousel-control-next {
     position: absolute;
     background-color: $gray-transparent-1;
     height: 4.6875rem;
@@ -36,7 +45,10 @@
     top: 30%;
 }
 
-.experience-storefront-carousel .carousel-control-prev {
+.experience-einstein-einsteinCarousel .carousel-control-prev,
+.experience-einstein-einsteinCarouselCategory .carousel-control-prev,
+.experience-einstein-einsteinCarouselProduct .carousel-control-prev,
+.experience-commerce_layouts-carousel .carousel-control-prev {
     left: -0.625rem;
 
     .carousel-control-prev-icon {
@@ -45,7 +57,10 @@
     }
 }
 
-.experience-storefront-carousel .carousel-control-next {
+.experience-einstein-einsteinCarousel .carousel-control-next,
+.experience-einstein-einsteinCarouselCategory .carousel-control-next,
+.experience-einstein-einsteinCarouselProduct .carousel-control-next,
+.experience-commerce_layouts-carousel .carousel-control-next {
     right: -0.625rem;
 
     .carousel-control-next-icon {

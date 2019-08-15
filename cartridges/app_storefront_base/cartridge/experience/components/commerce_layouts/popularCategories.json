@@ -33,7 +33,7 @@
         { "type_id": "commerce_layouts.einsteinCarouselCategory" },
         { "type_id": "commerce_layouts.einsteinCarouselProduct" },
         { "type_id": "commerce_layouts.popularCategories" },
-          { "type_id": "commerce_layouts.mobileGridLookBook" }
+        { "type_id": "commerce_layouts.mobileGridLookBook" }
       ]
     }
     ]
