@@ -41,7 +41,7 @@ const userSpecificBrowsers = {
         desiredCapabilities: {
             chromeOptions: {
               mobileEmulation: {
-                deviceName: "iPad"
+                deviceName: "Kindle Fire HDX"
               }
             }
           }

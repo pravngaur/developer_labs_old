@@ -15,3 +15,30 @@ Then('shopper logs into the website', () => {
     I.amOnPage(data.login.loginPage);
     loginPage.login(data.login.email, data.login.password);
 });
+
+Given('shopper logs into the website on phone', () => {
+    I.amOnPage(data.login.homePage);
+    homePage.accept();
+
+    I.seeElement('.navbar-toggler.d-md-none');
+    I.click('.navbar-toggler.d-md-none');
+
+    let locator = locate('.nav-item.d-lg-none')
+      .withChild('a.nav-link');
+    I.waitForElement(locator);
+    I.click(locator);
+
+    loginPage.login(data.login.email, data.login.password);
+});
+
+Given('shopper logs into the website on tablet', () => {
+    I.amOnPage(data.login.homePage);
+    homePage.accept();
+
+    let locator = locate('.nav-item.d-lg-none')
+      .withChild('a.nav-link');
+    I.waitForElement(locator);
+    I.click(locator);
+
+    loginPage.login(data.login.email, data.login.password);
+});
