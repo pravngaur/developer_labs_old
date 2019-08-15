@@ -22,7 +22,10 @@ module.exports = {
         forgotPassword: '#password-reset',
         forgotPasswordForm: '#reset-password-email',
         submitEmailBtn: '#submitEmailButton',
-        verifyPasswordModal: '.modal-content'
+        verifyPasswordModal: '.modal-content',
+        hamburgerLogin: '.navbar-toggler.d-md-none',
+        loginBtn: '.nav-item.d-lg-none',
+        loginBtnLink: 'a.nav-link'
     },
     login(email, password) {
         // fill login form
@@ -30,6 +33,7 @@ module.exports = {
         I.waitForElement(this.locators.passwordLogin);
         I.fillField(this.locators.emailLogin, email);
         I.fillField(this.locators.passwordLogin, password);
+
         // click login
         I.waitForElement(this.locators.primaryButton);
         I.click(this.locators.primaryButton);
@@ -55,7 +59,7 @@ module.exports = {
         I.see(product.estimatedTotal, this.locators.orderReceipt);
     },
     forgotPassword(email) {
-        I.wait(2); // Must wait because of modal fade chops the email parameter off randomly and fails the test
+        I.wait(2); // Must wait because of modal fade chops the email param off randomly and fails the test
         let locator = locate(this.locators.forgotPasswordForm)
             .withAttr({ name: 'loginEmail' });
         I.waitForElement(locator);
