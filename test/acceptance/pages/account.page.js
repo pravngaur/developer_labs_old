@@ -28,9 +28,7 @@ module.exports = {
         viewAll: '.pull-right',
         removeProductBtn: '.remove-btn.remove-payment.btn-light',
         removeProductModal: '.modal-content',
-        removeProductConfirm: '.btn.btn-primary.delete-confirmation-btn',
-        saveBtn: '.btn.btn-save.btn-block.btn-primary'
-
+        removeProductConfirm: '.btn.btn-primary.delete-confirmation-btn'
     },
     addAddress(addressTitle, fName, lName, address1, address2, country, state, city, zipcode, phone) {
         I.fillField(this.locators.addressTitle, addressTitle);

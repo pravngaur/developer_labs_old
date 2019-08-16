@@ -18,4 +18,4 @@ Given('shopper edits address', () => {
     I.wait(1);
     accountPage.clickEditAddress(data.account.addressHome);
     accountPage.editAddress(data.account.addressTitle);
-  });
+});
