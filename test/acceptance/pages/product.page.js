@@ -30,6 +30,8 @@ module.exports = {
         filterColor: '.swatch-circle-',
         filterSize: 'span.null',
         filterPrice: 'span',
+        filterOption: '.custom-select',
+        filterPDP: '.pdp-link a.link',
         productTotals: '.result-count.text-center',
         qv_ProductBtn: '.quickview.hidden-sm-down',
         qv_ColorBtn: '.color-attribute',
@@ -80,14 +82,14 @@ module.exports = {
         I.click(locator);
     },
     filterProductOption(filterOption, firstProductName) {
-        let locatorOption = locate('.custom-select')
+        let locatorOption = locate(this.locators.filterOption)
             .withAttr({ 'aria-label': 'Sort By' });
         I.waitForElement(locatorOption);
         I.scrollTo(locatorOption);
         I.selectOption(locatorOption, filterOption);
         I.wait(1.5);
 
-        let locatorProduct = locate('.pdp-link a.link').first();
+        let locatorProduct = locate(this.locators.filterPDP).first();
         I.waitForElement(locatorProduct);
         I.see(firstProductName, locatorProduct);
     },

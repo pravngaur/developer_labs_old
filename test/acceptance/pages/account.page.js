@@ -78,7 +78,6 @@ module.exports = {
     },
     editAddress(addName) {
         let locator = locate('#addressId.form-control');
-        // I.clearField(locator);
         I.wait(1);
         I.fillField(locator, addName);
         I.wait(1);

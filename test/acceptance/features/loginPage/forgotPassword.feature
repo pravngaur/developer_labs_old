@@ -2,7 +2,7 @@ Feature: Forgot Password
     As a shopper, I want to be able to reset my password if I forgot my
     login information
 
-@loginUser @forgotPassword
+@loginPage @forgotPassword
     Scenario: Shopper is able to reset their password
         Given shopper goes to the Login Page
         When shopper clicks forgot password

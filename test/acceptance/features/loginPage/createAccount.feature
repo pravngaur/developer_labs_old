@@ -1,7 +1,7 @@
 Feature: Create an Account
     As a shopper, I want to be able to create an account with the site
 
-@login
+@loginPage @createAccount
 Scenario: Shopper is able to create an account from the homepage
     Given shopper goes to the Login Page
         Then shopper is able to click tab to create account

@@ -3,7 +3,7 @@ Feature: Filter products from PDP
     And then select different filter options to reduce the number of potential
     items.
 
-@filter
+@productFilter
     Scenario: Shopper is able to filter for products
         When shopper selects yes or no for tracking consent
         Given shopper searches for category from menu

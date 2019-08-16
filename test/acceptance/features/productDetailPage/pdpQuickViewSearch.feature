@@ -2,7 +2,7 @@ Feature: Product Quickview
     As a shopper I want to be able to search for a product from the menu
     then add the product to cart using Quick View
 
-@quickview
+@productQuickView
     Scenario: Shopper is able to shop using a product's quick view
         When shopper selects yes or no for tracking consent
         Given shopper searches for category from menu

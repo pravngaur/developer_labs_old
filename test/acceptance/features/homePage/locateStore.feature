@@ -1,7 +1,7 @@
 Feature: Store locator
     As a shopper, I want to view available store locations
 
-@homePage @progress
+@homePage
     Scenario: Shopper is able to use store locator.
         When shopper selects yes or no for tracking consent
         Then shopper goes to store locator page

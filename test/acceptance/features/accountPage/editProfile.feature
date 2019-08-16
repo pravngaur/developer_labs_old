@@ -9,7 +9,7 @@ Feature: Edit profile of a User Account
         Then shopper clicks edit profile
         And shopper edits phone number
 
-@accountPage @editprofile
+@accountPage @editAddress
     Scenario: Shopper is able to edit a saved address
         Then shopper views address book
         And shopper edits address

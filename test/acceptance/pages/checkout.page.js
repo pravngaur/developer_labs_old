@@ -205,12 +205,16 @@ module.exports = {
         I.see(estimatedTotal, this.locators.orderConf_totalSection);
     },
     multiShipEnabled() {
-        I.waitForElement('.checkout-checkbox.custom-control-label');
-        I.click('.checkout-checkbox.custom-control-label');
         I.wait(1);
+        console.log('Not currently implemented: multiShipEnabled() in checkout.page.js');
+        // I.waitForElement('.checkout-checkbox.custom-control-label');
+        // I.click('.checkout-checkbox.custom-control-label');
+        // I.wait(1);
     },
     clickEnterAddress() {
-        I.click('Enter Address');
+        I.wait(1);
+        console.log('Not currently implemented: clickEnterAddress() in checkout.page.js');
+        //I.click('Enter Address');
         // I.wait(300);
         // I.waitForElement('button.btn.btn-outline-primary.col-12.btn-enter-multi-ship');
         // I.click('button.btn.btn-outline-primary.col-12.btn-enter-multi-ship');
