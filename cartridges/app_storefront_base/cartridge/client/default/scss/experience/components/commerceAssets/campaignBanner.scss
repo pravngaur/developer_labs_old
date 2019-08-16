@@ -17,6 +17,16 @@
         font-family: $thin-banner-font;
         line-height: 1.75em;
 
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        p {
+            font-size: 1em;
+            line-height: 2em;
+        }
+
         a:visited {
             color: $thin-banner-visited-link-color;
         }
