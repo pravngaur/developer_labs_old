@@ -20,11 +20,11 @@ Given('shopper logs into the website on phone', () => {
     I.amOnPage(data.login.homePage);
     homePage.accept();
 
-    I.seeElement('.navbar-toggler.d-md-none');
-    I.click('.navbar-toggler.d-md-none');
+    I.seeElement(loginPage.locators.hamburgerLogin);
+    I.click(loginPage.locators.hamburgerLogin);
 
-    let locator = locate('.nav-item.d-lg-none')
-      .withChild('a.nav-link');
+    let locator = locate(loginPage.locators.loginBtn)
+      .withChild(loginPage.locators.loginBtnLink);
     I.waitForElement(locator);
     I.click(locator);
 
@@ -35,8 +35,8 @@ Given('shopper logs into the website on tablet', () => {
     I.amOnPage(data.login.homePage);
     homePage.accept();
 
-    let locator = locate('.nav-item.d-lg-none')
-      .withChild('a.nav-link');
+    let locator = locate(loginPage.locators.loginBtn)
+      .withChild(loginPage.locators.loginBtnLink);
     I.waitForElement(locator);
     I.click(locator);
 

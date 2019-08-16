@@ -135,6 +135,7 @@
     "account": {
         "name": "John Smith",
         "addressTitle": "Apartment",
+        "addressHome": "Home",
         "newPassword": "Password123!"
     }
 }

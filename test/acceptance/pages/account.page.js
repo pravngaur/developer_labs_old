@@ -28,7 +28,8 @@ module.exports = {
         viewAll: '.pull-right',
         removeProductBtn: '.remove-btn.remove-payment.btn-light',
         removeProductModal: '.modal-content',
-        removeProductConfirm: '.btn.btn-primary.delete-confirmation-btn'
+        removeProductConfirm: '.btn.btn-primary.delete-confirmation-btn',
+        saveBtn: '.btn.btn-save.btn-block.btn-primary'
 
     },
     addAddress(addressTitle, fName, lName, address1, address2, country, state, city, zipcode, phone) {
@@ -66,6 +67,25 @@ module.exports = {
         let locator = locate(this.locators.viewAll)
             .withAttr({ 'aria-label': 'Change Password' });
         I.click(locator);
+    },
+    clickAddressBook() {
+        let locator = locate(this.locators.viewAll)
+            .withAttr({ 'aria-label': 'View Address Book' });
+        I.click(locator);
+    },
+    clickEditAddress(addName) {
+        let locator = locate(this.locators.viewAll)
+            .withAttr({ 'aria-label': `Edit Address : ${addName} (Default Address)` });
+        I.click(locator);
+    },
+    editAddress(addName) {
+        let locator = locate('#addressId.form-control');
+        // I.clearField(locator);
+        I.wait(1);
+        I.fillField(locator, addName);
+        I.wait(1);
+        I.waitForElement(this.locators.saveBtn);
+        I.click(this.locators.saveBtn);
     },
     addPayment(nameOnCard, ccNum, expMonth, expYear) {
         I.fillField(this.locators.nameOnCard, nameOnCard);

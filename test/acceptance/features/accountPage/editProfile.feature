@@ -3,13 +3,14 @@ Feature: Edit profile of a User Account
 
     Background:
         Given shopper logs into the website
-        And shopper clicks edit profile
 
 @accountPage
     Scenario: Shopper is able to edit their account information
+        Then shopper clicks edit profile
         And shopper edits phone number
 
-@accountPage
+@accountPage @editprofile
     Scenario: Shopper is able to edit a saved address
+        Then shopper views address book
         And shopper edits address
         And shopper fills out address information

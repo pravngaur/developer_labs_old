@@ -207,16 +207,12 @@ module.exports = {
     multiShipEnabled() {
         I.waitForElement('.checkout-checkbox.custom-control-label');
         I.click('.checkout-checkbox.custom-control-label');
+        I.wait(1);
     },
     clickEnterAddress() {
-        let locator = locate('.multi-ship-action-buttons')
-            .find('button.btn.btn-outline-primary.col-12.btn-enter-multi-ship');
-            // .withAttr({'data-action': 'enter'})
-            // .first()
-        I.waitForElement(locator);
-        I.scrollTo(locator);
+        I.click('Enter Address');
         // I.wait(300);
-        I.waitForElement('button.btn.btn-outline-primary.col-12.btn-enter-multi-ship');
-        I.click('button.btn.btn-outline-primary.col-12.btn-enter-multi-ship');
+        // I.waitForElement('button.btn.btn-outline-primary.col-12.btn-enter-multi-ship');
+        // I.click('button.btn.btn-outline-primary.col-12.btn-enter-multi-ship');
     }
 };
