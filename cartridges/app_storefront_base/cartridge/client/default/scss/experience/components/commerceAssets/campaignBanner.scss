@@ -3,10 +3,10 @@
 .campaign-banner {
     background-color: $thin-banner-background-color;
     color: $thin-banner-text-color;
-    height: 50px;
+    height: 3.57em;
 
     .campaign-banner-container {
-        height: 50px;
+        height: 3.57em;
     }
 
     .campaign-banner-message {
@@ -24,7 +24,7 @@
         h5,
         p {
             font-size: 1em;
-            line-height: 2em;
+            line-height: 1.5em;
         }
 
         a:visited {
