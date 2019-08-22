@@ -1,4 +1,4 @@
-const { pageDesigner } = inject();
+const { data, pageDesigner } = inject();
 
 When('Shopper sees the main banner carousel', () => {
     pageDesigner.seeCarousel(1);
@@ -39,7 +39,7 @@ When('Shopper clicks next on carousel-2', () => {
 });
 
 Then('Shopper should see next product on carousel-2', () => {
-    pageDesigner.verifySlide(2, 'Floral Print Pencil Skirt.', '.product-name-link');
+    pageDesigner.verifySlide(2, data.pageDesigner.productTileProductName, '.product-name-link');
 });
 
 When('Shopper clicks previous on carousel-2', () => {
@@ -47,5 +47,5 @@ When('Shopper clicks previous on carousel-2', () => {
 });
 
 Then('Shopper should see previous slide on carousel-2', () => {
-    pageDesigner.verifySlide(2, 'Incase', '.product-name-link');
+    pageDesigner.verifySlide(2, data.pageDesigner.productTileProductName5, '.product-name-link');
 });

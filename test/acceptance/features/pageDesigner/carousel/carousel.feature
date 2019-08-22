@@ -1,7 +1,7 @@
 Feature: Page Designer Carousel
   As a shopper, I want to see the page designer carousel
 
-  @Carousel
+  @Carousel @pageDesigner
   Scenario: Shopper is able to interact with the page designer carousel component
     When shopper load Page Designer home page
     Then shopper accept the Consent Tracking Modal
@@ -12,7 +12,7 @@ Feature: Page Designer Carousel
     When Shopper clicks previous
     Then Shopper should see previous slide
   
-  @Carousel
+  @Carousel @pageDesigner
   Scenario: Shopper is able to interact with the page designer carousel-2 component
     When shopper load Page Designer home page
     Then shopper accept the Consent Tracking Modal

@@ -8,8 +8,7 @@
         "loginPage": "./test/acceptance/pages/login.page.js",
         "accountPage": "./test/acceptance/pages/account.page.js",
         "pageDesigner": "./test/acceptance/pages/pageDesigner.page.js",
-        "utilities": "./test/acceptance/utilities.js",
-        "pdHomePage": "./test/acceptance/pages/pdHome.page.js"
+        "utilities": "./test/acceptance/utilities.js"
     },
     "gherkin_steps": [
         "./test/acceptance/steps/homePage/addProductToCart.steps.js",
@@ -172,6 +171,7 @@
 
         "productTileQuickView": "Quick Shop",
         "productTileProductName": "Floral Print Pencil Skirt.",
+        "productTileProductName5": "Incase",
         "productTile1ProductPrice": "$129.00",
         "productTile3ProductStrikeThroughPrice": "$59.00",
         "productTile3ProductPrice": "$43.99",
