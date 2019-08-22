@@ -13,7 +13,7 @@ When('Shopper clicks next', () => {
 });
 
 Then('Shopper should see next slide', () => {
-    pageDesigner.verifySlide(1, 'Summer Sales', pageDesigner.locators.mainBannerHeading);
+    pageDesigner.verifySlide(1, data.pageDesigner.mainBannerHeading2, pageDesigner.locators.mainBannerHeading);
 });
 
 When('Shopper clicks previous', () => {
@@ -21,7 +21,7 @@ When('Shopper clicks previous', () => {
 });
 
 Then('Shopper should see previous slide', () => {
-    pageDesigner.verifySlide(1, 'Dresses\nfor\nBesties', pageDesigner.locators.mainBannerHeading);
+    pageDesigner.verifySlide(1, data.pageDesigner.mainBannerHeading, pageDesigner.locators.mainBannerHeading);
 });
 
 When('Shopper sees the main banner carousel-2', () => {
