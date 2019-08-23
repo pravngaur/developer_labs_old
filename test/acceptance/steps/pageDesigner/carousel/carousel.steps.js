@@ -1,51 +1,40 @@
 const { data, pageDesigner } = inject();
 
-When('Shopper sees the main banner carousel', () => {
-    pageDesigner.seeCarousel(1);
+When('Shopper sees the carousel {string}', (position) => {
+    var carouselPosition = position;
+    pageDesigner.seeCarousel(carouselPosition);
 });
 
-Given('Shopper sees carousel controls', () => {
-    pageDesigner.controlsVisible(1);
+Given('Shopper sees carousel controls in carousel {string}', (position) => {
+    var carouselPosition = position;
+    pageDesigner.controlsVisible(carouselPosition);
 });
 
-When('Shopper clicks next', () => {
-    pageDesigner.carouselControlClick(1, pageDesigner.locators.carouselNext);
-});
-
-Then('Shopper should see next slide', () => {
+Then('Shopper should see the next slide in the first carousel', () => {
     pageDesigner.verifySlide(1, data.pageDesigner.mainBannerHeading2, pageDesigner.locators.mainBannerHeading);
 });
 
-When('Shopper clicks previous', () => {
-    pageDesigner.carouselControlClick(1, pageDesigner.locators.carouselPrevious);
+When('Shopper clicks previous in carousel {string}', (position) => {
+    var carouselPosition = position;
+    pageDesigner.carouselControlClick(carouselPosition, pageDesigner.locators.carouselPrevious);
 });
 
-Then('Shopper should see previous slide', () => {
+Then('Shopper should see the previous slide in the first carousel', () => {
     pageDesigner.verifySlide(1, data.pageDesigner.mainBannerHeading, pageDesigner.locators.mainBannerHeading);
 });
 
-When('Shopper sees the main banner carousel-2', () => {
-    pageDesigner.seeCarousel(2);
-});
-
-Given('Shopper sees carousel-2 controls', () => {
-    pageDesigner.controlsVisible(2);
-});
-
-When('Shopper clicks next on carousel-2', () => {
-    for (var i = 0; i < 5; i++) {
-        pageDesigner.carouselControlClick(2, pageDesigner.locators.carouselNext);
+When('Shopper clicks next in carousel {string} {int} time(s)', (position, clicks) => {
+    var carouselPosition = position;
+    var carouselClicks = clicks;
+    for (var i = 0; i < carouselClicks; i++) {
+        pageDesigner.carouselControlClick(carouselPosition, pageDesigner.locators.carouselNext);
     }
 });
 
-Then('Shopper should see next product on carousel-2', () => {
+Then('Shopper should see next product in the second carousel', () => {
     pageDesigner.verifySlide(2, data.pageDesigner.productTileProductName, '.product-name-link');
 });
 
-When('Shopper clicks previous on carousel-2', () => {
-    pageDesigner.carouselControlClick(2, pageDesigner.locators.carouselPrevious);
-});
-
-Then('Shopper should see previous slide on carousel-2', () => {
+Then('Shopper should see previous slide in the second carousel', () => {
     pageDesigner.verifySlide(2, data.pageDesigner.productTileProductName5, '.product-name-link');
 });
