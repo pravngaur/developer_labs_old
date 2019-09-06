@@ -372,10 +372,8 @@ function calculatePaymentTransaction(currentBasket) {
         Transaction.wrap(function () {
             // TODO: This function will need to account for gift certificates at a later date
             var orderTotal = currentBasket.totalGrossPrice;
-            var paymentInstruments = currentBasket.paymentInstruments;
-            collections.map(paymentInstruments, function (paymentInstrument) {
-                paymentInstrument.paymentTransaction.setAmount(orderTotal);
-            });
+            var paymentInstrument = currentBasket.paymentInstruments[0];
+            paymentInstrument.paymentTransaction.setAmount(orderTotal);
         });
     } catch (e) {
         result.error = true;
