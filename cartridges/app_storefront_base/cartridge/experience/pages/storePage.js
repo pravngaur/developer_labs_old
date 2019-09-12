@@ -34,6 +34,19 @@ module.exports.render = function (context) {
         model.resetEditPDMode = true;
     }
 
+    // GET CACHE FROM CUSTOM ATTRIBUTE
+    var Site = require('dw/system/Site');
+    var pdStorePageCacheDuration = Site.getCurrent().getCustomPreferenceValue('page_designer_cache_attr_jason');
+
+    if (!pdStorePageCacheDuration) {
+        pdStorePageCacheDuration = 60;
+    }
+
+    var expiryTime = new Date(Date.now());
+    //expiryTime.setMinutes(expiryTime.getMinutes() + 60);
+    expiryTime.setMinutes(expiryTime.getMinutes() + pdStorePageCacheDuration);
+    response.setExpires(expiryTime);
+
     // render the page
     return new Template('experience/pages/storePage').render(model).text;
 };
