@@ -233,30 +233,34 @@ server.post(
             }
 
             // Validate payment instrument
-            var creditCardPaymentMethod = PaymentMgr.getPaymentMethod(PaymentInstrument.METHOD_CREDIT_CARD);
-            var paymentCard = PaymentMgr.getPaymentCard(billingData.paymentInformation.cardType.value);
+            if (paymentMethodID === PaymentInstrument.METHOD_CREDIT_CARD) {
+                var creditCardPaymentMethod = HookManager.callHook('app.payment.form.processor.basic_credit', 'getPaymentMethod');// todo hooks?
+                var paymentCard = HookManager.callHook('app.payment.form.processor.basic_credit', 'getPaymentCard', billingData.paymentInformation.cardType.value);// todo hooks?
 
-            var applicablePaymentCards = creditCardPaymentMethod.getApplicablePaymentCards(
-                req.currentCustomer.raw,
-                req.geolocation.countryCode,
-                null
-            );
+                var applicablePaymentCards = creditCardPaymentMethod.getApplicablePaymentCards(
+                    req.currentCustomer.raw,
+                    req.geolocation.countryCode,
+                    null
+                );
 
-            if (!applicablePaymentCards.contains(paymentCard)) {
-                // Invalid Payment Instrument
-                var invalidPaymentMethod = Resource.msg('error.payment.not.valid', 'checkout', null);
-                delete billingData.paymentInformation;
-                res.json({
-                    form: billingForm,
-                    fieldErrors: [],
-                    serverErrors: [invalidPaymentMethod],
-                    error: true
-                });
-                return;
+                if (!applicablePaymentCards.contains(paymentCard)) {
+                    // Invalid Payment Instrument
+                    var invalidPaymentMethod = Resource.msg('error.payment.not.valid', 'checkout', null);
+                    delete billingData.paymentInformation;
+                    res.json({
+                        form: billingForm,
+                        fieldErrors: [],
+                        serverErrors: [invalidPaymentMethod],
+                        error: true
+                    });
+                    return;
+                }
             }
 
+            var processor = PaymentMgr.getPaymentMethod(paymentMethodID).getPaymentProcessor();
+
             // check to make sure there is a payment processor
-            if (!PaymentMgr.getPaymentMethod(paymentMethodID).paymentProcessor) {
+            if (!processor) {
                 throw new Error(Resource.msg(
                     'error.payment.processor.missing',
                     'checkout',
@@ -264,7 +268,6 @@ server.post(
                 ));
             }
 
-            var processor = PaymentMgr.getPaymentMethod(paymentMethodID).getPaymentProcessor();
 
             if (HookMgr.hasHook('app.payment.processor.' + processor.ID.toLowerCase())) {
                 result = HookMgr.callHook('app.payment.processor.' + processor.ID.toLowerCase(),
