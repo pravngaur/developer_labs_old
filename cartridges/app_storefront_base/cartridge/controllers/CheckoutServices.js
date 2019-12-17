@@ -140,7 +140,6 @@ server.post(
             var BasketMgr = require('dw/order/BasketMgr');
             var HookMgr = require('dw/system/HookMgr');
             var PaymentMgr = require('dw/order/PaymentMgr');
-            var PaymentInstrument = require('dw/order/PaymentInstrument');
             var Transaction = require('dw/system/Transaction');
             var AccountModel = require('*/cartridge/models/account');
             var OrderModel = require('*/cartridge/models/order');
@@ -232,31 +231,6 @@ server.post(
                 return;
             }
 
-            // Validate payment instrument
-            if (paymentMethodID === PaymentInstrument.METHOD_CREDIT_CARD) {
-                var creditCardPaymentMethod = HookManager.callHook('app.payment.form.processor.basic_credit', 'getPaymentMethod');// todo hooks?
-                var paymentCard = HookManager.callHook('app.payment.form.processor.basic_credit', 'getPaymentCard', billingData.paymentInformation.cardType.value);// todo hooks?
-
-                var applicablePaymentCards = creditCardPaymentMethod.getApplicablePaymentCards(
-                    req.currentCustomer.raw,
-                    req.geolocation.countryCode,
-                    null
-                );
-
-                if (!applicablePaymentCards.contains(paymentCard)) {
-                    // Invalid Payment Instrument
-                    var invalidPaymentMethod = Resource.msg('error.payment.not.valid', 'checkout', null);
-                    delete billingData.paymentInformation;
-                    res.json({
-                        form: billingForm,
-                        fieldErrors: [],
-                        serverErrors: [invalidPaymentMethod],
-                        error: true
-                    });
-                    return;
-                }
-            }
-
             var processor = PaymentMgr.getPaymentMethod(paymentMethodID).getPaymentProcessor();
 
             // check to make sure there is a payment processor
@@ -268,12 +242,13 @@ server.post(
                 ));
             }
 
-
             if (HookMgr.hasHook('app.payment.processor.' + processor.ID.toLowerCase())) {
                 result = HookMgr.callHook('app.payment.processor.' + processor.ID.toLowerCase(),
                     'Handle',
                     currentBasket,
-                    billingData.paymentInformation
+                    billingData.paymentInformation,
+                    paymentMethodID,
+                    req
                 );
             } else {
                 result = HookMgr.callHook('app.payment.processor.default', 'Handle');

@@ -1,8 +1,6 @@
 'use strict';
 
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
-var PaymentManager = require('dw/order/PaymentMgr');
-var PaymentInstrument = require('dw/order/PaymentInstrument');
 
 /**
  * Verifies the required information for billing form is provided.
@@ -133,24 +131,5 @@ function savePaymentInformation(req, basket, billingData) {
     }
 }
 
-/**
- * get the payment method
- * @return {dw.order.PaymentMethod} PaymentMethod - api PaymentMethod
- */
-function getPaymentMethod() {
-    return PaymentManager.getPaymentMethod(PaymentInstrument.METHOD_CREDIT_CARD);
-}
-
-/**
- * get the payment card
- * @param {string} value - string PaymentCard type
- * @returns {dw.order.PaymentCard} PaymentCard - api paymentcard
- */
-function getPaymentCard(value) {
-    return PaymentManager.getPaymentCard(value);
-}
-
-exports.getPaymentCard = getPaymentCard;
-exports.getPaymentMethod = getPaymentMethod;
 exports.processForm = processForm;
 exports.savePaymentInformation = savePaymentInformation;
