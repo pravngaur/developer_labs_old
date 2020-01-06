@@ -6,14 +6,13 @@
 <div class="col-8">
     <ul class="list-unstyled availability-msg">
         <li>
-            <isif condition="${!product.readyToOrder}">
+            <isif condition="${!pdict.readyToOrder}">
                 <div>${Resource.msg('info.selectforstock', 'product', 'Select Styles for Availability')}</div>
             <iselse>
-                <isloop items="${product.availability.messages}" var="message">
+                <isloop items="${pdict.availability.messages}" var="message">
                     <div>${message}</div>
                 </isloop>
             </isif>
         </li>
     </ul>
 </div>
-
