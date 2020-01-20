@@ -43,7 +43,7 @@
                         </isloop>
 
                         <div class="d-sm-none row availability align-self-end " data-ready-to-order="${product.readyToOrder}" data-available="${product.available}">
-                            <isinclude template="product/components/availability" />
+                            <isinclude url="${pdict.availabilityUrl}" />
                         </div>
 
                     <hr>

@@ -17,9 +17,16 @@ var pageMetaData = require('*/cartridge/scripts/middleware/pageMetaData');
  */
 
 server.get('Show', cache.applyPromotionSensitiveCache, consentTracking.consent, function (req, res, next) {
+    var URLUtils = require('dw/web/URLUtils');
     var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
     var showProductPageHelperResult = productHelper.showProductPage(req.querystring, req.pageMetaData);
     var productType = showProductPageHelperResult.product.productType;
+    var availabilityUrl = URLUtils.url(
+        'Product-Availability',
+        'pid', showProductPageHelperResult.product.id,
+        'quantity', req.querystring.quantity,
+        'readyToOrder', showProductPageHelperResult.product.readyToOrder
+    );
     if (!showProductPageHelperResult.product.online && productType !== 'set' && productType !== 'bundle') {
         res.setStatusCode(404);
         res.render('error/notFound');
@@ -30,11 +37,31 @@ server.get('Show', cache.applyPromotionSensitiveCache, consentTracking.consent, 
             resources: showProductPageHelperResult.resources,
             breadcrumbs: showProductPageHelperResult.breadcrumbs,
             canonicalUrl: showProductPageHelperResult.canonicalUrl,
-            schemaData: showProductPageHelperResult.schemaData
+            schemaData: showProductPageHelperResult.schemaData,
+            availabilityUrl: availabilityUrl
         });
     }
     next();
 }, pageMetaData.computedPageMetaData);
+
+server.get('Availability', function (req, res, next) {
+    var ProductMgr = require('dw/catalog/ProductMgr');
+    var decorators = require('*/cartridge/models/product/decorators/index');
+    var availability = Object.create(null);
+
+    var productId = req.querystring.pid;
+    var quantity = req.querystring.quantity === 'undefined' ? undefined : req.querystring.quantity;
+    var readyToOrder = req.querystring.readyToOrder === 'true' ? true : false;
+
+    var apiProduct = ProductMgr.getProduct(productId);
+    decorators.availability(availability, quantity, apiProduct.minOrderQuantity.value, apiProduct.availabilityModel);
+
+    res.render('product/components/availability', {
+        readyToOrder: readyToOrder,
+        availability: availability.availability
+    });
+    next();
+});
 
 server.get('ShowInCategory', cache.applyPromotionSensitiveCache, function (req, res, next) {
     var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
@@ -112,6 +139,12 @@ server.get('ShowQuickView', cache.applyPromotionSensitiveCache, function (req, r
     var template = product.productType === 'set'
         ? 'product/setQuickView.isml'
         : 'product/quickView.isml';
+    var availabilityUrl = URLUtils.url(
+        'Product-Availability',
+        'pid', product.id,
+        'quantity', req.querystring.quantity,
+        'readyToOrder', product.readyToOrder
+    );
 
     var context = {
         product: product,
@@ -120,7 +153,8 @@ server.get('ShowQuickView', cache.applyPromotionSensitiveCache, function (req, r
         quickViewFullDetailMsg: Resource.msg('link.quickview.viewdetails', 'product', null),
         closeButtonText: Resource.msg('link.quickview.close', 'product', null),
         enterDialogMessage: Resource.msg('msg.enter.quickview', 'product', null),
-        template: template
+        template: template,
+        availabilityUrl: availabilityUrl
     };
 
     res.setViewData(context);
