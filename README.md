@@ -1,33 +1,13 @@
-# Developer Labs Repo
+## Cert Preperation Labs
 
-## Purpose:
+# Lab 1:
 
-This repo will serve the B2C Commerce Cloud developer community with:
-- Hands-on exercises & sample implementations for the certification preparation.
-- Sample implementations for the new product updates/features like Page Designer, Custom Caches & others.
+## Requirements:
+* Override the Home & Default controllers to verify if the locale & country of the incoming request are matching or not, i.e. say if the country is India but locale is default or en_Us.
+* If locale & country aren't matching then identify the correct locale for the given country, create redirect request to with new locale.
 
-## How to use this repo:
-- All the certification prep hands-on labs are in cert_prep branch.
-- All the feature specific branches will be in their own branch, for instance Page Designer will be in feature_pageDesigner repo.
-- This repo is sourced from SFRA repo.
-
-All these branches will be sourced from master; but will not be merged to master -- in order to keep the standard SFRA implementation intact.
-Checkout the specific branch to see the underlying feature sample implementation.
-All these branches will be listed in this readme file(root one). Feature implementation details will be updated in the feature specific branch.
-
-## How to contribute
-- Fork this repo.
-- If adding a new feature/lab -- create a new branch from master, naming: feature_<name of feature>, for instance feature_pageDesigner. Update this readme file to include the Repo details, in the repo-list section. And create your branch specific readme to include the implementation details.
-- If adding a cert prep exercise then create a new commit to cert_prep. And update the cert_prep readme file to include the details of your lab. 
-
-** Please wrap all your feature specific changes in one commit -- that will easy for others to learn from your implementations. This commit will not be merged.
-** Create a seperate commit to update this main readme file -- i will merge this commit only to master branch. 
-
-## Branches List
-
-* cert_prep: for cert prep lab exercises.
-* feture_pageDesigner: Page designer sample implementation.
-
+## Implementation:
+Please check the controller override in the newly created plugin_controller_override cartridge.
 ------------------------------------------------------------------------------------------------------------------------
 
 # Storefront Reference Architecture (SFRA)
