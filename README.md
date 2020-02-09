@@ -7,7 +7,22 @@
 * If locale & country aren't matching then identify the correct locale for the given country, create redirect request to with new locale.
 
 ## Implementation:
+
 Please check the controller override in the newly created plugin_controller_override cartridge.
+
+# Lab 2:
+
+## Requirements:
+* Give flexibity to business to enable/disable the redirection from Lab1.
+* Put the redirection behind a boolean toggle switch which business can manage.
+
+## Implementation:
+
+* Create a site preference of type Boolean, name: enableLocaleRedirect.
+* Place the redirection logic behind the toggle enable check.
+
+Please check plugin_controller_override cartridge for more details in Lab_2 commit.
+
 ------------------------------------------------------------------------------------------------------------------------
 
 # Storefront Reference Architecture (SFRA)
