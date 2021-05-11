@@ -72,7 +72,7 @@
     "eslint-plugin-sitegenesis": "~1.0.0",
     "globalize": "^1.4.2",
     "istanbul": "^0.4.5",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "minimist": "^1.2.0",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.23.1",
