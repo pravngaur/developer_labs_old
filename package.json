@@ -58,7 +58,7 @@
     "chalk": "^1.1.3",
     "cheerio": "0.22.0",
     "cldr-data": "^32.0.1",
-    "codeceptjs": "^2.3.2",
+    "codeceptjs": "^3.0.0",
     "codeceptjs-cucumber": "^2.0.10",
     "codeceptjs-saucehelper": "^1.4.0",
     "codeceptjs-saucelabs": "^2.0.6",
